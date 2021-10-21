@@ -1,0 +1,107 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:8175331469017076460",
+      "lastPropertyId": "16:4380578224422780473",
+      "name": "SettingAppData",
+      "properties": [
+        {
+          "id": "1:3594412088171641125",
+          "name": "isNotificationOn",
+          "type": 1
+        },
+        {
+          "id": "2:8873153873667721739",
+          "name": "isSync",
+          "type": 1
+        },
+        {
+          "id": "3:4266171809429242412",
+          "name": "isSyncWithMail",
+          "type": 1
+        },
+        {
+          "id": "4:454955420807872512",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "5:3314960300935785459",
+          "name": "phoneName",
+          "type": 9
+        },
+        {
+          "id": "6:4394953344467088139",
+          "name": "userCode",
+          "type": 9
+        },
+        {
+          "id": "7:1635472740910998754",
+          "name": "phoneModel",
+          "type": 9
+        },
+        {
+          "id": "8:2230500204649504064",
+          "name": "os",
+          "type": 9
+        },
+        {
+          "id": "9:7249253569172969744",
+          "name": "osVersion",
+          "type": 9
+        },
+        {
+          "id": "10:7548711779967776705",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "11:8932564770398771117",
+          "name": "theme",
+          "type": 6
+        },
+        {
+          "id": "12:9103524480953129973",
+          "name": "language",
+          "type": 6
+        },
+        {
+          "id": "13:7816500985377256333",
+          "name": "userAuthState",
+          "type": 6
+        },
+        {
+          "id": "14:7239286449520180989",
+          "name": "lastAuthCheck",
+          "type": 9
+        },
+        {
+          "id": "15:4063724568325656414",
+          "name": "location",
+          "type": 9
+        },
+        {
+          "id": "16:4380578224422780473",
+          "name": "createAt",
+          "type": 9
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:8175331469017076460",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
