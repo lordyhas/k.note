@@ -2,6 +2,9 @@
 
 import '../authentication_repository.dart';
 import 'database_model.dart';
+// todo: for commit
+//add interface_model.dart & implementation of InterfaceNoteModel
+//abstract class, NoteBoxManager class, ChecklistBoxManager class
 
 abstract class InterfaceNoteModel {
 
