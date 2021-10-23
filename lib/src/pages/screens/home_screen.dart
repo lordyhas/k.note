@@ -380,8 +380,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             title: const Text("Move in archive"),
             onTap: (){
               _firebaseManager.deleteNote(
-                  noteId: note.id,
-                  userId: user.id);
+                  noteId: note.noteId,
+                  userId: user.noteId);
               Navigator.of(context).pop();
               setState(() {});
               ScaffoldMessenger.of(context)
@@ -426,8 +426,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: const Text('Delete'),
                         onPressed: () {
                           _firebaseManager.deleteNote(
-                              noteId: note.id,
-                              userId: user.id);
+                              noteId: note.noteId,
+                              userId: user.noteId);
                           Navigator.of(context).pop();
                           setState(() {});
                           ScaffoldMessenger.of(context)

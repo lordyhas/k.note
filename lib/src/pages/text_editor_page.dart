@@ -59,7 +59,7 @@ class _TextEditorState extends State<TextEditor>  {
       _titleController = TextEditingController();
 
       _noteModel = NoteModel(
-          id:  unique,
+          noteId:  unique,
           email: user.email,
           creationTime: DateTime.now(),
           modificationTime: DateTime.now(),
@@ -84,19 +84,19 @@ class _TextEditorState extends State<TextEditor>  {
     });
 
     _firebaseManager.updateNoteTitle(
-        userId: user.id,
-        id: _noteModel.id,
+        userId: user.noteId,
+        id: _noteModel.noteId,
         value: _noteModel.title!
     );
 
     _firebaseManager.updateNoteText(
-        userId: user.id,
-        id: _noteModel.id,
+        userId: user.noteId,
+        id: _noteModel.noteId,
         value: _noteModel.text!
     );
 
     _firebaseManager.updateLastModificationTime(
-        docId: _noteModel.id
+        docId: _noteModel.noteId
     );
 
   }
@@ -190,7 +190,7 @@ class _TextEditorState extends State<TextEditor>  {
                             children: colors.map((color) => InkWell(
                               onTap: (){
                                 _firebaseManager.addNoteInCloud(
-                                    userId: user.id,
+                                    userId: user.noteId,
                                     note: _noteModel..colorValue = color.value,
                                 );
                                 setState(() {
@@ -258,7 +258,7 @@ class _TextEditorState extends State<TextEditor>  {
               onTap: (){},
               onEditingComplete: (){
                 if(!isNoteInCloud) {
-                  _firebaseManager.addNoteInCloud(userId: user.id, note: _noteModel);
+                  _firebaseManager.addNoteInCloud(userId: user.noteId, note: _noteModel);
                   isNoteInCloud = true;
                 }
                 Log.i('onEditingComplete(edit: title) #### ###');
@@ -292,7 +292,7 @@ class _TextEditorState extends State<TextEditor>  {
               },
               onTap: (){
                 if(!isNoteInCloud) {
-                  _firebaseManager.addNoteInCloud(userId: user.id, note: _noteModel);
+                  _firebaseManager.addNoteInCloud(userId: user.noteId, note: _noteModel);
                   isNoteInCloud = true;
                 }
                 Log.i('onEditTap(edit: text) #### ### ON_TAP - TEXT');
@@ -300,7 +300,7 @@ class _TextEditorState extends State<TextEditor>  {
               },
               onEditingComplete: (){
                 if(!isNoteInCloud) {
-                  _firebaseManager.addNoteInCloud(userId: user.id, note: _noteModel);
+                  _firebaseManager.addNoteInCloud(userId: user.noteId, note: _noteModel);
                   isNoteInCloud = true;
                 }
                 Log.i('onEditingComplete(edit: text) #### ### TEXT');

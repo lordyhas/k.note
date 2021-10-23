@@ -94,7 +94,7 @@ class _NoteTrashState extends State<NoteTrash> {
                               child: const Text('Restore'),
                               onPressed: () {
                                 fbm.restoreDeletedNote(
-                                    noteId: snapshot.data![i].id,
+                                    noteId: snapshot.data![i].noteId,
                                     userId: user.id!
                                 );
                                 setState(() {});
@@ -105,7 +105,7 @@ class _NoteTrashState extends State<NoteTrash> {
                               child: const Text('Delete forever'),
                               onPressed: () {
                                 fbm.permanentlyDeleteNote(
-                                    noteId: snapshot.data![i].id,
+                                    noteId: snapshot.data![i].noteId,
                                     userId: user.id!
                                 );
                                 setState(() {});

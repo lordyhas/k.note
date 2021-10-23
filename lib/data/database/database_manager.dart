@@ -4,42 +4,50 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:knote/data/app_bloc/auth_repository/user.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:utils_component/utils_component.dart';
 
-//import '../../objectbox.g.dart';
 import '../../objectbox.g.dart';
 import '../values.dart';
 import 'database_model.dart';
-import 'model/SettingData.dart';
+import 'interface_model.dart';
+import 'model/setting_data.dart';
 
-class ObjectBoxManager {
+abstract class ObjectBoxManager{
+  const ObjectBoxManager();
+  Future<Store> openStoreBox();
+}
+
+class SettingBoxManager extends  ObjectBoxManager {
 
   Store? storeManager;
 
-  ObjectBoxManager.empty();
-  ObjectBoxManager.initStore(){
+  SettingBoxManager.empty();
+  SettingBoxManager.initStore(){
     //this.storeManager = storeBox;
 
-    this.openStoreBox().then((store) {
+    openStoreBox().then((store) {
       final box = store.box<SettingAppData>();
       if(box.isEmpty()){
         final settingAppData = SettingAppData(
-            createAt: new DateTime.now().toString(),
+            createAt: DateTime.now().toString(),
             os: Platform.operatingSystem,
             osVersion: Platform.operatingSystemVersion,
             phoneModel: 'SmartPhone not checked');
         final id = box.put(settingAppData);      // note: sets note.id and also returns it
-        print("*** *** *** *** *** ***");
-        print('new note got id=$id, which is the same as note.id=${settingAppData.id}');
-        print('re-read note: ${box.get(id)}');
-        print('Set tingAppData Added Once : ${box.get(id)?.toDisplay()} ###########');
+        //Log.i("*** *** *** *** *** ***");
+        Log.out("SettingBoxManager",'new setting got id=$id, which is the same as setting.id=${settingAppData.id}');
+        Log.out("SettingBoxManager",'re-read note: ${box.get(id)}');
+        Log.out("",'SettingAppData Added Once : ${box.get(id)?.toDisplay()} ###########');
 
       }
     });
   }
 
+  @override
   Future<Store> openStoreBox() async {
     Directory dir = await getApplicationDocumentsDirectory();
     if(kIsWeb) {
@@ -103,7 +111,21 @@ class ObjectBoxManager {
 
   }
 
-  /*Future<bool> update_() async {
+
+
+}
+
+
+class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
+  const NoteBoxManager.empty();
+  const NoteBoxManager.initStore();
+
+  @override
+  Future<Store> openStoreBox() {
+    throw UnimplementedError();
+  }
+
+  Future<bool> update_() async {
     bool value = false;
     Store store = await openStoreBox();
 
@@ -111,21 +133,86 @@ class ObjectBoxManager {
     return value;
 
   }
-  Future<bool> add() async {
+
+
+  @override
+  Future<bool> addNote({required NoteModel note, required String userId}) async {
     bool value = false;
     Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+
 
     store.close();
     return value;
-
   }
-  Future<void> get_() async {
+
+  @override
+  Future<NoteModel?> getNote({required String userId, required String noteId}) async {
     bool value = false;
     Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+
 
     store.close();
 
+    throw UnimplementedError();
+  }
 
-  }*/
+  @override
+  Future<void> archiveNote({String? userId, required String noteId, required bool archived}) async {
+    // TODO: implement archiveNote
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteNote({String? userId, required String noteId}) async {
+    // TODO: implement deleteNote
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<NoteModel>?> getAllArchivedNote({User? user}) async {
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+    List<NoteModel> notes = box.query(
+        NoteModel_.isArchived.equals(false)
+            .and(NoteModel_.isDeleted.equals(false))
+    ).build().find();
+    store.close();
+
+    return notes;
+  }
+
+  @override
+  Future<List<NoteModel>?> getAllDeletedNote({User? user}) async {
+    // TODO: implement getAllDeletedNote
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<NoteModel>> getAllNote({User? user}) async {
+    // TODO: implement getAllNote
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> permanentlyDeleteNote({String? userId, required String noteId}) async {
+    // TODO: implement permanentlyDeleteNote
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> restoreDeletedNote({String? userId, required String noteId}) async {
+    // TODO: implement restoreDeletedNote
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> setNote({ String? userId, required NoteModel note}) async {
+    // TODO: implement setNote
+    throw UnimplementedError();
+  }
+
+
 
 }

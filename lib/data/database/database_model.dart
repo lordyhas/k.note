@@ -1,18 +1,16 @@
 library data.model;
+import 'dart:ffi';
 import 'dart:io';
+import 'package:objectbox/objectbox.dart';
+import 'package:utils_component/utils_component.dart';
+
 import '../app_bloc/auth_repository/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-part 'model/UserData.dart';
 part 'model/note_model.dart';
 
-part 'model/LocationData.dart';
-
-part 'model/AppData.dart';
-
-//part '';
 //part '';
 
 abstract class DataToMap{

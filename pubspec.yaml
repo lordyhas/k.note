@@ -19,8 +19,8 @@ environment:
 dependencies:
 
   #share_plus: ^3.0.1
-  share: ^2.0.4
-
+  share:
+    ^2.0.4
   badges:
     ^1.2.0
   flutter_slidable:
@@ -39,13 +39,15 @@ dependencies:
 
   path_provider:
     ^2.0.2
-  objectbox_flutter_libs:
-    ^0.14.0
-  objectbox:
-    ^0.14.0
+  objectbox_flutter_libs: ^0.14.0
+  objectbox: ^0.14.0
+
+  #hive: ^2.0.4
+  #hive_flutter: ^1.1.0
 
   #cached_network_image: ^2.5.0
-  pedantic: ^1.11.0
+  pedantic:
+    ^1.11.0
 
   #todo : share: ^2.0.0
   equatable:
@@ -54,7 +56,6 @@ dependencies:
     ^0.4.0
   flutter_bloc:
     ^7.0.0
-
   google_sign_in:
     ^5.0.4
   ##google_fonts: ^1.1.0
@@ -76,12 +77,16 @@ dependencies:
     ^9.1.0
   #smooth_star_rating: ^1.1.1
 
-  mime: ^1.0.0
-  open_file: ^3.2.1
-  uuid: ^3.0.4
-  file_picker: ^3.0.3
-
-  intl: ^0.17.0
+  mime:
+    ^1.0.0
+  open_file:
+    ^3.2.1
+  uuid:
+    ^3.0.4
+  file_picker:
+    ^3.0.3
+  intl:
+    ^0.17.0
 
 
   flutter:
@@ -98,12 +103,14 @@ dependencies:
 dev_dependencies:
   build_runner: ^1.0.0
   objectbox_generator: ^0.14.0
+  #hive_generator: ^1.1.1
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^1.0.0
 
-#To generate ObjectBox binding code for your entities, run pub run build_runner build
+#To generate ObjectBox binding code for your entities,
+# run: flutter pub run build_runner build
 
 flutter:
 

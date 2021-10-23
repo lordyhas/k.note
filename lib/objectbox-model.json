@@ -91,11 +91,159 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:3265389183101324807",
+      "lastPropertyId": "6:2802784630817855932",
+      "name": "Checklist",
+      "properties": [
+        {
+          "id": "1:4004506091922287571",
+          "name": "mid",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7391057659426571880",
+          "name": "checklistId",
+          "type": 9
+        },
+        {
+          "id": "3:796793005034814947",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "4:7263970995352313742",
+          "name": "isAllChecked",
+          "type": 1
+        },
+        {
+          "id": "5:4586948625973527366",
+          "name": "creationTime",
+          "type": 10
+        },
+        {
+          "id": "6:2802784630817855932",
+          "name": "modificationTime",
+          "type": 10
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:6523285735838232126",
+          "name": "boxTodoItems",
+          "targetId": "4:8740558880808005525"
+        }
+      ]
+    },
+    {
+      "id": "3:6376091032844962044",
+      "lastPropertyId": "14:8805746004675397437",
+      "name": "NoteModel",
+      "properties": [
+        {
+          "id": "1:9140676055489006734",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7674178417351246055",
+          "name": "noteId",
+          "type": 9
+        },
+        {
+          "id": "3:6116759217421153469",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "4:5146388033241371505",
+          "name": "text",
+          "type": 9
+        },
+        {
+          "id": "5:8492549617886715212",
+          "name": "creationTime",
+          "type": 10
+        },
+        {
+          "id": "6:9219499176425066233",
+          "name": "modificationTime",
+          "type": 10
+        },
+        {
+          "id": "7:8023750729590138559",
+          "name": "isDeleted",
+          "type": 1
+        },
+        {
+          "id": "8:8053013302908890703",
+          "name": "permanentDeleteDate",
+          "type": 10
+        },
+        {
+          "id": "9:7969553037941141937",
+          "name": "colorValue",
+          "type": 6
+        },
+        {
+          "id": "10:157023549637914141",
+          "name": "reminderDate",
+          "type": 10
+        },
+        {
+          "id": "11:1481716318011901231",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "12:8899348411700159084",
+          "name": "isArchived",
+          "type": 1
+        },
+        {
+          "id": "13:6012117193916797619",
+          "name": "isLocked",
+          "type": 1
+        },
+        {
+          "id": "14:8805746004675397437",
+          "name": "savingModeValue",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:8740558880808005525",
+      "lastPropertyId": "3:3000974977852023844",
+      "name": "TodoItem",
+      "properties": [
+        {
+          "id": "1:3194311990419884222",
+          "name": "mid",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2739185732194975635",
+          "name": "text",
+          "type": 9
+        },
+        {
+          "id": "3:3000974977852023844",
+          "name": "isDone",
+          "type": 1
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:8175331469017076460",
+  "lastEntityId": "4:8740558880808005525",
   "lastIndexId": "0:0",
-  "lastRelationId": "0:0",
+  "lastRelationId": "1:6523285735838232126",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,

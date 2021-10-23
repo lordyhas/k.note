@@ -4,17 +4,23 @@ enum SavingMode{cloud, local, cloudAndLocal}
 
 abstract class DocumentModel {}
 
-class NoteModel extends DocumentModel {
-  final id;
+@Entity()
+class NoteModel {
+  int id = 0;
+  String noteId;
   String? title;
   String? text;
-  final DateTime? creationTime;
+  @Property(type: PropertyType.date)
+  DateTime? creationTime;
+  @Property(type: PropertyType.date)
   DateTime? modificationTime ;
   bool isDeleted;
-  final DateTime? permanentDeleteDate;
+  @Property(type: PropertyType.date)
+  DateTime? permanentDeleteDate;
   int colorValue;
+  @Property(type: PropertyType.date)
   DateTime? reminderDate;
-  final String? email;
+  String? email;
   bool isArchived;
   bool isLocked;
   int savingModeValue;
@@ -22,10 +28,10 @@ class NoteModel extends DocumentModel {
 
 
   NoteModel({
+      required this.noteId,
       this.email,
       this.isLocked = false,
       this.isArchived = false,
-      this.id,
       this.title,
       this.text,
       this.creationTime,
@@ -44,7 +50,7 @@ class NoteModel extends DocumentModel {
 
   static NoteModel fromMap(Map<String, dynamic> map){
     return NoteModel(
-      id                  : map['id'],
+      noteId                  : map['id'],
       title               : map['title'],
       text                : map['text'],
       creationTime        : (map['creation_time'] != null)? map['creation_time'].toDate() : null,
@@ -62,7 +68,7 @@ class NoteModel extends DocumentModel {
     );
   }
   Map<String, dynamic> asMap() => {
-    'id'                    : id,
+    'id'                    : noteId,
     'title'                 : title,
     'text'                  : text,
     'creation_time'         : creationTime,
@@ -79,53 +85,77 @@ class NoteModel extends DocumentModel {
   };
 
   toDisplay(){
-    print("*** \n${toString()}{");
-    asMap().forEach((key, value) => print("$key : $value,"));
-    print('} \n***');
+    Log.i("*** \n${toString()}{");
+    asMap().forEach((key, value) => Log.i("$key : $value,"));
+    Log.i('} \n***');
   }
 }
 
-
+@Entity()
 class TodoItem{
-  final String text;
-  final bool isDone;
+  @Id()
+  int mid = 0;
+  String text;
+  bool isDone;
 
-  const TodoItem({required this.text, required this.isDone});
+  TodoItem({required this.text, required this.isDone});
 
   factory TodoItem.fromMap(Map<String, dynamic> map) => TodoItem(
+      //id: map['id'],
       text: map['text'],
       isDone : map['is_done'],
     );
 
   Map<String, dynamic>  asMap() => {
+    //'id'      : id,
     'text'    : text,
     'is_done' : isDone,
   };
 
 }
 
-class CheckList extends DocumentModel{
-  final String title;
-  final List<TodoItem> list;
-  final bool isAllChecked;
+@Entity()
+class Checklist extends DocumentModel{
+  @Id()
+  int mid = 0;
+  String checklistId;
+  String title;
+  @Transient()
+  List<TodoItem>? list;
+  bool isAllChecked;
+  @Property(type: PropertyType.date)
+  DateTime? creationTime;
+  @Property(type: PropertyType.date)
+  DateTime? modificationTime;
+  final boxTodoItems = ToMany<TodoItem>();
 
-  CheckList({
+
+  Checklist({
+    required this.checklistId,
     required this.title,
-    required this.list,
+    this.list =  const <TodoItem>[],
     this.isAllChecked = false,
+    this.creationTime,
+    this.modificationTime,
   });
 
-  List<Map<String, dynamic>> get listMap => list.map((e) => e.asMap()).toList();
+
+  List<Map<String, dynamic>> get listMap {
+    assert(list != null,  "todo item list can't be null");
+    return list!.map((e) => e.asMap()).toList();
+  }
 
   Map<String, dynamic> asMap() => {
-    'title': title,
+    'id'              : checklistId,
+    'title'           : title,
     'is_all_checked'  : isAllChecked,
     'list'            : listMap,
   };
-  factory CheckList.fromMap(Map<String, dynamic> map) => CheckList(
-    title: map['title'] as String,
-    isAllChecked: map['is_all_checked'] as bool,
-    list: (map['list'] as List<Map<String, dynamic>>).map(
+  factory Checklist.fromMap(Map<String, dynamic> map) => Checklist(
+    checklistId   : map['id'] as String,
+    title         : map['title'] as String,
+    isAllChecked  : map['is_all_checked'] as bool,
+    list          : (map['list'] as List<Map<String, dynamic>>).map(
             (e) => TodoItem.fromMap(e)).toList(),
   );
 
