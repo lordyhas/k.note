@@ -137,41 +137,93 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
 
   @override
   Future<bool> addNote({required NoteModel note, required String userId}) async {
-    bool value = false;
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
-
-
+    final i = box.put(note, mode: PutMode.update);
     store.close();
-    return value;
+    return i is int;
   }
 
   @override
-  Future<NoteModel?> getNote({required String userId, required String noteId}) async {
-    bool value = false;
+  Future<bool> setNote({ String? userId, required NoteModel note}) async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
-
+    final i = box.put(note, mode: PutMode.update);
 
     store.close();
 
-    throw UnimplementedError();
+    return i is int;
   }
 
   @override
-  Future<void> archiveNote({String? userId, required String noteId, required bool archived}) async {
-    // TODO: implement archiveNote
-    throw UnimplementedError();
+  Future<NoteModel?> getNote({
+    required String userId, required String noteId
+  }) async {
+
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+     NoteModel? note = box.query(NoteModel_.noteId.equals(noteId)).build().findFirst();
+
+    store.close();
+
+    return note;
+  }
+
+
+
+
+  @override
+  Future<bool> archiveNote({
+    String? userId,
+    required String noteId,
+    required bool archived})
+  async {
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId)).build().findFirst();
+    note!.isArchived = archived;
+    final i = box.put(note, mode: PutMode.update);
+    store.close();
+    return i is int;
   }
 
   @override
-  Future<void> deleteNote({String? userId, required String noteId}) async {
-    // TODO: implement deleteNote
-    throw UnimplementedError();
+  Future<bool> deleteNote({String? userId, required String noteId}) async {
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId)).build().findFirst();
+    note!.isDeleted = true;
+    final i = box.put(note, mode: PutMode.update);
+    store.close();
+    return i is int;
   }
 
   @override
   Future<List<NoteModel>?> getAllArchivedNote({User? user}) async {
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+    List<NoteModel> notes = box.query(
+        NoteModel_.isArchived.equals(true)
+            .and(NoteModel_.isDeleted.equals(false))
+    ).build().find();
+    store.close();
+
+    return notes;
+  }
+
+  @override
+  Future<List<NoteModel>?> getAllDeletedNote({User? user}) async {
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+    List<NoteModel> notes = box.query(NoteModel_.isDeleted.equals(true))
+        .build().find();
+    store.close();
+
+    return notes;
+  }
+
+  @override
+  Future<List<NoteModel>> getAllNote({User? user}) async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
     List<NoteModel> notes = box.query(
@@ -184,20 +236,8 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<List<NoteModel>?> getAllDeletedNote({User? user}) async {
-    // TODO: implement getAllDeletedNote
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<NoteModel>> getAllNote({User? user}) async {
-    // TODO: implement getAllNote
-    throw UnimplementedError();
-  }
-
-  @override
   Future<void> permanentlyDeleteNote({String? userId, required String noteId}) async {
-    // TODO: implement permanentlyDeleteNote
+
     throw UnimplementedError();
   }
 
@@ -207,11 +247,6 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
     throw UnimplementedError();
   }
 
-  @override
-  Future<void> setNote({ String? userId, required NoteModel note}) async {
-    // TODO: implement setNote
-    throw UnimplementedError();
-  }
 
 
 
