@@ -1,63 +1,47 @@
-
-
 import '../authentication_repository.dart';
 import 'database_model.dart';
+
 // todo: for commit
 //add interface_model.dart & implementation of InterfaceNoteModel
 //abstract class, NoteBoxManager class, ChecklistBoxManager class
 
 abstract class InterfaceNoteModel {
+  Future<List<NoteModel>> getAllNote();
 
+  Future<List<NoteModel>?> getAllArchivedNote();
+
+  Future<List<NoteModel>?> getAllDeletedNote();
 
   Future<NoteModel?> getNote({
-    required String userId,
-    required String noteId
-  }) ;
-
-  Future<List<NoteModel>> getAllNote({required User user});
-
-  Future<List<NoteModel>?> getAllArchivedNote({required User user});
-
-  Future<List<NoteModel>?> getAllDeletedNote({required User user});
-
-  Future<void> addNote({
-    required NoteModel note,
-    required String userId
-  });
-
-  Future<void> setNote({required String userId, required NoteModel note});
-
-  Future<void> permanentlyDeleteNote({required String userId, required String noteId});
-
-  Future<void> deleteNote({required String userId, required String noteId});
-
-  Future<void> restoreDeletedNote({
-    required String userId,
     required String noteId,
-  }) ;
+    bool deleted = false,
+    bool archived = true,});
 
-  Future<void> archiveNote({
-    required String userId,
-    required String noteId,
-    required bool archived,
-  }) ;
+  Future<void> addNote({required NoteModel note});
+
+  Future<void> setNote({required NoteModel note});
+
+  Future<void> permanentlyDeleteNote({required String noteId});
+
+  Future<void> deleteNote({required String noteId});
+
+  Future<void> restoreDeletedNote({required String noteId,});
+
+  Future<void> archiveNote({required String noteId, required bool archived,});
 }
 
-abstract class InterfaceChecklistModel{
+abstract class InterfaceChecklistModel {
+  Future<List<Checklist>> getAllChecklist();
 
-  Future<List<Checklist>> getAllChecklist({User user});
+  Future<Checklist> getChecklist({required String docId});
 
-  Future<Checklist> getChecklist({String userId, required String docId});
+  Future<void> setChecklist({required String docId});
 
-  Future<void> setChecklist({String userId, required String docId});
+  Future<void> addChecklist({required String docId});
 
-  Future<void> addChecklist({String userId, required String docId});
+  Future<void> deleteChecklist({required String docId});
 
-  Future<void> deleteChecklist({String userId, required String docId});
+  Future<void> restoreDeletedChecklist({required String docId});
 
-  Future<void> restoreDeletedChecklist({String userId, required String docId});
-
-  Future<void> permanentlyDeleteChecklist({String userId, String docId});
-
-
+  Future<void> permanentlyDeleteChecklist({required String docId});
 }

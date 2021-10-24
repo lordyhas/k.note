@@ -95,7 +95,7 @@ class _NoteTrashState extends State<NoteTrash> {
                               onPressed: () {
                                 fbm.restoreDeletedNote(
                                     noteId: snapshot.data![i].noteId,
-                                    userId: user.id!
+                                    //userId: user.id!
                                 );
                                 setState(() {});
                                 Navigator.of(context).pop();
@@ -106,7 +106,7 @@ class _NoteTrashState extends State<NoteTrash> {
                               onPressed: () {
                                 fbm.permanentlyDeleteNote(
                                     noteId: snapshot.data![i].noteId,
-                                    userId: user.id!
+                                    //userId: user.id!
                                 );
                                 setState(() {});
                                 Navigator.of(context).pop();

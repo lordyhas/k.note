@@ -18,11 +18,14 @@ class FirebaseManager implements InterfaceNoteModel {
   }
 
   factory FirebaseManager.init(){
-    FirebaseFirestore.instance.settings = const Settings(
+    /*FirebaseFirestore.instance.settings = const Settings(
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-    );
+    );*/
     return FirebaseManager();
   }
+  String get userId => '';
+  var user;
+
 
   void close(){}
 
@@ -159,7 +162,11 @@ class FirebaseManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<NoteModel?> getNote({required String userId, required String noteId}) {
+  Future<NoteModel?> getNote({
+    required String noteId,
+    bool archived = true,
+    bool deleted = false,
+  }) {
     return getNoteInCloud(userId: userId, noteId: noteId);
   }
 
@@ -186,7 +193,7 @@ class FirebaseManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<List<NoteModel>> getAllNote({required User user}) {
+  Future<List<NoteModel>> getAllNote() {
     return getAllNoteInCloud(user: user);
   }
 
@@ -210,7 +217,7 @@ class FirebaseManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<List<NoteModel>?> getAllArchivedNote({required User user}) {
+  Future<List<NoteModel>?> getAllArchivedNote() {
     return getAllArchivedNoteInCloud(user);
   }
 
@@ -238,7 +245,7 @@ class FirebaseManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<List<NoteModel>?> getAllDeletedNote({required User user}) {
+  Future<List<NoteModel>?> getAllDeletedNote() {
     return getAllDeletedNoteInCloud(user);
   }
 
@@ -259,7 +266,7 @@ class FirebaseManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<void> addNote({required NoteModel note, required String userId}) {
+  Future<void> addNote({required NoteModel note}) {
     return addNoteInCloud(note: note, userId: userId);
   }
 
@@ -273,14 +280,14 @@ class FirebaseManager implements InterfaceNoteModel {
 
 
   @override
-  Future<void> setNote({required String userId, required NoteModel note}) {
+  Future<void> setNote({required NoteModel note}) {
     return setNoteInCloud(userId, note: note);
   }
 
   //
 
   @override
-  Future<void> permanentlyDeleteNote({required String userId, required String noteId}) {
+  Future<void> permanentlyDeleteNote({required String noteId}) {
     return collectionUserNote(userId: userId)
         .doc(noteId)
         .delete()
@@ -290,7 +297,6 @@ class FirebaseManager implements InterfaceNoteModel {
 
   @override
   Future<void> deleteNote({
-    required String userId,
     required String noteId,
   }) async {
     String key = 'is_deleted';
@@ -301,7 +307,6 @@ class FirebaseManager implements InterfaceNoteModel {
 
   @override
   Future<void> restoreDeletedNote({
-    required String userId,
     required String noteId,
   }) async {
     String key = 'is_deleted';
@@ -312,7 +317,6 @@ class FirebaseManager implements InterfaceNoteModel {
 
   @override
   Future<void> archiveNote({
-    required String userId,
     required String noteId,
     required bool archived,
   }) async {
@@ -321,6 +325,8 @@ class FirebaseManager implements InterfaceNoteModel {
         .then((v) => Log.i('Restore from trash : $archived,'))
         .catchError((error) => Log.i("Failed to archive: $error"));
   }
+
+
 
 
 

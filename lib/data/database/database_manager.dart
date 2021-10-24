@@ -1,4 +1,4 @@
-//ignore_for_file : owercase_with_underscores
+
 import 'dart:io';
 
 
@@ -15,6 +15,7 @@ import '../values.dart';
 import 'database_model.dart';
 import 'interface_model.dart';
 import 'model/setting_data.dart';
+
 
 abstract class ObjectBoxManager{
   const ObjectBoxManager();
@@ -121,8 +122,12 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   const NoteBoxManager.initStore();
 
   @override
-  Future<Store> openStoreBox() {
-    throw UnimplementedError();
+  Future<Store> openStoreBox() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    if(kIsWeb) {
+    return Store(getObjectBoxModel());
+    }
+    return Store(getObjectBoxModel(), directory: dir.path + '/objectbox');
   }
 
   Future<bool> update_() async {
@@ -136,7 +141,7 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
 
 
   @override
-  Future<bool> addNote({required NoteModel note, required String userId}) async {
+  Future<bool> addNote({required NoteModel note,}) async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
     final i = box.put(note, mode: PutMode.update);
@@ -145,24 +150,30 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<bool> setNote({ String? userId, required NoteModel note}) async {
+  Future<bool> setNote({required NoteModel note}) async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
-    final i = box.put(note, mode: PutMode.update);
+    final mi = box.put(note, mode: PutMode.update);
 
     store.close();
 
-    return i is int;
+    return mi is int;
   }
 
   @override
   Future<NoteModel?> getNote({
-    required String userId, required String noteId
+    required String noteId,
+    bool deleted = false,
+    bool archived = true,
   }) async {
 
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
-     NoteModel? note = box.query(NoteModel_.noteId.equals(noteId)).build().findFirst();
+     NoteModel? note = box.query(
+       NoteModel_.noteId.equals(noteId)
+           .and(NoteModel_.isArchived.equals(archived))
+           .and(NoteModel_.isDeleted.equals(deleted))
+     ).build().findFirst();
 
     store.close();
 
@@ -174,13 +185,13 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
 
   @override
   Future<bool> archiveNote({
-    String? userId,
     required String noteId,
     required bool archived})
   async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
-    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId)).build().findFirst();
+    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId))
+        .build().findFirst();
     note!.isArchived = archived;
     final i = box.put(note, mode: PutMode.update);
     store.close();
@@ -191,7 +202,8 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   Future<bool> deleteNote({String? userId, required String noteId}) async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
-    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId)).build().findFirst();
+    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId))
+        .build().findFirst();
     note!.isDeleted = true;
     final i = box.put(note, mode: PutMode.update);
     store.close();
@@ -199,7 +211,7 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<List<NoteModel>?> getAllArchivedNote({User? user}) async {
+  Future<List<NoteModel>?> getAllArchivedNote() async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
     List<NoteModel> notes = box.query(
@@ -212,7 +224,7 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<List<NoteModel>?> getAllDeletedNote({User? user}) async {
+  Future<List<NoteModel>?> getAllDeletedNote() async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
     List<NoteModel> notes = box.query(NoteModel_.isDeleted.equals(true))
@@ -223,7 +235,7 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<List<NoteModel>> getAllNote({User? user}) async {
+  Future<List<NoteModel>> getAllNote() async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
     List<NoteModel> notes = box.query(
@@ -236,15 +248,28 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<void> permanentlyDeleteNote({String? userId, required String noteId}) async {
-
-    throw UnimplementedError();
+  Future<bool> permanentlyDeleteNote({required String noteId}) async {
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId))
+        .build().findFirst();
+    note!.isDeleted = true;
+    final id = box.put(note, mode: PutMode.update);
+    final val = box.remove(id);
+    store.close();
+    return val;
   }
 
   @override
-  Future<void> restoreDeletedNote({String? userId, required String noteId}) async {
-    // TODO: implement restoreDeletedNote
-    throw UnimplementedError();
+  Future<bool> restoreDeletedNote({required String noteId}) async {
+    Store store = await openStoreBox();
+    final box = store.box<NoteModel>();
+    NoteModel? note = box.query(NoteModel_.noteId.equals(noteId))
+        .build().findFirst();
+    note!.isDeleted = false;
+    final i = box.put(note, mode: PutMode.update);
+    store.close();
+    return i is int;
   }
 
 

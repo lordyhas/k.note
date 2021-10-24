@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController animationController;
   bool multiple = false;
   final FirebaseManager _firebaseManager = FirebaseManager();
-  late final user;
+  late final User user;
   bool searching = false;
 
   final TextEditingController _searchController = TextEditingController();
@@ -381,7 +381,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             onTap: (){
               _firebaseManager.deleteNote(
                   noteId: note.noteId,
-                  userId: user.noteId);
+                  //userId: user.noteId
+              );
               Navigator.of(context).pop();
               setState(() {});
               ScaffoldMessenger.of(context)
@@ -427,7 +428,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         onPressed: () {
                           _firebaseManager.deleteNote(
                               noteId: note.noteId,
-                              userId: user.noteId);
+                              //userId: user.noteId
+                          );
                           Navigator.of(context).pop();
                           setState(() {});
                           ScaffoldMessenger.of(context)
