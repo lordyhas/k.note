@@ -12,19 +12,23 @@ import 'package:flutter/services.dart';
 import 'interface_model.dart';
 
 class FirebaseManager implements InterfaceNoteModel {
+  
+  final User user;
 
-  FirebaseManager(){
-    //FirebaseFirestore.enablePersistence();
-  }
+  FirebaseManager(this.user);
+
+  factory FirebaseManager.user({required User user}) => FirebaseManager(user);
 
   factory FirebaseManager.init(){
     /*FirebaseFirestore.instance.settings = const Settings(
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
     );*/
-    return FirebaseManager();
+    return FirebaseManager(User.empty);
   }
-  String get userId => '';
-  var user;
+  
+  
+  
+  String get userId => user.id;
 
 
   void close(){}
@@ -115,42 +119,45 @@ class FirebaseManager implements InterfaceNoteModel {
   /// Update data with map by {key : value}
 
   Future<void> updateUserInformation({
-    required String userId,
     required String key,
-    required String value}) async {
+    required String value,
+  }) async {
+    
+    if (user == User.empty) return ;
     return users.doc(userId).update({key:value});
   }
 
-  /// Update [NoteData] text with map by {key : value}
+  /// Update [NoteModel] text with map by {key : value}
 
   Future<void> updateNoteText ({
-    required String userId,
-
     required String id,
-    required String value}) async {
+    required String value
+  }) async {
+    
+    if (user == User.empty) return ;
     String key = 'text';
     return collectionUserNote(userId: userId).doc(id).update({key:value})
         .then((v) => Log.i('Updated Text'))
         .catchError((error)=> Log.i("Failed to update: $error"));
   }
 
-  /// Update [NoteData] title with map by {key : value}
+  /// Update [NoteModel] title with map by {key : value}
 
   Future<void> updateNoteTitle({
-    required String userId,
     required String id,
     required String value}) async {
+    
+    if (user == User.empty) return ;
     String key = 'title';
     return collectionUserNote(userId: userId).doc(id).update({key:value});
   }
 
 
   ///  getNoteInCloud
-  Future<NoteModel?> getNoteInCloud({
-    required String userId, required String noteId
-  }) async {
-    var docSnap = await collectionUserNote(userId: userId).doc(noteId).get();
+  Future<NoteModel?> getNoteInCloud({required String noteId}) async {
+    if (user == User.empty) return null;
 
+    var docSnap = await collectionUserNote(userId: userId).doc(noteId).get();
     Map<String, dynamic> map = docSnap.data()!;
     //map['id'] = docSnap.reference.id;
     if(docSnap.exists) return NoteModel.fromMap(map);
@@ -167,14 +174,16 @@ class FirebaseManager implements InterfaceNoteModel {
     bool archived = true,
     bool deleted = false,
   }) {
-    return getNoteInCloud(userId: userId, noteId: noteId);
+    return getNoteInCloud(noteId: noteId);
   }
 
   /// get all note by mail
 
 
-  Future<List<NoteModel>> getAllNoteInCloud({required User user}) async {
-    var docSnap = await collectionUserNote(userId: user.id!,)
+  Future<List<NoteModel>> getAllNoteInCloud() async {
+    if (user == User.empty) return [];
+
+    var docSnap = await collectionUserNote(userId: user.id,)
     //.where('email', isEqualTo: user.email)
         .where('is_deleted', isEqualTo: false)
         .where('is_archived', isEqualTo: false)
@@ -194,13 +203,15 @@ class FirebaseManager implements InterfaceNoteModel {
 
   @override
   Future<List<NoteModel>> getAllNote() {
-    return getAllNoteInCloud(user: user);
+    return getAllNoteInCloud();
   }
 
   /// get all archived note by mail
 
-  Future<List<NoteModel>?> getAllArchivedNoteInCloud(User user) async {
-    var docSnap = await collectionUserNote(userId: user.id!,)
+  Future<List<NoteModel>?> getAllArchivedNoteInCloud() async {
+    if (user == User.empty) return null;
+
+    var docSnap = await collectionUserNote(userId: user.id,)
         .where('email', isEqualTo: user.email)
         .where('is_deleted', isEqualTo: false)
         .where('is_archived', isEqualTo: true)
@@ -218,20 +229,23 @@ class FirebaseManager implements InterfaceNoteModel {
 
   @override
   Future<List<NoteModel>?> getAllArchivedNote() {
-    return getAllArchivedNoteInCloud(user);
+    return getAllArchivedNoteInCloud();
   }
 
   /// get all deleted note by mail
 
 
-  Future<List<NoteModel>?> getAllDeletedNoteInCloud(User user) async {
-    var docSnap = await collectionUserNote(userId: user.id!,)
+  Future<List<NoteModel>?> getAllDeletedNoteInCloud() async {
+    if (user == User.empty) return null;
+    var docSnap = await collectionUserNote(userId: user.id,)
         .where('email', isEqualTo: user.email)
         .where('is_deleted', isEqualTo: true)
         .where('is_archived', isEqualTo: false)
         .get();
     //var id = docSnap.docs.forEach((e) {e.id});
-    List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
+    List<Map<String, dynamic>> maps = docSnap
+        .docs.map((e) => e.data())
+        .toList();
     return List<NoteModel>.generate(maps.length,
             (index) => NoteModel
             .fromMap(maps.elementAt(index)
@@ -246,48 +260,66 @@ class FirebaseManager implements InterfaceNoteModel {
 
   @override
   Future<List<NoteModel>?> getAllDeletedNote() {
-    return getAllDeletedNoteInCloud(user);
+    return getAllDeletedNoteInCloud();
   }
 
-  ///  this method will add [NoteData] in Cloud firebase
+  ///  this method will add [NoteModel] in Cloud firebase
   ///
   ///
-  Future<void> addNoteInCloud({required NoteModel note, required String userId}) {
+  Future<void> addNoteInCloud({required NoteModel note,}) {
     //note.creationTime = new DateTime.now();
 
-    return collectionUserNote(userId: userId).doc(note.noteId).set(note.asMap())
+    if (user == User.empty) {
+      return Future.value()
+        .then((value) => Log.i("Failed to addNoteInCloud() : [User is empty]"));
+    }
+
+    note.creationTime =  DateTime.now();
+    note.modificationTime =  DateTime.now();
+
+    return collectionUserNote(userId: userId).doc(note.noteId)
+        .set(note.asMap())
         .then((value) {
       Log.i("Note Added : " + note.toString());
       return note.toDisplay();
-    })
-        .catchError((error) => Log.i("Failed to add note "
+    }).catchError((error) => Log.i("Failed to add note "
         ": $error"));
     //note.toString();
   }
 
   @override
   Future<void> addNote({required NoteModel note}) {
-    return addNoteInCloud(note: note, userId: userId);
+    return addNoteInCloud(note: note);
   }
 
-  ///  this method will set [NoteData] in Cloud firebase
+  ///  this method will set [NoteModel] in Cloud firebase
   ///
   ///
-  Future<void> setNoteInCloud(String userId,{required NoteModel note}) {
-    //note.creationTime = new DateTime.now();
-    return collectionUserNote(userId: userId,).doc(note.noteId).set(note.asMap());
+  Future<void> setNoteInCloud({required NoteModel note}) {
+    if (user == User.empty) {
+      return Future.value().then(
+              (value) => Log.i("Failed to setNoteInCloud() : [User is empty]")
+      );
+    }
+
+    note.modificationTime =  DateTime.now();
+    return collectionUserNote(userId: userId)
+        .doc(note.noteId)
+        .set(note.asMap());
   }
 
 
   @override
   Future<void> setNote({required NoteModel note}) {
-    return setNoteInCloud(userId, note: note);
+    return setNoteInCloud(note: note);
   }
 
   //
 
   @override
   Future<void> permanentlyDeleteNote({required String noteId}) {
+    if (user == User.empty) return Future.value();
+
     return collectionUserNote(userId: userId)
         .doc(noteId)
         .delete()
@@ -299,6 +331,11 @@ class FirebaseManager implements InterfaceNoteModel {
   Future<void> deleteNote({
     required String noteId,
   }) async {
+    if (user == User.empty) {
+      return Future.value()
+        .then((value) => Log.i("Failed to deleteNote() : [User is empty]"));
+    }
+
     String key = 'is_deleted';
     return collectionUserNote(userId: userId).doc(noteId).update({key:true})
         .then((v) => Log.i("Note : $noteId move in trash"))
@@ -306,9 +343,13 @@ class FirebaseManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<void> restoreDeletedNote({
-    required String noteId,
-  }) async {
+  Future<void> restoreDeletedNote({required String noteId}) async {
+    if (user == User.empty) {
+      return Future.value()
+        .then((value) => Log.i("Failed to restoreDeletedNote() "
+        ": [User is empty]"));
+    }
+
     String key = 'is_deleted';
     return collectionUserNote(userId: userId).doc(noteId).update({key:false})
         .then((v) => Log.i('Restore from trash,'))
@@ -320,6 +361,11 @@ class FirebaseManager implements InterfaceNoteModel {
     required String noteId,
     required bool archived,
   }) async {
+    if (user == User.empty) {
+      return Future.value()
+        .then((value) => Log.i("Failed to archiveNote() : [User is empty]"));
+    }
+
     String key = 'is_archived';
     return collectionUserNote(userId: userId).doc(noteId).update({key:archived})
         .then((v) => Log.i('Restore from trash : $archived,'))

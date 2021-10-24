@@ -11,13 +11,21 @@ class NoteTrash extends StatefulWidget {
 }
 
 class _NoteTrashState extends State<NoteTrash> {
-  FirebaseManager fbm = FirebaseManager();
+  late final FirebaseManager fbm;
 
   /*String troncate(String text){
     if(text.length > 150){
       return text.substring(start)
     }
   }*/
+
+  @override
+  void initState() {
+    super.initState();
+    fbm = FirebaseManager(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,7 @@ class _NoteTrashState extends State<NoteTrash> {
         title: const Text("Corbeille"),
       ),
       body: FutureBuilder<List<NoteModel>?>(
-          future: fbm.getAllDeletedNoteInCloud(user),
+          future: fbm.getAllDeletedNoteInCloud(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(

@@ -1,18 +1,21 @@
 part of screens;
 
 class ArchivedScreen extends StatefulWidget {
+  const ArchivedScreen({Key? key}) : super(key: key);
+
   @override
   _ArchivedScreenState createState() => _ArchivedScreenState();
 }
 
 class _ArchivedScreenState extends State<ArchivedScreen> {
-  FirebaseManager fbm = new FirebaseManager();
-  late final user ;
+  late final FirebaseManager fbm;
+  late final User user ;
 
   @override
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).state.user;
+    fbm = FirebaseManager(user);
 
   }
 
@@ -20,17 +23,15 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder<List<NoteModel>?>(
-          future: fbm.getAllArchivedNoteInCloud(user),
+          future: fbm.getAllArchivedNoteInCloud(),
           builder: (context, snapshot) {
             if(!snapshot.hasData) {
-              return Center(
-                child: Container(
-                  child: CircularProgressIndicator(),
-                ),
+              return const Center(
+                child: CircularProgressIndicator(),
               );
             } else if(snapshot.data!.isEmpty) {
               return Center(
-                child: Container(
+                child: SizedBox(
                   height: 200,
                   child: Column(
                     children: const [

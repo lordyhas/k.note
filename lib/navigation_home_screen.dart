@@ -49,17 +49,24 @@ class NavigationHomeScreen extends StatefulWidget {
 
 class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
-  final FirebaseManager _firebaseManager = FirebaseManager();
+  late final FirebaseManager _firebaseManager;
   Widget? screenView;
   DrawerIndex? drawerIndex;
-  var text;
+  late final Map text;
 
 
   @override
   void initState() {
+    super.initState();
+    _firebaseManager = FirebaseManager(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
+
+    text = BlocProvider.of<LanguageBloc>(context).state.strings!;
+
     drawerIndex = DrawerIndex.HOME;
     screenView = const HomeScreen();
-    super.initState();
+
   }
 
   @override
@@ -191,8 +198,6 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   Widget build(BuildContext context) {
     _uploadUserInCloud();
 
-
-    text = BlocProvider.of<LanguageBloc>(context).state.strings;
     return WillPopScope(
       onWillPop: _willPopDialog,
       child: Container(

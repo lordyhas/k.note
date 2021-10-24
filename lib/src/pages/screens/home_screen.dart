@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   late AnimationController animationController;
   bool multiple = false;
-  final FirebaseManager _firebaseManager = FirebaseManager();
+  late final FirebaseManager _firebaseManager;
   late final User user;
   bool searching = false;
 
@@ -71,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).state.user;
+    _firebaseManager = FirebaseManager(user);
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
 
@@ -210,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             }
                             return StreamBuilder<List<NoteModel>>(
                               stream: _firebaseManager
-                                  .getAllNoteInCloud(user: user)
+                                  .getAllNoteInCloud()
                                   .asStream(),
                               //_firebaseManager.getAllNoteInCloud(user.email),
                               builder: (context, snapshot) {

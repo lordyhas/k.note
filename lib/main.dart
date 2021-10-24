@@ -60,7 +60,7 @@ class AppView extends StatelessWidget {
 
   //ObjectBoxManager objectboxManager = new ObjectBoxManager.initStore();
 
-  final FirebaseManager firebaseManager = FirebaseManager();
+  //final FirebaseManager firebaseManager = FirebaseManager();
 
   //late int themeValue;
 

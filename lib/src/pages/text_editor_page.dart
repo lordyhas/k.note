@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
+import 'package:knote/data/app_bloc/auth_repository/user.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:utils_component/utils_component.dart';
 
@@ -36,14 +37,17 @@ class _TextEditorState extends State<TextEditor>  {
   late NoteModel _noteModel;
   late TextEditingController _textController;
   late TextEditingController _titleController;
-  final FirebaseManager _firebaseManager =  FirebaseManager();
-  late final user;
+  late final FirebaseManager _firebaseManager;
+  late final User user;
 
   bool isNoteInCloud = false;
 
   @override
   void initState() {
     super.initState();
+    _firebaseManager = FirebaseManager(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
     final DateTime now = DateTime.now();
     final String unique = now.microsecondsSinceEpoch.toString();
     user = BlocProvider.of<AuthenticationBloc>(context).state.user;
@@ -84,13 +88,13 @@ class _TextEditorState extends State<TextEditor>  {
     });
 
     _firebaseManager.updateNoteTitle(
-        userId: user.noteId,
+        //userId: user.noteId,
         id: _noteModel.noteId,
         value: _noteModel.title!
     );
 
     _firebaseManager.updateNoteText(
-        userId: user.noteId,
+        //userId: user.noteId,
         id: _noteModel.noteId,
         value: _noteModel.text!
     );
@@ -190,7 +194,7 @@ class _TextEditorState extends State<TextEditor>  {
                             children: colors.map((color) => InkWell(
                               onTap: (){
                                 _firebaseManager.addNoteInCloud(
-                                    userId: user.noteId,
+                                    //userId: user.noteId,
                                     note: _noteModel..colorValue = color.value,
                                 );
                                 setState(() {
@@ -258,7 +262,7 @@ class _TextEditorState extends State<TextEditor>  {
               onTap: (){},
               onEditingComplete: (){
                 if(!isNoteInCloud) {
-                  _firebaseManager.addNoteInCloud(userId: user.noteId, note: _noteModel);
+                  _firebaseManager.addNoteInCloud(note: _noteModel);
                   isNoteInCloud = true;
                 }
                 Log.i('onEditingComplete(edit: title) #### ###');
@@ -292,7 +296,7 @@ class _TextEditorState extends State<TextEditor>  {
               },
               onTap: (){
                 if(!isNoteInCloud) {
-                  _firebaseManager.addNoteInCloud(userId: user.noteId, note: _noteModel);
+                  _firebaseManager.addNoteInCloud(note: _noteModel);
                   isNoteInCloud = true;
                 }
                 Log.i('onEditTap(edit: text) #### ### ON_TAP - TEXT');
@@ -300,7 +304,7 @@ class _TextEditorState extends State<TextEditor>  {
               },
               onEditingComplete: (){
                 if(!isNoteInCloud) {
-                  _firebaseManager.addNoteInCloud(userId: user.noteId, note: _noteModel);
+                  _firebaseManager.addNoteInCloud(note: _noteModel);
                   isNoteInCloud = true;
                 }
                 Log.i('onEditingComplete(edit: text) #### ### TEXT');
