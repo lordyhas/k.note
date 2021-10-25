@@ -97,7 +97,7 @@ class SettingBoxManager extends  ObjectBoxManager {
 
   }
 
-  Future<bool> updateLanguage(LangState langState) async {
+  Future<bool> updateLanguage(LanguageCode langState) async {
     bool value = false;
     Store store = await openStoreBox();
     final box = store.box<SettingAppData>();

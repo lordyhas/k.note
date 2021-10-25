@@ -4,6 +4,8 @@ part of 'signup_and_login.dart';
 
 
 class SignUpForm extends StatelessWidget {
+  const SignUpForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignUpCubit, SignUpState>(
@@ -24,7 +26,7 @@ class SignUpForm extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(8.0).copyWith(),
               child: Image.asset(
-                imageLogoApp,
+                Res.logo_2,
                 height: 120,
               ),
             ),

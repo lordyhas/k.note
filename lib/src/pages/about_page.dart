@@ -116,7 +116,7 @@ class _AboutState extends State<AboutPage>{
                 Container(
                   margin: const EdgeInsets.only(top: 32.0),
                   height: 150,
-                  child: Image.asset(imageLogoApp),
+                  child: Image.asset(Res.logo_2),
                 ),
                 Text(
                   "K.NOTE",
@@ -159,7 +159,7 @@ class _AboutState extends State<AboutPage>{
                 title: Text(text['about_licence'],style: primaryTextStyle20,),
                 onTap: () => showLicensePage(
                     context: context,
-                  applicationIcon: Image.asset(imageLogoApp),
+                  applicationIcon: Image.asset(Res.logo_2),
                   applicationName: "K.NOTE",
                   applicationVersion: appVersion,
 

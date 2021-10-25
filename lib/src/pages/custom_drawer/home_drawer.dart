@@ -3,7 +3,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:utils_component/utils_component.dart';
-import '../../../data/value/styles.dart';
+import 'package:knote/data/values.dart';
 import 'package:flutter/material.dart';
 import '../../../res.dart';
 

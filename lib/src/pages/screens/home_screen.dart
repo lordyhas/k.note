@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/authentication_repository.dart';
-import 'package:knote/data/value/styles.dart';
+import 'package:knote/data/values.dart';
 import 'package:knote/src/pages/text_editor_page.dart';
 import 'package:utils_component/src/widget/custom_circular_bar.dart';
 import 'package:utils_component/utils_component.dart';

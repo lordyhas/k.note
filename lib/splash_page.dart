@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 
 import 'data/values.dart';
-
+import 'res.dart';
 class SplashPage extends StatelessWidget {
+  const SplashPage({Key? key}) : super(key: key);
+
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => SplashPage());
   }
@@ -17,7 +19,7 @@ class SplashPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 64),
             child: Container(
               height: 200,
-              child: Image.asset(imageLogoApp,
+              child: Image.asset(Res.logo_2,
                 //color: Theme.of(context).primaryColor.withOpacity(0.85)
               ),
             ),
@@ -25,7 +27,7 @@ class SplashPage extends StatelessWidget {
           //Text("XXXXXX", style: TextStyle(color: Colors.black, fontSize: 42),),
           Expanded(
             child: Column(
-              children: [
+              children: const [
                 Spacer(),
                 Center(
                     child: CircularProgressIndicator()

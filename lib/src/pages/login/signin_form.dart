@@ -30,7 +30,7 @@ class LoginForm extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0).copyWith(top: 32.0),
               child:Image.asset(
-                imageLogoApp,
+                Res.logo_2,
                 height: 120,
               ),
             ),

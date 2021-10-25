@@ -27,7 +27,6 @@ import 'src/pages/custom_drawer/home_drawer.dart';
 import 'package:flutter/material.dart';
 
 import 'src/pages/custom_drawer/home_drawer.dart';
-import 'data/value/styles.dart';
 import 'src/pages/screens/home_screen.dart';
 
 import 'src/pages/about_page.dart';
@@ -52,7 +51,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   late final FirebaseManager _firebaseManager;
   Widget? screenView;
   DrawerIndex? drawerIndex;
-  late final Map text;
+  late final text;
 
 
   @override
@@ -62,7 +61,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         BlocProvider.of<AuthenticationBloc>(context).state.user
     );
 
-    text = BlocProvider.of<LanguageBloc>(context).state.strings!;
+    text = AppLocalizations.of(context);
+
 
     drawerIndex = DrawerIndex.HOME;
     screenView = const HomeScreen();
@@ -108,7 +108,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   }
   /*
   Future<bool> _willPopDialog() async {
-    bool value = false;
+    bool values = false;
     await AwesomeDialog(
       context: context,
       dialogType: DialogType.WARNING,
@@ -119,18 +119,18 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       //btnCancelColor: Theme.of(context).,
       btnCancelOnPress: () {
         setState(() {
-          value = false;
+          values = false;
         });
       },
       //() => Navigator.of(context).pop(false),
       btnOkColor: Theme.of(context).accentColor,
       btnOkOnPress: () {
         setState(() {
-          value = true;
+          values = true;
         });
       }, //() => Navigator.of(context).pop(true)
     ).show();
-    return value;
+    return values;
     /*return (await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(

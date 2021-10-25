@@ -86,7 +86,7 @@ class FirebaseManager implements InterfaceNoteModel {
         });
 
     /*return users.doc(user.id).set(user.asMap())
-        .then((value) => print("User Added : " + user.toString()))
+        .then((values) => print("User Added : " + user.toString()))
         .catchError((error) => print("Failed to add user in cloud: $error"));*/
   }
 
@@ -116,7 +116,7 @@ class FirebaseManager implements InterfaceNoteModel {
     return user;
   }
 
-  /// Update data with map by {key : value}
+  /// Update data with map by {key : values}
 
   Future<void> updateUserInformation({
     required String key,
@@ -127,7 +127,7 @@ class FirebaseManager implements InterfaceNoteModel {
     return users.doc(userId).update({key:value});
   }
 
-  /// Update [NoteModel] text with map by {key : value}
+  /// Update [NoteModel] text with map by {key : values}
 
   Future<void> updateNoteText ({
     required String id,
@@ -141,7 +141,7 @@ class FirebaseManager implements InterfaceNoteModel {
         .catchError((error)=> Log.i("Failed to update: $error"));
   }
 
-  /// Update [NoteModel] title with map by {key : value}
+  /// Update [NoteModel] title with map by {key : values}
 
   Future<void> updateNoteTitle({
     required String id,
@@ -162,8 +162,8 @@ class FirebaseManager implements InterfaceNoteModel {
     //map['id'] = docSnap.reference.id;
     if(docSnap.exists) return NoteModel.fromMap(map);
     return null;
-    /*.then((value){
-      if(value.exists) map = value.data()!;
+    /*.then((values){
+      if(values.exists) map = values.data()!;
     });*/
     //return map;
   }
@@ -252,8 +252,8 @@ class FirebaseManager implements InterfaceNoteModel {
         )
     );
     //return null;
-    /*.then((value){
-      if(value.exists) map = value.data()!;
+    /*.then((values){
+      if(values.exists) map = values.data()!;
     });*/
     //return map;
   }

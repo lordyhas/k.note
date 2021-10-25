@@ -85,14 +85,13 @@ dependencies:
     ^3.0.4
   file_picker:
     ^3.0.3
-  intl:
-    ^0.17.0
-
 
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+
+  intl: ^0.17.0
 
   cupertino_icons: ^1.0.2
   utils_component:
@@ -113,7 +112,7 @@ dev_dependencies:
 # run: flutter pub run build_runner build
 
 flutter:
-
+  generate: true
   uses-material-design: true
 
   assets:
@@ -156,5 +155,5 @@ flutter:
         - asset: fonts/Roboto-Medium.ttf
           weight: 400
 
-flutter_intl:
-  enabled: true
+#flutter_intl:
+  #enabled: true

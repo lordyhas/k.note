@@ -71,7 +71,7 @@ class User extends Equatable {
   /// The current location, mobile position
   final location;
 
-  /// If all value is okay and verified in Database will be true, else false
+  /// If all values is okay and verified in Database will be true, else false
   final bool verifiedAccount;
 
   /// It will be true if data from cloud else false
