@@ -5,6 +5,7 @@ import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/authentication_repository.dart';
 import 'package:knote/data/values.dart';
+import 'package:knote/objectbox.g.dart';
 import 'package:knote/src/pages/text_editor_page.dart';
 import 'package:utils_component/src/widget/custom_circular_bar.dart';
 import 'package:utils_component/utils_component.dart';
@@ -44,13 +45,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Stream<String> get searchStream => _searchStreamController.stream;
 
-  Future<bool> onSearch() async {
-    //searchStream
-    setState(() {
-      searching = !searching;
-    });
-    return searching;
-  }
+
 
   Future<void> findNote(String data) async {
     _searchStreamController.sink.add(data);
@@ -157,8 +152,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           children: [
                             IconButton(
                                 icon: const Icon(Icons.search),
-                                onPressed:
-                                    onSearch // Scaffold.of(context).openEndDrawer,
+                                onPressed:(){}
+                                     // Scaffold.of(context).openEndDrawer,
                                 ),
                             Expanded(
                               child: TextField(
@@ -166,7 +161,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   key:
                                   const Key('homePage_search_textField'),
                                   onChanged: (query) {},
-                                  onTap: onSearch,
+                                  onTap: (){
+                                    setState(() {
+                                      searching = !searching;
+                                    });
+                                  },
                                   decoration:
                                   const InputDecoration.collapsed(
                                       hintText: 'Find a documents')),
@@ -186,156 +185,140 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       height: 16.0,
                     ),
                     Expanded(
-                      child: FutureBuilder<bool>(
-                          initialData: false,
-                          future: onSearch(),
-                          builder: (context, snapshot) {
-                            if (snapshot.data == true) {
-                              return StreamBuilder<Object>(
-                                  stream: searchStream,
-                                  builder: (context, snapshot) {
-                                    return Column(
-                                      children: [
-                                        const Spacer(),
-                                        Text(
-                                          _searchController.text.toString(),
-                                          style: const TextStyle(fontSize: 24),
+                      child: BooleanBuilder(
+                          check: searching,
+                          ifTrue: _buildSearchView(),
+                          ifFalse: StreamBuilder<List<NoteModel>>(
+                            stream: _firebaseManager
+                                .getAllNoteInCloud()
+                                .asStream(),
+                            //_firebaseManager.getAllNoteInCloud(user.email),
+                            builder: (context, snapshot) {
+                              //print('=================== ${snapshot.data} ==================');
+                              if (!snapshot.hasData) {
+                                return const CircularProgressMultiBar();
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: SizedBox(
+                                    height: 200,
+                                    child: Column(
+                                      children: const [
+                                        Icon(
+                                          Icons.wifi_off,
+                                          size: 100,
                                         ),
-                                        ComingSoon(),
-                                        const Spacer(),
+                                        SizedBox(
+                                          height: 8.0,
+                                        ),
+                                        Text('Something went wrong'),
                                       ],
-                                    );
-                                  });
-                            }
-                            return StreamBuilder<List<NoteModel>>(
-                              stream: _firebaseManager
-                                  .getAllNoteInCloud()
-                                  .asStream(),
-                              //_firebaseManager.getAllNoteInCloud(user.email),
-                              builder: (context, snapshot) {
-                                //print('=================== ${snapshot.data} ==================');
-                                if (!snapshot.hasData) {
-                                  return const CircularProgressMultiBar();
-                                } else if (snapshot.hasError) {
-                                  return Center(
-                                    child: SizedBox(
-                                      height: 200,
-                                      child: Column(
-                                        children: const [
-                                          Icon(
-                                            Icons.wifi_off,
-                                            size: 100,
-                                          ),
-                                          SizedBox(
-                                            height: 8.0,
-                                          ),
-                                          Text('Something went wrong'),
-                                        ],
-                                      ),
                                     ),
-                                  );
-                                }
-                                else if (snapshot.data!.isEmpty) {
-                                  return Center(
-                                    child: SizedBox(
-                                      height: 200,
-                                      child: Column(
-                                        children: const [
-                                          Icon(
-                                            Icons
-                                                .sentiment_dissatisfied_rounded,
-                                            size: 100,
-                                          ),
-                                          SizedBox(
-                                            height: 8.0,
-                                          ),
-                                          Text('No document found')
-                                        ],
-                                      ),
+                                  ),
+                                );
+                              }
+                              else if (snapshot.data!.isEmpty) {
+                                return Center(
+                                  child: SizedBox(
+                                    height: 200,
+                                    child: Column(
+                                      children: const [
+                                        Icon(
+                                          Icons
+                                              .sentiment_dissatisfied_rounded,
+                                          size: 100,
+                                        ),
+                                        SizedBox(
+                                          height: 8.0,
+                                        ),
+                                        Text('No document found')
+                                      ],
                                     ),
-                                  );
-                                }
-                                //if (snapshot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
+                                  ),
+                                );
+                              }
+                              //if (snapshot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
 
-                                else {
-                                  var data = snapshot.data!.map((note) {
-                                    //var map = document.data();
-                                    //print('+++++++ \n $map \n ++++++++');
-                                    return note; //NoteModel.fromMap(map);
-                                  }).toList();
+                              else {
+                                var data = snapshot.data!.map((note) {
+                                  //var map = document.data();
+                                  //print('+++++++ \n $map \n ++++++++');
+                                  return note; //NoteModel.fromMap(map);
+                                }).toList();
 
-                                  //data = data.
+                                //data = data.
 
-                                  return GridView(
-                                    padding: const EdgeInsets.only(
-                                        top: 0, left: 12, right: 12),
-                                    physics: const BouncingScrollPhysics(),
-                                    scrollDirection: Axis.vertical,
-                                    children: List<Widget>.generate(
-                                      snapshot.data!.length,
-                                      (int index) {
-                                        final int count = snapshot.data!.length;
-                                        final Animation<double> animation =
-                                            Tween<double>(begin: 0.0, end: 1.0)
-                                                .animate(
-                                          CurvedAnimation(
-                                            parent: animationController,
-                                            curve: Interval(
-                                                (1 / count) * index, 1.0,
-                                                curve: Curves.fastOutSlowIn),
+                                return GridView(
+                                  padding: const EdgeInsets.only(
+                                      top: 0, left: 12, right: 12),
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  children: List<Widget>.generate(
+                                    snapshot.data!.length,
+                                        (int index) {
+                                      final int count = snapshot.data!.length;
+                                      final Animation<double> animation =
+                                      Tween<double>(begin: 0.0, end: 1.0)
+                                          .animate(
+                                        CurvedAnimation(
+                                          parent: animationController,
+                                          curve: Interval(
+                                              (1 / count) * index, 1.0,
+                                              curve: Curves.fastOutSlowIn),
+                                        ),
+                                      );
+                                      animationController.forward();
+                                      print(data[index].toString()+"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                                      data[index].toDisplay();
+                                      return HomeListView(
+                                        changeRatio: multiple,
+                                        animation: animation,
+                                        animationController:
+                                        animationController,
+                                        listData: NoteCard(
+                                          color: Color(data[index].colorValue),
+                                          changeInList: !multiple,
+                                          note: data[index],
+                                        ),
+                                        //snapshot.data![index],
+                                        onLongPress: () => showModalBottomSheet(
+                                          constraints: const BoxConstraints(
+                                            maxHeight: 400,
+                                            minHeight:300,
                                           ),
-                                        );
-                                        animationController.forward();
-                                        return HomeListView(
-                                          changeRatio: multiple,
-                                          animation: animation,
-                                          animationController:
-                                              animationController,
-                                          listData: NoteCard(
-                                            color: Color(data[index].colorValue),
-                                            changeInList: !multiple,
-                                            note: data[index],
-                                          ),
-                                          //snapshot.data![index],
-                                          onLongPress: () => showModalBottomSheet(
-                                            constraints: const BoxConstraints(
-                                                maxHeight: 400,
-                                              minHeight:300,
-                                            ),
-                                            backgroundColor: Colors.transparent,
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                _buildBottomMenu(data[index]),
+                                          backgroundColor: Colors.transparent,
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              _buildBottomMenu(data[index]),
 
-                                          ),
+                                        ),
 
-                                          onTap: () => Navigator.push(
-                                              context,
-                                              TextEditor.route(
-                                                note: data[index],
-                                              )),
-                                          /*Navigator.push<dynamic>(
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            TextEditor.route(
+                                              note: data[index],
+                                            )),
+                                        /*Navigator.push<dynamic>(
                                             context,
                                             MaterialPageRoute<dynamic>(
                                               builder: (BuildContext context) =>
                                                   homeList[index].navigateScreen,
                                             ),
                                           );*/
-                                        );
-                                      },
-                                    ),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: multiple ? 2 : 1,
-                                      mainAxisSpacing: 4.0,
-                                      crossAxisSpacing: 12.0,
-                                      childAspectRatio: multiple ? 1.5 : 3,
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          }),
+                                      );
+                                    },
+                                  ),
+                                  gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: multiple ? 2 : 1,
+                                    mainAxisSpacing: 4.0,
+                                    crossAxisSpacing: 12.0,
+                                    childAspectRatio: multiple ? 1.5 : 3,
+                                  ),
+                                );
+                              }
+                            },
+                          )
+                      ),
                     ),
                   ],
                 ),
@@ -345,6 +328,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Widget _buildSearchView(){
+    return StreamBuilder<Object>(
+        stream: searchStream,
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              const Spacer(),
+              Text(
+                _searchController.text.toString(),
+                style: const TextStyle(fontSize: 24),
+              ),
+              ComingSoon(),
+              const Spacer(),
+            ],
+          );
+        });
   }
 
   Container _buildBottomMenu(NoteModel doc){

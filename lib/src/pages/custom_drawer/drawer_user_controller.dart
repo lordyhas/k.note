@@ -12,7 +12,7 @@ class DrawerUserController extends StatefulWidget {
     this.animatedIconData = AnimatedIcons.arrow_menu,
     this.menuView,
     this.drawerIsOpen,
-    this.screenIndex,
+    this.screenIndex = DrawerIndex.HOME,
   }) : super(key: key);
 
   final double
@@ -26,8 +26,7 @@ class DrawerUserController extends StatefulWidget {
   final AnimatedIconData animatedIconData;
   final Widget
   ? menuView;
-  final DrawerIndex
-  ? screenIndex;
+  final DrawerIndex screenIndex;
 
   @override
   _DrawerUserControllerState createState() => _DrawerUserControllerState();
@@ -45,7 +44,6 @@ class _DrawerUserControllerState extends State<DrawerUserController> with Ticker
     animationController = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this);
     iconAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 0));
     iconAnimationController.animateTo(1.0, duration: const Duration(milliseconds: 0), curve: Curves.fastOutSlowIn);
-    // todo : widget.drawerWidth ?? 0.0
     scrollController = ScrollController(initialScrollOffset: widget.drawerWidth ?? 0.0);
     scrollController
       .addListener(() {
@@ -112,9 +110,11 @@ class _DrawerUserControllerState extends State<DrawerUserController> with Ticker
                     builder: (context, child) {
                       return Transform(
                         //transform we use for the stable drawer  we, not need to move with scroll view
-                        transform: Matrix4.translationValues(scrollController.offset, 0.0, 0.0),
+                        transform: Matrix4.translationValues(
+                            scrollController.offset, 0.0, 0.0
+                        ),
                         child: HomeDrawer(
-                          screenIndex: widget.screenIndex ?? DrawerIndex.HOME,
+                          screenIndex: widget.screenIndex, //?? DrawerIndex.HOME,
                           iconAnimationController: iconAnimationController,
                           callBackIndex: (DrawerIndex indexType) {
                             onDrawerClick();

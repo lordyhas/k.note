@@ -5,17 +5,18 @@ class BackgroundUI extends StatelessWidget {
   final Widget? child;
   final int index;
 
-  BackgroundUI({Key? key, this.child, this.index = 2})
+   const BackgroundUI({Key? key, this.child, this.index = 2})
       : assert(index < 3), super(key: key);
 
-  final List<String> path = [
-    Res.bg_image1,
-    Res.bg_image2,
-    Res.bg_image3,
-  ];
+
 
   @override
   Widget build(BuildContext context) {
+    final List<String> path = [
+      Res.bg_image1,
+      Res.bg_image2,
+      Res.bg_image3,
+    ];
 
     return Stack(children: [
       Container(

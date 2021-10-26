@@ -105,35 +105,9 @@ class _TextEditorState extends State<TextEditor>  {
 
   }
 
-  /*@override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-
-    super.didChangeAppLifecycleState(state);
-    switch (state) {
-      case AppLifecycleState.resumed:
-        Log.i('++++++++++++ resumed ++++++++++++');
-        break;
-      case AppLifecycleState.inactive:
-        Log.i('++++++++++++ inactive ++++++++++++');
-        break;
-      case AppLifecycleState.paused:
-        Log.i('++++++++++++ paused ++++++++++++');
-        setNote(_titleController.text,_textController.text);
-
-        //print('=== ${_noteModel.text} ===');
-        break;
-      case AppLifecycleState.detached:
-
-        Log.i('++++++++++++ detached ++++++++++++');
-        break;
-    }
-  }*/
 
   @override
   void dispose() {
-    //setNote(_titleController.text,_textController.text);
-
-    //WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
 
   }
@@ -267,9 +241,13 @@ class _TextEditorState extends State<TextEditor>  {
                 }
                 Log.i('onEditingComplete(edit: title) #### ###');
               },
-              decoration: const InputDecoration.collapsed(hintText: "Title"),
+              decoration: const InputDecoration.collapsed(
+                hintText: "Title",
+                hintStyle: TextStyle(fontSize: 26),
+              ),
             ),
           ),
+          const Divider(indent: 32.0, endIndent: 72.0,),
           Expanded(child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: TextField(

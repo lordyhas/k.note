@@ -14,7 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
 
-import '../../../navigation_home_screen.dart';
+import '../../navigation_home_screen.dart';
 
 
 part 'signin_home.dart';

@@ -11,28 +11,28 @@ import 'package:knote/src/pages/screens/calendar_screen.dart';
 import 'package:knote/widgets.dart';
 import 'package:utils_component/utils_component.dart';
 
-import './data/theme_and_language_cubit.dart';
-import './src/backgound_ui.dart';
-import './src/pages/screens.dart';
+import '../data/theme_and_language_cubit.dart';
+import 'backgound_ui.dart';
+import 'pages/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'data/app_bloc.dart';
-import 'data/authentication_repository.dart';
-import 'data/values.dart';
-import 'src/pages/custom_drawer/drawer_user_controller.dart';
-import 'src/pages/custom_drawer/home_drawer.dart';
+import '../data/app_bloc.dart';
+import '../data/authentication_repository.dart';
+import '../data/values.dart';
+import 'pages/custom_drawer/drawer_user_controller.dart';
+import 'pages/custom_drawer/home_drawer.dart';
 //import 'feedback_screen.dart';
 //import 'help_screen.dart';
 //import 'home_screen.dart';
 //import 'invite_friend_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'src/pages/custom_drawer/home_drawer.dart';
-import 'src/pages/screens/home_screen.dart';
+import 'pages/custom_drawer/home_drawer.dart';
+import 'pages/screens/home_screen.dart';
 
-import 'src/pages/about_page.dart';
-import 'src/pages/screens.dart';
-import 'src/pages/trash_can.dart';
+import 'pages/about_page.dart';
+import 'pages/screens.dart';
+import 'pages/trash_can.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   const NavigationHomeScreen({Key? key}) : super(key: key);
@@ -50,9 +50,29 @@ class NavigationHomeScreen extends StatefulWidget {
 class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   late final FirebaseManager _firebaseManager;
-  Widget? screenView;
-  DrawerIndex? drawerIndex;
+  late Widget screenView;
+  late DrawerIndex drawerIndex;
   late final text;
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _firebaseManager = FirebaseManager(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
+
+    text = AppLocalizations.of(context);
+
+
+
+  }
+
+  /*@override
+  void didChangeDependencies(){
+
+  }*/
+
 
 
   @override
@@ -61,11 +81,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     screenView = const HomeScreen();
     super.initState();
 
-    _firebaseManager = FirebaseManager(
-        BlocProvider.of<AuthenticationBloc>(context).state.user
-    );
 
-    text = AppLocalizations.of(context);
   }
 
   @override
@@ -77,7 +93,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   Future<bool> _willPopDialog() async {
     if (drawerIndex != DrawerIndex.HOME) {
-      changeIndex(DrawerIndex.HOME);
+      //changeIndex(DrawerIndex.HOME);
+      drawerIndex = DrawerIndex.HOME;
       return false;
     }
     else {
@@ -235,10 +252,13 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
               screenIndex: drawerIndex,
               drawerWidth: MediaQuery.of(context).size.width * 0.75,
               onDrawerCall: (DrawerIndex drawerIndexData) {
-                changeIndex(drawerIndexData);
+                //changeIndex(drawerIndexData);
+                setState(() {
+                  drawerIndex = drawerIndexData;
+                });
                 //callback from drawer for replace screen as user need with passing DrawerIndex(Enum index)
               },
-              screenView: screenView,
+              screenView: setScreen(drawerIndex),
               //we replace screen view as we need on navigate starting screens like MyHomePage, HelpScreen, FeedbackScreen, etc...
             ),
           ),
@@ -246,6 +266,47 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       ),
     );
   }
+
+
+
+  Widget setScreen(DrawerIndex index){
+
+
+    Map<DrawerIndex,Widget> screens = <DrawerIndex, Widget>{
+
+      DrawerIndex.HOME: const HomeScreen(),
+      DrawerIndex.Help: BackgroundUI(child: HelpScreen()),
+      DrawerIndex.Rate: BackgroundUI(index: 2, child: noData()),
+      DrawerIndex.About: const BackgroundUI(index:0, child: AboutPage()),
+
+      DrawerIndex.Invite: const BackgroundUI(child: InviteFriend()),
+
+      DrawerIndex.FeedBack: const FeedbackScreen(),
+
+      DrawerIndex.NoteTrash: const BackgroundUI(child: NoteTrash()),
+
+      //DrawerIndex.Calendar: CalendarScreen.calendar(context),
+
+      DrawerIndex.Archived: const BackgroundUI(child: ArchivedScreen()),
+
+      DrawerIndex.Offline: const BackgroundUI(child: OfflineScreen()),
+    };
+    return screens[index] as Widget;
+
+  }
+
+
+
+  Widget noData(){
+    return Column(
+      children: [
+        const Spacer(),
+        ComingSoon(),
+        const Spacer(),
+      ],
+    );
+  }
+
 
   void changeIndex(DrawerIndex drawerIndexData) {
 
@@ -259,8 +320,6 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             screenView = const HomeScreen();
           });
           break;
-
-
 
         case DrawerIndex.Help:
           //setState((){});
@@ -290,7 +349,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           setState(() {
             screenView = BackgroundUI(
               index: 0,
-              child: AboutPage(text: text,),
+              child: AboutPage(),
             );
           });
           break;
@@ -305,7 +364,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
         case DrawerIndex.FeedBack:
           setState(() {
-            screenView = FeedbackScreen();
+            screenView = const FeedbackScreen();
           });
           break;
 

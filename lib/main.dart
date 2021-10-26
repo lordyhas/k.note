@@ -14,7 +14,7 @@ import 'data/authentication_repository.dart';
 import 'data/database/firebase_manager.dart';
 import 'data/theme_and_language_cubit.dart';
 import 'data/values.dart';
-import 'navigation_home_screen.dart';
+import 'src/navigation_home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
@@ -32,8 +32,8 @@ void main() async {
 
 class App extends StatelessWidget {
   const App({
-    Key? key,
     required this.authenticationRepository,
+    Key? key,
   }) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
@@ -69,8 +69,7 @@ class AppView extends StatelessWidget {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness:
-            Platform.isAndroid ? Brightness.dark : Brightness.light,
+        statusBarBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarDividerColor: Colors.cyan.shade700,
         systemNavigationBarIconBrightness: Brightness.dark,
@@ -122,8 +121,13 @@ class AppView extends StatelessWidget {
               //brightness: Brightness.dark
             ),
 
-           // home: null,
+            home: (BlocProvider.of<AuthenticationBloc>(context).state
+                .status == AuthenticationStatus.authenticated)
+                ? const NavigationHomeScreen()
+                : null,
+
             //home: const LoginPage(),
+
 
             onGenerateRoute: (_) => SplashPage.route(),
             builder: (context, child) {

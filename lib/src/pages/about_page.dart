@@ -11,8 +11,8 @@ import 'package:package_info/package_info.dart';
 import '../backgound_ui.dart';
 
 class AboutPage extends StatefulWidget{
-  const AboutPage({Key? key, this.text}) : super(key: key);
-  final text;
+  const AboutPage({Key? key,}) : super(key: key);
+  //final text;
 
   static Route route({isSystemSet = false}) {
     return MaterialPageRoute<void>(builder: (_) => const AboutPage());
@@ -40,6 +40,8 @@ class _AboutState extends State<AboutPage>{
     initPlatformPackageInfo();
     //PackageInfo packageInfo = await PackageInfo.fromPlatform();
     //appVersion = packageInfo.version;
+    text = AppLocalizations.of(context);
+
 
   }
 
@@ -63,10 +65,6 @@ class _AboutState extends State<AboutPage>{
 
   @override
   Widget build(BuildContext context) {
-    text = widget.text;
-
-
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       //backgroundColor: Theme.of(context).backgroundColor,

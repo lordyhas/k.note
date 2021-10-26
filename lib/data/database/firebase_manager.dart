@@ -189,11 +189,13 @@ class FirebaseManager implements InterfaceNoteModel {
         .where('is_archived', isEqualTo: false)
         .get();
 
-    Log.i('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-    Log.i(user.toString());
+    Log.i('User: '+ user.toString()+"xxxxxxxxxxxxx");
 
     List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
     //List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
+    Log.i(' User Note map : '+ maps.toString() + "xxxxxxxxxxxxx");
+
+
     if(maps.isNotEmpty ) {
       return  maps.map((e) => NoteModel.fromMap(e)).toList();
     }

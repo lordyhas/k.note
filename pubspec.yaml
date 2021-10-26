@@ -12,9 +12,6 @@ environment:
 # -
 # -
 # ----------------
-# todo :
-# todo :
-# todo :
 
 dependencies:
 
@@ -27,8 +24,9 @@ dependencies:
     ^0.6.0
 
 
-  #todo : url_launcher: ^6.0.3
-  #todo : image_picker: ^0.7.3
+  #todo :
+  #- url_launcher: ^6.0.3
+  #- image_picker: ^0.7.3
 
   animations:
     ^2.0.0
