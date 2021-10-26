@@ -1,4 +1,5 @@
 
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -56,17 +57,15 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   @override
   void initState() {
+    drawerIndex = DrawerIndex.HOME;
+    screenView = const HomeScreen();
     super.initState();
+
     _firebaseManager = FirebaseManager(
         BlocProvider.of<AuthenticationBloc>(context).state.user
     );
 
     text = AppLocalizations.of(context);
-
-
-    drawerIndex = DrawerIndex.HOME;
-    screenView = const HomeScreen();
-
   }
 
   @override
@@ -214,7 +213,14 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
                   case AuthenticationStatus.authenticated:
                     return FloatingActionButton(
                       tooltip: 'add new note',
-                      onPressed: () => Navigator.push(context, TextEditor.route()),
+                      onPressed: (){
+                        Navigator.push(context, TextEditor.route());
+                        /*showModal(
+                            context: context,
+                            builder: (_) => Container(
+                              child: SizedBox(),
+                        ));*/
+                      },
                       child: const Icon(CupertinoIcons.add), //Icons.post_add
                     );
 

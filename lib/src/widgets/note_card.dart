@@ -7,11 +7,12 @@ class NoteCard extends StatelessWidget {
   final NoteModel note;
 
 
-  NoteCard({
+  const NoteCard({
     required this.note,
     this.color,
     this.changeInList = false,
-  }) ;
+    Key? key
+  }) : super(key: key) ;
 
   //NoteModel get noteData => note;
 
@@ -84,4 +85,25 @@ class NoteCard extends StatelessWidget {
         )
     );
   }
+}
+
+class NoteCard2 extends NoteCard{
+  const NoteCard2({
+    required final NoteModel note,
+    final Color? color,
+    final bool changeInList = false,
+    Key? key
+  }) : super(
+    note: note,
+    color: color,
+    changeInList: changeInList,
+    key: key,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Container();
+  }
+
 }

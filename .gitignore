@@ -33,9 +33,9 @@
 
 # Web related
 lib/generated_plugin_registrant.dart
-lib/res.dart
-lib/objectbox.g.dart
-lib/objectbox-model.json
+/lib/res.dart
+/lib/objectbox.g.dart
+/lib/objectbox-model.json
 
 # Symbolication related
 app.*.symbols

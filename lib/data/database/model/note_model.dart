@@ -6,7 +6,8 @@ abstract class DocumentModel {}
 
 @Entity()
 class NoteModel {
-  int id = 0;
+  @Id()
+  int mid = 0;
   String noteId;
   String? title;
   String? text;

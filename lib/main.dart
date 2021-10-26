@@ -122,10 +122,7 @@ class AppView extends StatelessWidget {
               //brightness: Brightness.dark
             ),
 
-            home: (BlocProvider.of<AuthenticationBloc>(context).state.status ==
-                    AuthenticationStatus.authenticated)
-                ? const NavigationHomeScreen()
-                : null,
+           // home: null,
             //home: const LoginPage(),
 
             onGenerateRoute: (_) => SplashPage.route(),

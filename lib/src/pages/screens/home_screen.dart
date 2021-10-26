@@ -161,25 +161,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     onSearch // Scaffold.of(context).openEndDrawer,
                                 ),
                             Expanded(
-                              child: //Text("Find your product", style: TextStyle(color: Colors.grey),),
-
-                                  TextField(
-                                      controller: _searchController,
-                                      key: const Key(
-                                          'homePage_search_textField'),
-                                      onChanged: (query) {},
-                                      onTap: onSearch,
-                                      decoration:
-                                          const InputDecoration.collapsed(
-                                              hintText: 'Find a documents')),
+                              child: TextField(
+                                  controller: _searchController,
+                                  key:
+                                  const Key('homePage_search_textField'),
+                                  onChanged: (query) {},
+                                  onTap: onSearch,
+                                  decoration:
+                                  const InputDecoration.collapsed(
+                                      hintText: 'Find a documents')),
                             ),
                             IconButton(
-                                //icon: Icon(Icons.notifications_none_rounded),
+                              //icon: Icon(Icons.notifications_none_rounded),
                                 icon: const Icon(
                                     Icons.notifications_none_rounded),
                                 onPressed:
                                     () {} //Scaffold.of(context).openEndDrawer,
-                                )
+                            )
                           ],
                         ),
                       ),
