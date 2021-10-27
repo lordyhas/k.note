@@ -6,7 +6,7 @@ import 'package:knote/src/pages/text_editor_page.dart';
 import 'package:knote/widgets.dart';
 import 'package:utils_component/utils_component.dart';
 
-import 'backgound_ui.dart';
+import 'background_ui.dart';
 import 'pages/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

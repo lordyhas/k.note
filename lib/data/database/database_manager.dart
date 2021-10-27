@@ -144,7 +144,7 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   Future<bool> addNote({required NoteModel note,}) async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
-    final i = box.put(note, mode: PutMode.update);
+    final i = box.put(note);
     store.close();
     return i is int;
   }
@@ -253,7 +253,7 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
     final box = store.box<NoteModel>();
     NoteModel? note = box.query(NoteModel_.noteId.equals(noteId))
         .build().findFirst();
-    note!.isDeleted = true;
+    note!.isDeleted = false;
     final id = box.put(note, mode: PutMode.update);
     final val = box.remove(id);
     store.close();
@@ -273,6 +273,112 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
 
+
+
+}
+
+
+class ChecklistBoxManager extends ObjectBoxManager implements InterfaceChecklistModel{
+
+  @override
+  Future<Store> openStoreBox() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    if(kIsWeb) {
+      return Store(getObjectBoxModel());
+    }
+    return Store(getObjectBoxModel(), directory: dir.path + '/objectbox');
+  }
+
+  @override
+  Future<bool> addChecklist({required Checklist checklist}) async {
+    Store store = await openStoreBox();
+    final box = store.box<Checklist>();
+    final i = box.put(checklist);
+    store.close();
+    return i is int;
+  }
+
+
+  @override
+  Future<bool> setChecklist({required Checklist checklist}) async {
+    Store store = await openStoreBox();
+    final box = store.box<Checklist>();
+    final i = box.put(checklist, mode: PutMode.update);
+    store.close();
+    return i is int;
+  }
+
+  @override
+  Future<bool> deleteChecklist({required String id}) async {
+    Store store = await openStoreBox();
+    final box = store.box<Checklist>();
+    Checklist? checklist = box.query(Checklist_.checklistId.equals(id))
+        .build().findFirst();
+    checklist!.isDeleted = true;
+    final i = box.put(checklist, mode: PutMode.update);
+    store.close();
+    return i is int;
+  }
+
+  @override
+  Future<List<Checklist>> getAllChecklist() async {
+    Store store = await openStoreBox();
+    final box = store.box<Checklist>();
+    List<Checklist> checklist = box.query(
+        Checklist_.isDeleted.equals(false))
+        .build()
+        .find();
+
+    store.close();
+
+    return checklist;
+  }
+
+  @override
+  Future<Checklist?> getChecklist({required String id}) async {
+    Store store = await openStoreBox();
+    final box = store.box<Checklist>();
+    Checklist? checklist = box.query(
+        Checklist_.checklistId
+            .equals(id)
+            .and(Checklist_.isDeleted.equals(false)))
+        .build()
+        .findFirst();
+
+    store.close();
+
+    return checklist;
+  }
+
+
+  @override
+  Future<bool> permanentlyDeleteChecklist({required String id}) async {
+    Store store = await openStoreBox();
+    final box = store.box<Checklist>();
+    Checklist? checklist = box
+        .query(Checklist_.checklistId.equals(id))
+        .build()
+        .findFirst();
+    checklist!.isDeleted = false;
+    final mid = box.put(checklist, mode: PutMode.update);
+    final val = box.remove(mid);
+    store.close();
+    return val;
+  }
+
+  @override
+  Future<bool> restoreDeletedChecklist({required String id}) async {
+    Store store = await openStoreBox();
+    final box = store.box<Checklist>();
+    Checklist? checklist = box
+        .query(Checklist_.checklistId.equals(id))
+        .build()
+        .findFirst();
+    checklist!.isDeleted = true;
+    final i = box.put(checklist, mode: PutMode.update);
+    store.close();
+    return i is int;
+  }
 
 
 }

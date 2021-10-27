@@ -33,15 +33,15 @@ abstract class InterfaceNoteModel {
 abstract class InterfaceChecklistModel {
   Future<List<Checklist>> getAllChecklist();
 
-  Future<Checklist> getChecklist({required String docId});
+  Future<Checklist?> getChecklist({required String id});
 
-  Future<void> setChecklist({required String docId});
+  Future<void> setChecklist({required Checklist checklist});
 
-  Future<void> addChecklist({required String docId});
+  Future<void> addChecklist({required Checklist checklist});
 
-  Future<void> deleteChecklist({required String docId});
+  Future<void> deleteChecklist({required String id});
 
-  Future<void> restoreDeletedChecklist({required String docId});
+  Future<void> restoreDeletedChecklist({required String id});
 
-  Future<void> permanentlyDeleteChecklist({required String docId});
+  Future<void> permanentlyDeleteChecklist({required String id});
 }

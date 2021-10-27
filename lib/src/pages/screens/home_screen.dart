@@ -12,7 +12,7 @@ import 'package:utils_component/utils_component.dart';
 
 import '../../../res.dart';
 import '../../../widgets.dart';
-import '../../backgound_ui.dart';
+import '../../background_ui.dart';
 import 'package:flutter/material.dart';
 
 part 'homelist.dart';

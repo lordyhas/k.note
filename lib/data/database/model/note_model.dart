@@ -129,6 +129,7 @@ class Checklist extends DocumentModel{
   @Property(type: PropertyType.date)
   DateTime? modificationTime;
   int savingModeValue;
+  bool isDeleted;
   final boxTodoItems = ToMany<TodoItem>();
 
 
@@ -139,6 +140,7 @@ class Checklist extends DocumentModel{
     this.isAllChecked = false,
     this.creationTime,
     this.modificationTime,
+    this.isDeleted = false,
     SavingMode savingMode = SavingMode.cloud,
   }):savingModeValue = savingMode.index;
 
@@ -154,14 +156,17 @@ class Checklist extends DocumentModel{
     'is_all_checked'  : isAllChecked,
     'list'            : listMap,
     'saving_mode'     : savingModeValue,
+    'is_deleted': isDeleted,
   };
   factory Checklist.fromMap(Map<String, dynamic> map) => Checklist(
     checklistId   : map['id'] as String,
     title         : map['title'] as String,
     isAllChecked  : map['is_all_checked'] as bool,
+    isDeleted: map['is_deleted'] as bool,
     savingMode    : SavingMode.values[map['saving_mode'] as int],
-    list          : (map['list'] as List<Map<String, dynamic>>).map(
-            (e) => TodoItem.fromMap(e)).toList(),
+    list          : (map['list'] as List<Map<String, dynamic>>)
+        .map((e) => TodoItem.fromMap(e))
+        .toList(),
   );
 
 

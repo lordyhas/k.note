@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:knote/data/values.dart';
 import 'package:package_info/package_info.dart';
 
-import '../backgound_ui.dart';
+import '../background_ui.dart';
 
 class AboutPage extends StatefulWidget{
   const AboutPage({Key? key,}) : super(key: key);
