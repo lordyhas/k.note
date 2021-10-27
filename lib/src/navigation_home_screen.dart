@@ -1,17 +1,11 @@
 
-import 'package:animations/animations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:knote/data/app_bloc/auth_repository/repository.dart';
-import 'package:knote/data/app_bloc/auth_repository/repository.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/src/pages/text_editor_page.dart';
-import 'package:knote/src/pages/screens/calendar_screen.dart';
 import 'package:knote/widgets.dart';
 import 'package:utils_component/utils_component.dart';
 
-import '../data/theme_and_language_cubit.dart';
 import 'backgound_ui.dart';
 import 'pages/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,17 +15,11 @@ import '../data/authentication_repository.dart';
 import '../data/values.dart';
 import 'pages/custom_drawer/drawer_user_controller.dart';
 import 'pages/custom_drawer/home_drawer.dart';
-//import 'feedback_screen.dart';
-//import 'help_screen.dart';
-//import 'home_screen.dart';
-//import 'invite_friend_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'pages/custom_drawer/home_drawer.dart';
 import 'pages/screens/home_screen.dart';
 
 import 'pages/about_page.dart';
-import 'pages/screens.dart';
 import 'pages/trash_can.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
@@ -52,7 +40,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   late final FirebaseManager _firebaseManager;
   late Widget screenView;
   late DrawerIndex drawerIndex;
-  late final text;
+  late final Object text;
 
 
   @override
@@ -62,7 +50,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         BlocProvider.of<AuthenticationBloc>(context).state.user
     );
 
-    text = AppLocalizations.of(context);
+    text = AppLocalizations.of(context)!;
 
 
 
@@ -77,7 +65,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   @override
   void initState() {
-    drawerIndex = DrawerIndex.HOME;
+    drawerIndex = DrawerIndex.home;
     screenView = const HomeScreen();
     super.initState();
 
@@ -92,9 +80,9 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
 
   Future<bool> _willPopDialog() async {
-    if (drawerIndex != DrawerIndex.HOME) {
+    if (drawerIndex != DrawerIndex.home) {
       //changeIndex(DrawerIndex.HOME);
-      drawerIndex = DrawerIndex.HOME;
+      drawerIndex = DrawerIndex.home;
       return false;
     }
     else {
@@ -170,7 +158,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         ))) ?? false;*/
   }*/
 
-  _uploadUserInCloud() async {
+  void _uploadUserInCloud() async {
     if (BlocProvider.of<AuthenticationBloc>(context).state.status ==
         AuthenticationStatus.authenticated) {
       //User user = context.watch<AuthenticationBloc>().state.user;
@@ -274,22 +262,22 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
     Map<DrawerIndex,Widget> screens = <DrawerIndex, Widget>{
 
-      DrawerIndex.HOME: const HomeScreen(),
-      DrawerIndex.Help: BackgroundUI(child: HelpScreen()),
-      DrawerIndex.Rate: BackgroundUI(index: 2, child: noData()),
-      DrawerIndex.About: const BackgroundUI(index:0, child: AboutPage()),
+      DrawerIndex.home: const HomeScreen(),
+      DrawerIndex.help: BackgroundUI(child: HelpScreen()),
+      DrawerIndex.rate: BackgroundUI(index: 2, child: noData()),
+      DrawerIndex.about: const BackgroundUI(index:0, child: AboutPage()),
 
-      DrawerIndex.Invite: const BackgroundUI(child: InviteFriend()),
+      DrawerIndex.invite: const BackgroundUI(child: InviteFriend()),
 
-      DrawerIndex.FeedBack: const FeedbackScreen(),
+      DrawerIndex.feedBack: const FeedbackScreen(),
 
-      DrawerIndex.NoteTrash: const BackgroundUI(child: NoteTrash()),
+      DrawerIndex.noteTrash: const BackgroundUI(child: NoteTrash()),
 
       //DrawerIndex.Calendar: CalendarScreen.calendar(context),
 
-      DrawerIndex.Archived: const BackgroundUI(child: ArchivedScreen()),
+      DrawerIndex.archived: const BackgroundUI(child: ArchivedScreen()),
 
-      DrawerIndex.Offline: const BackgroundUI(child: OfflineScreen()),
+      DrawerIndex.offline: const BackgroundUI(child: OfflineScreen()),
     };
     return screens[index] as Widget;
 
@@ -307,7 +295,11 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     );
   }
 
+}
 
+
+
+/*
   void changeIndex(DrawerIndex drawerIndexData) {
 
     if (drawerIndex != drawerIndexData) {
@@ -321,14 +313,14 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           });
           break;
 
-        case DrawerIndex.Help:
+        case DrawerIndex.help:
           //setState((){});
           setState(() {
             screenView = BackgroundUI(child: HelpScreen());
           });
           break;
 
-        case DrawerIndex.Rate:
+        case DrawerIndex.rate:
 
           setState(() {
             screenView = BackgroundUI(
@@ -345,16 +337,16 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           });
           break;
 
-        case DrawerIndex.About:
+        case DrawerIndex.about:
           setState(() {
-            screenView = BackgroundUI(
+            screenView = const BackgroundUI(
               index: 0,
               child: AboutPage(),
             );
           });
           break;
 
-        case DrawerIndex.Invite:
+        case DrawerIndex.invite:
           setState(() {
             screenView = BackgroundUI(
                 child: const InviteFriend()
@@ -362,7 +354,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           });
           break;
 
-        case DrawerIndex.FeedBack:
+        case DrawerIndex.feedBack:
           setState(() {
             screenView = const FeedbackScreen();
           });
@@ -407,5 +399,4 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       }
 
     }
-  }
-}
+  }*/

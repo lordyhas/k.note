@@ -2,11 +2,8 @@
 import 'dart:io';
 
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:knote/data/app_bloc/auth_repository/user.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:utils_component/utils_component.dart';
 
@@ -88,7 +85,7 @@ class SettingBoxManager extends  ObjectBoxManager {
     Store store = await openStoreBox();
     final box = store.box<SettingAppData>();
     final settingData = box.query().build().findFirst();
-    settingData?..theme = themeState.index;
+    settingData?.theme = themeState.index;
     final id = box.put(settingData!, mode: PutMode.update);
     if(id != settingData.id) value = true;
 
@@ -103,7 +100,7 @@ class SettingBoxManager extends  ObjectBoxManager {
     final box = store.box<SettingAppData>();
     final settingData = box.query(SettingAppData_.createAt.notNull())
         .build().findFirst();
-    settingData?..language = langState.index;
+    settingData?.language = langState.index;
     final id = box.put(settingData!, mode: PutMode.update);
     if(id != settingData.id) value = true;
 
@@ -118,8 +115,11 @@ class SettingBoxManager extends  ObjectBoxManager {
 
 
 class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
-  const NoteBoxManager.empty();
-  const NoteBoxManager.initStore();
+  const NoteBoxManager();
+  /*factory NoteBoxManager.initStore(){
+     openStoreBox();
+    return const NoteBoxManager();
+  }*/
 
   @override
   Future<Store> openStoreBox() async {
@@ -199,7 +199,7 @@ class NoteBoxManager extends ObjectBoxManager implements InterfaceNoteModel {
   }
 
   @override
-  Future<bool> deleteNote({String? userId, required String noteId}) async {
+  Future<bool> deleteNote({required String noteId, String? userId, }) async {
     Store store = await openStoreBox();
     final box = store.box<NoteModel>();
     NoteModel? note = box.query(NoteModel_.noteId.equals(noteId))

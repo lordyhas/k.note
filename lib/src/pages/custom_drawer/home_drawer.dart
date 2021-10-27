@@ -8,26 +8,27 @@ import 'package:flutter/material.dart';
 import '../../../res.dart';
 
 enum  DrawerIndex {
-  HOME,
-  FeedBack,
-  Help,
-  Rate,
-  About,
-  Invite,
-  Calendar,
-  NoteTrash,
-  Archived,
-  Offline,
+  home,
+  feedBack,
+  help,
+  rate,
+  about,
+  invite,
+  calendar,
+  noteTrash,
+  archived,
+  offline,
   //Setting,
 
 }
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({
-    Key? key,
     required this.screenIndex,
     required this.iconAnimationController,
-    required this.callBackIndex
+    required this.callBackIndex,
+    Key? key,
+
   }) : super(key: key);
 
   final AnimationController iconAnimationController;
@@ -88,9 +89,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                   ),
                                   child: ClipRRect(
                                     borderRadius: const BorderRadius.all(Radius.circular(100.0)),
-                                    child: (true)
-                                        ? Image.asset(Res.IMG)
-                                        : Image.asset(Res.logo_2),//Image.network(state.user.photoMail!),
+                                    child: //(true) ?
+                                    Image.asset(Res.IMG)
+                                        //: Image.asset(Res.logo_2),//Image.network(state.user.photoMail!),
                                   ),
                                 ),
                               ),
@@ -228,7 +229,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
-  _checkForBackup(){
+  void _checkForBackup(){
     Log.i('++++++++++ Backup SnackBar ++++++++++');
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -277,7 +278,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     padding: EdgeInsets.all(4.0),
                   ),
                   listData.isAssetsImage
-                      ? Container(
+                      ? SizedBox(
                           width: 24,
                           height: 24,
                           child: Image.asset(listData.imageName,
@@ -314,7 +315,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                 .iconAnimationController
                                 .value - 1.0), 0.0, 0.0),
                         child: Padding(
-                          padding: EdgeInsets.only(top: 8, bottom: 8),
+                          padding: const EdgeInsets.only(top: 8, bottom: 8),
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             height: 46,
@@ -348,21 +349,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
 class DrawerList {
   DrawerList({
+    required this.index,
     this.isAssetsImage = false,
     this.labelName = '',
-    Icon
-    ? icon,
-    Icon
-    ? iconSelected,
-    required this.index,
+    Icon? icon,
+    Icon? iconSelected,
     this.imageName = '',
-  }):
-        //assert(icon != null &&  isAssetsImage == false),
-        this.icon = icon
-            ?? Icon(null),
-        this.iconSelected = iconSelected
-            ?? icon
-            ?? Icon(null);
+  }):   icon = icon ?? const Icon(null),
+        iconSelected = iconSelected ?? icon ?? const Icon(null);
 
   String labelName;
   Icon icon;
@@ -373,79 +367,58 @@ class DrawerList {
 
   static List<DrawerList> drawerList = <DrawerList>[
     DrawerList(
-        index: DrawerIndex.HOME,
+        index: DrawerIndex.home,
         labelName: 'Recent notes',
         iconSelected: const Icon(Icons.file_copy_outlined),
-        icon: Icon(Icons.file_copy,)
+        icon: const Icon(Icons.file_copy,)
     ),
     DrawerList(
-      index: DrawerIndex.Offline,
+      index: DrawerIndex.offline,
       labelName: 'Offline notes',
-      icon: Icon(Icons.offline_pin_outlined),
-      iconSelected: Icon(Icons.offline_pin_rounded),
+      icon: const Icon(Icons.offline_pin_outlined),
+      iconSelected: const Icon(Icons.offline_pin_rounded),
     ),
     DrawerList(
-      index: DrawerIndex.Archived,
+      index: DrawerIndex.archived,
       labelName: 'Archived notes',
-      icon: Icon(Icons.archive_outlined),
-      iconSelected: Icon(Icons.archive),
+      icon: const Icon(Icons.archive_outlined),
+      iconSelected: const Icon(Icons.archive),
     ),
     DrawerList(
-      index: DrawerIndex.Calendar,
+      index: DrawerIndex.calendar,
       labelName: 'Calendar',
-      icon: Icon(Icons.calendar_today_outlined),
-      iconSelected: Icon(Icons.calendar_today),
+      icon: const Icon(Icons.calendar_today_outlined),
+      iconSelected: const Icon(Icons.calendar_today),
     ),
     DrawerList(
-      index: DrawerIndex.NoteTrash,
+      index: DrawerIndex.noteTrash,
       labelName: 'Trash',
-      icon: Icon(Icons.delete_outline,),
-      iconSelected: Icon(Icons.delete,),
+      icon: const Icon(Icons.delete_outline,),
+      iconSelected: const Icon(Icons.delete,),
     ),
-    /*DrawerList(
-        index: DrawerIndex.Add,
-        labelName: 'Publish',
-        icon: Icon(Icons.add_box_outlined),
-        iconSelected: Icon(Icons.add_box),
-      ),
-      DrawerList(
-          index: DrawerIndex.Message,
-          labelName: 'Message Chat',
-          icon: Icon(Icons.comment_outlined),
-          iconSelected: Icon(Icons.comment_rounded)
-
-      ),
-      DrawerList(
-        index: DrawerIndex.Help,
-        labelName: 'Help',
-        isAssetsImage: true,
-        imageName: 'assets/images/supportIcon.png',
-
-      ),*/
-
     DrawerList(
-      index: DrawerIndex.FeedBack,
+      index: DrawerIndex.feedBack,
       labelName: 'FeedBack',
-      icon: Icon(Icons.help_outline),
-      iconSelected: Icon(Icons.help),
+      icon: const Icon(Icons.help_outline),
+      iconSelected: const Icon(Icons.help),
     ),
     DrawerList(
-      index: DrawerIndex.Invite,
+      index: DrawerIndex.invite,
       labelName: 'Invite Friend',
-      icon: Icon(Icons.group_outlined),
-      iconSelected: Icon(Icons.group),
+      icon: const Icon(Icons.group_outlined),
+      iconSelected: const Icon(Icons.group),
     ),
     DrawerList(
-      index: DrawerIndex.Rate,
+      index: DrawerIndex.rate,
       labelName: 'Rate the app',
-      icon: Icon(Icons.rate_review_outlined),
-      iconSelected: Icon(Icons.rate_review),
+      icon: const Icon(Icons.rate_review_outlined),
+      iconSelected: const Icon(Icons.rate_review),
     ),
     DrawerList(
-      index: DrawerIndex.About,
+      index: DrawerIndex.about,
       labelName: 'About Us',
-      icon: Icon(Icons.info_outline_rounded),
-      iconSelected: Icon(Icons.info),
+      icon: const Icon(Icons.info_outline_rounded),
+      iconSelected: const Icon(Icons.info),
     ),
   ];
 

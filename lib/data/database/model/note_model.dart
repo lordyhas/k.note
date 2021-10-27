@@ -49,7 +49,7 @@ class NoteModel {
   /*:assert(isArchived == true && isDeleted == true,
   "cant be deleted and archived at same time")*/
 
-  static NoteModel fromMap(Map<String, dynamic> map){
+  factory NoteModel.fromMap(Map<String, dynamic> map){
     return NoteModel(
       noteId                  : map['id'],
       title               : map['title'],
@@ -85,7 +85,7 @@ class NoteModel {
     //'': this,
   };
 
-  toDisplay(){
+  void toDisplay(){
     Log.i("*** \n${toString()}{");
     asMap().forEach((key, value) => Log.i("$key : $value,"));
     Log.i('} \n***');
@@ -128,6 +128,7 @@ class Checklist extends DocumentModel{
   DateTime? creationTime;
   @Property(type: PropertyType.date)
   DateTime? modificationTime;
+  int savingModeValue;
   final boxTodoItems = ToMany<TodoItem>();
 
 
@@ -138,7 +139,8 @@ class Checklist extends DocumentModel{
     this.isAllChecked = false,
     this.creationTime,
     this.modificationTime,
-  });
+    SavingMode savingMode = SavingMode.cloud,
+  }):savingModeValue = savingMode.index;
 
 
   List<Map<String, dynamic>> get listMap {
@@ -151,11 +153,13 @@ class Checklist extends DocumentModel{
     'title'           : title,
     'is_all_checked'  : isAllChecked,
     'list'            : listMap,
+    'saving_mode'     : savingModeValue,
   };
   factory Checklist.fromMap(Map<String, dynamic> map) => Checklist(
     checklistId   : map['id'] as String,
     title         : map['title'] as String,
     isAllChecked  : map['is_all_checked'] as bool,
+    savingMode    : SavingMode.values[map['saving_mode'] as int],
     list          : (map['list'] as List<Map<String, dynamic>>).map(
             (e) => TodoItem.fromMap(e)).toList(),
   );

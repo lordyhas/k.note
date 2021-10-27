@@ -12,7 +12,7 @@ class DrawerUserController extends StatefulWidget {
     this.animatedIconData = AnimatedIcons.arrow_menu,
     this.menuView,
     this.drawerIsOpen,
-    this.screenIndex = DrawerIndex.HOME,
+    this.screenIndex = DrawerIndex.home,
   }) : super(key: key);
 
   final double

@@ -114,7 +114,12 @@ class AppView extends StatelessWidget {
                 color: Colors.white,
               ),
               colorScheme:
-                  ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan),
+                  ColorScheme.fromSwatch().copyWith(
+                    primary: Colors.teal,
+                    primaryVariant: Colors.tealAccent,
+                    secondary: Colors.amber.shade900,
+                    secondaryVariant: Colors.amber.shade700,
+                  ),
               /*bottomNavigationBarTheme: const BottomNavigationBarThemeData(
                   backgroundColor: Colors.white,
                 ),*/
