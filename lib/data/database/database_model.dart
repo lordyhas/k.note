@@ -8,9 +8,9 @@ import 'package:intl/intl.dart';
 part 'model/user_data.dart';
 part 'model/note_model.dart';
 
-part 'model/LocationData.dart';
+part 'model/location_data.dart';
 
-part 'model/AppData.dart';
+part 'model/app_data.dart';
 
 //part '';
 //part '';

@@ -52,7 +52,7 @@ class UserData extends DataToMap{
 
   @override
   void toDisplay() {
-    print(toString());
+    debugPrint(toString());
   }
 
 

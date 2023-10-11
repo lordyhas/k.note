@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../objectbox.g.dart';
 import '../values.dart';
 import 'database_model.dart';
-import 'model/SettingData.dart';
+import 'model/setting_data.dart';
 
 class ObjectBoxManager {
 
