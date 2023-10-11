@@ -1,12 +1,10 @@
 
-import 'package:objectbox/objectbox.dart';
+import 'package:flutter/foundation.dart';
 
-@Entity()
 class SettingAppData {
   bool? isNotificationOn;
   bool? isSync;
   bool? isSyncWithMail;
-  @Transient()
   DateTime now = DateTime.now();
   int id = 0;
   String? phoneName;
@@ -57,10 +55,10 @@ class SettingAppData {
       'location': this.location,
       'create_at': this.createAt,
     };
-    print("*** \n${this.toString()}{");
+    debugPrint("*** \n${toString()}{");
 
-    map.forEach((key, value) => print("$key : $value,"));
-    print('} \n***');
+    map.forEach((key, value) => debugPrint("$key : $value,"));
+    debugPrint('} \n***');
   }
 }
   /*//@override

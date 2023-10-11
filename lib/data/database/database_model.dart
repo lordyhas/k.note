@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-part 'model/UserData.dart';
+part 'model/user_data.dart';
 part 'model/note_model.dart';
 
 part 'model/LocationData.dart';

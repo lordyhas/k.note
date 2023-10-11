@@ -1,4 +1,5 @@
 //ignore_for_file : owercase_with_underscores
+/*
 import 'dart:io';
 
 
@@ -103,29 +104,5 @@ class ObjectBoxManager {
 
   }
 
-  /*Future<bool> update_() async {
-    bool value = false;
-    Store store = await openStoreBox();
-
-    store.close();
-    return value;
-
-  }
-  Future<bool> add() async {
-    bool value = false;
-    Store store = await openStoreBox();
-
-    store.close();
-    return value;
-
-  }
-  Future<void> get_() async {
-    bool value = false;
-    Store store = await openStoreBox();
-
-    store.close();
-
-
-  }*/
-
 }
+*/
