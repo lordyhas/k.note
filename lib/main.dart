@@ -11,7 +11,6 @@ import 'package:knote/src/pages/login/signup_and_login.dart';
 import 'data/app_bloc.dart';
 import 'data/authentication_repository.dart';
 import 'data/database/firebase_manager.dart';
-import 'data/theme_and_language_cubit.dart';
 import 'data/values.dart';
 import 'navigation_home_screen.dart';
 

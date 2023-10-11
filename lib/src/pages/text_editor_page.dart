@@ -1,5 +1,5 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
@@ -34,7 +34,7 @@ class _TextEditorState extends State<TextEditor>  {
   late TextEditingController _textController;
   late TextEditingController _titleController;
   final FirebaseManager _firebaseManager =  FirebaseManager();
-  late final user;
+  late final  user;
 
   bool isNoteInCloud = false;
 
