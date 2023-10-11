@@ -6,7 +6,7 @@ class InviteFriend extends StatefulWidget {
   const InviteFriend({Key? key}) : super(key: key);
 
   @override
-  _InviteFriendState createState() => _InviteFriendState();
+  State<InviteFriend> createState() => _InviteFriendState();
 }
 
 class _InviteFriendState extends State<InviteFriend> {
@@ -83,11 +83,11 @@ class _InviteFriendState extends State<InviteFriend> {
                           );
 
                         },
-                        child: Center(
+                        child: const Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const <Widget>[
+                            children: <Widget>[
                               Icon(
                                 Icons.share,
                                 color: Colors.white,
