@@ -1,7 +1,4 @@
 
-
-
-import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +25,7 @@ class TextEditor extends StatefulWidget {
     return MaterialPageRoute<void>(builder: (_) => TextEditor(note:note));
   }
   @override
-  _TextEditorState createState() => _TextEditorState();
+  State<TextEditor> createState() => _TextEditorState();
 }
 
 class _TextEditorState extends State<TextEditor>  {
