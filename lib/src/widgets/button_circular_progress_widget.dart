@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-enum _ProgressStep{zero, one, two}
+//enum _ProgressStep{zero, one, two}
 
 class ProgressButton extends StatefulWidget {
 
@@ -27,14 +27,14 @@ class ProgressButton extends StatefulWidget {
 
 
   @override
-  _ProgressButtonState createState() => _ProgressButtonState();
+  State<ProgressButton> createState() => _ProgressButtonState();
 
 
 }
 
 class _ProgressButtonState extends State<ProgressButton> with TickerProviderStateMixin {
   int _state = 0;
-  _ProgressStep _progressStep = _ProgressStep.zero;
+  //final _ProgressStep _progressStep = _ProgressStep.zero;
   Animation? _animation;
   AnimationController? _controller;
   final GlobalKey _globalKey = GlobalKey();
@@ -69,16 +69,19 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
             shadowColor: Theme.of(context).primaryColor.withOpacity(0.8),
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(widget.radius ??25),
-            child: Container(
+            child: SizedBox(
               key: _globalKey,
               height: 48,
               width: _width,
-              child: ElevaButton(
-                animationDuration: Duration(milliseconds: 1000),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(widget.radius ?? 25),
+              child: ElevatedButton(
+                //animationDuration: Duration(milliseconds: 1000),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(widget.radius ?? 25),
+                  ),
                 ),
-                padding: EdgeInsets.all(0),
+
+                //padding: EdgeInsets.all(0),
                 child: setUpButtonChild(),
                 onPressed: () {
                   widget.onPressed!();
@@ -88,8 +91,8 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
                     }
                   });
                 },
-                elevation: 4,
-                color: Theme.of(context).primaryColor,
+                //elevation: 4,
+                //color: Theme.of(context).primaryColor,
               ),
             ),
           ),
