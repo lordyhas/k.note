@@ -10,16 +10,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 class FirebaseManager {
+  final User user;
+  FirebaseManager._(this.user);
+  FirebaseManager.empty() : this._(User.empty);
+  FirebaseManager.user(User user) : this._(user);
 
-  FirebaseManager(){
-    //FirebaseFirestore.enablePersistence();
-  }
-
-  factory FirebaseManager.init(){
+  factory FirebaseManager.init([User? user]){
     FirebaseFirestore.instance.settings = const Settings(
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
     );
-    return FirebaseManager();
+    return user == null ? FirebaseManager.empty() : FirebaseManager.user(user);
   }
 
   close(){}
@@ -31,12 +31,12 @@ class FirebaseManager {
       .collection('USERS');
   CollectionReference<Map<String, dynamic>>  colG = FirebaseFirestore.instance.collection('K_NOTE');
 
-
-  //CollectionReference get collectionUser => colG.doc('general_data').collection('USERS');
+  ///CollectionReference get collectionUser => colG.doc('general_data').collection('USERS');
   ///CollectionReference get collectionNote => colG.doc('general_data').collection('NOTES');
 
 
-  CollectionReference<Map<String, dynamic>>   collectionUserNote({required String userId}) => users.doc(userId).collection('notes');
+  CollectionReference<Map<String, dynamic>> collectionUserNote() => users
+      .doc(user.id).collection('notes');
 
   DocumentReference getDoc({required String docName }){
     return colG.doc(docName);
@@ -45,51 +45,38 @@ class FirebaseManager {
   Future<NoteModel?> getNoteInCloud({
     required String userId, required String noteId
   }) async {
-    var docSnap = await collectionUserNote(userId: userId).doc(noteId).get();
+    var docSnap = await collectionUserNote().doc(noteId).get();
 
     Map<String, dynamic> map = docSnap.data()!;
-    //map['id'] = docSnap.reference.id;
+
     if(docSnap.exists) return NoteModel.fromMap(map);
     return null;
-    /*.then((value){
-      if(value.exists) map = value.data()!;
-    });*/
-    //return map;
   }
 
   /// get all note by mail
 
 
-  Future<List<NoteModel>> getAllNoteInCloud({required User user}) async {
-    var docSnap = await collectionUserNote(userId: user.id!,)
+  Future<List<NoteModel>> getAllNoteInCloud() async {
+    var docSnap = await collectionUserNote()
         //.where('email', isEqualTo: user.email)
         .where('is_deleted', isEqualTo: false)
         .where('is_archived', isEqualTo: false)
         .get();
 
-        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-        print(user);
+    debugPrint("All Note for User => [$user]");
 
     List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
-    //List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
     if(maps.isNotEmpty ) {
       return  maps.map((e) => NoteModel.fromMap(e)).toList();
-      /*return List<NoteModel>.generate(maps.length,
-                (index) => NoteModel.fromMap(maps.elementAt(index))
-      );*/
     }
     return [];
-    /*.then((value){
-      if(value.exists) map = value.data()!;
-    });*/
-    //return map;
   }
 
   /// get all archived note by mail
 
 
-  Future<List<NoteModel>?> getAllArchivedNoteInCloud(User user) async {
-    var docSnap = await collectionUserNote(userId: user.id!,)
+  Future<List<NoteModel>?> getAllArchivedNoteInCloud() async {
+    var docSnap = await collectionUserNote()
         .where('email', isEqualTo: user.email)
         .where('is_deleted', isEqualTo: false)
         .where('is_archived', isEqualTo: true)
@@ -108,8 +95,8 @@ class FirebaseManager {
   /// get all deleted note by mail
 
 
-  Future<List<NoteModel>?> getAllDeletedNoteInCloud(User user) async {
-    var docSnap = await collectionUserNote(userId: user.id!,)
+  Future<List<NoteModel>?> getAllDeletedNoteInCloud() async {
+    var docSnap = await collectionUserNote()
         .where('email', isEqualTo: user.email)
         .where('is_deleted', isEqualTo: true)
         .where('is_archived', isEqualTo: false)
@@ -121,22 +108,17 @@ class FirebaseManager {
               .fromMap(maps.elementAt(index)
           )
       );
-    //return null;
-    /*.then((value){
-      if(value.exists) map = value.data()!;
-    });*/
-    //return map;
   }
 
   ///  this method will add [NoteData] in Cloud firebase
   ///
   ///
-  Future<void> addNoteInCloud({required NoteModel note, required String userId}) {
+  Future<void> addNoteInCloud({required NoteModel note,}) {
     //note.creationTime = new DateTime.now();
     //todo: use own firebase id
-    return collectionUserNote(userId: userId).doc(note.id).set(note.asMap())
+    return collectionUserNote().doc(note.id).set(note.asMap())
         .then((value) {
-            Log.i("Note Added : " + note.toString());
+            Log.i("Note Added : $note");
             return note.toDisplay();
         })
         .catchError((error) => Log.i("Failed to add note "
@@ -149,13 +131,13 @@ class FirebaseManager {
   ///
   Future<void> setNoteInCloud(String userId,{required NoteModel note}) {
     //note.creationTime = new DateTime.now();
-    return collectionUserNote(userId: userId,).doc(note.id).set(note.id);
+    return collectionUserNote().doc(note.id).set(note.id);
   }
 
   //
 
-  Future<void> permanentlyDeleteNote({required String userId, required String noteId}) {
-    return collectionUserNote(userId: userId)
+  Future<void> permanentlyDeleteNote({required String noteId}) {
+    return collectionUserNote()
         .doc(noteId)
         .delete()
         .then((value) => Log.i("Note :$noteId Deleted"))
@@ -163,32 +145,29 @@ class FirebaseManager {
   }
 
   Future<void> deleteNote({
-    required String userId,
     required String noteId,
   }) async {
     String key = 'is_deleted';
-    return collectionUserNote(userId: userId).doc(noteId).update({key:true})
+    return collectionUserNote().doc(noteId).update({key:true})
         .then((v) => Log.i("Note : $noteId move in trash"))
         .catchError((error)=> Log.i("Failed to put in trash : $error"));
   }
 
   Future<void> restoreDeletedNote({
-    required String userId,
     required String noteId,
   }) async {
     String key = 'is_deleted';
-    return collectionUserNote(userId: userId).doc(noteId).update({key:false})
+    return collectionUserNote().doc(noteId).update({key:false})
         .then((v) => Log.i('Restore from trash,'))
         .catchError((error) => Log.i("Failed to restore: $error"));
   }
 
   Future<void> archiveNote({
-    required String userId,
     required String noteId,
     required bool archived,
   }) async {
     String key = 'is_archived';
-    return collectionUserNote(userId: userId).doc(noteId).update({key:archived})
+    return collectionUserNote().doc(noteId).update({key:archived})
         .then((v) => Log.i('Restore from trash : $archived,'))
         .catchError((error) => Log.i("Failed to archive: $error"));
   }
@@ -201,7 +180,7 @@ class FirebaseManager {
     required String id,
     required String value}) async {
     String key = 'text';
-    return collectionUserNote(userId: userId).doc(id).update({key:value})
+    return collectionUserNote().doc(id).update({key:value})
         .then((v) => Log.i('Updated Text'))
         .catchError((error)=> Log.i("Failed to update: $error"));
   }
@@ -213,7 +192,7 @@ class FirebaseManager {
     required String id,
     required String value}) async {
     String key = 'title';
-    return collectionUserNote(userId: userId).doc(id).update({key:value});
+    return collectionUserNote().doc(id).update({key:value});
   }
 
   /// Update data with map by {key : value}
@@ -249,8 +228,8 @@ class FirebaseManager {
 
   Future<void> addData({required Map<String, dynamic> dataAsMap, collection}){
     return collection.add(dataAsMap)
-        .then((value) => print("Data Added "))
-        .catchError((error) => print("Failed to add data: $error"));
+        .then((value) => debugPrint("Data Added "))
+        .catchError((error) => debugPrint("Failed to add data: $error"));
 
   }
 
@@ -258,9 +237,9 @@ class FirebaseManager {
   Future<void> updateUserLocation(userId,GeoPoint location) {
     return users
         .doc(userId)
-        .update({'location': GeoPoint(53.483959, -2.244644)})
-        .then((value) => print("User Location Updated"))
-        .catchError((error) => print("Failed to update location user: $error"));
+        .update({'location': const GeoPoint(53.483959, -2.244644)})
+        .then((value) => debugPrint("User Location Updated"))
+        .catchError((error) => debugPrint("Failed to update location user: $error"));
   }
 
 
@@ -276,7 +255,7 @@ class FirebaseManager {
             //print('Document exists on the database');
             return users.doc(user.id)
                 .set(user.copyWith(isDataCloud:true).asMap())
-                .then((value) => Log.i("User Added : " + user.toString()))
+                .then((value) => Log.i("User Added : $user"))
                 .catchError((error) => Log.i("Failed to add user in cloud: $error"));
           }
         });
@@ -317,8 +296,8 @@ class FirebaseManager {
   ///
   Future<void> addUserData({required UserData userData}) {
     return users.add(userData.asMap())
-        .then((value) => print("User Added : " + userData.toString()))
-        .catchError((error) => print("Failed to add user: $error"));
+        .then((value) => debugPrint("User Added : $userData"))
+        .catchError((error) => debugPrint("Failed to add user: $error"));
   }
 
 
