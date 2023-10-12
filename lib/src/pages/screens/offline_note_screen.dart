@@ -1,23 +1,26 @@
 part of screens;
+
 class OfflineScreen extends StatefulWidget {
+  const OfflineScreen({super.key});
+
   @override
-  _OfflineScreenState createState() => _OfflineScreenState();
+  State<OfflineScreen> createState() => _OfflineScreenState();
 }
 
 class _OfflineScreenState extends State<OfflineScreen> {
-  FirebaseManager fbm = new FirebaseManager();
+  late FirebaseManager fbm;
   @override
   Widget build(BuildContext context) {
-    var user = BlocProvider.of<AuthenticationBloc>(context).state.user;
-    return Container(
-        child: Column(
+    FirebaseManager.user(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
+    return Column(
 
-          children: [
-            Spacer(),
-            ComingSoon(),
-            Spacer(),
-          ],
-        )
+      children: [
+        const Spacer(),
+        ComingSoon(),
+        const Spacer(),
+      ],
     );
   }
 }

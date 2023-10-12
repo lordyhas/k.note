@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   late AnimationController animationController;
   bool multiple = false;
-  final FirebaseManager _firebaseManager = FirebaseManager();
+  late final FirebaseManager _firebaseManager;
   late final user;
   bool searching = false;
 
@@ -70,7 +70,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    user = BlocProvider.of<AuthenticationBloc>(context).state.user;
+
+    _firebaseManager = FirebaseManager.user(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
 
@@ -210,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             }
                             return StreamBuilder<List<NoteModel>>(
                               stream: _firebaseManager
-                                  .getAllNoteInCloud(user: user)
+                                  .getAllNoteInCloud()
                                   .asStream(),
                               //_firebaseManager.getAllNoteInCloud(user.email),
                               builder: (context, snapshot) {
@@ -218,11 +221,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 if (!snapshot.hasData) {
                                   return const CircularProgressMultiBar();
                                 } else if (snapshot.hasError) {
-                                  return Center(
+                                  return const Center(
                                     child: SizedBox(
                                       height: 200,
                                       child: Column(
-                                        children: const [
+                                        children: [
                                           Icon(
                                             Icons.wifi_off,
                                             size: 100,
@@ -237,11 +240,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   );
                                 }
                                 else if (snapshot.data!.isEmpty) {
-                                  return Center(
+                                  return const  Center(
                                     child: SizedBox(
                                       height: 200,
                                       child: Column(
-                                        children: const [
+                                        children:  [
                                           Icon(
                                             Icons
                                                 .sentiment_dissatisfied_rounded,
@@ -255,24 +258,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       ),
                                     ),
                                   );
-                                }
-                                //if (snapshot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
-
-                                else {
+                                } else {
                                   var data = snapshot.data!.map((note) {
-                                    //var map = document.data();
-                                    //print('+++++++ \n $map \n ++++++++');
-                                    return note; //NoteModel.fromMap(map);
+                                    return note;
                                   }).toList();
-
-                                  //data = data.
 
                                   return GridView(
                                     padding: const EdgeInsets.only(
                                         top: 0, left: 12, right: 12),
                                     physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.vertical,
-                                    children: List<Widget>.generate(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: multiple ? 2 : 1,
+                                      mainAxisSpacing: 4.0,
+                                      crossAxisSpacing: 12.0,
+                                      childAspectRatio: multiple ? 1.5 : 3,
+                                    ),
+                                    children:  List<Widget>.generate(
                                       snapshot.data!.length,
                                       (int index) {
                                         final int count = snapshot.data!.length;
@@ -325,13 +328,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         );
                                       },
                                     ),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: multiple ? 2 : 1,
-                                      mainAxisSpacing: 4.0,
-                                      crossAxisSpacing: 12.0,
-                                      childAspectRatio: multiple ? 1.5 : 3,
-                                    ),
                                   );
                                 }
                               },
@@ -379,9 +375,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
             title: const Text("Move in archive"),
             onTap: (){
-              _firebaseManager.deleteNote(
-                  noteId: note.id,
-                  userId: user.id);
+              _firebaseManager.deleteNote(noteId: note.id,);
               Navigator.of(context).pop();
               setState(() {});
               ScaffoldMessenger.of(context)
@@ -418,16 +412,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     actions: [
                       TextButton(
-                        child: const Text('Cancel'),
                         onPressed:
                         Navigator.of(context).pop,
+                        child: const Text('Cancel'),
                       ),
                       TextButton(
                         child: const Text('Delete'),
                         onPressed: () {
-                          _firebaseManager.deleteNote(
-                              noteId: note.id,
-                              userId: user.id);
+                          _firebaseManager.deleteNote(noteId: note.id);
                           Navigator.of(context).pop();
                           setState(() {});
                           ScaffoldMessenger.of(context)
