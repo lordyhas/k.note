@@ -44,12 +44,12 @@ class NavigationHomeScreen extends StatefulWidget {
   }
 
   @override
-  _NavigationHomeScreenState createState() => _NavigationHomeScreenState();
+  State<NavigationHomeScreen> createState() => _NavigationHomeScreenState();
 }
 
 class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
-  final FirebaseManager _firebaseManager = FirebaseManager();
+  late final FirebaseManager _firebaseManager;
   Widget? screenView;
   DrawerIndex? drawerIndex;
   var text;
@@ -59,6 +59,9 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   void initState() {
     drawerIndex = DrawerIndex.HOME;
     screenView = const HomeScreen();
+    _firebaseManager = FirebaseManager.user(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
     super.initState();
   }
 
