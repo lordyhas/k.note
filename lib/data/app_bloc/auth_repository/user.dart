@@ -1,10 +1,5 @@
-
-
-
-import 'dart:typed_data';
-
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+
 
 
 /// {@template user}
@@ -32,24 +27,24 @@ class User extends Equatable {
     this.verifiedAccount = false,
     this.isDataCloud = false,
     this.isBlocked = false,
-  })  : assert(email != null),
-        assert(id != null);
+  });  //: assert(email != null),
+        //assert(id != null);
 
 
 
 
   /// The current user's email address.
-  final String? email;
+  final String email;
 
   /// The current user's id.
-  final String? id;
+  final String id;
 
   /// The current user's name (display name).
   final String? name;
 
   /// Url for the current user's photo.
   final String? photoMail;
-  final photoCloud;
+  final dynamic photoCloud;
 
   ///
   final DateTime? creationDate;
@@ -69,7 +64,7 @@ class User extends Equatable {
   final bool? isAnonymous;
 
   /// The current location, mobile position
-  final location;
+  final dynamic location;
 
   /// If all value is okay and verified in Database will be true, else false
   final bool verifiedAccount;
@@ -95,8 +90,8 @@ class User extends Equatable {
     photoCloud,
     String? phoneNumber,
     bool? isAnonymous,
-    bool? isEmail,
-    DateTime? creationTime,
+    bool? isCheckMail,
+    DateTime? creationDate,
     DateTime? lastConnection,
     DateTime? lastDate,
     location,
@@ -112,9 +107,9 @@ class User extends Equatable {
     photoCloud: photoCloud ?? this.photoCloud,
     phoneNumber: phoneNumber ?? this.phoneNumber,
     lastDate: lastDate ?? this.lastDate,
-    creationDate: creationTime ?? this.creationDate,
+    creationDate: creationDate ?? this.creationDate,
     isAnonymous: isAnonymous ?? this.isAnonymous,
-    isCheckMail: isEmail ?? this.isCheckMail,
+    isCheckMail: isCheckMail ?? this.isCheckMail,
     lastConnection: lastConnection ?? this.lastConnection,
     verifiedAccount: verifiedAccount ?? this.verifiedAccount,
     location: location ?? this.location,
@@ -125,20 +120,20 @@ class User extends Equatable {
 
 
   Map<String, dynamic> asMap() => {
-    'id'                : this.id,
-    'name'              : this.name,
-    'email'             : this.email,
-    'photo_profile'     : this.photoCloud,
-    'photo_mail'        : this.photoMail,
-    'phone_number'      : this.phoneNumber,
-    'last_login'        : this.lastDate,
-    'creation_time'     : this.creationDate,
-    'last_connection'   : this.lastConnection ?? DateTime.now() ,
-    'is_check_mail'     : this.isCheckMail,
-    'verified_account'  : this.verifiedAccount,
-    'location'          : this.location,
-    'is_data_cloud'     : this.isDataCloud,
-    'isBlocked'         : this.isBlocked,
+    'id'                : id,
+    'name'              : name,
+    'email'             : email,
+    'photo_profile'     : photoCloud,
+    'photo_mail'        : photoMail,
+    'phone_number'      : phoneNumber,
+    'last_login'        : lastDate,
+    'creation_time'     : creationDate,
+    'last_connection'   : lastConnection ?? DateTime.now() ,
+    'is_check_mail'     : isCheckMail,
+    'verified_account'  : verifiedAccount,
+    'location'          : location,
+    'is_data_cloud'     : isDataCloud,
+    'isBlocked'         : isBlocked,
     'field_field'       : null,
     //'':this,
 

@@ -1,17 +1,12 @@
 
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../database/firebase_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:flutter/services.dart';
-//import 'package:firebase_auth/firebase_auth.dart' as firebase_fb_auth;
-//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 //import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuthException;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:meta/meta.dart';
+
 
 
 import 'user.dart';
@@ -101,7 +96,7 @@ class AuthenticationRepository {
 
 
     } on Exception {
-      print("Exception : Sign Up With Mail failed => $Exception ");
+      debugPrint("Exception : Sign Up With Mail failed => $Exception ");
       throw SignUpFailure();
     }
     /*on firebase_auth.FirebaseAuthException catch (e) {
@@ -120,7 +115,7 @@ class AuthenticationRepository {
     try {
       await _firebaseAuth.signInAnonymously();
     } on Exception {
-      print("Exception : Login Anonymously failed => $Exception ");
+      debugPrint("Exception : Login Anonymously failed => $Exception ");
       throw LogInAnonymouslyFailure();
     }
   }
@@ -140,7 +135,7 @@ class AuthenticationRepository {
 
       await _firebaseAuth.signInWithCredential(credential);
     } on Exception /*firebase_auth.FirebaseAuthException catch(e)*/ {
-      print("Exception : Login With Google failed => $Exception ");
+      debugPrint("Exception : Login With Google failed => $Exception ");
       throw LogInWithGoogleFailure();
     }
   }
@@ -182,17 +177,7 @@ class AuthenticationRepository {
     }
   }
 
-  Future<void> __signInWithFacebook() async {
-    // Trigger the sign-in flow
-    /*final LoginResult result = await FacebookAuth.instance.login();
 
-    // Create a credential from the access token
-    final FacebookAuthCredential facebookAuthCredential =
-    FacebookAuthProvider.credential(result.accessToken.token);*/
-
-    // Once signed in, return the UserCredential
-    //return await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  }
 
   /// Signs out the current user which will emit
   /// [User.empty] from the [userAuth] Stream.
@@ -216,7 +201,7 @@ extension on firebase_auth.User {
   User get toUser {
 
     return User(
-        id: uid, email: email,
+        id: uid, email: email!,
         name: displayName, photoMail: photoURL,
         phoneNumber: phoneNumber,
         lastDate: metadata.lastSignInTime,
