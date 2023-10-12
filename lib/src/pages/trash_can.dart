@@ -3,15 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 
+
 class NoteTrash extends StatefulWidget {
   const NoteTrash({Key? key}) : super(key: key);
 
   @override
-  _NoteTrashState createState() => _NoteTrashState();
+  State<NoteTrash> createState() => _NoteTrashState();
 }
 
 class _NoteTrashState extends State<NoteTrash> {
-  FirebaseManager fbm = FirebaseManager();
+  late FirebaseManager fbm ;
 
   /*String troncate(String text){
     if(text.length > 150){
@@ -21,7 +22,10 @@ class _NoteTrashState extends State<NoteTrash> {
 
   @override
   Widget build(BuildContext context) {
-    var user = BlocProvider.of<AuthenticationBloc>(context).state.user;
+
+    fbm = FirebaseManager.user(
+        BlocProvider.of<AuthenticationBloc>(context).state.user
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -29,16 +33,16 @@ class _NoteTrashState extends State<NoteTrash> {
         title: const Text("Corbeille"),
       ),
       body: FutureBuilder<List<NoteModel>?>(
-          future: fbm.getAllDeletedNoteInCloud(user),
+          future: fbm.getAllDeletedNoteInCloud(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.data!.isEmpty) {
-              return Center(
+              return const Center(
                 child: Column(
-                  children: const [
+                  children:  [
                     Icon(
                       Icons.file_copy_outlined,
                       size: 100,
@@ -95,7 +99,6 @@ class _NoteTrashState extends State<NoteTrash> {
                               onPressed: () {
                                 fbm.restoreDeletedNote(
                                     noteId: snapshot.data![i].id,
-                                    userId: user.id!
                                 );
                                 setState(() {});
                                 Navigator.of(context).pop();
@@ -105,8 +108,7 @@ class _NoteTrashState extends State<NoteTrash> {
                               child: const Text('Delete forever'),
                               onPressed: () {
                                 fbm.permanentlyDeleteNote(
-                                    noteId: snapshot.data![i].id,
-                                    userId: user.id!
+                                  noteId: snapshot.data![i].id,
                                 );
                                 setState(() {});
                                 Navigator.of(context).pop();
