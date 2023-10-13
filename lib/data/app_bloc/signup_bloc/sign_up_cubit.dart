@@ -14,7 +14,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       : /*assert(_authenticationRepository != null),*/
         super(const SignUpState());
 
-  final AuthenticationRepository _authenticationRepository;
+  final AuthRepository _authenticationRepository;
   User? _user = FirebaseAuth.instance.currentUser;
 
   void emailChanged(String value) {

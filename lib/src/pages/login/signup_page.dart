@@ -19,7 +19,7 @@ class SignUpPage extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: BlocProvider<SignUpCubit>(
           create: (_) => SignUpCubit(
-            context.read<AuthenticationRepository>(),
+            context.read<AuthRepository>(),
           ),
           child: SignUpForm(),
         ),
