@@ -14,8 +14,85 @@ import 'user.dart';
 /// Thrown if during the sign up process if a failure occurs.
 class SignUpFailure implements Exception {}
 
+class SignUpWithEmailAndPasswordFailure implements Exception {
+  /// {@macro sign_up_with_email_and_password_failure}
+  const SignUpWithEmailAndPasswordFailure([
+    this.message = 'An unknown exception occurred.',
+  ]);
+
+  /// Create an authentication message
+  /// from a firebase authentication exception code.
+  /// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/createUserWithEmailAndPassword.html
+  factory SignUpWithEmailAndPasswordFailure.fromCode(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return const SignUpWithEmailAndPasswordFailure(
+          'Email is not valid or badly formatted.',
+        );
+      case 'user-disabled':
+        return const SignUpWithEmailAndPasswordFailure(
+          'This user has been disabled. Please contact support for help.',
+        );
+      case 'email-already-in-use':
+        return const SignUpWithEmailAndPasswordFailure(
+          'An account already exists for that email.',
+        );
+      case 'operation-not-allowed':
+        return const SignUpWithEmailAndPasswordFailure(
+          'Operation is not allowed.  Please contact support.',
+        );
+      case 'weak-password':
+        return const SignUpWithEmailAndPasswordFailure(
+          'Please enter a stronger password.',
+        );
+      default:
+        return const SignUpWithEmailAndPasswordFailure();
+    }
+  }
+
+  /// The associated error message.
+  final String message;
+}
+
+
 /// Thrown during the login process if a failure occurs.
-class LogInWithEmailAndPasswordFailure implements Exception {}
+//class LogInWithEmailAndPasswordFailure implements Exception {}
+/// Thrown during the login process if a failure occurs.
+class LogInWithEmailAndPasswordFailure implements Exception {
+  /// {@macro log_in_with_email_and_password_failure}
+  const LogInWithEmailAndPasswordFailure([
+    this.message = 'An unknown exception occurred.',
+  ]);
+
+  /// Create an authentication message
+  /// from a firebase authentication exception code.
+  factory LogInWithEmailAndPasswordFailure.fromCode(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return const LogInWithEmailAndPasswordFailure(
+          'Email is not valid or badly formatted.',
+        );
+      case 'user-disabled':
+        return const LogInWithEmailAndPasswordFailure(
+          'This user has been disabled. Please contact support for help.',
+        );
+      case 'user-not-found':
+        return const LogInWithEmailAndPasswordFailure(
+          'Email is not found, please create an account.',
+        );
+      case 'wrong-password':
+        return const LogInWithEmailAndPasswordFailure(
+          'Incorrect password, please try again.',
+        );
+      default:
+        return const LogInWithEmailAndPasswordFailure();
+    }
+  }
+
+  /// The associated error message.
+  final String message;
+}
+
 
 /// Thrown during the login process if a failure occurs.
 class LogInAnonymouslyFailure implements Exception {}
@@ -28,17 +105,45 @@ class LogInWithGoogleFailure implements Exception {}
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
 
+
+
+class CacheClient {
+  /// {@macro cache_client}
+  CacheClient() : _cache = <String, Object>{};
+
+  final Map<String, Object> _cache;
+
+
+  /// Writes the provide [key], [value] pair to the in-memory cache.
+  void write<T extends Object>({required String key, required T value}) {
+    // todo : listen to my hive database
+    _cache[key] = value;
+  }
+
+  /// Looks up the value for the provided [key].
+  /// Defaults to `null` if no value exists for the provided key.
+  T? read<T extends Object>({required String key}) {
+    final value = _cache[key];
+    if (value is T) return value;
+    return null;
+  }
+}
+
+
 /// {@template authentication_repository}
 /// Repository which manages user authentication.
 /// {@endtemplate}
-class AuthenticationRepository {
+class AuthRepository {
   /// {@macro authentication_repository}
-  AuthenticationRepository({
+  AuthRepository({
+    CacheClient? cache,
     firebase_auth.FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
-  })  : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
+  })  :  _cache = cache ?? CacheClient(),
+        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
 
+  final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
@@ -64,18 +169,34 @@ class AuthenticationRepository {
       }   */
 
 
+
+  /// Whether or not the current environment is web
+  /// Should only be overriden for testing purposes. Otherwise,
+  /// defaults to [kIsWeb]
+  @visibleForTesting
+  bool isWeb = kIsWeb;
+
+  /// User cache key.
+  /// Should only be used for testing purposes.
+  @visibleForTesting
+  static const userCacheKey = '__user_cache_key__';
+
   /// Stream of [User] which will emit the current user when
   /// the authentication state changes.
   ///
   /// Emits [User.empty] if the user is not authenticated.
-  Stream<User> get userAuth {
+  Stream<User> get user {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      if(firebaseUser != null) {
-        return firebaseUser.toUser;
-      }
-
-      return User.empty;
+      final user = firebaseUser == null ? User.empty : firebaseUser.toUser;
+      _cache.write(key: userCacheKey, value: user);
+      return user;
     });
+  }
+
+  /// Returns the current cached user.
+  /// Defaults to [User.empty] if there is no cached user.
+  User get currentUser {
+    return _cache.read<User>(key: userCacheKey) ?? User.empty;
   }
 
   /// Creates a new user with the provided [email] and [password].
@@ -180,7 +301,7 @@ class AuthenticationRepository {
 
 
   /// Signs out the current user which will emit
-  /// [User.empty] from the [userAuth] Stream.
+  /// [User.empty] from the [user] Stream.
   ///
   /// Throws a [LogOutFailure] if an exception occurs.
   Future<void> logOut() async {
