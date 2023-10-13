@@ -57,7 +57,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          BlocBuilder<AuthenticationBloc,AuthenticationState>(
+          BlocBuilder<AuthenticationBloc,AuthState>(
             builder: (context, state) {
               return   Container(
                   width: double.infinity,
@@ -144,7 +144,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             height: 1,
             color: Theme.of(context).primaryColor.withOpacity(0.6),
           ),
-          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          BlocBuilder<AuthenticationBloc, AuthState>(
               builder: (context, state) => Column(
                 children: <Widget>[
 
@@ -204,7 +204,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                 onPressed: () {
                                   if(state.status == AuthenticationStatus.authenticated) {
                                     BlocProvider.of<AuthenticationBloc>(context)
-                                        .add(AuthenticationLogoutRequested());
+                                        .add(AuthLogoutRequested());
                                   }
                                   Navigator.of(context).pop(true);
                                 },
