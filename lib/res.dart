@@ -10,7 +10,7 @@ class Res {
   static const String bg_image3 = "assets/bg_image/bg_image3.jpg";
   static const String feedbackImage = "assets/images/feedbackImage.png";
   static const String helpImage = "assets/images/helpImage.png";
-  static const String IMG = "assets/avatar/IMG.jpg";
+  static const String IMG = "assets/avatar/--dan-img.jpg";
   static const String inviteImage = "assets/images/inviteImage.png";
   static const String logo_1 = "assets/images/logo_1.png";
   static const String logo_2 = "assets/images/logo_2.png";

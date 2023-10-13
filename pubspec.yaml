@@ -101,7 +101,7 @@ flutter:
 
   assets:
     - assets/avatar/avatar_image1.jpg
-    - assets/avatar/IMG.jpg
+    - assets/avatar/--dan-img.jpg
     - assets/bg_image/bg1.png
     - assets/bg_image/bg2.png
     - assets/bg_image/bg3.png
