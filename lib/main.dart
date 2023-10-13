@@ -22,7 +22,7 @@ void main() async {
   EquatableConfig.stringify = kReleaseMode;
   Bloc.observer = AppBlocObserver();
   FirebaseManager.init();
-  runApp(App(authenticationRepository: AuthenticationRepository()));
+  runApp(App(authenticationRepository: AuthRepository()));
 }
 
 class App extends StatelessWidget {
@@ -31,7 +31,7 @@ class App extends StatelessWidget {
     required this.authenticationRepository,
   })  : super(key: key);
 
-  final AuthenticationRepository authenticationRepository;
+  final AuthRepository authenticationRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class App extends StatelessWidget {
       value: authenticationRepository,
       child: BlocProvider(
         create: (_) => AuthenticationBloc(
-          authenticationRepository: authenticationRepository,
+          authRepository: authenticationRepository,
         ),
         child: AppView(),
       ),
@@ -79,16 +79,16 @@ class AppView extends StatelessWidget {
         systemNavigationBarColor: Colors.white,
         systemNavigationBarDividerColor: Colors.cyan.shade700,
         systemNavigationBarIconBrightness: Brightness.dark,
-
       ));
     }
     return MultiBlocProvider(
       providers: [
         BlocProvider<LanguageBloc>(
           create: (BuildContext context) => LanguageBloc(
-              LangState.values[1], defaultSystemLocale),
+              LangState.values[1], defaultSystemLocale,
+          ),
         ),
-        BlocProvider<StyleCubit>(create: (BuildContext context) => StyleCubit(),)
+        BlocProvider<StyleCubit>(create: (context) => StyleCubit())
       ],
       child: MaterialApp(
         navigatorKey: _navigatorKey,
@@ -113,21 +113,19 @@ class AppView extends StatelessWidget {
           iconTheme: const IconThemeData(
             color: Colors.white,
           ),
-          colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.cyan),
-          /*bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: Colors.white,
-          ),*/
-          //brightness: Brightness.dark
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            secondary: Colors.cyan,
+          ),
         ),
 
-        home: (BlocProvider.of<AuthenticationBloc>(context)
-            .state.status == AuthenticationStatus.authenticated)
-            ?  const NavigationHomeScreen() : null,
+        home: (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated)
+            ?  const NavigationHomeScreen()
+            : null,
         //home: const LoginPage(),
 
         onGenerateRoute: (_) => SplashPage.route(),
         builder: (context, child) {
-          return BlocListener<AuthenticationBloc, AuthenticationState>(
+          return BlocListener<AuthenticationBloc, AuthState>(
             child: child,
             listener: (context, state) {
               switch (state.status) {
