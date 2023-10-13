@@ -206,7 +206,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           bottom: false,
           child: Scaffold(
             //backgroundColor: StyleAppTheme.nearlyWhite,
-            floatingActionButton: BlocBuilder<AuthenticationBloc,AuthenticationState>(
+            floatingActionButton: BlocBuilder<AuthenticationBloc,AuthState>(
               builder: (context, state) {
                 switch(state.status){
                   case AuthenticationStatus.authenticated:
