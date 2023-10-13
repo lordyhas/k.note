@@ -5,7 +5,7 @@ enum SavingMode{cloud, local, cloudAndLocal}
 abstract class DocumentModel {}
 
 class NoteModel extends DocumentModel {
-  final id;
+  final dynamic id;
   String? title;
   String? text;
   final DateTime? creationTime;
@@ -35,7 +35,6 @@ class NoteModel extends DocumentModel {
       Color color = Colors.cyan, //this.color,
       this.reminderDate,
       SavingMode savingMode = SavingMode.cloud,
-
   }) :  colorValue = color.value,
         savingModeValue = savingMode.index;
 
@@ -79,9 +78,9 @@ class NoteModel extends DocumentModel {
   };
 
   toDisplay(){
-    print("*** \n${toString()}{");
-    asMap().forEach((key, value) => print("$key : $value,"));
-    print('} \n***');
+    debugPrint("*** \n${toString()}{");
+    asMap().forEach((key, value) => debugPrint("$key : $value,"));
+    debugPrint('} \n***');
   }
 }
 
@@ -125,8 +124,8 @@ class CheckList extends DocumentModel{
   factory CheckList.fromMap(Map<String, dynamic> map) => CheckList(
     title: map['title'] as String,
     isAllChecked: map['is_all_checked'] as bool,
-    list: (map['list'] as List<Map<String, dynamic>>).map(
-            (e) => TodoItem.fromMap(e)).toList(),
+    list: (map['list'] as List<Map<String, dynamic>>)
+        .map((e) => TodoItem.fromMap(e)).toList(),
   );
 
 
