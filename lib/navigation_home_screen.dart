@@ -1,16 +1,10 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:knote/data/app_bloc/auth_repository/repository.dart';
-import 'package:knote/data/app_bloc/auth_repository/repository.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/src/pages/text_editor_page.dart';
 import 'package:knote/src/pages/screens/calendar_screen.dart';
 import 'package:knote/widgets.dart';
 import 'package:utils_component/utils_component.dart';
 
-import './data/theme_and_language_cubit.dart';
 import './src/backgound_ui.dart';
 import './src/pages/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,26 +14,16 @@ import 'data/authentication_repository.dart';
 import 'data/values.dart';
 import 'src/pages/custom_drawer/drawer_user_controller.dart';
 import 'src/pages/custom_drawer/home_drawer.dart';
-//import 'feedback_screen.dart';
-//import 'help_screen.dart';
-//import 'home_screen.dart';
-//import 'invite_friend_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'src/pages/custom_drawer/home_drawer.dart';
-import 'data/value/styles.dart';
-import 'src/pages/screens/home_screen.dart';
-
 import 'src/pages/about_page.dart';
-import 'src/pages/screens.dart';
+
 import 'src/pages/trash_can.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   const NavigationHomeScreen({Key? key}) : super(key: key);
 
-
   static Route route() {
-    //if(kIsWeb) return MaterialPageRoute<void>(builder: (_) => HomePage());
     return MaterialPageRoute(builder: (_) => const NavigationHomeScreen());
   }
 
@@ -68,9 +52,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   @override
   void dispose() {
     super.dispose();
-    //_firebaseManager.close();
   }
-
 
   Future<bool> _willPopDialog() async {
     if (drawerIndex != DrawerIndex.HOME) {
@@ -100,55 +82,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             ],
           ))) ?? false ;
     }
-
   }
-  /*
-  Future<bool> _willPopDialog() async {
-    bool value = false;
-    await AwesomeDialog(
-      context: context,
-      dialogType: DialogType.WARNING,
-      headerAnimationLoop: false,
-      animType: AnimType.TOPSLIDE,
-      title: 'Warning',
-      desc: 'Are you sure you want to delete the item',
-      //btnCancelColor: Theme.of(context).,
-      btnCancelOnPress: () {
-        setState(() {
-          value = false;
-        });
-      },
-      //() => Navigator.of(context).pop(false),
-      btnOkColor: Theme.of(context).accentColor,
-      btnOkOnPress: () {
-        setState(() {
-          value = true;
-        });
-      }, //() => Navigator.of(context).pop(true)
-    ).show();
-    return value;
-    /*return (await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            "Are you sure",
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-          content: Text("Do you want to exit Exploress ?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text("No"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text("Yes"),
-            ),
-          ],
-        ))) ?? false;*/
-  }*/
 
   _uploadUserInCloud() async {
     if (BlocProvider.of<AuthenticationBloc>(context).state.status ==
@@ -324,7 +258,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           setState(() {
             screenView = BackgroundUI(
                 index: 2,
-                child: ArchivedScreen()
+                child: const ArchivedScreen()
             );
           });
           break;
@@ -333,7 +267,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           setState(() {
             screenView = BackgroundUI(
                 index: 2,
-                child: OfflineScreen()
+                child: const OfflineScreen()
             );
           });
           break;

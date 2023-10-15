@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
-import 'package:knote/data/authentication_repository.dart';
 import 'package:knote/data/value/styles.dart';
 import 'package:knote/src/pages/text_editor_page.dart';
-import 'package:utils_component/src/widget/custom_circular_bar.dart';
 import 'package:utils_component/utils_component.dart';
 
 import '../../../res.dart';
@@ -16,7 +14,11 @@ import 'package:flutter/material.dart';
 
 part 'homelist.dart';
 
+
+
 class HomeScreen extends StatefulWidget {
+
+  static const routeName = "home";
   const HomeScreen({Key? key}) : super(key: key);
 
   static Route route() {
@@ -25,7 +27,7 @@ class HomeScreen extends StatefulWidget {
   }
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
