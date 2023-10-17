@@ -1,0 +1,135 @@
+{
+  "project_info": {
+    "project_number": "1087224321015",
+    "firebase_url": "https://parents-data-8c0ee-default-rtdb.firebaseio.com",
+    "project_id": "parents-data-8c0ee",
+    "storage_bucket": "parents-data-8c0ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087224321015:android:6ba313e671df35f72714f2",
+        "android_client_info": {
+          "package_name": "cd.lordyhas.bbooks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1087224321015-q7tl13nj0s6q1rvic2gpnbjh760id6ee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9xbo2Spvxr4eOyczF0GJim6O5pGQOcXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1087224321015-q7tl13nj0s6q1rvic2gpnbjh760id6ee.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1087224321015-rjj3snbn81f7n9gd30ml01dtehglb03m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.unh.ivote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087224321015:android:31397d414885df7c2714f2",
+        "android_client_info": {
+          "package_name": "com.kdynamic.lordyhas.knote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1087224321015-k6g45o4b7a6oknadbkeolclfkg10o226.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kdynamic.lordyhas.knote",
+            "certificate_hash": "d7efc4aa388e07bd6253ef4232738e5a053aeca6"
+          }
+        },
+        {
+          "client_id": "1087224321015-tdmktln1ktgd5j3hqcldc2gf892egnjv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kdynamic.lordyhas.knote",
+            "certificate_hash": "658ba21454617f4a14bbf6aa51edb9bfd26f308a"
+          }
+        },
+        {
+          "client_id": "1087224321015-q7tl13nj0s6q1rvic2gpnbjh760id6ee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9xbo2Spvxr4eOyczF0GJim6O5pGQOcXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1087224321015-q7tl13nj0s6q1rvic2gpnbjh760id6ee.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1087224321015-rjj3snbn81f7n9gd30ml01dtehglb03m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.unh.ivote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087224321015:android:918e1676a646972e2714f2",
+        "android_client_info": {
+          "package_name": "org.unh.ivote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1087224321015-q7tl13nj0s6q1rvic2gpnbjh760id6ee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9xbo2Spvxr4eOyczF0GJim6O5pGQOcXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1087224321015-q7tl13nj0s6q1rvic2gpnbjh760id6ee.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1087224321015-rjj3snbn81f7n9gd30ml01dtehglb03m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.unh.ivote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
