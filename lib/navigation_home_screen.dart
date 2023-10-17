@@ -36,7 +36,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   late final FirebaseManager _firebaseManager;
   Widget? screenView;
   DrawerIndex? drawerIndex;
-  var text;
+  Map<String, String>? text;
 
 
   @override
@@ -85,28 +85,19 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   }
 
   _uploadUserInCloud() async {
-    if (BlocProvider.of<AuthenticationBloc>(context).state.status ==
-        AuthenticationStatus.authenticated) {
-      //User user = context.watch<AuthenticationBloc>().state.user;
+    if (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated) {
+
       User user = BlocProvider.of<AuthenticationBloc>(context).state.user;
       Log.out('AuthenticationBloc(context.state.user)','$user ==== ====');
 
-
       if ( true/*user.photoMail != null*/) {
-        /*var avatar = (await NetworkAssetBundle(Uri.parse(user.photoMail!))
-            .load(user.photoMail!))
-            .buffer
-            .asUint8List();*/
         Log.i('Write Report => FirebaseManager.uploadUserInCloud(context)'
             ' : write document in Firestore');
         _firebaseManager.addUserInCloud(user: user);
 
-        /*.copyWith(
-            photoCloud: Blob(avatar),
-          )*/
       }
-      //else firebaseManager.addUserInCloud(user: user);
-      //Future.delayed(Duration(seconds: 2));
+
+      ///Future.delayed(Duration(seconds: 2));
 
       User userUploaded = await _firebaseManager.getUserInCloud(userId: user.id);
 
@@ -114,15 +105,11 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       if (userUploaded != User.empty) {
         Log.i('Read Report => FirebaseManager.uploadUserInCloud(context)'
             ' : read doc in Firestore ');
-        BlocProvider.of<AuthenticationBloc>(context).updateUser(userUploaded);
-        //context.read<AuthenticationBloc>().updateUser(userUploaded);
-
+        ///BlocProvider.of<AuthenticationBloc>(context).updateUser(userUploaded);
+        //context.read<AuthenticationBloc>().updateUser(userUploaded)
       }
-
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +120,6 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     return WillPopScope(
       onWillPop: _willPopDialog,
       child: Container(
-        //color: BlocProvider.of<StyleCubit>(context).state.nearlyWhite1,
         color: Colors.transparent,
         child: SafeArea(
           top: false,
