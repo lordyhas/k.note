@@ -21,13 +21,6 @@ class AppRouter extends GoRouter {
           errorBuilder: (context, state) => OnErrorPage(error: state.error),
           initialLocation: LoginPage.routeUrl,
           routes: <RouteBase>[
-            /*GoRoute(
-              parentNavigatorKey: key,
-              path: "/index",
-              redirect: (_,state) {
-                return null;
-              },
-            ),*/
 
             ShellRoute(
               navigatorKey: GlobalKey<NavigatorState>(),
