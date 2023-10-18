@@ -123,16 +123,14 @@ class _GoogleLoginButton extends StatelessWidget {
 
     Widget googleOutlineButton = OutlinedButton(
       onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
-      //BlocProvider.of<LoginCubit>(context).logInWithGoogle(),
-
       style: ElevatedButton.styleFrom(
+        side: const BorderSide(
+            width: 2.0,
+            color: Colors.blue //theme.primaryColor,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-
-        /*borderSide: BorderSide(
-          color: theme.accentColor,
-        ),*/
       ),
 
       //color: theme.accentColor,
@@ -140,22 +138,20 @@ class _GoogleLoginButton extends StatelessWidget {
       //highlightedBorderColor: theme.primaryColor,
       //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
 
-      child:  Container(
-        child: const Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(FontAwesomeIcons.google),
-            Spacer(),
-            Text("Sign in with Google"),
-            Spacer(),
-            Icon(FontAwesomeIcons.google, color: Colors.transparent,),
-          ],
-        ),
+      child:  const Row(
+        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(FontAwesomeIcons.google),
+          Spacer(),
+          Text("Sign in with Google"),
+          Spacer(),
+          Icon(FontAwesomeIcons.google, color: Colors.transparent,),
+        ],
       ),
 
     );
 
-    return Container(width: width, child: googleOutlineButton);
+    return SizedBox(width: width, child: googleOutlineButton);
   }
 }
 
@@ -165,39 +161,31 @@ class _FacebookLoginButton extends StatelessWidget {
     double width = MediaQuery.of(context).size.width *0.75;
     final theme = Theme.of(context);
 
-
     Widget facebookOutlineButton = OutlinedButton(
       key: const Key('loginForm_facebookLogin_outlineButton'),
       style: OutlinedButton.styleFrom(
+        side: const BorderSide(
+            width: 2.0,
+            color: Colors.blue //theme.primaryColor,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
       ),
-      //color: theme.accentColor,
-      //textColor: theme.accentColor,
-      //highlightedBorderColor: theme.primaryColor,
 
-      /*borderSide: BorderSide(
-        color: theme.accentColor,
-      ),*/
-
-      //icon: Icon(FontAwesomeIcons.facebookF),
-      //label: Text("Sign in with Facebook"),
       onPressed: () {}, //=> context.bloc<LoginCubit>().logInWithFacebook(),
 
-      child: Container(
-        child: const Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(FontAwesomeIcons.facebookF),
-            Spacer(),
-            Text("Sign in with Facebook"),
-            Spacer(),
-            Icon(FontAwesomeIcons.facebookF, color: Colors.transparent,),
-          ],
-        ),
+      child: const Row(
+        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(FontAwesomeIcons.facebookF),
+          Spacer(),
+          Text("Sign in with Facebook"),
+          Spacer(),
+          Icon(FontAwesomeIcons.facebookF, color: Colors.transparent,),
+        ],
       ),
     );
 
-    return Container(width: width, child: facebookOutlineButton);
+    return SizedBox(width: width, child: facebookOutlineButton);
   }
 }
 
@@ -208,7 +196,7 @@ class _GoToSignUpPageTextButton extends StatelessWidget {
     var textSignUp = RichText(
       text: TextSpan(
         text: "Have you already an account? ",
-        style: TextStyle(color: Colors.grey),
+        style: const TextStyle(color: Colors.grey),
         children: [
           TextSpan(
             text: "Sign Up",
@@ -227,27 +215,6 @@ class _GoToSignUpPageTextButton extends StatelessWidget {
   }
 }
 
-
-class _ContinueWithOutButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final text1 = "SKIP";
-    final text2 = "CONTINUE WITHOUT AN ACCOUNT";
-
-    return TextButton(
-      key: const Key('loginForm_createAccount_flatButton'),
-      child: Text(
-        text2,
-        style: TextStyle(color: theme.primaryColor),
-      ),
-      onPressed: () => Navigator.of(context)
-          .pushAndRemoveUntil<void>(NavigationHomeScreen.route(),(route) => false),
-    );
-  }
-}
-
-
 class _EmailSignInInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -259,7 +226,7 @@ class _EmailSignInInput extends StatelessWidget {
           onChanged: (email) => BlocProvider.of<SignUpCubit>(context).emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            prefixIcon: Icon(FontAwesomeIcons.userAlt),
+            prefixIcon: const Icon(FontAwesomeIcons.user),
             labelText: 'email',
             helperText: '',
             errorText: state.email.invalid ? 'invalid email' : null,

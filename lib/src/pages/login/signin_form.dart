@@ -16,6 +16,7 @@ class LoginForm extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               const SnackBar(
+                backgroundColor: Colors.grey,
                   behavior: SnackBarBehavior.floating,
                   content: Text('Authentication Failure'),
               ),
@@ -40,7 +41,7 @@ class LoginForm extends StatelessWidget {
                 child: Column(
                   //crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text("Welcome to K22D",
+                    Text("Welcome to K.NOTE",
                       style: TextStyle(
                           fontSize: 20,
                           color: Theme.of(context).primaryColor),
