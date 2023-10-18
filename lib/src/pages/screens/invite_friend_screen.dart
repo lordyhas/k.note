@@ -73,14 +73,14 @@ class _InviteFriendState extends State<InviteFriend> {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          Share.share(
+                          /*Share.share(
                               "Hey I'm using K.Note for writing and store my "
                                   "notes on my mobile phone, You can get your "
                                   "own customize note application. "
                                   "\nJust send your command to this mail : "
                                   "dev.haspro@gmail.com",
                               subject: 'Sharing my experience with K.Note'
-                          );
+                          );*/
 
                         },
                         child: const Center(

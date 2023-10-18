@@ -14,8 +14,6 @@ import 'data/database/firebase_manager.dart';
 import 'data/values.dart';
 import 'navigation_home_screen.dart';
 
-
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 // ...
@@ -131,7 +129,7 @@ class AppView extends StatelessWidget {
 
         home: (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated)
             ?  const NavigationHomeScreen()
-            : null,
+            : const LoginPage(),
         //home: const LoginPage(),
 
         onGenerateRoute: (_) => SplashPage.route(),
