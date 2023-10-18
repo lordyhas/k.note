@@ -11,8 +11,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../backgound_ui.dart';
 
 class AboutPage extends StatefulWidget{
-  const AboutPage({Key? key, this.text}) : super(key: key);
-  final text;
+  static const routeName = "about";
+  const AboutPage({Key? key, }) : super(key: key);
+
 
   static Route route({isSystemSet = false}) {
     return MaterialPageRoute<void>(builder: (_) => const AboutPage());
@@ -27,7 +28,7 @@ class AboutPage extends StatefulWidget{
 }
 
 class _AboutState extends State<AboutPage>{
-  var text;
+  late final text;
   var timeUpdate = DateTime.now();
   String appVersion = "0.2.0";
 
@@ -38,9 +39,7 @@ class _AboutState extends State<AboutPage>{
   initState() {
     super.initState();
     initPlatformPackageInfo();
-    //PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    //appVersion = packageInfo.version;
-
+    text = BlocProvider.of<LanguageBloc>(context).state.strings;
   }
 
 
@@ -63,42 +62,20 @@ class _AboutState extends State<AboutPage>{
 
   @override
   Widget build(BuildContext context) {
-    text = widget.text;
-
-
+    //text = widget.text;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      //backgroundColor: Theme.of(context).backgroundColor,
-      /*appBar: AppBar(
-        leading: null,
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-      ),*/
-      /*appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.close, size: 28,),
-          color: Theme.of(context).primaryColorDark,
-        ),
-        //textTheme: Theme.of(context).textTheme,
-        title: Text(text['about'],
-          style: TextStyle(
-            color: Theme.of(context).primaryColorDark
-          ),
-        ),
-      ),*/
       body: contentAbout(),
 
     );
   }
+
+
   Widget contentAbout(){
     var primaryTextStyle20 = Theme.of(context)
         .textTheme.bodyText2!
-        .copyWith(fontSize: 17, /*fontWeight: FontWeight.bold*/);
+        .copyWith(fontSize: 17,);
     var textSettingsStyle = TextStyle(color: Colors.blue[600]);
 
     return ListView(
@@ -108,7 +85,6 @@ class _AboutState extends State<AboutPage>{
 
         const SizedBox(height: 42.0,),
         Card(
-          //margin: EdgeInsets.only(top: 8.0),
           color: background2,
           child: Column(
             children: <Widget>[
@@ -120,7 +96,10 @@ class _AboutState extends State<AboutPage>{
                 ),
                 Text(
                   "K.NOTE",
-                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 24),),
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 24),
+                ),
                 const Text("@lordyhas7",),
 
               ],),

@@ -2,8 +2,11 @@ part of screens;
 
 
 class HelpScreen extends StatefulWidget {
+  static const routeName = "help";
+
+  const HelpScreen({super.key});
   @override
-  _HelpScreenState createState() => _HelpScreenState();
+  State<HelpScreen> createState() => _HelpScreenState();
 }
 
 class _HelpScreenState extends State<HelpScreen> {
@@ -29,7 +32,7 @@ class _HelpScreenState extends State<HelpScreen> {
             ),
             Container(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(
+              child: const Text(
                 'How can we help you?',
                 style: TextStyle(
                   fontSize: 20,
@@ -69,9 +72,9 @@ class _HelpScreenState extends State<HelpScreen> {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {},
-                        child: Center(
+                        child: const Center(
                           child: Padding(
-                            padding: const EdgeInsets.all(4.0),
+                            padding: EdgeInsets.all(4.0),
                             child: Text(
                               'Chat with Us',
                               style: TextStyle(

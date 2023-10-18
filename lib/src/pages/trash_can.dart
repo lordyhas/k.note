@@ -6,6 +6,7 @@ import 'package:knote/data/app_database.dart';
 
 class NoteTrash extends StatefulWidget {
   const NoteTrash({Key? key}) : super(key: key);
+  static const routeName = "trash";
 
   @override
   State<NoteTrash> createState() => _NoteTrashState();

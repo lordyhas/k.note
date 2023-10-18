@@ -2,8 +2,11 @@ part of screens;
 
 
 class FeedbackScreen extends StatefulWidget {
+  static const routeName = "feedback";
+
+  const FeedbackScreen({super.key});
   @override
-  _FeedbackScreenState createState() => _FeedbackScreenState();
+  State<FeedbackScreen> createState() => _FeedbackScreenState();
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
@@ -14,7 +17,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       //color: StyleAppTheme.nearlyWhite,
       child: SafeArea(
         top: false,

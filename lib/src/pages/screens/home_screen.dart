@@ -18,7 +18,7 @@ part 'homelist.dart';
 
 class HomeScreen extends StatefulWidget {
 
-  static const routeName = "home";
+  static const routeName = "/home";
   const HomeScreen({Key? key}) : super(key: key);
 
   static Route route() {

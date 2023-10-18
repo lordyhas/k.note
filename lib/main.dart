@@ -6,13 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:knote/splash_page.dart';
-import 'package:knote/src/pages/login/signup_and_login.dart';
+import 'package:knote/routes.dart';
+
 import 'data/app_bloc.dart';
 import 'data/authentication_repository.dart';
 import 'data/database/firebase_manager.dart';
 import 'data/values.dart';
-import 'navigation_home_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -28,7 +27,10 @@ void main() async {
   );
 
 
-  EquatableConfig.stringify = kReleaseMode;
+  EquatableConfig.stringify = kDebugMode ? kDebugMode : kReleaseMode;
+
+
+
   Bloc.observer = AppBlocObserver();
   FirebaseManager.init();
   runApp(App(authenticationRepository: AuthRepository()));
@@ -55,26 +57,16 @@ class App extends StatelessWidget {
       ),
     );
   }
-
-
-
 }
-
 
 class AppView extends StatelessWidget {
 
   final _navigatorKey = GlobalKey<NavigatorState>();
+  //final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   AppView({Key? key}) : super(key: key);
 
-  NavigatorState get _navigator => _navigatorKey.currentState!;
-
-  //ObjectBoxManager objectboxManager = new ObjectBoxManager.initStore();
-
-  //final FirebaseManager firebaseManager = FirebaseManager();
-
-  //late int themeValue;
-
+  //NavigatorState get _navigator => _navigatorKey.currentState!;
 
   final String defaultSystemLocale = Platform.localeName;
   //final List<Locale> systemLocales = WidgetsBinding.instance!.window.locales;
@@ -99,8 +91,8 @@ class AppView extends StatelessWidget {
         ),
         BlocProvider<StyleCubit>(create: (context) => StyleCubit())
       ],
-      child: MaterialApp(
-        navigatorKey: _navigatorKey,
+      child: MaterialApp.router(
+        key: _navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'K.NOTE',
         supportedLocales: const <Locale>[
@@ -127,13 +119,16 @@ class AppView extends StatelessWidget {
           ),
         ),
 
-        home: (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated)
-            ?  const NavigationHomeScreen()
-            : const LoginPage(),
+        routerConfig: AppRouter(key: _navigatorKey),
+
+        /*home: (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated)
+            ?  const NavigationHomeScreen(child: SizedBox(),)
+            : const LoginPage(),*/
         //home: const LoginPage(),
 
-        onGenerateRoute: (_) => SplashPage.route(),
-        builder: (context, child) {
+        //onGenerateRoute: (_) => SplashPage.route(),
+
+        /*builder: (context, child) {
           return BlocListener<AuthenticationBloc, AuthState>(
             child: child,
             listener: (context, state) {
@@ -158,7 +153,7 @@ class AppView extends StatelessWidget {
               }
             },
           );
-        },
+        },*/
 
       ),
     );

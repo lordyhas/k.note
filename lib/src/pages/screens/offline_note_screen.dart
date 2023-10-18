@@ -1,6 +1,7 @@
 part of screens;
 
 class OfflineScreen extends StatefulWidget {
+  static const routeName = "offline";
   const OfflineScreen({super.key});
 
   @override

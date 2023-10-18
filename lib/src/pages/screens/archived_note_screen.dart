@@ -1,6 +1,7 @@
 part of screens;
 
 class ArchivedScreen extends StatefulWidget {
+  static const routeName = "archived";
   const ArchivedScreen({super.key});
 
   @override

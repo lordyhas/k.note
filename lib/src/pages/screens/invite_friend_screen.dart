@@ -3,6 +3,7 @@ part of screens;
 
 
 class InviteFriend extends StatefulWidget {
+  static const routeName = "invite-friend";
   const InviteFriend({Key? key}) : super(key: key);
 
   @override

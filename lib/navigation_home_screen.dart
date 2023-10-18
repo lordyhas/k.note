@@ -21,10 +21,11 @@ import 'src/pages/about_page.dart';
 import 'src/pages/trash_can.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
-  const NavigationHomeScreen({Key? key}) : super(key: key);
+  final Widget child;
+  const NavigationHomeScreen({Key? key, required this.child}) : super(key: key);
 
   static Route route() {
-    return MaterialPageRoute(builder: (_) => const NavigationHomeScreen());
+    return MaterialPageRoute(builder: (_) => const NavigationHomeScreen(child: SizedBox(),));
   }
 
   @override
@@ -36,7 +37,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   late final FirebaseManager _firebaseManager;
   Widget? screenView;
   DrawerIndex? drawerIndex;
-  Map<String, String>? text;
+  //Map<String, String>? text;
 
 
   @override
@@ -116,7 +117,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     _uploadUserInCloud();
 
 
-    text = BlocProvider.of<LanguageBloc>(context).state.strings;
+    //text = BlocProvider.of<LanguageBloc>(context).state.strings;
     return WillPopScope(
       onWillPop: _willPopDialog,
       child: Container(
@@ -150,6 +151,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
                 changeIndex(drawerIndexData);
                 //callback from drawer for replace screen as user need with passing DrawerIndex(Enum index)
               },
+              //todo : add screen here
               screenView: screenView,
               //we replace screen view as we need on navigate starting screens like MyHomePage, HelpScreen, FeedbackScreen, etc...
             ),
@@ -202,7 +204,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           setState(() {
             screenView = BackgroundUI(
               index: 0,
-              child: AboutPage(text: text,),
+              child: const AboutPage(),
             );
           });
           break;
@@ -217,7 +219,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
         case DrawerIndex.FeedBack:
           setState(() {
-            screenView = FeedbackScreen();
+            screenView = const FeedbackScreen();
           });
           break;
 
