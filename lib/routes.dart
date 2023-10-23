@@ -12,16 +12,14 @@ import 'package:knote/widgets.dart';
 
 import 'on_error_page.dart';
 
-class AppRouter extends GoRouter {
-  final GlobalKey<NavigatorState> key;
-  AppRouter({
-    required this.key,
-  }) : super(
+class AppRouter {
+  //final GlobalKey<NavigatorState> key;
+
+  static GoRouter routes({required GlobalKey<NavigatorState> key}) => GoRouter(
           navigatorKey: key,
           errorBuilder: (context, state) => OnErrorPage(error: state.error),
-          initialLocation: LoginPage.routeUrl,
+          initialLocation: HomeScreen.routeName,
           routes: <RouteBase>[
-
             ShellRoute(
               navigatorKey: GlobalKey<NavigatorState>(),
               builder: (context, state, screen) => NavigationHomeScreen(child: screen),
@@ -31,7 +29,7 @@ class AppRouter extends GoRouter {
             ),
 
             GoRoute(
-              //parentNavigatorKey: key,
+              parentNavigatorKey: key,
               name: LoginPage.routeName,
               path: LoginPage.routeUrl,
               builder: (context, state) => const LoginPage(),
@@ -43,12 +41,12 @@ class AppRouter extends GoRouter {
       GoRoute(
         name: HomeScreen.routeName,
         path: HomeScreen.routeName,
-        redirect: (_,state) {
+        /*redirect: (_,state) {
           if(BlocProvider.of<AuthenticationBloc>(_).state.isAuthenticated){
             return null;
           }
-          return LoginPage.routeUrl;
-        },
+          return null; //LoginPage.routeUrl;
+        },*/
         builder: (context, state) {
           return const HomeScreen();
         },
@@ -75,7 +73,6 @@ class AppRouter extends GoRouter {
             builder: (context, state) => BackgroundUI(child: const HelpScreen()),
           ),*/
           GoRoute(
-            parentNavigatorKey: parentKey,
             name: "rate",
             path: "rate",
             builder: (context, state) => BackgroundUI(
@@ -91,7 +88,6 @@ class AppRouter extends GoRouter {
           ),
 
           GoRoute(
-            parentNavigatorKey: parentKey,
             name: AboutPage.routeName,
             path: AboutPage.routeName,
             builder: (context, state) => BackgroundUI(
@@ -101,7 +97,6 @@ class AppRouter extends GoRouter {
           ),
 
           GoRoute(
-            parentNavigatorKey: parentKey,
             name: InviteFriend.routeName,
             path: InviteFriend.routeName,
             builder: (context, state) =>  BackgroundUI(
@@ -110,7 +105,6 @@ class AppRouter extends GoRouter {
           ),
 
           GoRoute(
-            parentNavigatorKey: parentKey,
             name: HelpScreen.routeName,
             path: HelpScreen.routeName,
             builder: (context, state) => BackgroundUI(
@@ -119,14 +113,12 @@ class AppRouter extends GoRouter {
           ),
 
           GoRoute(
-            parentNavigatorKey: parentKey,
             name: FeedbackScreen.routeName,
             path: FeedbackScreen.routeName,
             builder: (context, state) => const FeedbackScreen(),
           ),
 
           GoRoute(
-            parentNavigatorKey: parentKey,
             name: ArchivedScreen.routeName,
             path: ArchivedScreen.routeName,
             builder: (context, state) => BackgroundUI(
@@ -136,7 +128,6 @@ class AppRouter extends GoRouter {
           ),
 
           GoRoute(
-            parentNavigatorKey: parentKey,
             name: OfflineScreen.routeName,
             path: OfflineScreen.routeName,
             builder: (context, state) => BackgroundUI(

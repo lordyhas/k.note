@@ -14,6 +14,7 @@ import 'data/database/firebase_manager.dart';
 import 'data/values.dart';
 
 import 'firebase_options.dart';
+import 'navigation_home_screen.dart';
 
 // ...
 
@@ -27,7 +28,7 @@ void main() async {
   );
 
 
-  EquatableConfig.stringify = kDebugMode ? kDebugMode : kReleaseMode;
+  //EquatableConfig.stringify = kDebugMode ? kDebugMode : kReleaseMode;
 
 
 
@@ -61,7 +62,7 @@ class App extends StatelessWidget {
 
 class AppView extends StatelessWidget {
 
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _navigatorKey = GlobalKey<NavigatorState>(debugLabel: "RouterKey");
   //final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   AppView({Key? key}) : super(key: key);
@@ -72,7 +73,7 @@ class AppView extends StatelessWidget {
   //final List<Locale> systemLocales = WidgetsBinding.instance!.window.locales;
   @override
   Widget build(BuildContext context) {
-    if(!kIsWeb) {
+    /*if(!kIsWeb) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
@@ -81,7 +82,7 @@ class AppView extends StatelessWidget {
         systemNavigationBarDividerColor: Colors.cyan.shade700,
         systemNavigationBarIconBrightness: Brightness.dark,
       ));
-    }
+    }*/
     return MultiBlocProvider(
       providers: [
         BlocProvider<LanguageBloc>(
@@ -91,7 +92,8 @@ class AppView extends StatelessWidget {
         ),
         BlocProvider<StyleCubit>(create: (context) => StyleCubit())
       ],
-      child: MaterialApp.router(
+      //child: MaterialApp.router(
+      child: MaterialApp(
         key: _navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'K.NOTE',
@@ -119,8 +121,8 @@ class AppView extends StatelessWidget {
           ),
         ),
 
-        routerConfig: AppRouter(key: _navigatorKey),
-
+        //routerConfig: AppRouter.routes(key: _navigatorKey),
+        home : const NavigationHomeScreen(child: SizedBox(),),
         /*home: (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated)
             ?  const NavigationHomeScreen(child: SizedBox(),)
             : const LoginPage(),*/

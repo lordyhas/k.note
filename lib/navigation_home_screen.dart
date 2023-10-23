@@ -1,3 +1,5 @@
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/src/pages/text_editor_page.dart';
@@ -33,6 +35,75 @@ class NavigationHomeScreen extends StatefulWidget {
 }
 
 class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
+
+  final screenColor =  Colors.black;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(color: screenColor),
+      floatingActionButton: BlocBuilder<AuthenticationBloc,AuthState>(
+        builder: (context, state) {
+          switch(state.status){
+            case AuthenticationStatus.authenticated:
+              return FloatingActionButton(
+                tooltip: 'add new note',
+                onPressed: () => Navigator.push(context, TextEditor.route()),
+                child: const Icon(CupertinoIcons.add), //Icons.post_add
+              );
+
+            default:
+              return Container();
+          }
+
+        },
+      ),
+
+      bottomNavigationBar: CurvedNavigationBar(
+        color: Colors.grey.shade900,
+        backgroundColor: screenColor,
+        items: const [
+          CurvedNavigationBarItem(
+            child: Icon(Icons.file_copy_outlined),
+            label: 'Notes',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.search),
+            label: 'Search',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.chat_bubble_outline),
+            label: 'Message',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.newspaper),
+            label: 'Feed',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.perm_identity),
+            label: 'User',
+          ),
+        ],
+        onTap: (index) {
+          // Handle button tap
+        },
+      ),
+
+    );
+  }
+
+}
+
+
+class NvHs extends StatefulWidget {
+  const NvHs({Key? key}) : super(key: key);
+
+  @override
+  State<NvHs> createState() => _NvHsState();
+}
+
+class _NvHsState extends State<NvHs> {
+
 
   late final FirebaseManager _firebaseManager;
   Widget? screenView;
@@ -144,7 +215,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
               },
             ),
             //floatingActionButtonAnimator: FloatingActionButtonAnimator,
-            body: DrawerUserController(
+            body: DrawerUserControllerView(
               screenIndex: drawerIndex,
               drawerWidth: MediaQuery.of(context).size.width * 0.75,
               onDrawerCall: (DrawerIndex drawerIndexData) {
@@ -167,14 +238,11 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       drawerIndex = drawerIndexData;
 
       switch(drawerIndexData){
-
         case DrawerIndex.HOME:
           setState(() {
             screenView = const HomeScreen();
           });
           break;
-
-
 
         case DrawerIndex.Help:
           //setState((){});
@@ -184,7 +252,6 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           break;
 
         case DrawerIndex.Rate:
-
           setState(() {
             screenView = BackgroundUI(
               index: 2,
@@ -196,7 +263,6 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
                 ],
               ),
             );
-
           });
           break;
 
@@ -225,10 +291,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
         case DrawerIndex.NoteTrash:
           setState(() {
-            screenView = BackgroundUI(
-                index: 2,
-                child: const NoteTrash()
-            );
+            screenView = BackgroundUI(index: 2, child: const NoteTrash());
           });
           break;
 
