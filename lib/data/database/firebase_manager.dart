@@ -16,9 +16,9 @@ class FirebaseManager {
   FirebaseManager.user(User user) : this._(user);
 
   factory FirebaseManager.init([User? user]){
-    FirebaseFirestore.instance.settings = const Settings(
+    /*FirebaseFirestore.instance.settings = const Settings(
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-    );
+    );*/
     return user == null ? FirebaseManager.empty() : FirebaseManager.user(user);
   }
 

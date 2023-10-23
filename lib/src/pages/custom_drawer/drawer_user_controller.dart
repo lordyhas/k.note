@@ -2,8 +2,8 @@ import '../../../data/value/styles.dart';
 import 'package:flutter/material.dart';
 import 'home_drawer.dart';
 
-class DrawerUserController extends StatefulWidget {
-  const DrawerUserController({
+class DrawerUserControllerView extends StatefulWidget {
+  const DrawerUserControllerView({
     Key? key,
     this.drawerWidth = 250,
     this.onDrawerCall,
@@ -29,10 +29,11 @@ class DrawerUserController extends StatefulWidget {
   ? screenIndex;
 
   @override
-  _DrawerUserControllerState createState() => _DrawerUserControllerState();
+  State<DrawerUserControllerView> createState() => _DrawerUserControllerViewState();
 }
 
-class _DrawerUserControllerState extends State<DrawerUserController> with TickerProviderStateMixin {
+class _DrawerUserControllerViewState extends State<DrawerUserControllerView>
+    with TickerProviderStateMixin {
   late ScrollController scrollController;
   late AnimationController iconAnimationController;
   late AnimationController animationController;
