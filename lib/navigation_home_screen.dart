@@ -321,7 +321,7 @@ class _NvHsState extends State<NvHs> {
           break;
 
         case DrawerIndex.Calendar:
-          CalendarScreen.calendar(context);
+
           /*setState(() {
             screenView = BackgroundUI(
                 index: 2,

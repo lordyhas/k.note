@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
@@ -131,9 +132,73 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       //backgroundColor: StyleAppTheme.white,
       backgroundColor: Colors.transparent,
-      //endDrawer: DrawerView(),
-      //drawerEdgeDragWidth: 100, //MediaQuery.of(context).size.width,
-      //endDrawerEnableOpenDragGesture: false,
+      appBar: AppBar(
+        centerTitle: true,
+        leading: const Icon(CupertinoIcons.person),
+        title: const Text(
+          'K.NOTE',
+          style: TextStyle(
+            fontSize: 22,
+            color: StyleAppTheme.darkText,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: AppBar().preferredSize,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Card(
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.,
+                children: [
+                  IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed:
+                      onSearch // Scaffold.of(context).openEndDrawer,
+                  ),
+                  Expanded(
+                    child: //Text("Find your product", style: TextStyle(color: Colors.grey),),
+
+                    TextField(
+                        controller: _searchController,
+                        key: const Key(
+                            'homePage_search_textField'),
+                        onChanged: (query) {},
+                        onTap: onSearch,
+                        decoration:
+                        const InputDecoration.collapsed(
+                            hintText: 'Find a documents')),
+                  ),
+                  IconButton(
+                    //icon: Icon(Icons.notifications_none_rounded),
+                      icon: const Icon(
+                          Icons.notifications_none_rounded),
+                      onPressed:
+                          () {} //Scaffold.of(context).openEndDrawer,
+                  )
+                ],
+              ),
+            ),
+          ),
+
+        ),
+        actions: [
+          InkWell(
+            borderRadius:
+            BorderRadius.circular(AppBar().preferredSize.height),
+            child: Icon(
+              multiple ? Icons.dashboard : Icons.view_agenda,
+              //color: StyleAppTheme.dark_grey,
+            ),
+            onTap: () {
+              setState(() {
+                multiple = !multiple;
+              });
+            },
+          ),
+        ],
+      ),
+
       body: FutureBuilder<bool>(
         future: waitForAnimation(),
         builder: (context, snapshot) {
@@ -147,44 +212,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  appBar(),
+                  //appBar(),
                   const SizedBox(
                     height: 4.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Card(
-                      child: Row(
-                        //mainAxisAlignment: MainAxisAlignment.,
-                        children: [
-                          IconButton(
-                              icon: const Icon(Icons.search),
-                              onPressed:
-                                  onSearch // Scaffold.of(context).openEndDrawer,
-                              ),
-                          Expanded(
-                            child: //Text("Find your product", style: TextStyle(color: Colors.grey),),
-
-                                TextField(
-                                    controller: _searchController,
-                                    key: const Key(
-                                        'homePage_search_textField'),
-                                    onChanged: (query) {},
-                                    onTap: onSearch,
-                                    decoration:
-                                        const InputDecoration.collapsed(
-                                            hintText: 'Find a documents')),
-                          ),
-                          IconButton(
-                              //icon: Icon(Icons.notifications_none_rounded),
-                              icon: const Icon(
-                                  Icons.notifications_none_rounded),
-                              onPressed:
-                                  () {} //Scaffold.of(context).openEndDrawer,
-                              )
-                        ],
-                      ),
-                    ),
                   ),
                   const SizedBox(
                     height: 16.0,
@@ -463,67 +493,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget appBar({onTap, openDrawer}) {
-    AppBar appBar = AppBar();
-    return SizedBox(
-      height: appBar.preferredSize.height,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 8, left: 8),
-              child: SizedBox(
-                //color: Colors.grey,
-                width: appBar.preferredSize.height - 8,
-                height: appBar.preferredSize.height - 8,
-              ),
-            ),
-            const Expanded(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 4),
-                  child: Text(
-                    'K22D',
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: StyleAppTheme.darkText,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8, right: 8),
-              child: SizedBox(
-                width: appBar.preferredSize.height - 8,
-                height: appBar.preferredSize.height - 8,
-                //color: Colors.white,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius:
-                        BorderRadius.circular(AppBar().preferredSize.height),
-                    child: Icon(
-                      multiple ? Icons.dashboard : Icons.view_agenda,
-                      //color: StyleAppTheme.dark_grey,
-                    ),
-                    onTap: () {
-                      setState(() {
-                        multiple = !multiple;
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 }
 
 class HomeListView extends StatelessWidget {
