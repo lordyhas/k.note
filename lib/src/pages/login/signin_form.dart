@@ -10,7 +10,7 @@ class LoginForm extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
 
-        if (state.status.isSubmissionFailure) {
+        if (state.status.isFailure) {
           FocusScope.of(context).requestFocus(FocusNode());
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
