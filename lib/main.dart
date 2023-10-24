@@ -23,6 +23,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final authenticationRepository = AuthRepository();
+  await authenticationRepository.user.first;
+
 
   Bloc.observer = AppBlocObserver();
   FirebaseManager.init();
@@ -69,7 +72,7 @@ class AppView extends StatelessWidget {
     if(!kIsWeb) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light ,
         statusBarBrightness: Brightness.light,
         systemNavigationBarColor: Colors.grey.shade900,
         //systemNavigationBarDividerColor: Colors.cyan.shade700,
@@ -111,9 +114,6 @@ class AppView extends StatelessWidget {
         ),
 
         routerConfig: AppRouter.routes(key: _navigatorKey),
-        //home : const NavigationHomeScreen(child: SizedBox(),),
-
-
       ),
     );
   }
