@@ -1,11 +1,21 @@
 
 import 'package:formz/formz.dart';
 
-enum EmailValidationError { invalid }
+/// Validation errors for the [Email] [FormzInput].
+enum EmailValidationError {
+  /// Generic invalid error.
+  invalid
+}
 
+/// {@template email}
+/// Form input for an email input.
+/// {@endtemplate}
 class Email extends FormzInput<String, EmailValidationError> {
+  /// {@macro email}
   const Email.pure() : super.pure('');
-  const Email.dirty([String value = '']) : super.dirty(value);
+
+  /// {@macro email}
+  const Email.dirty([super.value = '']) : super.dirty();
 
   static final RegExp _emailRegExp = RegExp(
     r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
@@ -13,41 +23,34 @@ class Email extends FormzInput<String, EmailValidationError> {
 
   @override
   EmailValidationError? validator(String? value) {
-    return _emailRegExp.hasMatch(value!) ? null : EmailValidationError.invalid;
-  }
-}
-
-
-enum PasswordValidationError{ invalid }
-
-class Password extends FormzInput<String, PasswordValidationError> {
-  const Password.pure() : super.pure('');
-  const Password.dirty([String value = '']) : super.dirty(value);
-
-  static final _passwordRegExp = RegExp(
-      r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$'
-  );
-
-  @override
-  PasswordValidationError? validator(String? value) {
-    return _passwordRegExp.hasMatch(value!)
+    return _emailRegExp.hasMatch(value ?? '')
         ? null
-        : PasswordValidationError.invalid;
+        : EmailValidationError.invalid;
   }
 }
 
+/// Validation errors for the [Password] [FormzInput].
+enum PasswordValidationError {
+  /// Generic invalid error.
+  invalid
+}
 
-class Password2 extends FormzInput<String, PasswordValidationError> {
-  const Password2.pure() : super.pure('');
-  const Password2.dirty([String value = '']) : super.dirty(value);
+/// {@template password}
+/// Form input for an password input.
+/// {@endtemplate}
+class Password extends FormzInput<String, PasswordValidationError> {
+  /// {@macro password}
+  const Password.pure() : super.pure('');
 
-  static final _passwordRegExp = RegExp(
-      r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$'
-  );
+  /// {@macro password}
+  const Password.dirty([super.value = '']) : super.dirty();
+
+  static final _passwordRegExp =
+  RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$');
 
   @override
   PasswordValidationError? validator(String? value) {
-    return _passwordRegExp.hasMatch(value!)
+    return _passwordRegExp.hasMatch(value ?? '')
         ? null
         : PasswordValidationError.invalid;
   }
