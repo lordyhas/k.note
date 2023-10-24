@@ -6,7 +6,6 @@ part of 'signup_and_login.dart';
 class _EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
@@ -18,7 +17,7 @@ class _EmailInput extends StatelessWidget {
             prefixIcon: const Icon(FontAwesomeIcons.userAlt, color: Colors.white,),
             labelText: 'Enter your mail address',
             helperText: '',
-            errorText: state.email.invalid ? 'invalid email' : null, // 231010-012084
+            errorText: state.email.displayError != null ? 'invalid email' : null, // 231010-012084
           ),
         );
       },
@@ -35,31 +34,31 @@ class _PasswordInputState extends State<_PasswordInput> {
   bool showPassword = false;
   @override
   Widget build(BuildContext context) {
-
-
-
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
-          onChanged: (password) =>
-              BlocProvider.of<LoginCubit>(context).passwordChanged(password),
+          onChanged: (password) => BlocProvider.of<LoginCubit>(context)
+              .passwordChanged(password),
           obscureText: !showPassword,
           decoration: InputDecoration(
             prefixIcon: const Icon(FontAwesomeIcons.lock, color: Colors.white),
             suffixIcon: IconButton(
-              icon: Icon(showPassword? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye, color: Colors.white),
+              icon: Icon(showPassword
+                  ? FontAwesomeIcons.eyeSlash
+                  : FontAwesomeIcons.eye,
+                color: Colors.white,
+              ),
               onPressed: (){
                 setState(() {
                   showPassword = !showPassword;
                 });
-
               },
             ),
             labelText: 'Enter your password',
             helperText: '',
-            errorText: state.password.invalid ? 'invalid password' : null,
+            errorText: state.password.displayError != null ? 'invalid password' : null,
           ),
         );
       },
@@ -72,14 +71,13 @@ class _PasswordInputState extends State<_PasswordInput> {
 class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width *0.75;
-    final theme = Theme.of(context);
+    double width = MediaQuery.of(context).size.width * 0.75;
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return state.status.isSubmissionInProgress
+        return state.status.isInProgress
             ? const CircularProgressIndicator()
-            : Container(
+            : SizedBox(
               width: width,
               child: ElevatedButton(
                 key: const Key('loginForm_continue_raisedButton'),
@@ -88,20 +86,17 @@ class _LoginButton extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
-                onPressed: state.status.isValidated
+                onPressed: state.isValid
                     ? () => context.read<LoginCubit>().logInWithCredentials()
                     : null,
-                child: Container(
-                  child: const Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(FontAwesomeIcons.userCircle, color: Colors.white,),
-                      Spacer(),
-                      Text('Sign In', style: TextStyle(color: Colors.white),),
-                      Spacer(),
-                      Icon(FontAwesomeIcons.userCircle, color: Colors.transparent,),
-                    ],
-                  ),
+                child: const Row(
+                  children: [
+                    Icon(FontAwesomeIcons.circleUser, color: Colors.white,),
+                    Spacer(),
+                    Text('Sign In', style: TextStyle(color: Colors.white),),
+                    Spacer(),
+                    Icon(FontAwesomeIcons.circleUser, color: Colors.transparent,),
+                  ],
                 ),
 
                 //color: theme.primaryColor,
@@ -119,7 +114,6 @@ class _GoogleLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width *0.75;
-    final theme = Theme.of(context);
 
     Widget googleOutlineButton = OutlinedButton(
       onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
@@ -159,7 +153,6 @@ class _FacebookLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width *0.75;
-    final theme = Theme.of(context);
 
     Widget facebookOutlineButton = OutlinedButton(
       key: const Key('loginForm_facebookLogin_outlineButton'),
@@ -189,31 +182,6 @@ class _FacebookLoginButton extends StatelessWidget {
   }
 }
 
-class _GoToSignUpPageTextButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    var textSignUp = RichText(
-      text: TextSpan(
-        text: "Have you already an account? ",
-        style: const TextStyle(color: Colors.grey),
-        children: [
-          TextSpan(
-            text: "Sign Up",
-            style: TextStyle(color: theme.primaryColor),
-          ),
-        ],
-      ) ,
-    );
-    Widget flatButton = TextButton(
-      key: const Key('loginForm_createAccount_flatButton'),
-      child: textSignUp,
-      onPressed: () => Navigator.of(context).push<void>(SignUpPage.route()),
-    );
-
-    return  flatButton;
-  }
-}
 
 class _EmailSignInInput extends StatelessWidget {
   @override
@@ -229,7 +197,7 @@ class _EmailSignInInput extends StatelessWidget {
             prefixIcon: const Icon(FontAwesomeIcons.user),
             labelText: 'email',
             helperText: '',
-            errorText: state.email.invalid ? 'invalid email' : null,
+            errorText: state.email.displayError != null ? 'invalid email' : null,
           ),
         );
       },
@@ -269,7 +237,7 @@ class __PasswordSignInInputState extends State<_PasswordSignInInput> {
             ),
             labelText: 'password',
             helperText: '',
-            errorText: state.password.invalid ? 'invalid password' : null,
+            errorText: state.password.displayError != null ? 'invalid password' : null,
           ),
         );
       },
@@ -281,15 +249,13 @@ class _SignUpSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     double width = MediaQuery.of(context).size.width *0.75;
-
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         return state.status.isSubmissionInProgress
             ? const CircularProgressIndicator()
-            : Container(
+            : SizedBox(
                 width: width,
                 child: ElevatedButton(
                   key: const Key('loginForm_continue_raisedButton'),
@@ -306,7 +272,7 @@ class _SignUpSignInButton extends StatelessWidget {
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Icon(
-                          FontAwesomeIcons.userCircle,
+                          FontAwesomeIcons.circleUser,
                           color: Colors.white,
                         ),
                         Spacer(),
