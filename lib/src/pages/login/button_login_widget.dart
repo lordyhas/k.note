@@ -245,6 +245,33 @@ class __PasswordSignInInputState extends State<_PasswordSignInInput> {
   }
 }
 
+class _ConfirmPasswordInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SignUpCubit, SignUpState>(
+      buildWhen: (previous, current) =>
+      previous.password != current.password ||
+          previous.confirmedPassword != current.confirmedPassword,
+      builder: (context, state) {
+        return TextField(
+          key: const Key('signUpForm_confirmedPasswordInput_textField'),
+          onChanged: (confirmPassword) => context
+              .read<SignUpCubit>()
+              .confirmedPasswordChanged(confirmPassword),
+          obscureText: true,
+          decoration: InputDecoration(
+            labelText: 'confirm password',
+            helperText: '',
+            errorText: state.confirmedPassword.displayError != null
+                ? 'passwords do not match'
+                : null,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _SignUpSignInButton extends StatelessWidget {
 
   @override
@@ -253,7 +280,7 @@ class _SignUpSignInButton extends StatelessWidget {
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return state.status.isSubmissionInProgress
+        return state.status.isInProgress
             ? const CircularProgressIndicator()
             : SizedBox(
                 width: width,
@@ -264,7 +291,7 @@ class _SignUpSignInButton extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30.0),
                     ),
                   ),
-                  onPressed: state.status.isValidated
+                  onPressed: state.isValid
                       ? () => context.read<SignUpCubit>().signUpFormSubmitted()
                       : null,
                   child: const SizedBox(
