@@ -63,10 +63,8 @@ class AppView extends StatelessWidget {
 
   AppView({Key? key}) : super(key: key);
 
-  //NavigatorState get _navigator => _navigatorKey.currentState!;
-
   final String defaultSystemLocale = Platform.localeName;
-  //final List<Locale> systemLocales = WidgetsBinding.instance!.window.locales;
+
   @override
   Widget build(BuildContext context) {
     if(!kIsWeb) {
@@ -97,7 +95,6 @@ class AppView extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
         ],*/
         theme: ThemeData.dark().copyWith(
-          //backgroundColor: Colors.grey[200],
           primaryColor: Colors.cyan.shade700,
           primaryColorDark: Colors.grey[600],
           appBarTheme: const AppBarTheme(

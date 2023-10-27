@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:knote/navigation_home_screen.dart';
 import 'package:knote/setting_profile_screen.dart';
@@ -8,6 +9,7 @@ import 'package:knote/src/pages/screens.dart';
 import 'package:knote/src/pages/trash_can.dart';
 import 'package:knote/widgets.dart';
 
+import 'data/app_bloc/authentication/authentication_bloc.dart';
 import 'on_error_page.dart';
 
 class AppRouter {
@@ -15,61 +17,67 @@ class AppRouter {
   const AppRouter._();
 
   static GoRouter routes({required GlobalKey<NavigatorState> key}) => GoRouter(
-          navigatorKey: key,
-          errorBuilder: (context, state) => OnErrorPage(error: state.error),
-          initialLocation: HomeScreen.routeName,
-          routes: <RouteBase>[
-            ShellRoute(
-              navigatorKey: GlobalKey<NavigatorState>(),
-              builder: (context, state, screen) => NavigationHomeScreen(child: screen),
-              routes: <RouteBase>[
-                _homeGoRoute(parentKey: key),
+    navigatorKey: key,
+    errorBuilder: (context, state) => OnErrorPage(error: state.error),
+    initialLocation: LoginPage.routeName,
+    routes: <RouteBase>[
+      ShellRoute(
+        navigatorKey: GlobalKey<NavigatorState>(),
+        builder: (context, state, screen) => NavigationHomeScreen(child: screen),
+        routes: <RouteBase>[
+          _homeGoRoute(parentKey: key),
 
-              ],
-            ),
+        ],
+      ),
 
-            GoRoute(
-              parentNavigatorKey: key,
-              name: LoginPage.routeName,
-              path: LoginPage.routeName,
-              builder: (context, state) => const LoginPage(),
-            ),
+      GoRoute(
+        redirect: (_,state) {
+          if(BlocProvider.of<AuthenticationBloc>(_).state.isAuthenticated){
+            return HomeScreen.routeName;
+          }
+          return null;
+        },
+        parentNavigatorKey: key,
+        name: LoginPage.routeName,
+        path: LoginPage.routeName,
+        builder: (context, state) => const LoginPage(),
+      ),
 
-          ],
-        );
+    ],
+  );
 
   static _homeGoRoute({required GlobalKey<NavigatorState> parentKey}) =>
       GoRoute(
         name: HomeScreen.routeName,
         path: HomeScreen.routeName,
-        /*redirect: (_,state) {
-          if(BlocProvider.of<AuthenticationBloc>(_).state.isAuthenticated){
-            return null;
-          }
-          return null; //LoginPage.routeUrl;
-        },*/
-        builder: (context, state) => const HomeScreen(),
 
+        builder: (context, state) => const HomeScreen(),
+        redirect: (_,state) {
+          if(!BlocProvider.of<AuthenticationBloc>(_).state.isAuthenticated){
+            return LoginPage.routeName;
+          }
+          return null;
+        },
         routes: <RouteBase>[
           GoRoute(
-            name: SettingProfileScreen.routeName,
-            path: SettingProfileScreen.routeName,
-            builder: (context, state) => const SettingProfileScreen(),
-            routes: [
-              GoRoute(
-                //parentNavigatorKey: parentKey,
-                name: 'table',
-                path: "product-table",
-                builder: (context, state) => const SizedBox(),
-              ),
+              name: SettingProfileScreen.routeName,
+              path: SettingProfileScreen.routeName,
+              builder: (context, state) => const SettingProfileScreen(),
+              routes: [
+                GoRoute(
+                  //parentNavigatorKey: parentKey,
+                  name: 'table',
+                  path: "product-table",
+                  builder: (context, state) => const SizedBox(),
+                ),
 
-              GoRoute(
-                //parentNavigatorKey: parentKey,
-                name: NoteTrash.routeName,
-                path: NoteTrash.routeName,
-                builder: (context, state) => const NoteTrash(),
-              ),
-            ]
+                GoRoute(
+                  //parentNavigatorKey: parentKey,
+                  name: NoteTrash.routeName,
+                  path: NoteTrash.routeName,
+                  builder: (context, state) => const NoteTrash(),
+                ),
+              ]
           ),
 
           GoRoute(
@@ -85,9 +93,9 @@ class AppRouter {
           ),
 
           GoRoute(
-            name: AboutPage.routeName,
-            path: AboutPage.routeName,
-            builder: (context, state) => const AboutPage()
+              name: AboutPage.routeName,
+              path: AboutPage.routeName,
+              builder: (context, state) => const AboutPage()
           ),
 
           GoRoute(
