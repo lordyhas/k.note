@@ -18,8 +18,8 @@ import '../../../navigation_home_screen.dart';
 
 
 part 'signin_home.dart';
-part 'signin_page.dart';
-part 'signin_form.dart';
+part 'login_page.dart';
+part 'login_form.dart';
 part 'signup_page.dart';
 part 'signup_form.dart';
 part 'button_login_widget.dart';
