@@ -4,11 +4,13 @@ part of 'signup_and_login.dart';
 
 
 class SignUpForm extends StatelessWidget {
+  const SignUpForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) {
-        if (state.status.isSubmissionFailure) {
+        if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -22,7 +24,7 @@ class SignUpForm extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(8.0).copyWith(),
+              padding: const EdgeInsets.all(8.0).copyWith(),
               child: Image.asset(
                 imageLogoApp,
                 height: 120,
@@ -30,7 +32,7 @@ class SignUpForm extends StatelessWidget {
             ),
 
             Padding(
-                padding: EdgeInsets.only(left: 20.0, top: 20.0),
+                padding: const EdgeInsets.only(left: 20.0, top: 20.0),
                 child: Column(
                   //crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -39,22 +41,22 @@ class SignUpForm extends StatelessWidget {
                           fontSize: 20,
                           color: Theme.of(context).primaryColor),
                     ),
-                    Text("create an account to continue"),
+                    const Text("create an account to continue"),
 
                   ],
                 )
             ),
-            Padding(
-                padding: EdgeInsets.only(
+            const Padding(
+                padding:  EdgeInsets.only(
                     left: 25.0, right: 25.0, top: 25.0),
-                child: new Row(
+                child:  Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
+                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
+                         Text(
                           'Email',
                           style: TextStyle(
                               fontSize: 16.0,
@@ -66,23 +68,23 @@ class SignUpForm extends StatelessWidget {
                 )
             ),
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                   left: 25.0, right: 25.0, top: 2.0),
               child: _EmailSignInInput(),
             ),
             //_EmailSignInInput(),
             const SizedBox(height: 8.0),
-            Padding(
+            const Padding(
                 padding: EdgeInsets.only(
                     left: 25.0, right: 25.0, top: 25.0),
-                child: new Row(
+                child:  Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
+                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
+                         Text(
                           'Password',
                           style: TextStyle(
                               fontSize: 16.0,
@@ -95,7 +97,7 @@ class SignUpForm extends StatelessWidget {
             ),
 
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                   left: 25.0, right: 25.0, top: 2.0),
               child: _PasswordSignInInput(),
             ),
