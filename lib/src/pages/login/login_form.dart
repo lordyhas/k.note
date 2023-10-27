@@ -9,7 +9,6 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
-
         if (state.status.isFailure) {
           FocusScope.of(context).requestFocus(FocusNode());
           ScaffoldMessenger.of(context)
@@ -23,6 +22,7 @@ class LoginForm extends StatelessWidget {
             );
         }
       },
+
       child: Align(
         alignment: const Alignment(0, -1 / 3),
         child: Column(
@@ -39,7 +39,6 @@ class LoginForm extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(left: 20.0, top: 20.0),
                 child: Column(
-                  //crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text("Welcome to K.NOTE",
                       style: TextStyle(
@@ -47,32 +46,27 @@ class LoginForm extends StatelessWidget {
                           color: Theme.of(context).primaryColor),
                     ),
                     const Text("Sign in to continue"),
-
                   ],
                 )
             ),
-
             const SizedBox(height: 16.0),
 
             Padding(
               padding: const EdgeInsets.only(
-                  left: 25.0, right: 25.0, top: 2.0),
+                left: 25.0,
+                right: 25.0,
+                top: 2.0,
+              ),
               child: _EmailInput(),
             ),
 
-            //_EmailInput(),
-
-
-
             const SizedBox(height: 8.0),
-
             Padding(
               padding: const EdgeInsets.only(
                   left: 25.0, right: 25.0, top: 2.0),
               child: _PasswordInput(),
             ),
 
-            //_PasswordInput(),
             Expanded(
               child: Column(children: [
                 const Spacer(),
