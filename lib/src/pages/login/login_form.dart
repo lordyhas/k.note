@@ -20,6 +20,9 @@ class LoginForm extends StatelessWidget {
                   content: Text('Authentication Failure'),
               ),
             );
+        } else if (state.status.isSuccess){
+          FocusScope.of(context).requestFocus(FocusNode());
+          GoRouter.of(context).pushNamed(HomeScreen.routeName);
         }
       },
 
