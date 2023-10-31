@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:knote/navigation_home_screen.dart';
-import 'package:knote/setting_profile_screen.dart';
+import 'package:knote/src/pages/setting_profile_screen.dart';
 import 'package:knote/src/pages/about_page.dart';
 import 'package:knote/src/pages/login/signup_and_login.dart';
 import 'package:knote/src/pages/screens.dart';
@@ -19,7 +19,13 @@ class AppRouter {
   static GoRouter routes({required GlobalKey<NavigatorState> key}) => GoRouter(
     navigatorKey: key,
     errorBuilder: (context, state) => OnErrorPage(error: state.error),
-    initialLocation: LoginPage.routeName,
+    redirect: (_,state) {
+      if(BlocProvider.of<AuthenticationBloc>(_).state.isNotAuthenticated){
+        return LoginPage.routeName;
+      }
+      return null;
+    },
+    initialLocation: HomeScreen.routeName,
     routes: <RouteBase>[
       ShellRoute(
         navigatorKey: GlobalKey<NavigatorState>(),
@@ -53,7 +59,7 @@ class AppRouter {
 
         builder: (context, state) => const HomeScreen(),
         redirect: (_,state) {
-          if(!BlocProvider.of<AuthenticationBloc>(_).state.isAuthenticated){
+          if(BlocProvider.of<AuthenticationBloc>(_).state.isNotAuthenticated){
             return LoginPage.routeName;
           }
           return null;
