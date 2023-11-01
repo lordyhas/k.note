@@ -15,11 +15,9 @@ import 'package:flutter/material.dart';
 
 part 'homelist.dart';
 
-
-
 class HomeScreen extends StatefulWidget {
-
   static const routeName = "/home";
+
   const HomeScreen({Key? key}) : super(key: key);
 
   static Route route() {
@@ -34,7 +32,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late List<Widget> homeList; //= HomeList.homeList;
 
-  late AnimationController animationController;
+  late AnimationController _animCtrl;
   bool multiple = false;
   late final FirebaseManager _firebaseManager;
   late final user;
@@ -75,9 +73,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
 
     _firebaseManager = FirebaseManager.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user
-    );
-    animationController = AnimationController(
+        BlocProvider.of<AuthenticationBloc>(context).state.user);
+    _animCtrl = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
 
     //_uploadUserInCloud();
@@ -85,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    animationController.dispose();
+    _animCtrl.dispose();
     _searchController.clear();
     _searchStreamController.close();
     super.dispose();
@@ -103,32 +100,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    /*final DateTime now = DateTime.now();
-    final String unique = "${now.year}${now.month}${now.day}"
-        "${now.hour}${now.minute}${now.second}${now.millisecond}"
-        "${now.microsecond}";
-    _firebaseManager.addNoteInCloud(note: new NoteModel(
-      id:  unique,
-      email: user.email,
-      creationTime: new DateTime.now(),
-      modificationTime: new DateTime.now(),
-    ));*/
-
-    /*homeList = [
-      HomeList(
-        imagePath: 'assets/hotel/hotel_booking.png',
-        navigateScreen: HotelHomeScreen(),
-      ),
-      HomeList(
-        imagePath: 'assets/fitness_app/fitness_app.png',
-        navigateScreen: FitnessAppHomeScreen(),
-      ),
-      HomeList(
-        imagePath: 'assets/design_course/design_course.png',
-        navigateScreen: DesignCourseHomeScreen(),
-      ),
-    ];*/
-
     return Scaffold(
       //backgroundColor: StyleAppTheme.white,
       backgroundColor: Colors.transparent,
@@ -153,39 +124,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 children: [
                   IconButton(
                       icon: const Icon(Icons.search),
-                      onPressed:
-                      onSearch // Scaffold.of(context).openEndDrawer,
-                  ),
+                      onPressed: onSearch // Scaffold.of(context).openEndDrawer,
+                      ),
                   Expanded(
-                    child: //Text("Find your product", style: TextStyle(color: Colors.grey),),
-
-                    TextField(
+                    child: TextField(
                         controller: _searchController,
-                        key: const Key(
-                            'homePage_search_textField'),
+                        key: const Key('homePage_search_textField'),
                         onChanged: (query) {},
                         onTap: onSearch,
-                        decoration:
-                        const InputDecoration.collapsed(
+                        decoration: const InputDecoration.collapsed(
                             hintText: 'Find a documents')),
                   ),
                   IconButton(
-                    //icon: Icon(Icons.notifications_none_rounded),
-                      icon: const Icon(
-                          Icons.notifications_none_rounded),
-                      onPressed:
-                          () {} //Scaffold.of(context).openEndDrawer,
-                  )
+                      //icon: Icon(Icons.notifications_none_rounded),
+                      icon: const Icon(Icons.notifications_none_rounded),
+                      onPressed: () {} //Scaffold.of(context).openEndDrawer,
+                      )
                 ],
               ),
             ),
           ),
-
         ),
         actions: [
           InkWell(
-            borderRadius:
-            BorderRadius.circular(AppBar().preferredSize.height),
+            borderRadius: BorderRadius.circular(AppBar().preferredSize.height),
             child: Icon(
               multiple ? Icons.dashboard : Icons.view_agenda,
               //color: StyleAppTheme.dark_grey,
@@ -206,8 +168,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             return const SizedBox();
           } else {
             return Padding(
-              padding:
-                  EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,128 +201,128 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ],
                                   );
                                 });
-                          }
-                          return StreamBuilder<List<NoteModel>>(
-                            stream: _firebaseManager
-                                .getAllNoteInCloud()
-                                .asStream(),
-                            //_firebaseManager.getAllNoteInCloud(user.email),
-                            builder: (context, snapshot) {
-                              //print('=================== ${snapshot.data} ==================');
-                              if (!snapshot.hasData) {
-                                return const CircularProgressMultiBar();
-                              } else if (snapshot.hasError) {
-                                return const Center(
-                                  child: SizedBox(
-                                    height: 200,
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          Icons.wifi_off,
-                                          size: 100,
+                          } else {
+                            return FutureBuilder<List<NoteModel>>(
+                              future: _firebaseManager.getAllNoteInCloud(),
+                              //_firebaseManager.getAllNoteInCloud(user.email),
+                              builder: (context, snapshot) {
+                                //print('=================== ${snapshot.data} ==================');
+                                if (snapshot.hasData) {
+                                  if (snapshot.data!.isEmpty) {
+                                    return const Center(
+                                      child: SizedBox(
+                                        height: 200,
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons
+                                                  .sentiment_dissatisfied_rounded,
+                                              size: 100,
+                                            ),
+                                            SizedBox(
+                                              height: 8.0,
+                                            ),
+                                            Text('No document found')
+                                          ],
                                         ),
-                                        SizedBox(
-                                          height: 8.0,
-                                        ),
-                                        Text('Something went wrong'),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                              else if (snapshot.data!.isEmpty) {
-                                return const  Center(
-                                  child: SizedBox(
-                                    height: 200,
-                                    child: Column(
-                                      children:  [
-                                        Icon(
-                                          Icons
-                                              .sentiment_dissatisfied_rounded,
-                                          size: 100,
-                                        ),
-                                        SizedBox(
-                                          height: 8.0,
-                                        ),
-                                        Text('No document found')
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                var data = snapshot.data!.map((note) {
-                                  return note;
-                                }).toList();
+                                      ),
+                                    );
+                                  } else {
+                                    var data = snapshot.data!.map((note) {
+                                      return note;
+                                    }).toList();
 
-                                return GridView(
-                                  padding: const EdgeInsets.only(
-                                      top: 0, left: 12, right: 12),
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: multiple ? 2 : 1,
-                                    mainAxisSpacing: 4.0,
-                                    crossAxisSpacing: 12.0,
-                                    childAspectRatio: multiple ? 1.5 : 3,
-                                  ),
-                                  children:  List<Widget>.generate(
-                                    snapshot.data!.length,
-                                    (int index) {
-                                      final int count = snapshot.data!.length;
-                                      final Animation<double> animation =
-                                          Tween<double>(begin: 0.0, end: 1.0)
-                                              .animate(
-                                        CurvedAnimation(
-                                          parent: animationController,
-                                          curve: Interval(
-                                              (1 / count) * index, 1.0,
-                                              curve: Curves.fastOutSlowIn),
-                                        ),
-                                      );
-                                      animationController.forward();
-                                      return HomeListView(
-                                        changeRatio: multiple,
-                                        animation: animation,
-                                        animationController:
-                                            animationController,
-                                        listData: NoteCard(
-                                          color: Color(data[index].colorValue),
-                                          changeInList: !multiple,
-                                          note: data[index],
-                                        ),
-                                        //snapshot.data![index],
-                                        onLongPress: () => showModalBottomSheet(
-                                          constraints: const BoxConstraints(
-                                              maxHeight: 400,
-                                            minHeight:300,
-                                          ),
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              _buildBottomMenu(data[index]),
-
-                                        ),
-
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            TextEditor.route(
+                                    return GridView(
+                                      padding: const EdgeInsets.only(
+                                        top: 0,
+                                        left: 12,
+                                        right: 12,
+                                      ),
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.vertical,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: multiple ? 2 : 1,
+                                        mainAxisSpacing: 4.0,
+                                        crossAxisSpacing: 12.0,
+                                        childAspectRatio: multiple ? 1.5 : 3,
+                                      ),
+                                      children: List<Widget>.generate(
+                                        snapshot.data!.length,
+                                        (int index) {
+                                          final count = snapshot.data!.length;
+                                          final animation = Tween<double>(
+                                            begin: 0.0,
+                                            end: 1.0,
+                                          ).animate(
+                                            CurvedAnimation(
+                                              parent: _animCtrl,
+                                              curve: Interval(
+                                                (1 / count) * index, 1.0,
+                                                curve: Curves.fastOutSlowIn,
+                                              ),
+                                            ),
+                                          );
+                                          _animCtrl.forward();
+                                          return HomeListView(
+                                            changeRatio: multiple,
+                                            animation: animation,
+                                            animationController: _animCtrl,
+                                            listData: NoteCard(
+                                              color:
+                                              Color(data[index].colorValue),
+                                              changeInList: !multiple,
                                               note: data[index],
-                                            )),
-                                        /*Navigator.push<dynamic>(
-                                          context,
-                                          MaterialPageRoute<dynamic>(
-                                            builder: (BuildContext context) =>
-                                                homeList[index].navigateScreen,
+                                            ),
+                                            //snapshot.data![index],
+                                            onLongPress: () =>
+                                                showModalBottomSheet(
+                                                  constraints: BoxConstraints(
+                                                    maxHeight: 400.toDouble(),
+                                                    minHeight: 300.toDouble(),
+                                                  ),
+                                                  backgroundColor:
+                                                  Colors.transparent,
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      _buildBottomMenu(data[index]),
+                                                ),
+
+                                            onTap: () => Navigator.push(
+                                                context,
+                                                TextEditor.route(
+                                                  note: data[index],
+                                                )),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }
+                                  //return const CircularProgressMultiBar();
+                                } else if (snapshot.hasError) {
+                                  return const Center(
+                                    child: SizedBox(
+                                      height: 200,
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.wifi_off,
+                                            size: 100,
                                           ),
-                                        );*/
-                                      );
-                                    },
-                                  ),
-                                );
-                              }
-                            },
-                          );
+                                          SizedBox(
+                                            height: 8.0,
+                                          ),
+                                          Text('Something went wrong'),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return const CircularProgressMultiBar();
+                                }
+                              },
+                            );
+                          }
                         }),
                   ),
                 ],
@@ -373,8 +334,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Container _buildBottomMenu(NoteModel doc){
-    NoteModel note =  doc;
+  Container _buildBottomMenu(NoteModel doc) {
+    NoteModel note = doc;
     /*if(doc is NoteModel){
       note = doc;
     }
@@ -382,118 +343,116 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       //height: 300,
       decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor.withOpacity(0.8),
+        color: Theme.of(context).colorScheme.background.withOpacity(0.8),
         borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(18.0),
+          top: Radius.circular(18.0),
         ),
       ),
       child: Column(
         children: [
           ListTile(
-            leading: Image.asset(Res.logo_1, height: 30, ),
-            title: Text("${note.title}",
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 18),
+            leading: Image.asset(
+              Res.logo_1,
+              height: 30,
+            ),
+            title: Text(
+              "${note.title}",
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
           const Divider(color: Colors.white),
-
           ListTile(
-            leading: Icon(Icons.archive_outlined,
-                color: Theme.of(context).iconTheme.color,
+            leading: Icon(
+              Icons.archive_outlined,
+              color: Theme.of(context).iconTheme.color,
             ),
             title: const Text("Move in archive"),
-            onTap: (){
-              _firebaseManager.deleteNote(noteId: note.id,);
+            onTap: () {
+              _firebaseManager.deleteNote(
+                noteId: note.id,
+              );
               Navigator.of(context).pop();
               setState(() {});
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
-                ..showSnackBar(
-                SnackBar(
+                ..showSnackBar(SnackBar(
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Colors.white,
-                  content: Text('${note.title} note archived ✔',
-                  style: const TextStyle(
-                    color: Colors.black
-                  ),),
+                  content: Text(
+                    '${note.title} note archived ✔',
+                    style: const TextStyle(color: Colors.black),
+                  ),
                   //dismissDirection: DismissDirection.up,
-                )
-              );
-
+                ));
             },
           ),
           ListTile(
-            leading: Icon(Icons.delete_outline,
+            leading: Icon(
+              Icons.delete_outline,
               color: Theme.of(context).iconTheme.color,
-
             ),
             title: const Text("Delete (Move in bin)"),
             onTap: () => showDialog(
               context: context,
-              builder: (BuildContext context) =>
-                  AlertDialog(
-                    // title: const Text("Option"),
-                    content:  SizedBox(
-                      //height: 20,
-                      child: Text("Do you want to delete this note? \n"
-                          "named : ${note.title}"),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed:
-                        Navigator.of(context).pop,
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        child: const Text('Delete'),
-                        onPressed: () {
-                          _firebaseManager.deleteNote(noteId: note.id);
-                          Navigator.of(context).pop();
-                          setState(() {});
-                          ScaffoldMessenger.of(context)
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: Colors.white,
-                                  content: Text('${note.title} note moved in bin',
-                                    style: const TextStyle(
-                                        color: Colors.black
-                                    ),),
-                                  //dismissDirection: DismissDirection.up,
-                                )
-                            );
-                        },
-                      ),
-                    ],
+              builder: (BuildContext context) => AlertDialog(
+                // title: const Text("Option"),
+                content: SizedBox(
+                  //height: 20,
+                  child: Text("Do you want to delete this note? \n"
+                      "named : ${note.title}"),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: Navigator.of(context).pop,
+                    child: const Text('Cancel'),
                   ),
+                  TextButton(
+                    child: const Text('Delete'),
+                    onPressed: () {
+                      _firebaseManager.deleteNote(noteId: note.id);
+                      Navigator.of(context).pop();
+                      setState(() {});
+                      ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.white,
+                          content: Text(
+                            '${note.title} note moved in bin',
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                          //dismissDirection: DismissDirection.up,
+                        ));
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           ListTile(
-            leading: Icon(Icons.color_lens_outlined,
+            leading: Icon(
+              Icons.color_lens_outlined,
               color: Theme.of(context).iconTheme.color,
-
             ),
             title: const Text("Change color"),
-            onTap: (){},
+            onTap: () {},
           ),
-          const Divider(indent: 42.0, color: Colors.white,),
+          const Divider(
+            indent: 42.0,
+            color: Colors.white,
+          ),
           ListTile(
-            leading: Icon(Icons.save_alt_rounded,
+            leading: Icon(
+              Icons.save_alt_rounded,
               color: Theme.of(context).iconTheme.color,
-
             ),
             title: const Text("Saving mode"),
-            onTap: (){},
+            onTap: () {},
           ),
-
         ],
       ),
     );
   }
-
-
 }
 
 class HomeListView extends StatelessWidget {
