@@ -7,7 +7,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.2.2+1
 
 authors:
-  - Hassan Kajila (loryhas)
+  - Hassan Kajila (lordyhas)
   - Dan Kajila
 
 environment:
