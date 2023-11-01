@@ -16,7 +16,8 @@ class AppRouter {
 
   const AppRouter._();
 
-  static GoRouter routes({required GlobalKey<NavigatorState> key}) => GoRouter(
+  static GoRouter routes({required GlobalKey<NavigatorState> key}) =>
+  GoRouter(
     navigatorKey: key,
     errorBuilder: (context, state) => OnErrorPage(error: state.error),
     redirect: (_,state) {
@@ -56,7 +57,6 @@ class AppRouter {
       GoRoute(
         name: HomeScreen.routeName,
         path: HomeScreen.routeName,
-
         builder: (context, state) => const HomeScreen(),
         redirect: (_,state) {
           if(BlocProvider.of<AuthenticationBloc>(_).state.isNotAuthenticated){
@@ -76,7 +76,6 @@ class AppRouter {
                   path: "product-table",
                   builder: (context, state) => const SizedBox(),
                 ),
-
                 GoRoute(
                   //parentNavigatorKey: parentKey,
                   name: NoteTrash.routeName,
