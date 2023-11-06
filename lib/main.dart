@@ -26,7 +26,6 @@ void main() async {
   final authenticationRepository = AuthRepository();
   await authenticationRepository.user.first;
 
-
   Bloc.observer = AppBlocObserver();
   FirebaseManager.init();
   runApp(App(authenticationRepository: AuthRepository()));
@@ -58,7 +57,7 @@ class App extends StatelessWidget {
 
 class AppView extends StatelessWidget {
 
-  final _navigatorKey = GlobalKey<NavigatorState>(debugLabel: "RouterKey");
+  final _navigatorKey = GlobalKey<NavigatorState>(debugLabel: "__RouterKey__");
   //final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   AppView({Key? key}) : super(key: key);
