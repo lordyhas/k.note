@@ -7,7 +7,12 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navigatorKey = GlobalKey<NavigatorState>(
+      debugLabel: "__LoginFormBlocListener__",
+    );
+
     return BlocListener<LoginCubit, LoginState>(
+      key: navigatorKey,
       listener: (context, state) {
         if (state.status.isFailure) {
           FocusScope.of(context).requestFocus(FocusNode());
@@ -22,7 +27,10 @@ class LoginForm extends StatelessWidget {
             );
         } else if (state.status.isSuccess){
           FocusScope.of(context).requestFocus(FocusNode());
-          GoRouter.of(context).pushNamed(HomeScreen.routeName);
+          //GoRouter.of(context).pushNamed(HomeScreen.routeName);
+          //todo : check this redirect.
+          navigatorKey.currentState?.context.goNamed(HomeScreen.routeName);
+          //context.goNamed(name)
         }
       },
 
@@ -65,8 +73,7 @@ class LoginForm extends StatelessWidget {
 
             const SizedBox(height: 8.0),
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 25.0, right: 25.0, top: 2.0),
+              padding: const EdgeInsets.only(left: 25, right: 25, top: 2),
               child: _PasswordInput(),
             ),
 
