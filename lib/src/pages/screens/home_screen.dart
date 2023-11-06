@@ -202,126 +202,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   );
                                 });
                           } else {
-                            return FutureBuilder<List<NoteModel>>(
-                              future: _firebaseManager.getAllNoteInCloud(),
-                              //_firebaseManager.getAllNoteInCloud(user.email),
-                              builder: (context, snapshot) {
-                                //print('=================== ${snapshot.data} ==================');
-                                if (snapshot.hasData) {
-                                  if (snapshot.data!.isEmpty) {
-                                    return const Center(
-                                      child: SizedBox(
-                                        height: 200,
-                                        child: Column(
-                                          children: [
-                                            Icon(
-                                              Icons
-                                                  .sentiment_dissatisfied_rounded,
-                                              size: 100,
-                                            ),
-                                            SizedBox(
-                                              height: 8.0,
-                                            ),
-                                            Text('No document found')
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    var data = snapshot.data!.map((note) {
-                                      return note;
-                                    }).toList();
-
-                                    return GridView(
-                                      padding: const EdgeInsets.only(
-                                        top: 0,
-                                        left: 12,
-                                        right: 12,
-                                      ),
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: multiple ? 2 : 1,
-                                        mainAxisSpacing: 4.0,
-                                        crossAxisSpacing: 12.0,
-                                        childAspectRatio: multiple ? 1.5 : 3,
-                                      ),
-                                      children: List<Widget>.generate(
-                                        snapshot.data!.length,
-                                        (int index) {
-                                          final count = snapshot.data!.length;
-                                          final animation = Tween<double>(
-                                            begin: 0.0,
-                                            end: 1.0,
-                                          ).animate(
-                                            CurvedAnimation(
-                                              parent: _animCtrl,
-                                              curve: Interval(
-                                                (1 / count) * index, 1.0,
-                                                curve: Curves.fastOutSlowIn,
-                                              ),
-                                            ),
-                                          );
-                                          _animCtrl.forward();
-                                          return HomeListView(
-                                            changeRatio: multiple,
-                                            animation: animation,
-                                            animationController: _animCtrl,
-                                            listData: NoteCard(
-                                              color:
-                                              Color(data[index].colorValue),
-                                              changeInList: !multiple,
-                                              note: data[index],
-                                            ),
-                                            //snapshot.data![index],
-                                            onLongPress: () =>
-                                                showModalBottomSheet(
-                                                  constraints: BoxConstraints(
-                                                    maxHeight: 400.toDouble(),
-                                                    minHeight: 300.toDouble(),
-                                                  ),
-                                                  backgroundColor:
-                                                  Colors.transparent,
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      _buildBottomMenu(data[index]),
-                                                ),
-
-                                            onTap: () => Navigator.push(
-                                                context,
-                                                TextEditor.route(
-                                                  note: data[index],
-                                                )),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }
-                                  //return const CircularProgressMultiBar();
-                                } else if (snapshot.hasError) {
-                                  return const Center(
-                                    child: SizedBox(
-                                      height: 200,
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.wifi_off,
-                                            size: 100,
-                                          ),
-                                          SizedBox(
-                                            height: 8.0,
-                                          ),
-                                          Text('Something went wrong'),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return const CircularProgressMultiBar();
-                                }
-                              },
-                            );
+                            return noteList();
                           }
                         }),
                   ),
@@ -331,6 +212,129 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           }
         },
       ),
+    );
+  }
+
+  Widget noteList(){
+    return FutureBuilder<List<NoteModel>>(
+      future: _firebaseManager.getAllNoteInCloud(),
+      //_firebaseManager.getAllNoteInCloud(user.email),
+      builder: (context, snapshot) {
+        //print('=================== ${snapshot.data} ==================');
+        if (snapshot.hasData) {
+          if (snapshot.data!.isEmpty) {
+            return const Center(
+              child: SizedBox(
+                height: 200,
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons
+                          .sentiment_dissatisfied_rounded,
+                      size: 100,
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Text('No document found')
+                  ],
+                ),
+              ),
+            );
+          } else {
+            var data = snapshot.data!.map((note) {
+              return note;
+            }).toList();
+
+            return GridView(
+              padding: const EdgeInsets.only(
+                top: 0,
+                left: 12,
+                right: 12,
+              ),
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: multiple ? 2 : 1,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 12.0,
+                childAspectRatio: multiple ? 1.5 : 3,
+              ),
+              children: List<Widget>.generate(
+                snapshot.data!.length,
+                    (int index) {
+                  final count = snapshot.data!.length;
+                  final animation = Tween<double>(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: _animCtrl,
+                      curve: Interval(
+                        (1 / count) * index, 1.0,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                    ),
+                  );
+                  _animCtrl.forward();
+                  return HomeListView(
+                    changeRatio: multiple,
+                    animation: animation,
+                    animationController: _animCtrl,
+                    listData: NoteCard(
+                      color:
+                      Color(data[index].colorValue),
+                      changeInList: !multiple,
+                      note: data[index],
+                    ),
+                    //snapshot.data![index],
+                    onLongPress: () =>
+                        showModalBottomSheet(
+                          constraints: BoxConstraints(
+                            maxHeight: 400.toDouble(),
+                            minHeight: 300.toDouble(),
+                          ),
+                          backgroundColor:
+                          Colors.transparent,
+                          context: context,
+                          builder: (context) =>
+                              _buildBottomMenu(data[index]),
+                        ),
+
+                    onTap: () => Navigator.push(
+                        context,
+                        TextEditor.route(
+                          note: data[index],
+                        )),
+                  );
+                },
+              ),
+            );
+          }
+          //return const CircularProgressMultiBar();
+        } else if (snapshot.hasError) {
+          return const Center(
+            child: SizedBox(
+              height: 200,
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.wifi_off,
+                    size: 100,
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Text('Something went wrong'),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return const CircularProgressMultiBar();
+        }
+      },
     );
   }
 
