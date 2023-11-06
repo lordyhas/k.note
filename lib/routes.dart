@@ -29,7 +29,7 @@ class AppRouter {
     initialLocation: HomeScreen.routeName,
     routes: <RouteBase>[
       ShellRoute(
-        navigatorKey: GlobalKey<NavigatorState>(),
+        navigatorKey: GlobalKey<NavigatorState>(debugLabel: "__ShellRoute__"),
         builder: (context, state, screen) => NavigationHomeScreen(child: screen),
         routes: <RouteBase>[
           _homeGoRoute(parentKey: key),
@@ -59,7 +59,8 @@ class AppRouter {
         path: HomeScreen.routeName,
         builder: (context, state) => const HomeScreen(),
         redirect: (_,state) {
-          if(BlocProvider.of<AuthenticationBloc>(_).state.isNotAuthenticated){
+          if(BlocProvider.of<AuthenticationBloc>(_)
+              .state.isNotAuthenticated){
             return LoginPage.routeName;
           }
           return null;
