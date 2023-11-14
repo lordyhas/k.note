@@ -10,14 +10,19 @@ class _EmailInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
         return TextField(
-          key: const Key('loginForm_emailInput_textField'),
-          onChanged: (email) => BlocProvider.of<LoginCubit>(context).emailChanged(email),
+          key: const Key('__loginForm_emailInput_textField__'),
+          onChanged: (email) => BlocProvider.of<LoginCubit>(context)
+              .emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            prefixIcon: const Icon(FontAwesomeIcons.userAlt, color: Colors.white,),
+            prefixIcon: const Icon(FontAwesomeIcons.userLarge,
+              color: Colors.white,
+            ),
             labelText: 'Enter your mail address',
             helperText: '',
-            errorText: state.email.displayError != null ? 'invalid email' : null, // 231010-012084
+            errorText: state.email.displayError != null
+                ? 'invalid email'
+                : null, // 231010-012084
           ),
         );
       },
@@ -37,11 +42,13 @@ class _PasswordInputState extends State<_PasswordInput> {
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
+        //FocusScope.of(context).requestFocus(FocusNode());
         return TextField(
-          key: const Key('loginForm_passwordInput_textField'),
+          key: const Key('__loginForm_passwordInput_textField__'),
           onChanged: (password) => BlocProvider.of<LoginCubit>(context)
               .passwordChanged(password),
           obscureText: !showPassword,
+          //focusNode: FocusNode(),
           decoration: InputDecoration(
             prefixIcon: const Icon(FontAwesomeIcons.lock, color: Colors.white),
             suffixIcon: IconButton(
@@ -58,15 +65,15 @@ class _PasswordInputState extends State<_PasswordInput> {
             ),
             labelText: 'Enter your password',
             helperText: '',
-            errorText: state.password.displayError != null ? 'invalid password' : null,
+            errorText: state.password.displayError != null
+                ? 'invalid password'
+                : null,
           ),
         );
       },
     );
   }
 }
-
-
 
 class _LoginButton extends StatelessWidget {
   @override
@@ -80,8 +87,9 @@ class _LoginButton extends StatelessWidget {
             : SizedBox(
               width: width,
               child: ElevatedButton(
-                key: const Key('loginForm_continue_raisedButton'),
+                key: const Key('__loginForm_continue_raisedButton__'),
                 style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor: Colors.grey.shade700,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -155,13 +163,15 @@ class _FacebookLoginButton extends StatelessWidget {
     double width = MediaQuery.of(context).size.width *0.75;
 
     Widget facebookOutlineButton = OutlinedButton(
-      key: const Key('loginForm_facebookLogin_outlineButton'),
+      key: const Key('__loginForm_facebookLogin_outlineButton__'),
       style: OutlinedButton.styleFrom(
         side: const BorderSide(
             width: 2.0,
             color: Colors.blue //theme.primaryColor,
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
       ),
 
       onPressed: () {}, //=> context.bloc<LoginCubit>().logInWithFacebook(),
@@ -190,8 +200,9 @@ class _EmailSignInInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
         return TextField(
-          key: const Key('signUpForm_emailInput_textField'),
-          onChanged: (email) => BlocProvider.of<SignUpCubit>(context).emailChanged(email),
+          key: const Key('__signUpForm_emailInput_textField__'),
+          onChanged: (email) => BlocProvider.of<SignUpCubit>(context)
+              .emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             prefixIcon: const Icon(FontAwesomeIcons.user),
@@ -237,7 +248,9 @@ class __PasswordSignInInputState extends State<_PasswordSignInInput> {
             ),
             labelText: 'password',
             helperText: '',
-            errorText: state.password.displayError != null ? 'invalid password' : null,
+            errorText: state.password.displayError != null
+                ? 'invalid password'
+                : null,
           ),
         );
       },
@@ -254,7 +267,7 @@ class _ConfirmPasswordInput extends StatelessWidget {
           previous.confirmedPassword != current.confirmedPassword,
       builder: (context, state) {
         return TextField(
-          key: const Key('signUpForm_confirmedPasswordInput_textField'),
+          key: const Key('__signUpForm_confirmedPasswordInput_textField__'),
           onChanged: (confirmPassword) => context
               .read<SignUpCubit>()
               .confirmedPasswordChanged(confirmPassword),
@@ -285,7 +298,7 @@ class _SignUpSignInButton extends StatelessWidget {
             : SizedBox(
                 width: width,
                 child: ElevatedButton(
-                  key: const Key('loginForm_continue_raisedButton'),
+                  key: const Key('__loginForm_continue_raisedButton__'),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
