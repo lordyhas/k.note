@@ -25,7 +25,7 @@ class AuthState extends Equatable {
   final User user;
 
   bool get isAuthenticated => status == AuthenticationStatus.authenticated;
-  bool get isNotAuthenticated => !isAuthenticated;
+  bool get isNotAuthenticated => status != AuthenticationStatus.authenticated;
 
   @override
   List<Object> get props => [status, user];
