@@ -10,7 +10,7 @@ import 'data/database/firebase_manager.dart';
 
 import 'package:flutter/cupertino.dart';
 
-import 'package:knote/src/pages/text_editor_page.dart';
+import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:knote/src/pages/screens/calendar_screen.dart';
 import 'package:knote/widgets.dart';
 import 'package:utils_component/utils_component.dart';
@@ -229,7 +229,7 @@ class _NvHsState extends State<NvHs> {
                   case AuthenticationStatus.authenticated:
                     return FloatingActionButton(
                       tooltip: 'add new note',
-                      onPressed: () => Navigator.push(context, TextEditor.route()),
+                      onPressed: () => Navigator.push(context, OldTextEditor.route()),
                       child: const Icon(CupertinoIcons.add), //Icons.post_add
                     );
 

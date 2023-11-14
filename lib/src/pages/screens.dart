@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import '../../widgets.dart';
 import 'package:knote/data/value/styles.dart';
-import 'package:knote/src/pages/text_editor_page.dart';
+import 'package:knote/src/pages/old_text_editor_page.dart';
 
 import '../../widgets.dart';
 import '../backgound_ui.dart';

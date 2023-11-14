@@ -7,15 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/routes.dart';
 
-
 import 'data/app_bloc.dart';
 import 'data/authentication_repository.dart';
 import 'data/database/firebase_manager.dart';
 import 'data/values.dart';
 
-
 import 'firebase_options.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -88,8 +85,9 @@ class AppView extends StatelessWidget {
           Locale('en'),
           Locale('fr'),
         ],
-        /*
-        localizationsDelegates: [
+
+        /*localizationsDelegates: [
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],*/
