@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:knote/navigation_home_screen.dart';
+import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/setting_profile_screen.dart';
 import 'package:knote/src/pages/about_page.dart';
 import 'package:knote/src/pages/login/signup_and_login.dart';
@@ -34,6 +35,7 @@ class AppRouter {
         routes: <RouteBase>[
           _homeGoRoute(parentKey: key),
 
+
         ],
       ),
 
@@ -49,6 +51,8 @@ class AppRouter {
         path: LoginPage.routeName,
         builder: (context, state) => const LoginPage(),
       ),
+
+
 
     ],
   );
@@ -132,6 +136,13 @@ class AppRouter {
             name: OfflineScreen.routeName,
             path: OfflineScreen.routeName,
             builder: (context, state) => const OfflineScreen(),
+          ),
+
+          GoRoute(
+            parentNavigatorKey: parentKey,
+            name: TextEditor.routeName,
+            path: TextEditor.routeName,
+            builder: (context, state) => TextEditor(),
           ),
 
         ],
