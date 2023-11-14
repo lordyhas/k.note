@@ -84,7 +84,8 @@ class LoginForm extends StatelessWidget {
                   case AuthenticationStatus.authenticated:
                     return Column(
                       children: [
-                        const Spacer(),
+                        //const Spacer(),
+                        const SizedBox(height: 16.0),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.75,
                           child: Text("You're already signed in with : "
@@ -115,7 +116,7 @@ class LoginForm extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Spacer(),
+                        //const Spacer(),
                       ],
                     );
                   case AuthenticationStatus.unauthenticated:
