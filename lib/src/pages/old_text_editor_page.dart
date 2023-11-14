@@ -8,12 +8,11 @@ import 'package:utils_component/utils_component.dart';
 import '../../data/app_bloc/auth_repository/user.dart';
 
 
-class TextEditor extends StatefulWidget {
-  final NoteModel
-  ? note;
+class OldTextEditor extends StatefulWidget {
+  final NoteModel? note;
   final bool isNewNote;
 
-  const TextEditor({
+  const OldTextEditor({
     this.note,
     this.isNewNote = false,
     Key? key
@@ -23,13 +22,13 @@ class TextEditor extends StatefulWidget {
   //const TextEditor({this.note, this.isNewNote = false});
 
   static Route route({NoteModel? note}) {
-    return MaterialPageRoute<void>(builder: (_) => TextEditor(note:note));
+    return MaterialPageRoute<void>(builder: (_) => OldTextEditor(note:note));
   }
   @override
-  State<TextEditor> createState() => _TextEditorState();
+  State<OldTextEditor> createState() => _OldTextEditorState();
 }
 
-class _TextEditorState extends State<TextEditor>  {
+class _OldTextEditorState extends State<OldTextEditor>  {
 
   late NoteModel _noteModel;
   late TextEditingController _textController;
