@@ -49,6 +49,8 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthState> {
     add(AuthLogoutRequested());
   }
 
+  bool isAuthenticated() => state.isAuthenticated;
+
   @override
   Future<void> close() {
     _userSubscription?.cancel();
