@@ -66,7 +66,7 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
 
                     onTap: () => Navigator.push(
                         context,
-                        TextEditor.route(
+                        OldTextEditor.route(
                           note: snapshot.data![i],
                         ))
                     //onTap: (){},
