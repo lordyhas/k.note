@@ -1,5 +1,5 @@
 
-library screens;
+library pages;
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/value/styles.dart';
 
-export  'screens/home_screen.dart';
+export  'pages/home_screen.dart';
 
 /*part 'screens/HomeScreen.dart';
 part 'screens/ValidateScreen.dart';
@@ -30,10 +30,10 @@ part 'screens/ProfileScreen.dart';
 part 'screens/AddProductScreen.dart';
 part 'screens/CommentScreen.dart';*/
 
-part 'screens/archived_note_screen.dart';
-part 'screens/feedback_screen.dart';
-part 'screens/help_screen.dart';
+part 'pages/archived_note_screen.dart';
+part 'pages/feedback_screen.dart';
+part 'pages/help_screen.dart';
 
-part 'screens/invite_friend_screen.dart';
-part 'screens/offline_note_screen.dart';
+part 'pages/invite_friend_screen.dart';
+part 'pages/offline_note_screen.dart';
 //export 'screens/';

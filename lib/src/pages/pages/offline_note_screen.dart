@@ -1,4 +1,4 @@
-part of screens;
+part of pages;
 
 class OfflineScreen extends StatefulWidget {
   static const routeName = "offline";

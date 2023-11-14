@@ -40,6 +40,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    /// Set BlocProvider <AuthenticationBloc> here
     return RepositoryProvider.value(
       value: authenticationRepository,
       child: BlocProvider(
@@ -54,6 +55,7 @@ class App extends StatelessWidget {
 
 class AppView extends StatelessWidget {
 
+  /// Global Key for GoRouter parent routes
   final _navigatorKey = GlobalKey<NavigatorState>(debugLabel: "__RouterKey__");
   //final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -64,6 +66,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if(!kIsWeb) {
+      /// For Mobile phone set UI System Style
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light ,
@@ -106,7 +109,7 @@ class AppView extends StatelessWidget {
             secondary: Colors.cyan,
           ),
         ),
-
+        /// [AppRouter] is call here
         routerConfig: AppRouter.routes(key: _navigatorKey),
       ),
     );
