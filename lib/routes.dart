@@ -22,10 +22,12 @@ class AppRouter {
     navigatorKey: key,
     errorBuilder: (context, state) => OnErrorPage(error: state.error),
     redirect: (_,state) {
-      if(BlocProvider.of<AuthenticationBloc>(_).state.isNotAuthenticated){
-        return LoginPage.routeName;
+      switch(BlocProvider.of<AuthenticationBloc>(_).state.status){
+        case AuthenticationStatus.authenticated:
+          return null;
+        case AuthenticationStatus.unauthenticated:
+          return LoginPage.routeName;
       }
-      return null;
     },
     initialLocation: HomeScreen.routeName,
     routes: <RouteBase>[
@@ -34,25 +36,24 @@ class AppRouter {
         builder: (context, state, screen) => NavigationHomeScreen(child: screen),
         routes: <RouteBase>[
           _homeGoRoute(parentKey: key),
-
-
         ],
       ),
 
-      GoRoute(
+      GoRoute( /// Login router
         redirect: (_,state) {
-          if(BlocProvider.of<AuthenticationBloc>(_).state.isAuthenticated){
-            return HomeScreen.routeName;
+          switch(BlocProvider.of<AuthenticationBloc>(_).state.status){
+            case AuthenticationStatus.authenticated:
+              return HomeScreen.routeName;
+            case AuthenticationStatus.unauthenticated:
+              return null;
           }
-          return null;
+
         },
         parentNavigatorKey: key,
         name: LoginPage.routeName,
         path: LoginPage.routeName,
         builder: (context, state) => const LoginPage(),
       ),
-
-
 
     ],
   );
@@ -63,11 +64,12 @@ class AppRouter {
         path: HomeScreen.routeName,
         builder: (context, state) => const HomeScreen(),
         redirect: (_,state) {
-          if(BlocProvider.of<AuthenticationBloc>(_)
-              .state.isNotAuthenticated){
-            return LoginPage.routeName;
+          switch(BlocProvider.of<AuthenticationBloc>(_).state.status){
+            case AuthenticationStatus.authenticated:
+              return null;
+            case AuthenticationStatus.unauthenticated:
+              return LoginPage.routeName;
           }
-          return null;
         },
         routes: <RouteBase>[
           GoRoute(
