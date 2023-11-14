@@ -8,6 +8,8 @@ class NoteModel extends DocumentModel {
   final dynamic id;
   String? title;
   String? text;
+  //todo : add a new saving data mode
+  //final dynamic data;
   final DateTime? creationTime;
   DateTime? modificationTime ;
   bool isDeleted;
