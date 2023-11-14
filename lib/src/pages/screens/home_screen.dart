@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/value/styles.dart';
-import 'package:knote/src/pages/text_editor_page.dart';
+import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:utils_component/utils_component.dart';
 
 import '../../../res.dart';
@@ -304,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                     onTap: () => Navigator.push(
                         context,
-                        TextEditor.route(
+                        OldTextEditor.route(
                           note: data[index],
                         )),
                   );
