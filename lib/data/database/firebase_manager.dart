@@ -29,7 +29,8 @@ class FirebaseManager {
       .collection('K_NOTE')
       .doc('general_data')
       .collection('USERS');
-  CollectionReference<Map<String, dynamic>>  colG = FirebaseFirestore.instance.collection('K_NOTE');
+  CollectionReference<Map<String, dynamic>>  colG = FirebaseFirestore.instance
+      .collection('K_NOTE');
 
   ///CollectionReference get collectionUser => colG.doc('general_data').collection('USERS');
   ///CollectionReference get collectionNote => colG.doc('general_data').collection('NOTES');
@@ -38,9 +39,9 @@ class FirebaseManager {
   CollectionReference<Map<String, dynamic>> get collectionUserNote => users
       .doc(user.id).collection('notes');
 
-  DocumentReference getDoc({required String docName }){
+  /*DocumentReference getDoc({required String docName }){
     return colG.doc(docName);
-  }
+  }*/
 
   Future<NoteModel?> getNoteInCloud({
     required String noteId
@@ -174,9 +175,8 @@ class FirebaseManager {
 
   /// Update [NoteData] text with map by {key : value}
 
-  Future<void> updateNoteText ({
+  Future<void> updateNoteText({
     required String userId,
-
     required String id,
     required String value}) async {
     String key = 'text';
@@ -198,16 +198,15 @@ class FirebaseManager {
   /// Update data with map by {key : value}
 
   Future<void> updateUserInformation({
-    required String userId,
     required String key,
     required String value}) async {
-    return users.doc(userId).update({key:value});
+    return users.doc(user.id).update({key:value});
   }
 
 
   /// Update the all user information that has changed
 
-  Future<void> updateUserAll({required User user}) async {
+  Future<void> updateUser({required User user}) async {
     //var docId = "";
     return users.doc(user.id).update(user.asMap());
   }
@@ -224,6 +223,10 @@ class FirebaseManager {
     required String docId, bool show = false,
   }) async {
     return users.doc(docId).update({'last_time': DateTime.now()});
+  }
+
+  Future<void> updateLastLogin() async {
+    return users.doc(user.id).update({'last_login': DateTime.now()});
   }
 
   Future<void> addData({required Map<String, dynamic> dataAsMap, collection}){

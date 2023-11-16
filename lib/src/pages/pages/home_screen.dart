@@ -20,11 +20,6 @@ class HomeScreen extends StatefulWidget {
 
   const HomeScreen({Key? key}) : super(key: key);
 
-  static Route route() {
-    //if(kIsWeb) return MaterialPageRoute<void>(builder: (_) => HomePage());
-    return MaterialPageRoute<void>(builder: (_) => const HomeScreen());
-  }
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -74,8 +69,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     _firebaseManager = FirebaseManager.user(
         BlocProvider.of<AuthenticationBloc>(context).state.user);
+
     _animCtrl = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
+
+
 
     //_uploadUserInCloud();
   }

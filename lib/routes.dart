@@ -57,7 +57,7 @@ class AppRouter {
   );
 
   static _homeGoRoute({required GlobalKey<NavigatorState> parentKey}) =>
-      GoRoute(
+      GoRoute( /// [HomeScreen]
         name: HomeScreen.routeName,
         path: HomeScreen.routeName,
         builder: (context, state) => const HomeScreen(),
@@ -70,7 +70,7 @@ class AppRouter {
           }
         },
         routes: <RouteBase>[
-          GoRoute(
+          GoRoute( /// [SettingProfileScreen]
               name: SettingProfileScreen.routeName,
               path: SettingProfileScreen.routeName,
               builder: (context, state) => const SettingProfileScreen(),
@@ -90,7 +90,7 @@ class AppRouter {
               ]
           ),
 
-          GoRoute(
+          GoRoute( /// []
             name: "rate",
             path: "rate",
             builder: (context, state) => Column(
@@ -102,13 +102,13 @@ class AppRouter {
             ),
           ),
 
-          GoRoute(
+          GoRoute( /// [AboutPage]
               name: AboutPage.routeName,
               path: AboutPage.routeName,
               builder: (context, state) => const AboutPage()
           ),
 
-          GoRoute(
+          GoRoute( /// [InvitedFriend]
             name: InviteFriend.routeName,
             path: InviteFriend.routeName,
             builder: (context, state) =>  const InviteFriend(),
