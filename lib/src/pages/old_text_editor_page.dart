@@ -9,6 +9,7 @@ import '../../data/app_bloc/auth_repository/user.dart';
 
 
 class OldTextEditor extends StatefulWidget {
+  static const routeName = "old-editor";
   final NoteModel? note;
   final bool isNewNote;
 
