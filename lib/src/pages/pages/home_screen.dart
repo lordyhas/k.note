@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/value/styles.dart';
+import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:utils_component/utils_component.dart';
 
@@ -72,7 +74,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     _animCtrl = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
-
 
 
     //_uploadUserInCloud();
@@ -158,7 +159,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ],
       ),
+      floatingActionButton: BooleanBuilder(
+        condition: () {
+          //return BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated;
+          return true;
+        },
+        ifTrue: FloatingActionButton(
+          onPressed: () {
+            //--;
+            GoRouter.of(context).pushNamed(TextEditor.routeName);
+            //GoRouter.of(context).pushNamed(OldTextEditor.routeName);
 
+          },
+        ),
+        ifFalse: const SizedBox.shrink(),
+
+      ),
       body: FutureBuilder<bool>(
         future: waitForAnimation(),
         builder: (context, snapshot) {
