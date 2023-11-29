@@ -10,6 +10,7 @@ import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:utils_component/utils_component.dart';
 
+import '../../../data/value/dimens.dart';
 import '../../../res.dart';
 import '../../../widgets.dart';
 import '../../backgound_ui.dart';
@@ -159,22 +160,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ],
       ),
-      floatingActionButton: BooleanBuilder(
-        condition: () {
-          //return BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated;
-          return true;
-        },
-        ifTrue: FloatingActionButton(
-          onPressed: () {
-            //--;
-            GoRouter.of(context).pushNamed(TextEditor.routeName);
-            //GoRouter.of(context).pushNamed(OldTextEditor.routeName);
 
-          },
-        ),
-        ifFalse: const SizedBox.shrink(),
-
-      ),
       body: FutureBuilder<bool>(
         future: waitForAnimation(),
         builder: (context, snapshot) {
@@ -243,8 +229,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Column(
                   children: [
                     Icon(
-                      Icons
-                          .sentiment_dissatisfied_rounded,
+                      Icons.sentiment_dissatisfied_rounded,
                       size: 100,
                     ),
                     SizedBox(
@@ -255,16 +240,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             );
-          } else {
-            var data = snapshot.data!.map((note) {
-              return note;
-            }).toList();
-
+          }
+          else {
+            var data = snapshot.data!.map((note) => note ).toList();
             return GridView(
               padding: const EdgeInsets.only(
                 top: 0,
                 left: 12,
                 right: 12,
+                bottom: bottomMarginValue + 8,
               ),
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
@@ -328,6 +312,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           }
           //return const CircularProgressMultiBar();
         } else if (snapshot.hasError) {
+          //debugPrint("++++++++++++++++++++++\n$snapshot\n++++++++++++++++++++++");
           return const Center(
             child: SizedBox(
               height: 200,
