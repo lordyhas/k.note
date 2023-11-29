@@ -2,6 +2,7 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/setting_page.dart';
 import 'package:knote/src/pages/custom_drawer/home_drawer.dart';
 
@@ -97,6 +98,21 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           child: widget.child,
         ),
 
+        floatingActionButton: BooleanBuilder(
+          condition: () {
+            //return BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated;
+            return true;
+          },
+          ifTrue: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              GoRouter.of(context).pushNamed(TextEditor.routeName);
+              //GoRouter.of(context).pushNamed(OldTextEditor.routeName);
+            },
+          ),
+          ifFalse: const SizedBox.shrink(),
+        ),
+
         bottomNavigationBar: CurvedNavigationBar(
           color: Colors.grey.shade900,
           backgroundColor: Colors.transparent,
@@ -106,24 +122,24 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
               label: 'Notes',
             ),
             CurvedNavigationBarItem(
+              child: Icon(Icons.task),
+              label: 'Tasks',
+            ),
+            CurvedNavigationBarItem(
               child: Icon(Icons.search),
               label: 'Search',
             ),
-            CurvedNavigationBarItem(
-              child: Icon(Icons.chat_bubble_outline),
-              label: 'Message',
-            ),
+
             /*CurvedNavigationBarItem(
               child: Icon(Icons.newspaper),
               label: 'Feeds',
             ),*/
             CurvedNavigationBarItem(
               child: Icon(Icons.perm_identity),
-              label: 'User',
+              label: 'You',
             ),
           ],
           onTap: (index) {
-
             if(index == 0){
               GoRouter.of(context).pushNamed(HomeScreen.routeName);
             }
