@@ -20,6 +20,9 @@ class NoteModel implements DocumentModel {
   bool isLocked;
   int savingModeValue;
 
+  final bool isExtraText;
+  final dynamic data;
+
   NoteModel({
     this.email,
     this.isLocked = false,
@@ -33,6 +36,8 @@ class NoteModel implements DocumentModel {
     this.permanentDeleteDate,
     Color color = Colors.cyan, //this.color,
     this.reminderDate,
+    this.data,
+    this.isExtraText = false,
     SavingMode savingMode = SavingMode.cloud,
   }) :  colorValue = color.value,
         savingModeValue = savingMode.index;
@@ -58,7 +63,7 @@ class NoteModel implements DocumentModel {
       email               : map['email'],
       isArchived          : map['is_archived'],
       isLocked            : map['is_locked'],
-      savingMode          : SavingMode.values[map['saving_mode']],
+      savingMode          : SavingMode.values[map['saving_mode'] ?? 0],
     );
   }
   @override
