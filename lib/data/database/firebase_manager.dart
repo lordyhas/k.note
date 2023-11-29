@@ -66,7 +66,7 @@ class FirebaseManager {
 
     debugPrint("All Note for User => [$user]");
 
-    List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
+    final maps = docSnap.docs.map((e) => e.data()).toList();
     if(maps.isNotEmpty ) {
       return  maps.map((e) => NoteModel.fromMap(e)).toList();
     }
