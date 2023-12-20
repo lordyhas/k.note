@@ -345,8 +345,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     else {}*/
     return Container(
       //height: 300,
+      padding: const EdgeInsets.only(bottom: 64.0),
+      //padding: const EdgeInsets.only(bottom: kBottomMarginValue,),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background.withOpacity(0.8),
+        color: Theme.of(context).cardColor.withOpacity(0.8),
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(18.0),
         ),
@@ -395,42 +397,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               color: Theme.of(context).iconTheme.color,
             ),
             title: const Text("Delete (Move in bin)"),
-            onTap: () => showDialog(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                // title: const Text("Option"),
-                content: SizedBox(
-                  //height: 20,
-                  child: Text("Do you want to delete this note? \n"
-                      "named : ${note.title}"),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  // title: const Text("Option"),
+                  content: SizedBox(
+                    //height: 20,
+                    child: Text("Do you want to delete this note? \n"
+                        "named : ${note.title}"),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: Navigator.of(context).pop,
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      child: const Text('Delete'),
+                      onPressed: () {
+                        _firebaseManager.deleteNote(noteId: note.id);
+                        Navigator.of(context).pop();
+                        setState(() {});
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.white,
+                            content: Text(
+                              '${note.title} note moved in bin',
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            //dismissDirection: DismissDirection.up,
+                          ));
+                      },
+                    ),
+                  ],
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: Navigator.of(context).pop,
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    child: const Text('Delete'),
-                    onPressed: () {
-                      _firebaseManager.deleteNote(noteId: note.id);
-                      Navigator.of(context).pop();
-                      setState(() {});
-                      ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: Colors.white,
-                          content: Text(
-                            '${note.title} note moved in bin',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                          //dismissDirection: DismissDirection.up,
-                        ));
-                    },
-                  ),
-                ],
-              ),
-            ),
+              );
+
+              Navigator.of(context).pop();
+            }
           ),
           ListTile(
             leading: Icon(
@@ -452,6 +458,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             title: const Text("Saving mode"),
             onTap: () {},
           ),
+
+
         ],
       ),
     );
