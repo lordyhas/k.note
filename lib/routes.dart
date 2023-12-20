@@ -40,6 +40,8 @@ class AppRouter {
         ],
       ),
 
+      //_homeGoRoute(parentKey: key),
+
       GoRoute( /// Login router
         redirect: (_,state) {
           switch(BlocProvider.of<AuthenticationBloc>(_).state.status){
