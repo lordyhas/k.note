@@ -15,6 +15,9 @@ class _EmailInput extends StatelessWidget {
               .emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
             prefixIcon: const Icon(FontAwesomeIcons.userLarge,
               color: Colors.white,
             ),
@@ -50,6 +53,9 @@ class _PasswordInputState extends State<_PasswordInput> {
           obscureText: !showPassword,
           //focusNode: FocusNode(),
           decoration: InputDecoration(
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
             prefixIcon: const Icon(FontAwesomeIcons.lock, color: Colors.white),
             suffixIcon: IconButton(
               icon: Icon(showPassword
