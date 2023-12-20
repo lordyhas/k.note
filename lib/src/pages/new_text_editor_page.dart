@@ -16,8 +16,12 @@ class TextEditor extends StatefulWidget {
   const TextEditor._({super.key, this.note, this.controller});
 
   factory TextEditor({Key? key}) => TextEditor._(key: key,);
-  factory TextEditor.quill(){
-    return const TextEditor._();
+  factory TextEditor.quill({
+    Key? key,
+    required QuillController controller,
+    NoteModel? note,
+  }){
+    return TextEditor._(key:key, controller: controller, note: note,);
   }
 
   @override
@@ -25,7 +29,7 @@ class TextEditor extends StatefulWidget {
 }
 
 class _TextEditorState extends State<TextEditor> {
-  late final QuillController _controller;
+  late final QuillController _quillController;
   late NoteModel _noteModel;
   //late TextEditingController _textController;
   late TextEditingController _titleController;
@@ -40,7 +44,7 @@ class _TextEditorState extends State<TextEditor> {
       selection: TextSelection.collapsed(offset: 0),
     );*/
     user = BlocProvider.of<AuthenticationBloc>(context).state.user;
-    _controller  = widget.controller ?? QuillController.basic();
+    _quillController  = widget.controller ?? QuillController.basic();
     _noteModel = widget.note ?? NoteModel(
       id: const Uuid().v4(),
       email: user.email,
@@ -63,12 +67,12 @@ class _TextEditorState extends State<TextEditor> {
       Colors.red,
     ];
 
-    int count = 0;
+    //int count = 0;
     int countTitle = 0;
 
     return QuillProvider(
       configurations: QuillConfigurations(
-        controller: _controller,
+        controller: _quillController,
         sharedConfigurations: const QuillSharedConfigurations(
           //locale: Locale('de'),
         ),
@@ -96,6 +100,7 @@ class _TextEditorState extends State<TextEditor> {
                         width: 200,
                         height: 250,
                         child: Column(
+
                           children: [
                             Container(
                               margin: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -153,7 +158,7 @@ class _TextEditorState extends State<TextEditor> {
               child: TextField(
                 autofocus: widget.note == null,
                 cursorColor: Color(_noteModel.colorValue),
-                style: const TextStyle(fontSize: 26),
+                style: const TextStyle(fontSize: 22),
                 controller: _titleController,
                 onChanged: (t){
                   if(countTitle > 5){
@@ -163,21 +168,29 @@ class _TextEditorState extends State<TextEditor> {
                   countTitle++;
                 },
                 onTap: (){},
-
                 onEditingComplete: (){},
                 decoration: const InputDecoration.collapsed(hintText: "Title"),
               ),
             ),
             Expanded(
-                child: QuillEditor.basic(
-                  configurations: const QuillEditorConfigurations(
-                    readOnly: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: QuillEditor.basic(
+                    configurations: const QuillEditorConfigurations(
+                      padding: EdgeInsets.all(8.0),
+                      readOnly: false,
+                    ),
                   ),
                 )
             ),
+            const QuillToolbar(
+                configurations: QuillToolbarConfigurations(
+                  showInlineCode: false,
+                ),
+            ),
           ],
         ),
-        bottomNavigationBar: const QuillToolbar(),
+        //bottomNavigationBar: const QuillToolbar(),
       ),
     );
   }
