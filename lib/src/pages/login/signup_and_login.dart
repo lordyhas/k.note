@@ -17,6 +17,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
 
 import '../../../navigation_home_screen.dart';
+import '../setting_page.dart';
 
 
 part 'signin_home.dart';

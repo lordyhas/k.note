@@ -7,7 +7,6 @@ import 'package:knote/src/pages/about_page.dart';
 import 'package:knote/src/pages/screens.dart';
 import 'package:knote/src/pages/trash_can.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:utils_component/utils_component.dart';
 
 class SettingProfileScreen extends StatefulWidget {
   static const routeName = "user";
