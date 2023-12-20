@@ -100,14 +100,68 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
         floatingActionButton: BooleanBuilder(
           condition: () {
-            //return BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated;
-            return true;
+            return BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated;
+            //return true;
           },
           ifTrue: FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () {
-              GoRouter.of(context).pushNamed(TextEditor.routeName);
-              //GoRouter.of(context).pushNamed(OldTextEditor.routeName);
+              showDialog(
+                  context: context,
+                  builder: (context){
+                    return AlertDialog(
+                      title: const Text("Choissisez un editeur",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      ),
+                      content: SizedBox(
+                        height: 120,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: const BorderSide(
+                                  color: Colors.white,
+                                  width: 1,
+                                )
+                              ),
+                              onTap: (){
+                                GoRouter.of(context).pushNamed(TextEditor.routeName);
+                                Navigator.of(context).pop();
+                              },
+                              title: const Text("Quill TextEditor"),
+                            ),
+
+                            ListTile(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: const BorderSide(
+                                    color: Colors.white,
+                                    width: 1,
+                                  )
+                              ),
+                              onTap: (){
+                                GoRouter.of(context).pushNamed(OldTextEditor.routeName);
+                                Navigator.of(context).pop();
+                              },
+                              title: const Text("Classic TextEditor"),
+                            ),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: Navigator.of(context).pop,
+                            child: const Text("Annulé")
+                        ),
+                      ],
+                    );
+                  },
+              );
+
             },
           ),
           ifFalse: const SizedBox.shrink(),
@@ -368,4 +422,3 @@ class _NvHsState extends State<NvHs> {
     }
   }
 }
-
