@@ -2,18 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/value/styles.dart';
-import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:utils_component/utils_component.dart';
-
 import '../../../data/value/dimens.dart';
 import '../../../res.dart';
 import '../../../widgets.dart';
-import '../../backgound_ui.dart';
+
 import 'package:flutter/material.dart';
 
 part 'homelist.dart';
