@@ -3,22 +3,14 @@
 import 'package:go_router/go_router.dart';
 import 'package:knote/data/values.dart';
 import 'package:knote/src/pages/screens.dart';
-import 'package:utils_component/src/widget/boolean_builder.dart';
 
 import '../../../data/app_bloc.dart';
-
 import 'package:flutter/material.dart';
-
 import '../../../data/authentication_repository.dart';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
-
-import '../../../navigation_home_screen.dart';
-import '../setting_page.dart';
-
 
 part 'signin_home.dart';
 part 'login_page.dart';
