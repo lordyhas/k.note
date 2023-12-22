@@ -67,8 +67,9 @@ class LoginForm extends StatelessWidget {
                             return Text("Welcome to K.NOTE"
                                 "${state.isAuthenticated ? " # " : "" }",
                               style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context).primaryColor),
+                                fontSize: 20,
+                                color: Theme.of(context).primaryColor,
+                              ),
                             );
                           },
                         ),

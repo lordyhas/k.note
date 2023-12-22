@@ -70,13 +70,13 @@ class _TextEditorState extends State<TextEditor> {
     //int count = 0;
     int countTitle = 0;
 
-    return QuillProvider(
-      configurations: QuillConfigurations(
-        controller: _quillController,
+    return SizedBox(
+      /*configurations: QuillConfigurations(
+        //controller: _quillController,
         sharedConfigurations: const QuillSharedConfigurations(
           //locale: Locale('de'),
         ),
-      ),
+      ),*/
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -176,17 +176,18 @@ class _TextEditorState extends State<TextEditor> {
                 child: Padding(
                   padding: const EdgeInsets.all(0.0),
                   child: QuillEditor.basic(
-                    configurations: const QuillEditorConfigurations(
-                      padding: EdgeInsets.all(8.0),
+                    configurations:  QuillEditorConfigurations(
+                      padding: const EdgeInsets.all(8.0),
                       readOnly: false,
+                      controller: _quillController,
                     ),
                   ),
                 )
             ),
             const QuillToolbar(
                 configurations: QuillToolbarConfigurations(
-                  showInlineCode: false,
-                ),
+                  //showInlineCode: false,
+                ), child: SizedBox.shrink(),
             ),
           ],
         ),

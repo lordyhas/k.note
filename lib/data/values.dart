@@ -6,4 +6,4 @@ export 'value/strings.dart';
 export 'value/styles.dart';
 export 'value/dimens.dart';
 
-final String imageLogoApp = 'assets/images/logo_2.png';
+const String imageLogoApp = 'assets/images/logo_2.png';

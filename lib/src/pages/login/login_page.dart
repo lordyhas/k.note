@@ -1,7 +1,7 @@
 part of 'signup_and_login.dart';
 
 class LoginPage extends StatelessWidget {
-  static const routeName = "/login";
+  static const routeName = "login";
 
   const LoginPage({Key? key}) : super(key: key);
 
