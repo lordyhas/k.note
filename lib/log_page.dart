@@ -40,27 +40,34 @@ class LogPage extends StatelessWidget {
               BlocBuilder<AuthenticationBloc, AuthState>(
                 builder: (context, state){
                   return BooleanBuilder(
-                    condition: () => true,
+                    condition: () => state.isAuthenticated,
                     ifTrue: ElevatedButton(
                       child: const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 32.0),
                         child: Text("Login"),
                       ),
                       onPressed: () {
-                        GoRouter.of(context).pushNamed(HomeScreen.routeName);
-                        GoRouter.of(context).pop();
+                        //GoRouter.of(context).pushNamed(HomeScreen.routeName);
+                        //GoRouter.of(context).pushReplacementNamed(HomeScreen.routeName);
+                        GoRouter.of(context).pushReplacement("/r/home");
+                        //GoRouter.of(context).pop();
                       },
                     ),
                     ifFalse: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey,
+
                       ),
                       child: const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 32.0),
-                        child: Text("_Login_"),
+                        child: Text("Login",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                       onPressed: () => GoRouter.of(context)
-                          .pushReplacementNamed(LoginPage.routeName),
+                          .pushReplacement("/${LoginPage.routeName}"),
                     ),
                   );
                 },
