@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 part 'homelist.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const routeName = "/home";
+  static const routeName = "home";
 
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -105,44 +105,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         centerTitle: true,
-        leading: const Icon(CupertinoIcons.person),
+        leading: const Icon(CupertinoIcons.person, color: Colors.white,),
         title: const Text(
           'K.NOTE',
           style: TextStyle(
             fontSize: 22,
             color: StyleAppTheme.darkText,
             fontWeight: FontWeight.w700,
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: AppBar().preferredSize,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Card(
-              child: Row(
-                //mainAxisAlignment: MainAxisAlignment.,
-                children: [
-                  IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: onSearch // Scaffold.of(context).openEndDrawer,
-                      ),
-                  Expanded(
-                    child: TextField(
-                        controller: _searchController,
-                        key: const Key('homePage_search_textField'),
-                        onChanged: (query) {},
-                        onTap: onSearch,
-                        decoration: const InputDecoration.collapsed(
-                            hintText: 'Find a documents')),
-                  ),
-                  IconButton(
-                      //icon: Icon(Icons.notifications_none_rounded),
-                      icon: const Icon(Icons.notifications_none_rounded),
-                      onPressed: () {} //Scaffold.of(context).openEndDrawer,
-                      )
-                ],
-              ),
-            ),
           ),
         ),
         actions: [
@@ -159,6 +128,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             },
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: AppBar().preferredSize,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Card(
+              //color: Colors.grey.shade700,
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.,
+                children: [
+                  IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: onSearch // Scaffold.of(context).openEndDrawer,
+                  ),
+                  Expanded(
+                    child: TextField(
+                        controller: _searchController,
+                        key: const Key('homePage_search_textField'),
+                        onChanged: (query) {},
+                        onTap: onSearch,
+                        decoration: const InputDecoration.collapsed(
+                            hintText: 'Find a documents')),
+                  ),
+                  IconButton(
+                    //icon: Icon(Icons.notifications_none_rounded),
+                      icon: const Icon(Icons.notifications_none_rounded),
+                      onPressed: () {} //Scaffold.of(context).openEndDrawer,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
 
       body: FutureBuilder<bool>(
@@ -202,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   );
                                 });
                           } else {
-                            return noteList();
+                            return NoteListView();
                           }
                         }),
                   ),
@@ -215,7 +216,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget noteList(){
+  //ignore: non_constant_identifier_names
+  Widget NoteListView(){
     return FutureBuilder<List<NoteModel>>(
       future: _firebaseManager.getAllNoteInCloud(),
       //_firebaseManager.getAllNoteInCloud(user.email),
