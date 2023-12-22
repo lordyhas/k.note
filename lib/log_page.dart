@@ -58,8 +58,8 @@ class LogPage extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: BlocBuilder<AuthenticationBloc, AuthState>(
                     builder: (context, state){
-                      return Text("Welcome to K.NOTE"
-                          "${state.isAuthenticated ? " # " : "" }",
+                      return Text("Welcome to K.NOTE",
+                          //"${state.isAuthenticated ? " # " : "" }",
                         style: TextStyle(
                             fontSize: 18,
                             color: Theme.of(context).primaryColor),
