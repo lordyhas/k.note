@@ -7,7 +7,8 @@ class NoteCard extends StatelessWidget {
   final NoteModel note;
 
 
-  NoteCard({
+  const NoteCard({
+    super.key,
     required this.note,
     this.color,
     this.changeInList = false,
@@ -18,7 +19,7 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      //color: Colors.grey.shade100,
+      //color: Colors.grey.shade700,
       elevation: 2.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),

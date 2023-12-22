@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             borderRadius: BorderRadius.circular(AppBar().preferredSize.height),
             child: Icon(
               multiple ? Icons.dashboard : Icons.view_agenda,
-              //color: StyleAppTheme.dark_grey,
+              color: Colors.white,
             ),
             onTap: () {
               setState(() {

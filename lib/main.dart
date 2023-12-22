@@ -76,6 +76,9 @@ class AppView extends StatelessWidget {
         systemNavigationBarIconBrightness: Brightness.dark,
       ));
     }
+    var user = BlocProvider.of<AuthenticationBloc>(context).state.user;
+    print('AppView.build');
+    print('################# User($user)');
     return MultiBlocProvider(
       providers: [
         BlocProvider<LanguageBloc>(create: (context) => LanguageBloc()),
@@ -97,16 +100,21 @@ class AppView extends StatelessWidget {
         theme: ThemeData.dark().copyWith(
           primaryColor: Colors.cyan.shade700,
           primaryColorDark: Colors.grey[600],
+          //cardColor: Colors.grey.shade700,
+          cardTheme: CardTheme(color: Colors.grey.shade800),
+          scaffoldBackgroundColor: Colors.transparent,
+
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.transparent,
             elevation: 0.0,
           ),
-          scaffoldBackgroundColor: Colors.transparent,
+
           iconTheme: const IconThemeData(
             color: Colors.white,
           ),
           colorScheme: ColorScheme.fromSwatch().copyWith(
             secondary: Colors.cyan,
+
           ),
         ),
         /// [AppRouter] is call here
