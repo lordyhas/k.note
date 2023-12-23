@@ -53,18 +53,6 @@ class NoteCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  /*Container(
-                    height: 20,
-                    child: Row(
-                      children: [
-                        Expanded(child: Container()),
-                        Container(
-                          child: Text(""),
-                        ),
-
-                      ],
-                    ),
-                  ),*/
                   Container(
                     height: 4.0,
                     color: color ?? Theme.of(context).primaryColor,
