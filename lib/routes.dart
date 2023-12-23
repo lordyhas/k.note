@@ -34,7 +34,24 @@ class AppRouter {
         builder: (context, state) => const LogPage(),
       ),
       GoRoute( /// [/]
-        path: "/r",
+        path: "/r/home",
+        //pageBuilder: ,
+        redirect: (ctx,state) {
+          return "/${HomeScreen.routeName}";
+        },
+      ),
+      GoRoute( /// [/]
+        path: "/logout",
+        name: "/logout",
+        //pageBuilder: ,
+        redirect: (ctx,state) {
+          BlocProvider.of<AuthenticationBloc>(ctx).logout();
+          return "/${LoginPage.routeName}";
+
+        },
+      ),
+      GoRoute( /// [/]
+        path: "/signup",
         //pageBuilder: ,
         redirect: (ctx,state) {
           var user = BlocProvider.of<AuthenticationBloc>(ctx).state.user;
