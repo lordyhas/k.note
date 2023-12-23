@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/data/values.dart';
 import 'package:knote/src/backgound_ui.dart';
 import 'package:knote/src/pages/login/signup_and_login.dart';
-import 'package:knote/src/pages/pages/home_screen.dart';
 import 'package:utils_component/utils_component.dart';
 
 import 'data/app_bloc/authentication/authentication_bloc.dart';
@@ -19,6 +18,7 @@ class LogPage extends StatelessWidget {
       child: Stack(
         children: [
           const Expanded(
+            // todo : fix Gradient Color or Remove It
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -44,7 +44,6 @@ class LogPage extends StatelessWidget {
                     Colors.black38,
                     Colors.black45,
                     Colors.black54,
-
                   ],
                 )
               ),
@@ -127,7 +126,6 @@ class LogPage extends StatelessWidget {
                     const Spacer(),
                   ],
                 ),
-                //ComingSoon(),
                 const Spacer(flex: 2,),
               ],
             ),
