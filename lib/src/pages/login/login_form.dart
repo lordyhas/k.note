@@ -123,7 +123,6 @@ class LoginForm extends StatelessWidget {
                               ),
                             ),
                           ),
-                          //const Spacer(),
                         ],
                       ),
                     );
