@@ -8,13 +8,13 @@ class StyleAppTheme {
   StyleAppTheme.init();
 
 
-  Color nearlyWhite1 = Color(0xFFFEFEFE);
+  var nearlyWhite1 = Color(0xFFFEFEFE);
   static const Color notWhite = Color(0xFFEDF0F2);
   static const Color  nearlyWhite = Color(0xFFFEFEFE);
   static const Color white = Color(0xFFFFFFFF);
   static const Color nearlyBlack = Color(0xFF4A6581);// Colors.white70; //  Color(0xFF213333);
   static const Color grey = Color(0xFF3A5160);
-  static const Color dark_grey = Color(0xFF313A44);
+  static const Color darkGrey = Color(0xFF313A44);
 
   static const Color darkText = Colors.white; // Color(0xFF253840);
   static const Color darkerText = Color(0xFF17262A);
@@ -26,13 +26,13 @@ class StyleAppTheme {
   static const String fontName = 'WorkSans';
 
   static const TextTheme textTheme = TextTheme(
-    headline4: display1,
-    headline5: headline,
-    headline6: title,
-    subtitle2: subtitle,
-    bodyText2: body2,
-    bodyText1: body1,
-    caption: caption,
+    headlineLarge: display1,
+    headlineMedium: headline,
+    headlineSmall: title,
+    titleMedium: subtitle,
+    bodyMedium: body2,
+    bodyLarge: body1,
+    bodySmall: caption,
   );
 
   static const TextStyle display1 = TextStyle( // h4 -> display1
@@ -111,7 +111,7 @@ class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');
     if (hexColor.length == 6) {
-      hexColor = 'FF' + hexColor;
+      hexColor = 'FF$hexColor';
     }
     return int.parse(hexColor, radix: 16);
   }

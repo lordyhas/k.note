@@ -173,7 +173,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           builder: (context) => AlertDialog(
                             title: Text(
                               "Disconnect K.NOTE account",
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             content: RichText(
                               text:  TextSpan(

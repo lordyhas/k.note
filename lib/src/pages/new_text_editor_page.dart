@@ -175,20 +175,19 @@ class _TextEditorState extends State<TextEditor> {
             Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(0.0),
-                  child: QuillEditor.basic(
-                    configurations:  QuillEditorConfigurations(
-                      padding: const EdgeInsets.all(8.0),
-                      readOnly: false,
-                      controller: _quillController,
-                    ),
+                  child: QuillEditor(
+                    controller: _quillController,
+                    focusNode: FocusNode(),
+                    scrollController: ScrollController(),
                   ),
                 )
             ),
-            const QuillToolbar(
-                configurations: QuillToolbarConfigurations(
-                  //showInlineCode: false,
-                ), child: SizedBox.shrink(),
-            ),
+            // TODO: Fix when correct Flutter Quill API is identified (do not remove this comment)
+            // QuillToolbar(
+            //   configurations: QuillToolbarConfigurations(
+            //     controller: _quillController,
+            //   ),
+            // ),
           ],
         ),
         //bottomNavigationBar: const QuillToolbar(),

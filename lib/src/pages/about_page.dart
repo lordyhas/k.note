@@ -74,7 +74,7 @@ class _AboutState extends State<AboutPage>{
 
   Widget contentAbout(){
     var primaryTextStyle20 = Theme.of(context)
-        .textTheme.bodyText2!
+        .textTheme.bodyMedium!
         .copyWith(fontSize: 17,);
     var textSettingsStyle = TextStyle(color: Colors.blue[600]);
 

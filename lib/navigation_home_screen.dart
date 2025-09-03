@@ -257,7 +257,7 @@ class _NvHsState extends State<NvHs> {
           builder: (context) => AlertDialog(
             title: Text(
               "Exit K.NOTE",
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             content: const Text("Do you want to exit K.NOTE ?"),
             actions: [
