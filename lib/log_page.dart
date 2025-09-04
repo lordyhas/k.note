@@ -17,7 +17,7 @@ class LogPage extends StatelessWidget {
       index: 1,
       child: Stack(
         children: [
-          const Expanded(
+            const Positioned.fill(
             // todo : fix Gradient Color or Remove It
             child: DecoratedBox(
               decoration: BoxDecoration(
