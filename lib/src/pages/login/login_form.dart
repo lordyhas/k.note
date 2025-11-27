@@ -13,6 +13,7 @@ class LoginForm extends StatelessWidget {
 
     return BlocListener<LoginCubit, LoginState>(
       key: navigatorKey,
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status.isFailure) {
           FocusScope.of(context).requestFocus(FocusNode());
