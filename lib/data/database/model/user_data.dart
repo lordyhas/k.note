@@ -1,13 +1,12 @@
 part of data.model;
 
-class UserData extends DataToMap{
+class UserData extends DataToMap {
   final id;
   final name;
   final userCode;
   final phoneNumber;
   final email;
   final location;
-  //final homeLocation;
   final lastConnection;
 
   UserData({
@@ -18,19 +17,18 @@ class UserData extends DataToMap{
     this.email,
     this.location,
     this.lastConnection,
-
   });
 
   final _table = "USERS";
   String get tableName => _table;
 
   UserData fromUser({required User user}) => UserData(
-    id: user.id,
-    name: user.name,
-    userCode: user.id,
-    email: user.email,
-    phoneNumber: user.phoneNumber,
-  );
+        id: user.uid,
+        name: user.displayName,
+        userCode: user.uid,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      );
 
   @override
   String toString() {
@@ -40,20 +38,17 @@ class UserData extends DataToMap{
 
   @override
   Map<String, dynamic> asMap() => {
-    'id': id,
-    'name': name,
-    'user_code': userCode,
-    'phone_number': phoneNumber,
-    'email': email,
-    'location': location,
-    'last_location': lastConnection,
-
-  };
+        'id': id,
+        'name': name,
+        'user_code': userCode,
+        'phone_number': phoneNumber,
+        'email': email,
+        'location': location,
+        'last_location': lastConnection,
+      };
 
   @override
   void toDisplay() {
     debugPrint(toString());
   }
-
-
 }

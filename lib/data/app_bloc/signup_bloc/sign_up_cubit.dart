@@ -1,17 +1,9 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:formz/formz.dart';
+
 import '../auth_repository/repository.dart';
 import '../login_bloc/login_models.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:formz/formz.dart';
-
-
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-//import 'package:form_inputs/form_inputs.dart';
-import 'package:formz/formz.dart';
 
 part 'sign_up_state.dart';
 
@@ -91,4 +83,3 @@ class SignUpCubit extends Cubit<SignUpState> {
     }
   }
 }
-

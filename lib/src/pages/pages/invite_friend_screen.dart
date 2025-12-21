@@ -4,7 +4,7 @@ part of pages;
 
 class InviteFriend extends StatefulWidget {
   static const routeName = "invite-friend";
-  const InviteFriend({Key? key}) : super(key: key);
+  const InviteFriend({super.key});
 
   @override
   State<InviteFriend> createState() => _InviteFriendState();

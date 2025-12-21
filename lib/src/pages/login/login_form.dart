@@ -3,7 +3,7 @@ part of 'signup_and_login.dart';
 
 
 class LoginForm extends StatelessWidget {
-  const LoginForm({Key? key}) : super(key: key);
+  const LoginForm({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class LoginForm extends StatelessWidget {
                       children: <Widget>[
                         BlocBuilder<AuthenticationBloc, AuthState>(
                           builder: (context, state){
-                            return Text("Welcome to K.NOTE"
+                            return Text("Welcome to konte"
                                 "${state.isAuthenticated ? " # " : "" }",
                               style: TextStyle(
                                 fontSize: 20,
@@ -156,13 +156,14 @@ class LoginForm extends StatelessWidget {
                                 children: [
                                   Container(height: 1, width: 70, color: Colors.grey,),
                                   const SizedBox(width: 4.0,),
-                                  const Text("OR"),
+                                  const Text("OR", style: TextStyle(fontSize: 16),),
                                   const SizedBox(width: 4.0,),
                                   Container(height: 1, width: 70, color: Colors.grey,),
                                 ],
                               ),
                             ),
                             _GoogleLoginButton(),
+                            const SizedBox(height: 16.0,),
                             _FacebookLoginButton(),
                             //const Spacer(),
                           ],),
@@ -179,102 +180,4 @@ class LoginForm extends StatelessWidget {
       )
     );
   }
-
-  _oldUI() => Align(
-    //padding: EdgeInsets.all(0),
-    child: Column(
-      //mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 16.0),
-        BlocBuilder<AuthenticationBloc, AuthState>(
-          builder: (context, state){
-            switch(state.status){
-              case AuthenticationStatus.authenticated:
-                return Column(
-                  children: [
-                    //const Spacer(),
-                    const SizedBox(height: 16.0),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      child: Text("You're already signed in with : "
-                          "[${state.user.email}]",
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                        onPressed: (){
-                          GoRouter
-                              .of(context)
-                              .pushReplacement(HomeScreen.routeName);
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Spacer(),
-                            Text('Continue'),
-                            Spacer(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    //const Spacer(),
-                  ],
-                );
-              case AuthenticationStatus.unauthenticated:
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25, top: 2,),
-                      child: _EmailInput(),
-                    ),
-
-                    const SizedBox(height: 8.0),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25, top: 2),
-                      child: _PasswordInput(),
-                    ),
-                    //
-                    SizedBox(
-                      child: Column(children: [
-                        //const Spacer(),
-                        _LoginButton(),
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 4.0),
-                          //color: Colors.green,
-                          //width: 150,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(height: 1, width: 70, color: Colors.grey,),
-                              const SizedBox(width: 4.0,),
-                              const Text("OR"),
-                              const SizedBox(width: 4.0,),
-
-                              Container(height: 1, width: 70, color: Colors.grey,),
-                            ],
-                          ),
-                        ),
-                        _GoogleLoginButton(),
-                        _FacebookLoginButton(),
-                        //const Spacer(),
-                      ],),
-                    ),
-                  ],
-                );
-            }
-          },
-        ),
-
-        //_GoToSignUpPageTextButton(),
-        //_ContinueWithOutButton(),
-      ],
-    ),
-  );
 }

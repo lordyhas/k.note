@@ -18,7 +18,7 @@ part 'homelist.dart';
 class HomeScreen extends StatefulWidget {
   static const routeName = "home";
 
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     //return;
   }
 
-  _defaultOnTapComingSoon() {
+  void _defaultOnTapComingSoon() {
     Log.i('++++++++++ SnackBar ++++++++++');
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -467,14 +467,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
 class HomeListView extends StatelessWidget {
   const HomeListView(
-      {Key? key,
+      {super.key,
       required this.listData,
       this.onTap,
       this.changeRatio = false,
       this.onLongPress,
       required this.animationController,
-      required this.animation})
-      : super(key: key);
+      required this.animation});
 
   final listData;
   final VoidCallback? onTap;

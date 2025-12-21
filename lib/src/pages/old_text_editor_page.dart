@@ -16,8 +16,8 @@ class OldTextEditor extends StatefulWidget {
   const OldTextEditor({
     this.note,
     this.isNewNote = false,
-    Key? key
-  }) : super(key: key);
+    super.key
+  });
 
 
   //const TextEditor({this.note, this.isNewNote = false});
@@ -76,7 +76,7 @@ class _OldTextEditorState extends State<OldTextEditor>  {
 
   }
 
-  setNote(title,text){
+  void setNote(title,text){
     if(!isNoteInCloud) return;
     setState(() {
       _noteModel.title = title ;

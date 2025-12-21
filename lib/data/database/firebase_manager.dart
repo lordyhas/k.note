@@ -22,7 +22,7 @@ class FirebaseManager {
     return user == null ? FirebaseManager.empty() : FirebaseManager.user(user);
   }
 
-  close(){}
+  void close(){}
 
   // Create a CollectionReference called users that references the firestore collection
   CollectionReference<Map<String, dynamic>>  users = FirebaseFirestore.instance

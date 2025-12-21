@@ -39,7 +39,7 @@ class SettingAppData {
   });
 
 
-  toDisplay() {
+  void toDisplay() {
     var map = {
       'id': id,
       'user_code': userCode,

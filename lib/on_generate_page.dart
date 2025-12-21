@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 class OnGeneratePage extends StatelessWidget {
-  const OnGeneratePage({Key? key}) : super(key: key);
+  const OnGeneratePage({super.key});
 
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => const OnGeneratePage());

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'data/values.dart';
 
 class SplashPage extends StatelessWidget {
+  const SplashPage({super.key});
+
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => SplashPage());
   }
@@ -15,7 +17,7 @@ class SplashPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 64),
-            child: Container(
+            child: SizedBox(
               height: 200,
               child: Image.asset(imageLogoApp,
                 //color: Theme.of(context).primaryColor.withOpacity(0.85)

@@ -3,6 +3,8 @@ part of 'signup_and_login.dart';
 
 
 class LoginHome extends StatefulWidget {
+  const LoginHome({super.key});
+
   @override
   _LoginHomeState createState() => _LoginHomeState();
 }

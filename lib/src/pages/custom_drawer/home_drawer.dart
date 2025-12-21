@@ -1,5 +1,3 @@
-
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:utils_component/utils_component.dart';
@@ -7,7 +5,7 @@ import '../../../data/value/styles.dart';
 import 'package:flutter/material.dart';
 import '../../../res.dart';
 
-enum  DrawerIndex {
+enum DrawerIndex {
   HOME,
   FeedBack,
   Help,
@@ -19,23 +17,21 @@ enum  DrawerIndex {
   Archived,
   Offline,
   //Setting,
-
 }
 
 class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({
-    Key? key,
-    required this.screenIndex,
-    required this.iconAnimationController,
-    required this.callBackIndex
-  }) : super(key: key);
+  const HomeDrawer(
+      {super.key,
+      required this.screenIndex,
+      required this.iconAnimationController,
+      required this.callBackIndex});
 
   final AnimationController iconAnimationController;
   final DrawerIndex screenIndex;
   final Function(DrawerIndex) callBackIndex;
 
   @override
-  _HomeDrawerState createState() => _HomeDrawerState();
+  State<HomeDrawer> createState() => _HomeDrawerState();
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
@@ -46,8 +42,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,72 +51,80 @@ class _HomeDrawerState extends State<HomeDrawer> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          BlocBuilder<AuthenticationBloc,AuthState>(
-            builder: (context, state) {
-              return   Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.only(top: 40.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        AnimatedBuilder(
-                          animation: widget.iconAnimationController,
-                          builder: (context, child) {
-                            return ScaleTransition(
-                              scale: AlwaysStoppedAnimation<double>(1.0 - (widget.iconAnimationController.value) * 0.2),
-                              child: RotationTransition(
-                                turns: AlwaysStoppedAnimation<double>(Tween<double>(begin: 0.0, end: 24.0)
-                                        .animate(CurvedAnimation(parent: widget.iconAnimationController, curve: Curves.fastOutSlowIn))
-                                        .value /
-                                    360),
-                                child: Container(
-                                  height: 120,
-                                  width: 120,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    boxShadow: <BoxShadow>[
-                                      BoxShadow(color: StyleAppTheme.grey.withOpacity(0.3), offset: const Offset(2.0, 4.0), blurRadius: 8),
-                                    ],
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.all(Radius.circular(100.0)),
-                                    child: (true)
-                                        ? Image.asset(Res.IMG)
-                                        : Image.asset(Res.logo_2),//Image.network(state.user.photoMail!),
-                                  ),
-                                ),
+          BlocBuilder<AuthenticationBloc, AuthState>(builder: (context, state) {
+            return Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 40.0),
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    AnimatedBuilder(
+                      animation: widget.iconAnimationController,
+                      builder: (context, child) {
+                        return ScaleTransition(
+                          scale: AlwaysStoppedAnimation<double>(1.0 -
+                              (widget.iconAnimationController.value) * 0.2),
+                          child: RotationTransition(
+                            turns: AlwaysStoppedAnimation<double>(Tween<double>(
+                                        begin: 0.0, end: 24.0)
+                                    .animate(CurvedAnimation(
+                                        parent: widget.iconAnimationController,
+                                        curve: Curves.fastOutSlowIn))
+                                    .value /
+                                360),
+                            child: Container(
+                              height: 120,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: <BoxShadow>[
+                                  BoxShadow(
+                                      color:
+                                          StyleAppTheme.grey.withOpacity(0.3),
+                                      offset: const Offset(2.0, 4.0),
+                                      blurRadius: 8),
+                                ],
                               ),
-                            );
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8, left: 4),
-                          child: Chip(
-                            avatar: ClipRRect(
-                                borderRadius: const BorderRadius
-                                    .all(Radius.circular(100.0)),
-                                child: Image.asset(Res.logo_2)
-                                //Image.network(state.user.photoMail.toString())
-                            ) ,
-                            label: Text(
-                              state.user.name ?? 'K.Note User',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                //color: StyleAppTheme.grey,
-                                fontSize: 18,
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(100.0)),
+                                child: (true)
+                                    ? Image.asset(Res.IMG)
+                                    : Image.asset(Res
+                                        .logo_2), //Image.network(state.user.photoMail!),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  ),
-              );
-            }
-          ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, left: 4),
+                      child: Chip(
+                        avatar: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(100.0)),
+                            child: Image.asset(Res.logo_2)
+                            //Image.network(state.user.photoMail.toString())
+                            ),
+                        label: Text(
+                          state.user.name ?? 'K.Note User',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            //color: StyleAppTheme.grey,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
           const SizedBox(
             height: 4,
           ),
@@ -145,10 +147,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
             color: Theme.of(context).primaryColor.withOpacity(0.6),
           ),
           BlocBuilder<AuthenticationBloc, AuthState>(
-              builder: (context, state) => Column(
-                children: <Widget>[
-
-                   ListTile(
+            builder: (context, state) => Column(
+              children: <Widget>[
+                ListTile(
                     title: const Text(
                       'Sign Out',
                       style: TextStyle(
@@ -163,7 +164,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                       Icons.power_settings_new,
                       color: Colors.red,
                     ),
-                    onTap:  () {
+                    onTap: () {
                       /*if(state.status == AuthenticationStatus.authenticated) {
                         BlocProvider.of<AuthenticationBloc>(context)
                             .add(AuthenticationLogoutRequested());
@@ -171,77 +172,84 @@ class _HomeDrawerState extends State<HomeDrawer> {
                       showDialog<bool>(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(
-                              "Disconnect K.NOTE account",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            content: RichText(
-                              text:  TextSpan(
-                                  text: "Do you want to sign out from this phone ?",
-                                  children: [
-                                    TextSpan(text: "\n\nThis action will disconnect "
-                                        "this device from your mail account, all new"
-                                        "backup not upload in cloud will be lost",
-                                        style: TextStyle(
-                                          color: Colors.red.shade400,
-                                          fontSize: 12,
-                                    )),
-                                  ]
-                              ),
-
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
-                                child: Text("Cancel", style: TextStyle(color: Colors.red.shade900),),
-                              ),
-
-                              TextButton(
-                                onPressed: () => _checkForBackup(),
-                                child: const Text("Check for backup",  style: TextStyle(),),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  if(state.status == AuthenticationStatus.authenticated) {
-                                    BlocProvider.of<AuthenticationBloc>(context)
-                                        .add(AuthLogoutRequested());
-                                  }
-                                  Navigator.of(context).pop(true);
-                                },
-                                child: const Text("Yes, I want",  style: TextStyle(color: Colors.green),),
-                              ),
-                            ],
-                          ));
-
-
-                    }
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.bottom,
-                  )
-                ],
-              ),
+                                title: Text(
+                                  "Disconnect K.NOTE account",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                content: RichText(
+                                  text: TextSpan(
+                                      text:
+                                          "Do you want to sign out from this phone ?",
+                                      children: [
+                                        TextSpan(
+                                            text:
+                                                "\n\nThis action will disconnect "
+                                                "this device from your mail account, all new"
+                                                "backup not upload in cloud will be lost",
+                                            style: TextStyle(
+                                              color: Colors.red.shade400,
+                                              fontSize: 12,
+                                            )),
+                                      ]),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: Text(
+                                      "Cancel",
+                                      style:
+                                          TextStyle(color: Colors.red.shade900),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => _checkForBackup(),
+                                    child: const Text(
+                                      "Check for backup",
+                                      style: TextStyle(),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      if (state.status ==
+                                          AuthenticationStatus.authenticated) {
+                                        BlocProvider.of<AuthenticationBloc>(
+                                                context)
+                                            .add(AuthLogoutRequested());
+                                      }
+                                      Navigator.of(context).pop(true);
+                                    },
+                                    child: const Text(
+                                      "Yes, I want",
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                  ),
+                                ],
+                              ));
+                    }),
+                SizedBox(
+                  height: MediaQuery.of(context).padding.bottom,
+                )
+              ],
+            ),
           ),
-
-
         ],
       ),
     );
   }
 
-  _checkForBackup(){
+  void _checkForBackup() {
     Log.i('++++++++++ Backup SnackBar ++++++++++');
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar( const SnackBar(
+      ..showSnackBar(const SnackBar(
           backgroundColor: Colors.white,
           dismissDirection: DismissDirection.up,
           behavior: SnackBarBehavior.floating,
-          content: Text('All backup uploaded | CHECKED :) ',
-          style: TextStyle(color: Colors.black),)
-      )
-      );
-
+          content: Text(
+            'All backup uploaded | CHECKED :) ',
+            style: TextStyle(color: Colors.black),
+          )));
   }
 
   Widget inkwell(DrawerList listData) {
@@ -278,16 +286,19 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     padding: EdgeInsets.all(4.0),
                   ),
                   listData.isAssetsImage
-                      ? Container(
+                      ? SizedBox(
                           width: 24,
                           height: 24,
                           child: Image.asset(listData.imageName,
                               color: widget.screenIndex == listData.index
-                                  ? Theme.of(context).primaryColor : StyleAppTheme.nearlyBlack),
+                                  ? Theme.of(context).primaryColor
+                                  : StyleAppTheme.nearlyBlack),
                         )
                       : (widget.screenIndex == listData.index)
-                  ?Icon(listData.iconSelected.icon, color: Theme.of(context).primaryColor)
-                  :Icon(listData.icon.icon, color : StyleAppTheme.nearlyBlack),
+                          ? Icon(listData.iconSelected.icon,
+                              color: Theme.of(context).primaryColor)
+                          : Icon(listData.icon.icon,
+                              color: StyleAppTheme.nearlyBlack),
                   const Padding(
                     padding: EdgeInsets.all(4.0),
                   ),
@@ -297,7 +308,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
                       color: widget.screenIndex == listData.index
-                          ? Theme.of(context).primaryColor : StyleAppTheme.nearlyBlack,
+                          ? Theme.of(context).primaryColor
+                          : StyleAppTheme.nearlyBlack,
                     ),
                     textAlign: TextAlign.left,
                   ),
@@ -307,20 +319,24 @@ class _HomeDrawerState extends State<HomeDrawer> {
             widget.screenIndex == listData.index
                 ? AnimatedBuilder(
                     animation: widget.iconAnimationController,
-                    builder: ( context,  child) {
+                    builder: (context, child) {
                       return Transform(
                         transform: Matrix4.translationValues(
-                            (MediaQuery.of(context)
-                                .size.width * 0.75) * (1.0 - widget
-                                .iconAnimationController
-                                .value - 1.0), 0.0, 0.0),
+                            (MediaQuery.of(context).size.width * 0.75) *
+                                (1.0 -
+                                    widget.iconAnimationController.value -
+                                    1.0),
+                            0.0,
+                            0.0),
                         child: Padding(
                           padding: EdgeInsets.only(top: 8, bottom: 8),
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             height: 46,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor.withOpacity(0.15),
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(0.15),
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(0),
                                 topRight: Radius.circular(28),
@@ -345,25 +361,18 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 }
 
-
-
 class DrawerList {
   DrawerList({
     this.isAssetsImage = false,
     this.labelName = '',
-    Icon
-    ? icon,
-    Icon
-    ? iconSelected,
+    Icon? icon,
+    Icon? iconSelected,
     required this.index,
     this.imageName = '',
-  }):
+  })  :
         //assert(icon != null &&  isAssetsImage == false),
-        this.icon = icon
-            ?? Icon(null),
-        this.iconSelected = iconSelected
-            ?? icon
-            ?? Icon(null);
+        icon = icon ?? Icon(null),
+        iconSelected = iconSelected ?? icon ?? Icon(null);
 
   String labelName;
   Icon icon;
@@ -377,8 +386,9 @@ class DrawerList {
         index: DrawerIndex.HOME,
         labelName: 'Recent notes',
         iconSelected: const Icon(Icons.file_copy_outlined),
-        icon: Icon(Icons.file_copy,)
-    ),
+        icon: Icon(
+          Icons.file_copy,
+        )),
     DrawerList(
       index: DrawerIndex.Offline,
       labelName: 'Offline notes',
@@ -400,8 +410,12 @@ class DrawerList {
     DrawerList(
       index: DrawerIndex.NoteTrash,
       labelName: 'Trash',
-      icon: Icon(Icons.delete_outline,),
-      iconSelected: Icon(Icons.delete,),
+      icon: Icon(
+        Icons.delete_outline,
+      ),
+      iconSelected: Icon(
+        Icons.delete,
+      ),
     ),
     /*DrawerList(
         index: DrawerIndex.Add,
@@ -449,7 +463,4 @@ class DrawerList {
       iconSelected: Icon(Icons.info),
     ),
   ];
-
 }
-
-
