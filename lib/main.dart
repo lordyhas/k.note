@@ -110,7 +110,10 @@ class AppView extends StatelessWidget {
         ),
 
         /// [AppRouter] is call here
-        routerConfig: AppRouter.routes(key: _navigatorKey),
+        routerConfig: AppRouter.routes(
+          key: _navigatorKey,
+          authBloc: BlocProvider.of<AuthenticationBloc>(context),
+        ),
       ),
     );
   }

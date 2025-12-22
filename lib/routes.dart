@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:async';
 
 import 'package:knote/navigation_home_screen.dart';
 import 'package:knote/src/pages/new_text_editor_page.dart';
@@ -13,14 +14,18 @@ import 'package:knote/src/pages/trash_can.dart';
 //import 'package:knote/widgets.dart';
 
 import 'data/app_bloc/authentication/authentication_bloc.dart';
-import 'log_page.dart';
 import 'on_error_page.dart';
 
 class AppRouter {
   const AppRouter._();
 
-  static GoRouter routes({required GlobalKey<NavigatorState> key}) => GoRouter(
+  static GoRouter routes({
+    required GlobalKey<NavigatorState> key,
+    required AuthenticationBloc authBloc,
+  }) =>
+      GoRouter(
         navigatorKey: key,
+        refreshListenable: GoRouterRefreshStream(authBloc.stream),
         errorBuilder: (context, state) => OnErrorPage(error: state.error),
         redirectLimit: 1,
         //initialLocation: HomeScreen.routeName,
@@ -30,7 +35,14 @@ class AppRouter {
             /// []
             name: "/",
             path: "/",
-            builder: (context, state) => const LogPage(),
+            //builder: (context, state) => const LogPage(),
+            redirect: (ctx, state) {
+              if (authBloc.state.status == AuthenticationStatus.authenticated) {
+                return "/${HomeScreen.routeName}";
+              } else {
+                return "/${LoginPage.routeName}";
+              }
+            },
           ),
           GoRoute(
             /// [/]
@@ -50,22 +62,22 @@ class AppRouter {
               return "/${LoginPage.routeName}";
             },
           ),
-          GoRoute(
-            /// [/]
-            path: "/signup",
-            //pageBuilder: ,
-            redirect: (ctx, state) {
-              //var user = BlocProvider.of<AuthenticationBloc>(ctx).state.user;
-              //print('AppRouter.routes: ${user.email}');
+          // GoRoute(
+          //   /// [/]
+          //   path: "/signup",
+          //   //pageBuilder: ,
+          //   redirect: (ctx, state) {
+          //     //var user = BlocProvider.of<AuthenticationBloc>(ctx).state.user;
+          //     //print('AppRouter.routes: ${user.email}');
 
-              switch (ctx.read<AuthenticationBloc>().state.status) {
-                case AuthenticationStatus.authenticated:
-                  return "/${HomeScreen.routeName}";
-                case AuthenticationStatus.unauthenticated:
-                  return "/${LoginPage.routeName}";
-              }
-            },
-          ),
+          //     switch (ctx.read<AuthenticationBloc>().state.status) {
+          //       case AuthenticationStatus.authenticated:
+          //         return "/${HomeScreen.routeName}";
+          //       case AuthenticationStatus.unauthenticated:
+          //         return "/${LoginPage.routeName}";
+          //     }
+          //   },
+          // ),
           ShellRoute(
             navigatorKey:
                 GlobalKey<NavigatorState>(debugLabel: "__ShellRoute__"),
@@ -166,4 +178,22 @@ class AppRouter {
           ),
         ],
       );
+}
+  
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }
