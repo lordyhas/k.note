@@ -74,6 +74,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
             constraints: const BoxConstraints(maxWidth: 910),
             child: Column(
               children: [
+                SizedBox(height: 40,),
                 SizedBox(
                   height: 560,
                   child: Stack(
@@ -371,6 +372,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 40,),
               ],
             ),
           ),
