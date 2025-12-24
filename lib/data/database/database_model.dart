@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+export 'model/note_model.dart';
+
 part 'model/user_data.dart';
-part 'model/note_model.dart';
 
 part 'model/location_data.dart';
 
