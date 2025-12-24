@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/setting_page.dart';
 import 'package:knote/src/pages/custom_drawer/home_drawer.dart';
+import 'package:knote/src/pages/task_editor.dart';
 
 import 'data/database/firebase_manager.dart';
 
@@ -26,6 +27,7 @@ import 'src/pages/custom_drawer/drawer_user_controller.dart';
 import 'src/pages/about_page.dart';
 
 import 'src/pages/trash_can.dart';
+//import 'src/pages/task_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   final Widget child;
@@ -86,6 +88,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     }
   }
 
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return BackgroundUI(
@@ -96,74 +100,84 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           padding: const EdgeInsets.only(),
           child: widget.child,
         ),
-        floatingActionButton: BooleanBuilder(
-          condition: () {
-            return BlocProvider.of<AuthenticationBloc>(context)
-                .state
-                .isAuthenticated;
-            //return true;
-          },
-          ifTrue: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text(
-                      "Choissisez un editeur",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    content: SizedBox(
-                      height: 120,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ListTile(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(
-                                  color: Colors.white,
-                                  width: 1,
-                                )),
-                            onTap: () {
-                              GoRouter.of(context)
-                                  .pushNamed(TextEditor.routeName);
-                              Navigator.of(context).pop();
-                            },
-                            title: const Text("Quill TextEditor"),
-                          ),
-                          ListTile(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(
-                                  color: Colors.white,
-                                  width: 1,
-                                )),
-                            onTap: () {
-                              GoRouter.of(context)
-                                  .pushNamed(OldTextEditor.routeName);
-                              Navigator.of(context).pop();
-                            },
-                            title: const Text("Classic TextEditor"),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: Navigator.of(context).pop,
-                          child: const Text("Annulé")),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-          ifFalse: const SizedBox.shrink(),
-        ),
+        // floatingActionButton: BooleanBuilder(
+        //   condition: () {
+        //     return _currentIndex != 1;
+        //     // BlocProvider.of<AuthenticationBloc>(context)
+        //     //     .state
+        //     //     .isAuthenticated;
+        //     //return true;
+        //   },
+        //   ifTrue: FloatingActionButton(
+        //     child: const Icon(Icons.add),
+        //     onPressed: () {
+        //       showDialog(
+        //         context: context,
+        //         builder: (context) {
+        //           return AlertDialog(
+        //             title: const Text(
+        //               "Choissisez un editeur",
+        //               style: TextStyle(
+        //                 fontWeight: FontWeight.w600,
+        //               ),
+        //             ),
+        //             content: SizedBox(
+        //               height: 120,
+        //               child: Column(
+        //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                 children: [
+        //                   ListTile(
+        //                     shape: RoundedRectangleBorder(
+        //                         borderRadius: BorderRadius.circular(10),
+        //                         side: const BorderSide(
+        //                           color: Colors.white,
+        //                           width: 1,
+        //                         )),
+        //                     onTap: () {
+        //                       GoRouter.of(context)
+        //                           .pushNamed(TextEditor.routeName);
+        //                       Navigator.of(context).pop();
+        //                     },
+        //                     title: const Text("Quill TextEditor"),
+        //                   ),
+        //                   ListTile(
+        //                     shape: RoundedRectangleBorder(
+        //                         borderRadius: BorderRadius.circular(10),
+        //                         side: const BorderSide(
+        //                           color: Colors.white,
+        //                           width: 1,
+        //                         )),
+        //                     onTap: () {
+        //                       GoRouter.of(context)
+        //                           .pushNamed(OldTextEditor.routeName);
+        //                       Navigator.of(context).pop();
+        //                     },
+        //                     title: const Text("Classic TextEditor"),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             actions: [
+        //               ElevatedButton(
+        //                   onPressed: Navigator.of(context).pop,
+        //                   child: const Text("Annulé")),
+        //             ],
+        //           );
+        //         },
+        //       );
+        //     },
+        //   ),
+        //   ifFalse: FloatingActionButton(
+        //     onPressed: () async {
+        //       await Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => const TaskEditor()),
+        //       );
+        //       setState(() {});
+        //     },
+        //     child: const Icon(Icons.task),
+        //   ),
+        // ),
         bottomNavigationBar: CurvedNavigationBar(
           color: Colors.grey.shade900,
           backgroundColor: Colors.transparent,
@@ -192,12 +206,24 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           ],
           onTap: (index) {
             if (index == 0) {
+              setState(() {
+                _currentIndex = index;
+              });
               GoRouter.of(context).pushNamed(HomeScreen.routeName);
             } else if (index == 1) {
-              GoRouter.of(context).pushNamed(OfflineScreen.routeName);
+              setState(() {
+                _currentIndex = index;
+              });
+              GoRouter.of(context).pushNamed(TaskScreen.routeName);
             } else if (index == 2) {
+              setState(() {
+                _currentIndex = index;
+              });
               GoRouter.of(context).pushNamed(OfflineScreen.routeName);
             } else if (index == 3) {
+              setState(() {
+                _currentIndex = index;
+              });
               GoRouter.of(context).pushNamed(SettingProfileScreen.routeName);
             }
           },
