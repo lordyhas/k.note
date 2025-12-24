@@ -10,6 +10,7 @@ import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:knote/src/widgets/coming_soon.dart';
 
 export 'pages/home_screen.dart';
+export 'pages/task_screen.dart';
 
 part 'pages/archived_note_screen.dart';
 part 'pages/feedback_screen.dart';

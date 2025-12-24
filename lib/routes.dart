@@ -10,7 +10,10 @@ import 'package:knote/src/pages/setting_page.dart';
 import 'package:knote/src/pages/about_page.dart';
 import 'package:knote/src/pages/login/signup_and_login.dart';
 import 'package:knote/src/pages/screens.dart';
+import 'package:knote/src/pages/task_editor.dart';
 import 'package:knote/src/pages/trash_can.dart';
+import 'package:knote/src/pages/pages/task_screen.dart'; // Add this import
+import 'package:knote/data/database/database_model.dart';
 //import 'package:knote/widgets.dart';
 
 import 'data/app_bloc/authentication/authentication_bloc.dart';
@@ -142,6 +145,20 @@ class AppRouter {
                     path: OldTextEditor.routeName,
                     builder: (context, state) => const OldTextEditor(),
                   ),
+                  GoRoute(
+                    name: TaskScreen.routeName,
+                    path: TaskScreen.routeName,
+                    builder: (context, state) => const TaskScreen(),
+                  ),
+                  GoRoute(
+                    parentNavigatorKey: key,
+                    name: TaskEditor.routeName,
+                    path: TaskEditor.routeName,
+                    builder: (context, state) {
+                      final task = state.extra as CheckList?;
+                      return TaskEditor(task: task);
+                    },
+                  ),
                 ],
               ),
               GoRoute(
@@ -179,7 +196,6 @@ class AppRouter {
         ],
       );
 }
-  
 
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {

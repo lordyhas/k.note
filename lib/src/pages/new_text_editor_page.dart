@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -15,13 +14,19 @@ class TextEditor extends StatefulWidget {
 
   const TextEditor._({super.key, this.note, this.controller});
 
-  factory TextEditor({Key? key}) => TextEditor._(key: key,);
+  factory TextEditor({Key? key}) => TextEditor._(
+        key: key,
+      );
   factory TextEditor.quill({
     Key? key,
     required QuillController controller,
     NoteModel? note,
-  }){
-    return TextEditor._(key:key, controller: controller, note: note,);
+  }) {
+    return TextEditor._(
+      key: key,
+      controller: controller,
+      note: note,
+    );
   }
 
   @override
@@ -44,20 +49,20 @@ class _TextEditorState extends State<TextEditor> {
       selection: TextSelection.collapsed(offset: 0),
     );*/
     user = BlocProvider.of<AuthenticationBloc>(context).state.user;
-    _quillController  = widget.controller ?? QuillController.basic();
-    _noteModel = widget.note ?? NoteModel(
-      id: const Uuid().v4(),
-      email: user.email,
-      creationTime: DateTime.now(),
-      modificationTime: DateTime.now(),
-    );
+    _quillController = widget.controller ?? QuillController.basic();
+    _noteModel = widget.note ??
+        NoteModel(
+          id: const Uuid().v4(),
+          email: user.email,
+          creationTime: DateTime.now(),
+          modificationTime: DateTime.now(),
+        );
     //_textController = TextEditingController(text: _noteModel.text);
     _titleController = TextEditingController(text: _noteModel.title);
   }
 
   @override
   Widget build(BuildContext context) {
-
     const List<Color> colors = [
       Colors.cyan,
       Colors.black,
@@ -83,7 +88,7 @@ class _TextEditorState extends State<TextEditor> {
           backgroundColor: Colors.transparent,
           leading: IconButton(
             icon: const Icon(Icons.done),
-            onPressed: (){
+            onPressed: () {
               //setNote(_titleController.text,_textController.text);
               //FocusScope.of(context).requestFocus(FocusNode());
               Navigator.pop(context);
@@ -91,106 +96,122 @@ class _TextEditorState extends State<TextEditor> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.style, color: Color(_noteModel.colorValue),),
-              onPressed: (){
-                showDialog(context: context,
+              icon: Icon(
+                Icons.style,
+                color: Color(_noteModel.colorValue),
+              ),
+              onPressed: () {
+                showDialog(
+                    context: context,
                     builder: (ctx) => Dialog(
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        width: 200,
-                        height: 250,
-                        child: Column(
-
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: const Text('Change the note color',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            width: 200,
+                            height: 250,
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 4.0),
+                                  child: const Text(
+                                    'Change the note color',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const Spacer(),
-                            Wrap(
-                              alignment: WrapAlignment.center,
-                              runAlignment: WrapAlignment.center,
-                              spacing: 2,
-                              children: colors.map((color) => InkWell(
-                                onTap: (){
-                                  /*_firebaseManager.addNoteInCloud(
-                                    note: _noteModel..colorValue = color.value,
-                                  );*/
-                                  setState(() {
-                                    _noteModel.colorValue = color.value;
-                                  });
-                                  Navigator.pop(context);
-
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.all(4.0),
-                                  height: 75,
-                                  width: 75,
-                                  color: color,
+                                const Spacer(),
+                                Wrap(
+                                  alignment: WrapAlignment.center,
+                                  runAlignment: WrapAlignment.center,
+                                  spacing: 2,
+                                  children: colors
+                                      .map((color) => InkWell(
+                                            onTap: () {
+                                              /*_firebaseManager.addNoteInCloud(note: _noteModel..colorValue = color.value,);*/
+                                              setState(() {
+                                                _noteModel.colorValue =
+                                                    color.value;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              margin: const EdgeInsets.all(4.0),
+                                              height: 75,
+                                              width: 75,
+                                              color: color,
+                                            ),
+                                          ))
+                                      .toList(),
                                 ),
-                              )).toList(),
-
+                                const Spacer(),
+                              ],
                             ),
-                            const Spacer(),
-                          ],
-                        ),
-
-                      ),
-                    ));
+                          ),
+                        ));
               },
             ),
             IconButton(
               icon: const Icon(Icons.more_vert),
-              onPressed: (){},
+              onPressed: () {},
             ),
           ],
         ),
         body: Column(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0)
+              padding: const EdgeInsets.symmetric(horizontal: 16.0)
                   .copyWith(bottom: 8.0),
               child: TextField(
                 autofocus: widget.note == null,
                 cursorColor: Color(_noteModel.colorValue),
                 style: const TextStyle(fontSize: 22),
                 controller: _titleController,
-                onChanged: (t){
-                  if(countTitle > 5){
+                onChanged: (t) {
+                  if (countTitle > 5) {
                     //setNote(_titleController.text,_textController.text);
                     countTitle = 0;
                   }
                   countTitle++;
                 },
-                onTap: (){},
-                onEditingComplete: (){},
+                onTap: () {},
+                onEditingComplete: () {},
                 decoration: const InputDecoration.collapsed(hintText: "Title"),
               ),
             ),
             Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: QuillEditor(
-                    controller: _quillController,
-                    focusNode: FocusNode(),
-                    scrollController: ScrollController(),
-                  ),
-                )
+              padding: const EdgeInsets.all(16.0),
+              child: QuillEditor.basic(
+                controller: _quillController,
+                config: const QuillEditorConfig(),
+              ),
+            )),
+            SafeArea(
+              child: QuillSimpleToolbar(
+                controller: _quillController,
+                config: const QuillSimpleToolbarConfig(
+                  multiRowsDisplay: false,
+                  //
+                  showCodeBlock: false,
+                  showFontFamily: false,
+                  showFontSize: false,
+                  showLineHeightButton: false,
+                  showColorButton: false,
+                  showInlineCode: false,
+                  showBackgroundColorButton: false,
+                  showHeaderStyle: false,
+                  showListBullets: false,
+                  showListNumbers: false,
+
+                  showSearchButton: false,
+                  showSubscript: false,
+                  showSuperscript: false,
+                ),
+              ),
             ),
-            // TODO: Fix when correct Flutter Quill API is identified (do not remove this comment)
-            // QuillToolbar(
-            //   configurations: QuillToolbarConfigurations(
-            //     controller: _quillController,
-            //   ),
-            // ),
           ],
         ),
-        //bottomNavigationBar: const QuillToolbar(),
       ),
     );
   }
