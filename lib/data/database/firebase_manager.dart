@@ -223,6 +223,12 @@ class FirebaseManager {
     return users.doc(docId).update({'last_time': DateTime.now()});
   }
 
+  Future<void> updateNoteModificationTime({
+    required String noteId,
+  }) async {
+    return collectionUserNote.doc(noteId).update({'last_time': DateTime.now()});
+  }
+
   Future<void> updateLastLogin() async {
     return users.doc(user.id).update({'last_login': DateTime.now()});
   }
