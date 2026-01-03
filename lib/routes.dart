@@ -57,8 +57,8 @@ class AppRouter {
           ),
           GoRoute(
             /// [/]
-            path: "/logout",
-            name: "/logout",
+            path: LogOut.routeName,
+            name: "/${LogOut.routeName}",
             //pageBuilder: ,
             redirect: (ctx, state) {
               BlocProvider.of<AuthenticationBloc>(ctx).logout();

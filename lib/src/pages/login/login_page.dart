@@ -28,3 +28,19 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+
+
+class LogOut extends StatefulWidget {
+  static const routeName = "logout";
+  const LogOut({super.key});
+
+  @override
+  State<LogOut> createState() => _LogOutState();
+}
+
+class _LogOutState extends State<LogOut> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
