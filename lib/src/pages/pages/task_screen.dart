@@ -82,11 +82,14 @@ class _TaskScreenState extends State<TaskScreen> {
           }
         },
       ),
-      bottomNavigationBar: const SizedBox(height: 70),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueAccent,
-        onPressed: () => GoRouter.of(context).pushNamed(TaskEditor.routeName),
-        child: const Icon(Icons.add, color: Colors.white),
+      //bottomNavigationBar: const SizedBox(height: 70),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 70),
+        child: FloatingActionButton(
+          backgroundColor: Colors.blueAccent,
+          onPressed: () => GoRouter.of(context).pushNamed(TaskEditor.routeName),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
     );
   }

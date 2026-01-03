@@ -58,14 +58,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     //return;
   }
 
-  void _defaultOnTapComingSoon() {
-    Log.i('++++++++++ SnackBar ++++++++++');
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(const SnackBar(
-          behavior: SnackBarBehavior.fixed,
-          content: Text('En développment | Soon :) ')));
-  }
+  // void _defaultOnTapComingSoon() {
+  //   Log.i('++++++++++ SnackBar ++++++++++');
+  //   ScaffoldMessenger.of(context)
+  //     ..hideCurrentSnackBar()
+  //     ..showSnackBar(const SnackBar(
+  //         behavior: SnackBarBehavior.fixed,
+  //         content: Text('En développment | Soon :) ')));
+  // }
 
   @override
   void initState() {
@@ -102,9 +102,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: StyleAppTheme.white,
-      bottomNavigationBar: SizedBox(
-        height: 70,
-      ),
+      // bottomNavigationBar: SizedBox(
+      //   height: 70,
+      // ),
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         centerTitle: true,
@@ -183,11 +183,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               .isAuthenticated;
           //return true;
         },
-        ifTrue: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            GoRouter.of(context).pushNamed(TextEditor.routeName);
-          },
+        ifTrue: Padding(
+          padding: const EdgeInsets.only(bottom: 70),
+          child: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              GoRouter.of(context).pushNamed(TextEditor.routeName);
+            },
+          ),
         ),
         ifFalse: const SizedBox.shrink(),
       ),
@@ -278,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 top: 0,
                 left: 12,
                 right: 12,
-                bottom: bottomMarginValue + 8,
+                bottom: bottomMarginValue + 32,
               ),
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
