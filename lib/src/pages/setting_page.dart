@@ -129,7 +129,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                                     color: iconColor,
                                   ),
                                   onTap: () => GoRouter.of(context)
-                                      .pushNamed(NoteTrash.routeName),
+                                      .goNamed(NoteTrash.routeName),
                                 ),
                                 ListTile(
                                   leading: const Icon(
@@ -142,7 +142,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                                     color: iconColor,
                                   ),
                                   onTap: () => GoRouter.of(context)
-                                      .pushNamed(ArchivedScreen.routeName),
+                                      .goNamed(ArchivedScreen.routeName),
                                 ),
                                 ListTile(
                                   leading: const Icon(
@@ -340,7 +340,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                             color: iconColor,
                           ),
                           onTap: () {
-                            GoRouter.of(context).pushNamed(AboutPage.routeName);
+                            GoRouter.of(context).goNamed(AboutPage.routeName);
                           },
                         ),
 
