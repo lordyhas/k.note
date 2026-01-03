@@ -50,6 +50,7 @@ class LogPage extends StatelessWidget {
             ),
           ),
           Scaffold(
+            backgroundColor: Colors.transparent,
             body: Column(
               children: [
                 const Spacer(flex: 1,),

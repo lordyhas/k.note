@@ -1,6 +1,7 @@
-part of data.model;
+import 'package:flutter/material.dart';
+import '../database_model.dart';
 
-enum SavingMode{cloud, local, cloudAndLocal}
+enum SavingMode { cloud, local, cloudAndLocal }
 
 abstract class DocumentModel extends DataToMap {}
 
@@ -10,7 +11,7 @@ class NoteModel implements DocumentModel {
   String? text;
   //todo : add a new saving data mode
   final DateTime? creationTime;
-  DateTime? modificationTime ;
+  DateTime? modificationTime;
   bool isDeleted;
   final DateTime? permanentDeleteDate;
   int colorValue;
@@ -39,110 +40,151 @@ class NoteModel implements DocumentModel {
     this.data,
     this.isExtraText = false,
     SavingMode savingMode = SavingMode.cloud,
-  }) :  colorValue = color.value,
+  })  : colorValue = color.value,
         savingModeValue = savingMode.index;
 
-
-  static NoteModel fromMap(Map<String, dynamic> map){
+  static NoteModel fromMap(Map<String, dynamic> map) {
     return NoteModel(
-      id                  : map['id'],
-      title               : map['title'],
-      text                : map['text'],
-      creationTime        : (map['creation_time'] != null)
-          ? map['creation_time'].toDate()
-          : null,
-      modificationTime    : (map['last_time'] != null)
-          ? map['last_time'].toDate()
-          : null,
-      isDeleted           : map['is_deleted'],
-      permanentDeleteDate : (map['permanent_delete_date'] != null)
+      id: map['id'],
+      title: map['title'],
+      text: map['text'],
+      creationTime:
+          (map['creation_time'] != null) ? map['creation_time'].toDate() : null,
+      modificationTime:
+          (map['last_time'] != null) ? map['last_time'].toDate() : null,
+      isDeleted: map['is_deleted'],
+      permanentDeleteDate: (map['permanent_delete_date'] != null)
           ? map['permanent_delete_date'].toDate()
           : null,
-      color               : Color(map['color']),
-      reminderDate        : map['reminder_date']?.toDate(),
-      email               : map['email'],
-      isArchived          : map['is_archived'],
-      isLocked            : map['is_locked'],
-      savingMode          : SavingMode.values[map['saving_mode'] ?? 0],
+      color: Color(map['color']),
+      reminderDate: map['reminder_date']?.toDate(),
+      email: map['email'],
+      isArchived: map['is_archived'],
+      isLocked: map['is_locked'],
+      savingMode: SavingMode.values[map['saving_mode'] ?? 0],
     );
   }
-  @override
-  Map<String, dynamic> asMap() => {
-    'id'                    : id,
-    'title'                 : title,
-    'text'                  : text,
-    'creation_time'         : creationTime,
-    'last_time'             : modificationTime ,
-    'is_deleted'            : isDeleted,
-    'permanent_delete_date' : permanentDeleteDate,
-    'color'                 : colorValue,
-    'reminder_date'         : reminderDate,
-    'is_archived'           : isArchived,
-    'email'                 : email,
-    'is_locked'             : isLocked,
-    'saving_mode'           : savingModeValue,
-  };
 
   @override
-  toDisplay(){
+  Map<String, dynamic> asMap() => {
+        'id': id,
+        'title': title,
+        'text': text,
+        'creation_time': creationTime,
+        'last_time': modificationTime,
+        'is_deleted': isDeleted,
+        'permanent_delete_date': permanentDeleteDate,
+        'color': colorValue,
+        'reminder_date': reminderDate,
+        'is_archived': isArchived,
+        'email': email,
+        'is_locked': isLocked,
+        'saving_mode': savingModeValue,
+      };
+
+  @override
+  toDisplay() {
     debugPrint("*** \n${toString()}{");
     asMap().forEach((key, value) => debugPrint("$key : $value,"));
     debugPrint('} \n***');
   }
 }
 
-
-class TodoItem implements DataToMap{
+class TodoItem implements DataToMap {
   final String text;
   final bool isDone;
 
   const TodoItem({required this.text, required this.isDone});
 
   factory TodoItem.fromMap(Map<String, dynamic> map) => TodoItem(
-    text: map['text'],
-    isDone : map['is_done'],
-  );
-
-  @override
-  Map<String, dynamic>  asMap() => {
-    'text'    : text,
-    'is_done' : isDone,
-  };
-
-  @override
-  void toDisplay() {
-
-  }
-
-}
-
-class CheckList extends DocumentModel{
-  final String title;
-  final List<TodoItem> list;
-  final bool isAllChecked;
-
-  CheckList({
-    required this.title,
-    required this.list,
-    this.isAllChecked = false,
-  });
-
-  List<Map<String, dynamic>> get listMap => list
-      .map((e) => e.asMap())
-      .toList();
+        text: map['text'],
+        isDone: map['is_done'],
+      );
 
   @override
   Map<String, dynamic> asMap() => {
-    'title': title,
-    'is_all_checked'  : isAllChecked,
-    'list'            : listMap,
-  };
+        'text': text,
+        'is_done': isDone,
+      };
+
+  @override
+  void toDisplay() {}
+}
+
+class CheckList extends DocumentModel {
+  final dynamic id;
+  String title;
+  final List<TodoItem> list;
+  final bool isAllChecked;
+  final int colorValue;
+  final DateTime? creationTime;
+  DateTime? modificationTime;
+
+  // New fields for ToDo style
+  bool isImportant;
+  bool isMyDay;
+  DateTime? dueDate;
+  DateTime? reminderTime;
+  String? repeat;
+  String? note;
+
+  CheckList({
+    this.id,
+    required this.title,
+    required this.list,
+    this.isAllChecked = false,
+    Color color = Colors.white,
+    this.creationTime,
+    this.modificationTime,
+    this.isImportant = false,
+    this.isMyDay = false,
+    this.dueDate,
+    this.reminderTime,
+    this.repeat,
+    this.note,
+  }) : colorValue = color.value;
+
+  List<Map<String, dynamic>> get listMap => list.map((e) => e.asMap()).toList();
+
+  @override
+  Map<String, dynamic> asMap() => {
+        'id': id,
+        'title': title,
+        'is_all_checked': isAllChecked,
+        'list': listMap,
+        'color': colorValue,
+        'creation_time': creationTime,
+        'last_time': modificationTime,
+        'is_important': isImportant,
+        'is_my_day': isMyDay,
+        'due_date': dueDate,
+        'reminder_time': reminderTime,
+        'repeat': repeat,
+        'note': note,
+      };
+
   factory CheckList.fromMap(Map<String, dynamic> map) => CheckList(
-    title: map['title'] as String,
-    isAllChecked: map['is_all_checked'] as bool,
-    list: (map['list'] as List<Map<String, dynamic>>)
-        .map((e) => TodoItem.fromMap(e)).toList(),
-  );
+        id: map['id'],
+        title: map['title'] as String,
+        isAllChecked: map['is_all_checked'] as bool,
+        list: (map['list'] as List<dynamic>)
+            .map((e) => TodoItem.fromMap(e))
+            .toList(),
+        color: Color(map['color'] ?? Colors.white.value),
+        creationTime: (map['creation_time'] != null)
+            ? map['creation_time'].toDate()
+            : null,
+        modificationTime:
+            (map['last_time'] != null) ? map['last_time'].toDate() : null,
+        isImportant: map['is_important'] ?? false,
+        isMyDay: map['is_my_day'] ?? false,
+        dueDate: (map['due_date'] != null) ? map['due_date'].toDate() : null,
+        reminderTime: (map['reminder_time'] != null)
+            ? map['reminder_time'].toDate()
+            : null,
+        repeat: map['repeat'],
+        note: map['note'],
+      );
 
   @override
   void toDisplay() {
@@ -150,7 +192,4 @@ class CheckList extends DocumentModel{
     asMap().forEach((key, value) => debugPrint("$key : $value,"));
     debugPrint('} \n***');
   }
-
-
 }
-

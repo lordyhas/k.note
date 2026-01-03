@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'package:go_router/go_router.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/value/styles.dart';
-import 'package:knote/src/pages/old_text_editor_page.dart';
+
+import 'package:knote/src/pages/pages/task_screen.dart';
 import 'package:utils_component/utils_component.dart';
 import '../../../data/value/dimens.dart';
 import '../../../res.dart';
@@ -13,12 +15,14 @@ import '../../../widgets.dart';
 
 import 'package:flutter/material.dart';
 
+import "../new_text_editor_page.dart";
+
 part 'homelist.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "home";
 
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -54,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     //return;
   }
 
-  _defaultOnTapComingSoon() {
+  void _defaultOnTapComingSoon() {
     Log.i('++++++++++ SnackBar ++++++++++');
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -72,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     _animCtrl = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
-
 
     //_uploadUserInCloud();
   }
@@ -99,10 +102,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: StyleAppTheme.white,
+      bottomNavigationBar: SizedBox(
+        height: 70,
+      ),
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         centerTitle: true,
-        leading: const Icon(CupertinoIcons.person, color: Colors.white,),
+        leading: const Icon(
+          CupertinoIcons.person,
+          color: Colors.white,
+        ),
         title: const Text(
           'K.NOTE',
           style: TextStyle(
@@ -112,18 +121,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
         actions: [
-          InkWell(
-            borderRadius: BorderRadius.circular(AppBar().preferredSize.height),
-            child: Icon(
+          IconButton(
+            icon: Icon(
               multiple ? Icons.dashboard : Icons.view_agenda,
               color: Colors.white,
             ),
-            onTap: () {
-              setState(() {
-                multiple = !multiple;
-              });
-            },
+            onPressed: () => setState(() {
+              multiple = !multiple;
+            }),
           ),
+          // InkWell(
+          //   borderRadius: BorderRadius.circular(AppBar().preferredSize.height),
+          //   child: Icon(
+          //     multiple ? Icons.dashboard : Icons.view_agenda,
+          //     color: Colors.white,
+          //   ),
+          //   onTap: () {
+          //     setState(() {
+          //       multiple = !multiple;
+          //     });
+          //   },
+          // ),
         ],
         bottom: PreferredSize(
           preferredSize: AppBar().preferredSize,
@@ -137,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   IconButton(
                       icon: const Icon(Icons.search),
                       onPressed: onSearch // Scaffold.of(context).openEndDrawer,
-                  ),
+                      ),
                   Expanded(
                     child: TextField(
                         controller: _searchController,
@@ -148,17 +166,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             hintText: 'Find a documents')),
                   ),
                   IconButton(
-                    //icon: Icon(Icons.notifications_none_rounded),
+                      //icon: Icon(Icons.notifications_none_rounded),
                       icon: const Icon(Icons.notifications_none_rounded),
                       onPressed: () {} //Scaffold.of(context).openEndDrawer,
-                  )
+                      )
                 ],
               ),
             ),
           ),
         ),
       ),
-
+      floatingActionButton: BooleanBuilder(
+        condition: () {
+          return BlocProvider.of<AuthenticationBloc>(context)
+              .state
+              .isAuthenticated;
+          //return true;
+        },
+        ifTrue: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            GoRouter.of(context).pushNamed(TextEditor.routeName);
+          },
+        ),
+        ifFalse: const SizedBox.shrink(),
+      ),
       body: FutureBuilder<bool>(
         future: waitForAnimation(),
         builder: (context, snapshot) {
@@ -214,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   //ignore: non_constant_identifier_names
-  Widget NoteListView(){
+  Widget NoteListView() {
     return FutureBuilder<List<NoteModel>>(
       future: _firebaseManager.getAllNoteInCloud(),
       //_firebaseManager.getAllNoteInCloud(user.email),
@@ -234,14 +266,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     SizedBox(
                       height: 8.0,
                     ),
-                    Text('No document found')
+                    Text('No notes found')
                   ],
                 ),
               ),
             );
-          }
-          else {
-            var data = snapshot.data!.map((note) => note ).toList();
+          } else {
+            var data = snapshot.data!.map((note) => note).toList();
             return GridView(
               padding: const EdgeInsets.only(
                 top: 0,
@@ -251,8 +282,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
-              gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: multiple ? 2 : 1,
                 mainAxisSpacing: 4.0,
                 crossAxisSpacing: 12.0,
@@ -260,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               children: List<Widget>.generate(
                 snapshot.data!.length,
-                    (int index) {
+                (int index) {
                   final count = snapshot.data!.length;
                   final animation = Tween<double>(
                     begin: 0.0,
@@ -269,7 +299,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     CurvedAnimation(
                       parent: _animCtrl,
                       curve: Interval(
-                        (1 / count) * index, 1.0,
+                        (1 / count) * index,
+                        1.0,
                         curve: Curves.fastOutSlowIn,
                       ),
                     ),
@@ -280,28 +311,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     animation: animation,
                     animationController: _animCtrl,
                     listData: NoteCard(
-                      color:
-                      Color(data[index].colorValue),
+                      color: Color(data[index].colorValue),
                       changeInList: !multiple,
                       note: data[index],
                     ),
                     //snapshot.data![index],
-                    onLongPress: () =>
-                        showModalBottomSheet(
-                          constraints: BoxConstraints(
-                            maxHeight: 400.toDouble(),
-                            minHeight: 300.toDouble(),
-                          ),
-                          backgroundColor:
-                          Colors.transparent,
-                          context: context,
-                          builder: (context) =>
-                              _buildBottomMenu(data[index]),
-                        ),
+                    onLongPress: () => showModalBottomSheet(
+                      constraints: BoxConstraints(
+                        maxHeight: 400.toDouble(),
+                        minHeight: 300.toDouble(),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      builder: (context) => _buildBottomMenu(data[index]),
+                    ),
 
                     onTap: () => Navigator.push(
                         context,
-                        OldTextEditor.route(
+                        TextEditor.route(
                           note: data[index],
                         )),
                   );
@@ -391,52 +418,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(
-              Icons.delete_outline,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            title: const Text("Delete (Move in bin)"),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  // title: const Text("Option"),
-                  content: SizedBox(
-                    //height: 20,
-                    child: Text("Do you want to delete this note? \n"
-                        "named : ${note.title}"),
+              leading: Icon(
+                Icons.delete_outline,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: const Text("Delete (Move in bin)"),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    // title: const Text("Option"),
+                    content: SizedBox(
+                      //height: 20,
+                      child: Text("Do you want to delete this note? \n"
+                          "named : ${note.title}"),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: Navigator.of(context).pop,
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        child: const Text('Delete'),
+                        onPressed: () {
+                          _firebaseManager.deleteNote(noteId: note.id);
+                          Navigator.of(context).pop();
+                          setState(() {});
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.white,
+                              content: Text(
+                                '${note.title} note moved in bin',
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                              //dismissDirection: DismissDirection.up,
+                            ));
+                        },
+                      ),
+                    ],
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: Navigator.of(context).pop,
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      child: const Text('Delete'),
-                      onPressed: () {
-                        _firebaseManager.deleteNote(noteId: note.id);
-                        Navigator.of(context).pop();
-                        setState(() {});
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.white,
-                            content: Text(
-                              '${note.title} note moved in bin',
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                            //dismissDirection: DismissDirection.up,
-                          ));
-                      },
-                    ),
-                  ],
-                ),
-              );
+                );
 
-              Navigator.of(context).pop();
-            }
-          ),
+                Navigator.of(context).pop();
+              }),
           ListTile(
             leading: Icon(
               Icons.color_lens_outlined,
@@ -457,8 +483,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             title: const Text("Saving mode"),
             onTap: () {},
           ),
-
-
         ],
       ),
     );
@@ -467,14 +491,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
 class HomeListView extends StatelessWidget {
   const HomeListView(
-      {Key? key,
+      {super.key,
       required this.listData,
       this.onTap,
       this.changeRatio = false,
       this.onLongPress,
       required this.animationController,
-      required this.animation})
-      : super(key: key);
+      required this.animation});
 
   final listData;
   final VoidCallback? onTap;

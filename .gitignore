@@ -51,5 +51,6 @@ app.*.map.json
 --*.json
 --*.java
 --*.kt
+--*.txt
 google-services.json
 firebase_app_id_file.json

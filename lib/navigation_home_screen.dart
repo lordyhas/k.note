@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/setting_page.dart';
 import 'package:knote/src/pages/custom_drawer/home_drawer.dart';
+import 'package:knote/src/pages/task_editor.dart';
 
 import 'data/database/firebase_manager.dart';
-
 
 import 'package:flutter/cupertino.dart';
 
@@ -24,17 +24,20 @@ import 'data/authentication_repository.dart';
 
 import 'src/pages/custom_drawer/drawer_user_controller.dart';
 
-
 import 'src/pages/about_page.dart';
 
 import 'src/pages/trash_can.dart';
+//import 'src/pages/task_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   final Widget child;
-  const NavigationHomeScreen({Key? key, required this.child}) : super(key: key);
+  const NavigationHomeScreen({super.key, required this.child});
 
   static Route route() {
-    return MaterialPageRoute(builder: (_) => const NavigationHomeScreen(child: SizedBox(),));
+    return MaterialPageRoute(
+        builder: (_) => const NavigationHomeScreen(
+              child: SizedBox(),
+            ));
   }
 
   @override
@@ -42,16 +45,14 @@ class NavigationHomeScreen extends StatefulWidget {
 }
 
 class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
-
   late final FirebaseManager _firebaseManager;
 
-  final screenColor =  Colors.black;
+  final screenColor = Colors.black;
 
   @override
   void initState() {
     _firebaseManager = FirebaseManager.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user
-    );
+        BlocProvider.of<AuthenticationBloc>(context).state.user);
     super.initState();
   }
 
@@ -60,32 +61,34 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     super.dispose();
   }
 
-  _uploadUserInCloud() async {
+  Future<void> _uploadUserInCloud() async {
     if (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated) {
-
       User user = BlocProvider.of<AuthenticationBloc>(context).state.user;
-      Log.out('AuthenticationBloc(context.state.user)','$user ==== ====');
+      Log.out('AuthenticationBloc(context.state.user)', '$user ==== ====');
 
-      if ( true/*user.photoMail != null*/) {
+      if (true /*user.photoMail != null*/) {
         Log.i('Write Report => FirebaseManager.uploadUserInCloud(context)'
             ' : write document in Firestore');
         _firebaseManager.addUserInCloud(user: user);
-
       }
 
       ///Future.delayed(Duration(seconds: 2));
 
-      User userUploaded = await _firebaseManager.getUserInCloud(userId: user.id);
+      User userUploaded =
+          await _firebaseManager.getUserInCloud(userId: user.id);
 
       //context.read<AuthenticationBloc>().updateUser(userUploaded);
       if (userUploaded != User.empty) {
         Log.i('Read Report => FirebaseManager.uploadUserInCloud(context)'
             ' : read doc in Firestore ');
+
         ///BlocProvider.of<AuthenticationBloc>(context).updateUser(userUploaded);
         //context.read<AuthenticationBloc>().updateUser(userUploaded)
       }
     }
   }
+
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -97,76 +100,84 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           padding: const EdgeInsets.only(),
           child: widget.child,
         ),
-
-        floatingActionButton: BooleanBuilder(
-          condition: () {
-            return BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated;
-            //return true;
-          },
-          ifTrue: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context){
-                    return AlertDialog(
-                      title: const Text("Choissisez un editeur",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      ),
-                      content: SizedBox(
-                        height: 120,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(
-                                  color: Colors.white,
-                                  width: 1,
-                                )
-                              ),
-                              onTap: (){
-                                GoRouter.of(context).pushNamed(TextEditor.routeName);
-                                Navigator.of(context).pop();
-                              },
-                              title: const Text("Quill TextEditor"),
-                            ),
-
-                            ListTile(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: const BorderSide(
-                                    color: Colors.white,
-                                    width: 1,
-                                  )
-                              ),
-                              onTap: (){
-                                GoRouter.of(context).pushNamed(OldTextEditor.routeName);
-                                Navigator.of(context).pop();
-                              },
-                              title: const Text("Classic TextEditor"),
-                            ),
-                          ],
-                        ),
-                      ),
-                      actions: [
-                        ElevatedButton(
-                            onPressed: Navigator.of(context).pop,
-                            child: const Text("Annulé")
-                        ),
-                      ],
-                    );
-                  },
-              );
-
-            },
-          ),
-          ifFalse: const SizedBox.shrink(),
-        ),
-
+        // floatingActionButton: BooleanBuilder(
+        //   condition: () {
+        //     return _currentIndex != 1;
+        //     // BlocProvider.of<AuthenticationBloc>(context)
+        //     //     .state
+        //     //     .isAuthenticated;
+        //     //return true;
+        //   },
+        //   ifTrue: FloatingActionButton(
+        //     child: const Icon(Icons.add),
+        //     onPressed: () {
+        //       showDialog(
+        //         context: context,
+        //         builder: (context) {
+        //           return AlertDialog(
+        //             title: const Text(
+        //               "Choissisez un editeur",
+        //               style: TextStyle(
+        //                 fontWeight: FontWeight.w600,
+        //               ),
+        //             ),
+        //             content: SizedBox(
+        //               height: 120,
+        //               child: Column(
+        //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                 children: [
+        //                   ListTile(
+        //                     shape: RoundedRectangleBorder(
+        //                         borderRadius: BorderRadius.circular(10),
+        //                         side: const BorderSide(
+        //                           color: Colors.white,
+        //                           width: 1,
+        //                         )),
+        //                     onTap: () {
+        //                       GoRouter.of(context)
+        //                           .pushNamed(TextEditor.routeName);
+        //                       Navigator.of(context).pop();
+        //                     },
+        //                     title: const Text("Quill TextEditor"),
+        //                   ),
+        //                   ListTile(
+        //                     shape: RoundedRectangleBorder(
+        //                         borderRadius: BorderRadius.circular(10),
+        //                         side: const BorderSide(
+        //                           color: Colors.white,
+        //                           width: 1,
+        //                         )),
+        //                     onTap: () {
+        //                       GoRouter.of(context)
+        //                           .pushNamed(OldTextEditor.routeName);
+        //                       Navigator.of(context).pop();
+        //                     },
+        //                     title: const Text("Classic TextEditor"),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             actions: [
+        //               ElevatedButton(
+        //                   onPressed: Navigator.of(context).pop,
+        //                   child: const Text("Annulé")),
+        //             ],
+        //           );
+        //         },
+        //       );
+        //     },
+        //   ),
+        //   ifFalse: FloatingActionButton(
+        //     onPressed: () async {
+        //       await Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => const TaskEditor()),
+        //       );
+        //       setState(() {});
+        //     },
+        //     child: const Icon(Icons.task),
+        //   ),
+        // ),
         bottomNavigationBar: CurvedNavigationBar(
           color: Colors.grey.shade900,
           backgroundColor: Colors.transparent,
@@ -194,50 +205,53 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             ),
           ],
           onTap: (index) {
-            if(index == 0){
+            if (index == 0) {
+              setState(() {
+                _currentIndex = index;
+              });
               GoRouter.of(context).pushNamed(HomeScreen.routeName);
-            }
-            else if(index == 1){
+            } else if (index == 1) {
+              setState(() {
+                _currentIndex = index;
+              });
+              GoRouter.of(context).pushNamed(TaskScreen.routeName);
+            } else if (index == 2) {
+              setState(() {
+                _currentIndex = index;
+              });
               GoRouter.of(context).pushNamed(OfflineScreen.routeName);
-            }else if(index == 2){
-              GoRouter.of(context).pushNamed(OfflineScreen.routeName);
-            }
-            else if(index == 3){
+            } else if (index == 3) {
+              setState(() {
+                _currentIndex = index;
+              });
               GoRouter.of(context).pushNamed(SettingProfileScreen.routeName);
             }
           },
         ),
-
       ),
     );
   }
-
 }
 
-
 class NvHs extends StatefulWidget {
-  const NvHs({Key? key}) : super(key: key);
+  const NvHs({super.key});
 
   @override
   State<NvHs> createState() => _NvHsState();
 }
 
 class _NvHsState extends State<NvHs> {
-
-
   late final FirebaseManager _firebaseManager;
   Widget? screenView;
   DrawerIndex? drawerIndex;
   //Map<String, String>? text;
-
 
   @override
   void initState() {
     drawerIndex = DrawerIndex.HOME;
     screenView = const HomeScreen();
     _firebaseManager = FirebaseManager.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user
-    );
+        BlocProvider.of<AuthenticationBloc>(context).state.user);
     super.initState();
   }
 
@@ -246,46 +260,51 @@ class _NvHsState extends State<NvHs> {
     super.dispose();
   }
 
-  Future<bool> _willPopDialog() async {
+  Future<bool> _onPopInvoked() async {
     if (drawerIndex != DrawerIndex.HOME) {
       changeIndex(DrawerIndex.HOME);
       return false;
-    }
-    else {
-      return (await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(
-              "Exit K.NOTE",
-              style: Theme.of(context).textTheme.bodyMedium,
+    } else {
+      final shouldPop = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            "Exit K.NOTE",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          content: const Text("Do you want to exit K.NOTE ?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text("Cancel"),
             ),
-            content: const Text("Do you want to exit K.NOTE ?"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: const Text("Quit"),
-              ),
-            ],
-          ))) ?? false ;
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text("Quit"),
+            ),
+          ],
+        ),
+      );
+      return shouldPop ?? false;
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     //_uploadUserInCloud();
 
-
     //text = BlocProvider.of<LanguageBloc>(context).state.strings;
-    return WillPopScope(
-      onWillPop: _willPopDialog,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        final shouldPop = await _onPopInvoked();
+        if (shouldPop) {
+          if (context.mounted) Navigator.of(context).pop();
+        }
+      },
       child: Container(
         color: Colors.transparent,
         child: SafeArea(
@@ -293,20 +312,20 @@ class _NvHsState extends State<NvHs> {
           bottom: false,
           child: Scaffold(
             //backgroundColor: StyleAppTheme.nearlyWhite,
-            floatingActionButton: BlocBuilder<AuthenticationBloc,AuthState>(
+            floatingActionButton: BlocBuilder<AuthenticationBloc, AuthState>(
               builder: (context, state) {
-                switch(state.status){
+                switch (state.status) {
                   case AuthenticationStatus.authenticated:
                     return FloatingActionButton(
                       tooltip: 'add new note',
-                      onPressed: () => Navigator.push(context, OldTextEditor.route()),
+                      onPressed: () =>
+                          Navigator.push(context, OldTextEditor.route()),
                       child: const Icon(CupertinoIcons.add), //Icons.post_add
                     );
 
                   default:
                     return Container();
                 }
-
               },
             ),
             //floatingActionButtonAnimator: FloatingActionButtonAnimator,
@@ -328,11 +347,10 @@ class _NvHsState extends State<NvHs> {
   }
 
   void changeIndex(DrawerIndex drawerIndexData) {
-
     if (drawerIndex != drawerIndexData) {
       drawerIndex = drawerIndexData;
 
-      switch(drawerIndexData){
+      switch (drawerIndexData) {
         case DrawerIndex.HOME:
           setState(() {
             screenView = const HomeScreen();
@@ -340,7 +358,7 @@ class _NvHsState extends State<NvHs> {
           break;
 
         case DrawerIndex.Help:
-        //setState((){});
+          //setState((){});
           setState(() {
             screenView = BackgroundUI(child: HelpScreen());
           });
@@ -372,9 +390,7 @@ class _NvHsState extends State<NvHs> {
 
         case DrawerIndex.Invite:
           setState(() {
-            screenView = BackgroundUI(
-                child: const InviteFriend()
-            );
+            screenView = BackgroundUI(child: const InviteFriend());
           });
           break;
 
@@ -402,23 +418,16 @@ class _NvHsState extends State<NvHs> {
 
         case DrawerIndex.Archived:
           setState(() {
-            screenView = BackgroundUI(
-                index: 2,
-                child: const ArchivedScreen()
-            );
+            screenView = BackgroundUI(index: 2, child: const ArchivedScreen());
           });
           break;
 
         case DrawerIndex.Offline:
           setState(() {
-            screenView = BackgroundUI(
-                index: 2,
-                child: const OfflineScreen()
-            );
+            screenView = BackgroundUI(index: 2, child: const OfflineScreen());
           });
           break;
       }
-
     }
   }
 }

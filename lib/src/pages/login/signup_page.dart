@@ -3,7 +3,7 @@ part of 'signup_and_login.dart';
 
 
 class SignUpPage extends StatelessWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  const SignUpPage({super.key});
 
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => const SignUpPage());

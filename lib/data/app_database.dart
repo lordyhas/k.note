@@ -1,4 +1,4 @@
-library app_database;
+library;
 
 export 'database/database_manager.dart';
 export 'database/database_model.dart';

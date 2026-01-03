@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:knote/widgets.dart';
 
 
 class CalendarScreen {

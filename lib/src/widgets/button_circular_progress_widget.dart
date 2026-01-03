@@ -15,14 +15,14 @@ class ProgressButton extends StatefulWidget {
   final double? elevation;
 
   const ProgressButton({
-    Key? key,
+    super.key,
     this.color,
     this.shadowColor,
     this.onPressed,
     this.isProgress,
     this.child,
     this.radius, this.elevation
-  }): super(key: key);
+  });
 
 
 
@@ -102,7 +102,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     );
   }
 
-  setUpButtonChild() {
+  Widget setUpButtonChild() {
     if (_state == 0) {
       return widget.child ?? const Text(
         "Click Here",

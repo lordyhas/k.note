@@ -107,7 +107,7 @@ class _LoginButton extends StatelessWidget {
                   children: [
                     Icon(FontAwesomeIcons.circleUser, color: Colors.white,),
                     Spacer(),
-                    Text('Sign In', style: TextStyle(color: Colors.white),),
+                    Text('Login', style: TextStyle(color: Colors.white),),
                     Spacer(),
                     Icon(FontAwesomeIcons.circleUser, color: Colors.transparent,),
                   ],
@@ -264,32 +264,32 @@ class __PasswordSignInInputState extends State<_PasswordSignInInput> {
   }
 }
 
-class _ConfirmPasswordInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SignUpCubit, SignUpState>(
-      buildWhen: (previous, current) =>
-      previous.password != current.password ||
-          previous.confirmedPassword != current.confirmedPassword,
-      builder: (context, state) {
-        return TextField(
-          key: const Key('__signUpForm_confirmedPasswordInput_textField__'),
-          onChanged: (confirmPassword) => context
-              .read<SignUpCubit>()
-              .confirmedPasswordChanged(confirmPassword),
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'confirm password',
-            helperText: '',
-            errorText: state.confirmedPassword.displayError != null
-                ? 'passwords do not match'
-                : null,
-          ),
-        );
-      },
-    );
-  }
-}
+// class _ConfirmPasswordInput extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<SignUpCubit, SignUpState>(
+//       buildWhen: (previous, current) =>
+//       previous.password != current.password ||
+//           previous.confirmedPassword != current.confirmedPassword,
+//       builder: (context, state) {
+//         return TextField(
+//           key: const Key('__signUpForm_confirmedPasswordInput_textField__'),
+//           onChanged: (confirmPassword) => context
+//               .read<SignUpCubit>()
+//               .confirmedPasswordChanged(confirmPassword),
+//           obscureText: true,
+//           decoration: InputDecoration(
+//             labelText: 'confirm password',
+//             helperText: '',
+//             errorText: state.confirmedPassword.displayError != null
+//                 ? 'passwords do not match'
+//                 : null,
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 
 class _SignUpSignInButton extends StatelessWidget {
 

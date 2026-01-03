@@ -43,10 +43,6 @@ class AppData extends DataToMap{
   static String getTableName = "APPDATA";
 
   @override
-  String toString() {
-    return super.toString();
-  }
-  @override
   Map<String, dynamic> asMap() => {
     'id': id,
     'first': isFirstUse,

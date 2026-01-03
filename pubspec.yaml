@@ -5,11 +5,6 @@ description: A new K.NOTE project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 0.2.3+2
-
-authors:
-  - Hassan Kajila (lordyhas)
-  - Dan Kajila
-
 environment:
   sdk: '>=3.1.4 <4.0.0'
 
@@ -21,6 +16,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   utils_component:
     git:

@@ -1,4 +1,4 @@
-library values;
+library;
 
 export 'value/strings.dart';
 export 'value/styles.dart';
