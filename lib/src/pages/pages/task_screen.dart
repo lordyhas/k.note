@@ -5,7 +5,7 @@ import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:knote/src/pages/task_editor.dart';
-import 'package:knote/data/value/styles.dart';
+
 
 class TaskScreen extends StatefulWidget {
   static const routeName = "tasks";
