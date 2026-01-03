@@ -2,32 +2,12 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/setting_page.dart';
-import 'package:knote/src/pages/custom_drawer/home_drawer.dart';
-import 'package:knote/src/pages/task_editor.dart';
-
-import 'data/database/firebase_manager.dart';
-
-import 'package:flutter/cupertino.dart';
-
-import 'package:knote/src/pages/old_text_editor_page.dart';
-//import 'package:knote/src/pages/screens/calendar_screen.dart';
-import 'package:knote/widgets.dart';
-import 'package:utils_component/utils_component.dart';
 
 import './src/backgound_ui.dart';
 import './src/pages/screens.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'data/app_bloc.dart';
-import 'data/authentication_repository.dart';
 
-import 'src/pages/custom_drawer/drawer_user_controller.dart';
 
-import 'src/pages/about_page.dart';
-
-import 'src/pages/trash_can.dart';
-//import 'src/pages/task_screen.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   final Widget child;
@@ -45,14 +25,14 @@ class NavigationHomeScreen extends StatefulWidget {
 }
 
 class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
-  late final FirebaseManager _firebaseManager;
+  //late final FirebaseManager _firebaseManager;
 
   final screenColor = Colors.black;
 
   @override
   void initState() {
-    _firebaseManager = FirebaseManager.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user);
+    // _firebaseManager = FirebaseManager.user(
+    //     BlocProvider.of<AuthenticationBloc>(context).state.user);
     super.initState();
   }
 
@@ -61,34 +41,36 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     super.dispose();
   }
 
-  Future<void> _uploadUserInCloud() async {
-    if (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated) {
-      User user = BlocProvider.of<AuthenticationBloc>(context).state.user;
-      Log.out('AuthenticationBloc(context.state.user)', '$user ==== ====');
+  //todo: clean way to create  user in cloud
 
-      if (true /*user.photoMail != null*/) {
-        Log.i('Write Report => FirebaseManager.uploadUserInCloud(context)'
-            ' : write document in Firestore');
-        _firebaseManager.addUserInCloud(user: user);
-      }
+  // Future<void> _uploadUserInCloud() async {
+  //   if (BlocProvider.of<AuthenticationBloc>(context).state.isAuthenticated) {
+  //     User user = BlocProvider.of<AuthenticationBloc>(context).state.user;
+  //     Log.out('AuthenticationBloc(context.state.user)', '$user ==== ====');
 
-      ///Future.delayed(Duration(seconds: 2));
+  //     if (true /*user.photoMail != null*/) {
+  //       Log.i('Write Report => FirebaseManager.uploadUserInCloud(context)'
+  //           ' : write document in Firestore');
+  //       _firebaseManager.addUserInCloud(user: user);
+  //     }
 
-      User userUploaded =
-          await _firebaseManager.getUserInCloud(userId: user.id);
+  //     ///Future.delayed(Duration(seconds: 2));
 
-      //context.read<AuthenticationBloc>().updateUser(userUploaded);
-      if (userUploaded != User.empty) {
-        Log.i('Read Report => FirebaseManager.uploadUserInCloud(context)'
-            ' : read doc in Firestore ');
+  //     User userUploaded =
+  //         await _firebaseManager.getUserInCloud(userId: user.id);
 
-        ///BlocProvider.of<AuthenticationBloc>(context).updateUser(userUploaded);
-        //context.read<AuthenticationBloc>().updateUser(userUploaded)
-      }
-    }
-  }
+  //     //context.read<AuthenticationBloc>().updateUser(userUploaded);
+  //     if (userUploaded != User.empty) {
+  //       Log.i('Read Report => FirebaseManager.uploadUserInCloud(context)'
+  //           ' : read doc in Firestore ');
 
-  int _currentIndex = 0;
+  //       ///BlocProvider.of<AuthenticationBloc>(context).updateUser(userUploaded);
+  //       //context.read<AuthenticationBloc>().updateUser(userUploaded)
+  //     }
+  //   }
+  // }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -206,24 +188,12 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           ],
           onTap: (index) {
             if (index == 0) {
-              setState(() {
-                _currentIndex = index;
-              });
               GoRouter.of(context).pushNamed(HomeScreen.routeName);
             } else if (index == 1) {
-              setState(() {
-                _currentIndex = index;
-              });
               GoRouter.of(context).pushNamed(TaskScreen.routeName);
             } else if (index == 2) {
-              setState(() {
-                _currentIndex = index;
-              });
               GoRouter.of(context).pushNamed(OfflineScreen.routeName);
             } else if (index == 3) {
-              setState(() {
-                _currentIndex = index;
-              });
               GoRouter.of(context).pushNamed(SettingProfileScreen.routeName);
             }
           },
@@ -233,201 +203,3 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   }
 }
 
-class NvHs extends StatefulWidget {
-  const NvHs({super.key});
-
-  @override
-  State<NvHs> createState() => _NvHsState();
-}
-
-class _NvHsState extends State<NvHs> {
-  late final FirebaseManager _firebaseManager;
-  Widget? screenView;
-  DrawerIndex? drawerIndex;
-  //Map<String, String>? text;
-
-  @override
-  void initState() {
-    drawerIndex = DrawerIndex.HOME;
-    screenView = const HomeScreen();
-    _firebaseManager = FirebaseManager.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  Future<bool> _onPopInvoked() async {
-    if (drawerIndex != DrawerIndex.HOME) {
-      changeIndex(DrawerIndex.HOME);
-      return false;
-    } else {
-      final shouldPop = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            "Exit K.NOTE",
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          content: const Text("Do you want to exit K.NOTE ?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text("Quit"),
-            ),
-          ],
-        ),
-      );
-      return shouldPop ?? false;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //_uploadUserInCloud();
-
-    //text = BlocProvider.of<LanguageBloc>(context).state.strings;
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) async {
-        if (didPop) return;
-        final shouldPop = await _onPopInvoked();
-        if (shouldPop) {
-          if (context.mounted) Navigator.of(context).pop();
-        }
-      },
-      child: Container(
-        color: Colors.transparent,
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Scaffold(
-            //backgroundColor: StyleAppTheme.nearlyWhite,
-            floatingActionButton: BlocBuilder<AuthenticationBloc, AuthState>(
-              builder: (context, state) {
-                switch (state.status) {
-                  case AuthenticationStatus.authenticated:
-                    return FloatingActionButton(
-                      tooltip: 'add new note',
-                      onPressed: () =>
-                          Navigator.push(context, OldTextEditor.route()),
-                      child: const Icon(CupertinoIcons.add), //Icons.post_add
-                    );
-
-                  default:
-                    return Container();
-                }
-              },
-            ),
-            //floatingActionButtonAnimator: FloatingActionButtonAnimator,
-            body: DrawerUserControllerView(
-              screenIndex: drawerIndex,
-              drawerWidth: MediaQuery.of(context).size.width * 0.75,
-              onDrawerCall: (DrawerIndex drawerIndexData) {
-                changeIndex(drawerIndexData);
-                //callback from drawer for replace screen as user need with passing DrawerIndex(Enum index)
-              },
-              //todo : add screen here
-              screenView: screenView,
-              //we replace screen view as we need on navigate starting screens like MyHomePage, HelpScreen, FeedbackScreen, etc...
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void changeIndex(DrawerIndex drawerIndexData) {
-    if (drawerIndex != drawerIndexData) {
-      drawerIndex = drawerIndexData;
-
-      switch (drawerIndexData) {
-        case DrawerIndex.HOME:
-          setState(() {
-            screenView = const HomeScreen();
-          });
-          break;
-
-        case DrawerIndex.Help:
-          //setState((){});
-          setState(() {
-            screenView = BackgroundUI(child: HelpScreen());
-          });
-          break;
-
-        case DrawerIndex.Rate:
-          setState(() {
-            screenView = BackgroundUI(
-              index: 2,
-              child: Column(
-                children: [
-                  const Spacer(),
-                  ComingSoon(),
-                  const Spacer(),
-                ],
-              ),
-            );
-          });
-          break;
-
-        case DrawerIndex.About:
-          setState(() {
-            screenView = BackgroundUI(
-              index: 0,
-              child: const AboutPage(),
-            );
-          });
-          break;
-
-        case DrawerIndex.Invite:
-          setState(() {
-            screenView = BackgroundUI(child: const InviteFriend());
-          });
-          break;
-
-        case DrawerIndex.FeedBack:
-          setState(() {
-            screenView = const FeedbackScreen();
-          });
-          break;
-
-        case DrawerIndex.NoteTrash:
-          setState(() {
-            screenView = BackgroundUI(index: 2, child: const NoteTrash());
-          });
-          break;
-
-        case DrawerIndex.Calendar:
-
-          /*setState(() {
-            screenView = BackgroundUI(
-                index: 2,
-                child: CalendarScreen()
-            );
-          });*/
-          break;
-
-        case DrawerIndex.Archived:
-          setState(() {
-            screenView = BackgroundUI(index: 2, child: const ArchivedScreen());
-          });
-          break;
-
-        case DrawerIndex.Offline:
-          setState(() {
-            screenView = BackgroundUI(index: 2, child: const OfflineScreen());
-          });
-          break;
-      }
-    }
-  }
-}
