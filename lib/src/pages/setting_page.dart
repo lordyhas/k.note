@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/src/pages/about_page.dart';
+import 'package:knote/src/pages/login/signup_and_login.dart';
 import 'package:knote/src/pages/screens.dart';
 import 'package:knote/src/pages/trash_can.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -34,7 +35,8 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () {
                     BlocProvider.of<AuthenticationBloc>(context).logout();
-                    GoRouter.of(context).pushNamed(HomeScreen.routeName);
+                    //GoRouter.of(context).pop();
+                    GoRouter.of(context).goNamed(LoginPage.routeName);
                   },
                   icon: const Icon(CupertinoIcons.square_arrow_right),
                   label: const Text("Log Out"),
@@ -74,7 +76,9 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
             constraints: const BoxConstraints(maxWidth: 910),
             child: Column(
               children: [
-                SizedBox(height: 40,),
+                SizedBox(
+                  height: 40,
+                ),
                 SizedBox(
                   height: 560,
                   child: Stack(
@@ -125,7 +129,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                                     color: iconColor,
                                   ),
                                   onTap: () => GoRouter.of(context)
-                                      .pushNamed(NoteTrash.routeName),
+                                      .goNamed(NoteTrash.routeName),
                                 ),
                                 ListTile(
                                   leading: const Icon(
@@ -138,7 +142,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                                     color: iconColor,
                                   ),
                                   onTap: () => GoRouter.of(context)
-                                      .pushNamed(ArchivedScreen.routeName),
+                                      .goNamed(ArchivedScreen.routeName),
                                 ),
                                 ListTile(
                                   leading: const Icon(
@@ -336,7 +340,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                             color: iconColor,
                           ),
                           onTap: () {
-                            GoRouter.of(context).pushNamed(AboutPage.routeName);
+                            GoRouter.of(context).goNamed(AboutPage.routeName);
                           },
                         ),
 
@@ -372,7 +376,9 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 40,),
+                SizedBox(
+                  height: 40,
+                ),
               ],
             ),
           ),

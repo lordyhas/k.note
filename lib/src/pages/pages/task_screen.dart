@@ -38,7 +38,16 @@ class _TaskScreenState extends State<TaskScreen> {
                 fontSize: 24)),
         backgroundColor: Colors.black,
         elevation: 0,
-        leading: const BackButton(color: Colors.white),
+        leading: const Icon(Icons.task_alt, color: Colors.white),// const BackButton(color: Colors.white),
+        actions: [
+          //todo: pop up menu
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onPressed: () {
+              
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<CheckList>>(
         future: _firebaseManager.getTasksInCloud(),
