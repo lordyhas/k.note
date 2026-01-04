@@ -7,6 +7,7 @@ import '../app_bloc/auth_repository/user.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import '../../src/utils/encryption_service.dart';
 
 class FirebaseManager {
   final User user;
@@ -44,10 +45,33 @@ class FirebaseManager {
     return colG.doc(docName);
   }*/
 
+  /// ENCRYPTION KEYS MANAGEMENT
+
+  /// Gets the encrypted master key document for the current user
+  Future<String?> getUserKeyDoc() async {
+    final docSnap =
+        await users.doc(user.id).collection('keys').doc('master_key').get();
+    if (docSnap.exists && docSnap.data() != null) {
+      return docSnap.data()!['key_value'] as String?;
+    }
+    return null;
+  }
+
+  /// Sets the encrypted master key document for the current user
+  Future<void> setUserKeyDoc(String encryptedKey) async {
+    await users.doc(user.id).collection('keys').doc('master_key').set({
+      'key_value': encryptedKey,
+      'updated_at': FieldValue.serverTimestamp(),
+    });
+  }
+
   Future<NoteModel?> getNoteInCloud({required String noteId}) async {
     var docSnap = await collectionUserNote.doc(noteId).get();
 
     Map<String, dynamic> map = docSnap.data()!;
+
+    // Decrypt content
+    _decryptNoteMap(map);
 
     if (docSnap.exists) return NoteModel.fromMap(map);
     return null;
@@ -66,7 +90,11 @@ class FirebaseManager {
 
     final maps = docSnap.docs.map((e) => e.data()).toList();
     if (maps.isNotEmpty) {
-      return maps.map((e) => NoteModel.fromMap(e)).toList();
+      return maps.map((e) {
+        // Decrypt
+        _decryptNoteMap(e);
+        return NoteModel.fromMap(e);
+      }).toList();
     }
     return [];
   }
@@ -81,7 +109,11 @@ class FirebaseManager {
         .get();
 
     //List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
-    return docSnap.docs.map((e) => NoteModel.fromMap(e.data())).toList();
+    return docSnap.docs.map((e) {
+      var map = e.data();
+      _decryptNoteMap(map);
+      return NoteModel.fromMap(map);
+    }).toList();
 
     /*return List<NoteModel>.generate(maps.length,
               (index) => NoteModel.fromMap(maps.elementAt(index)
@@ -100,8 +132,11 @@ class FirebaseManager {
     //var id = docSnap.docs.forEach((e) {e.id});
     List<Map<String, dynamic>> maps =
         docSnap.docs.map((e) => e.data()).toList();
-    return List<NoteModel>.generate(
-        maps.length, (index) => NoteModel.fromMap(maps.elementAt(index)));
+    return List<NoteModel>.generate(maps.length, (index) {
+      var map = maps.elementAt(index);
+      _decryptNoteMap(map);
+      return NoteModel.fromMap(map);
+    });
   }
 
   ///  this method will add [NoteData] in Cloud firebase
@@ -112,7 +147,12 @@ class FirebaseManager {
   }) {
     //note.creationTime = new DateTime.now();
     //todo: use own firebase id
-    return collectionUserNote.doc(note.id).set(note.asMap()).then((value) {
+
+    // Encrypt before sending
+    final map = note.asMap();
+    _encryptNoteMap(map);
+
+    return collectionUserNote.doc(note.id).set(map).then((value) {
       Log.i("Note Added : $note");
       return note.toDisplay();
     }).catchError((error) => Log.i("Failed to add note "
@@ -179,9 +219,13 @@ class FirebaseManager {
       required String id,
       required String value}) async {
     String key = 'text';
+
+    // Encrypt value
+    final encryptedValue = EncryptionService().encryptData(value) ?? value;
+
     return collectionUserNote
         .doc(id)
-        .update({key: value})
+        .update({key: encryptedValue})
         .then((v) => Log.i('Updated Text'))
         .catchError((error) => Log.i("Failed to update: $error"));
   }
@@ -193,7 +237,11 @@ class FirebaseManager {
       required String id,
       required String value}) async {
     String key = 'title';
-    return collectionUserNote.doc(id).update({key: value});
+
+    // Encrypt value
+    final encryptedValue = EncryptionService().encryptData(value) ?? value;
+
+    return collectionUserNote.doc(id).update({key: encryptedValue});
   }
 
   /// Update data with map by {key : value}
@@ -346,21 +394,28 @@ class FirebaseManager {
 
     final maps = docSnap.docs.map((e) => e.data()).toList();
     if (maps.isNotEmpty) {
-      return maps.map((e) => CheckList.fromMap(e)).toList();
+      return maps.map((e) {
+        _decryptCheckListMap(e);
+        return CheckList.fromMap(e);
+      }).toList();
     }
     return [];
   }
 
   Future<void> addTaskInCloud({required CheckList task}) {
-    return collectionUserTask.doc(task.id).set(task.asMap()).then((value) {
+    final map = task.asMap();
+    _encryptCheckListMap(map);
+    return collectionUserTask.doc(task.id).set(map).then((value) {
       Log.i("Task Added : $task");
     }).catchError((error) => Log.i("Failed to add task : $error"));
   }
 
   Future<void> updateTaskInCloud({required CheckList task}) {
+    final map = task.asMap();
+    _encryptCheckListMap(map);
     return collectionUserTask
         .doc(task.id)
-        .update(task.asMap())
+        .update(map)
         .then((value) => Log.i("Task Updated : ${task.title}"))
         .catchError((error) => Log.i("Failed to update task: $error"));
   }
@@ -371,5 +426,36 @@ class FirebaseManager {
         .delete()
         .then((value) => Log.i("Task Deleted : $taskId"))
         .catchError((error) => Log.i("Failed to delete task: $error"));
+  }
+
+  // --- Encryption Helpers ---
+
+  void _encryptNoteMap(Map<String, dynamic> map) {
+    final service = EncryptionService();
+    if (map['title'] is String)
+      map['title'] = service.encryptData(map['title']);
+    if (map['text'] is String) map['text'] = service.encryptData(map['text']);
+  }
+
+  void _decryptNoteMap(Map<String, dynamic> map) {
+    final service = EncryptionService();
+    if (map['title'] is String)
+      map['title'] = service.decryptData(map['title']);
+    if (map['text'] is String) map['text'] = service.decryptData(map['text']);
+  }
+
+  void _encryptCheckListMap(Map<String, dynamic> map) {
+    final service = EncryptionService();
+    if (map['title'] is String)
+      map['title'] = service.encryptData(map['title']);
+    if (map['note'] is String) map['note'] = service.encryptData(map['note']);
+    // Note: ToDo items encryption skipped for now to avoid complexity with List<Map> structure
+  }
+
+  void _decryptCheckListMap(Map<String, dynamic> map) {
+    final service = EncryptionService();
+    if (map['title'] is String)
+      map['title'] = service.decryptData(map['title']);
+    if (map['note'] is String) map['note'] = service.decryptData(map['note']);
   }
 }

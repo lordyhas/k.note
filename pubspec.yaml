@@ -77,6 +77,9 @@ dependencies:
   #flutter_quill: ^9.1.0
   flutter_quill: ^11.4.2
   flutter_whatsnew: ^1.0.5+2
+  encrypt: ^5.0.3
+  flutter_secure_storage: ^10.0.0
+  crypto: ^3.0.7
 
 
 

@@ -13,6 +13,9 @@ import '../../../data/value/dimens.dart';
 import '../../../res.dart';
 import '../../../widgets.dart';
 
+import '../../utils/encryption_service.dart';
+import '../../widgets/pin_dialog.dart';
+
 import 'package:flutter/material.dart';
 
 import "../new_text_editor_page.dart";
@@ -78,6 +81,107 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 1000), vsync: this);
 
     //_uploadUserInCloud();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkEncryptionSetup();
+    });
+  }
+
+  Future<void> _checkEncryptionSetup() async {
+    final service = EncryptionService();
+    await service.init();
+
+    if (service.isInitialized) return;
+
+    // Check if user has a remote key
+    final remoteKey = await _firebaseManager.getUserKeyDoc();
+
+    if (!mounted) return;
+
+    if (remoteKey != null) {
+      // User has a key but not locally -> Unlock required
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Encryption Locked'),
+          content: const Text(
+              'Your notes are encrypted. Please enter your PIN to unlock them.'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                final pin = await showDialog<String>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => const PinDialog(isSetup: false),
+                );
+                if (pin != null) {
+                  try {
+                    await service.recover(pin, remoteKey);
+                    setState(() {}); // Refresh UI
+                  } catch (e) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Incorrect PIN')),
+                    );
+                    // Retry?
+                    _checkEncryptionSetup();
+                  }
+                }
+              },
+              child: const Text('Unlock'),
+            ),
+            // Logout option?
+          ],
+        ),
+      );
+    } else {
+      // No key found -> Offer setup
+      // Only ask once per session or store preference?
+      // For now, ask every time until setup.
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Secure your notes?'),
+          content: const Text(
+              'Would you like to encrypt your notes using a PIN? This ensures only you can read them.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Later'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                final pin = await showDialog<String>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => const PinDialog(isSetup: true),
+                );
+                if (pin != null) {
+                  try {
+                    final encryptedKey = await service.setup(pin);
+                    await _firebaseManager.setUserKeyDoc(encryptedKey);
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Encryption Enabled!')),
+                    );
+                    setState(() {});
+                  } catch (e) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Setup failed: $e')),
+                    );
+                  }
+                }
+              },
+              child: const Text('Enable Encryption'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
