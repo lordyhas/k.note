@@ -1,4 +1,4 @@
-part of pages;
+part of '../screens.dart';
 
 class OfflineScreen extends StatefulWidget {
   static const routeName = "offline";
@@ -13,10 +13,8 @@ class _OfflineScreenState extends State<OfflineScreen> {
   @override
   Widget build(BuildContext context) {
     FirebaseManager.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user
-    );
+        BlocProvider.of<AuthenticationBloc>(context).state.user);
     return Column(
-
       children: [
         const Spacer(),
         ComingSoon(),

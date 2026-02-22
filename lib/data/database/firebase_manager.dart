@@ -432,30 +432,34 @@ class FirebaseManager {
 
   void _encryptNoteMap(Map<String, dynamic> map) {
     final service = EncryptionService();
-    if (map['title'] is String)
+    if (map['title'] is String) {
       map['title'] = service.encryptData(map['title']);
+    }
     if (map['text'] is String) map['text'] = service.encryptData(map['text']);
   }
 
   void _decryptNoteMap(Map<String, dynamic> map) {
     final service = EncryptionService();
-    if (map['title'] is String)
+    if (map['title'] is String) {
       map['title'] = service.decryptData(map['title']);
+    }
     if (map['text'] is String) map['text'] = service.decryptData(map['text']);
   }
 
   void _encryptCheckListMap(Map<String, dynamic> map) {
     final service = EncryptionService();
-    if (map['title'] is String)
+    if (map['title'] is String) {
       map['title'] = service.encryptData(map['title']);
+    }
     if (map['note'] is String) map['note'] = service.encryptData(map['note']);
     // Note: ToDo items encryption skipped for now to avoid complexity with List<Map> structure
   }
 
   void _decryptCheckListMap(Map<String, dynamic> map) {
     final service = EncryptionService();
-    if (map['title'] is String)
+    if (map['title'] is String) {
       map['title'] = service.decryptData(map['title']);
+    }
     if (map['note'] is String) map['note'] = service.decryptData(map['note']);
   }
 }

@@ -7,7 +7,6 @@ import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/value/styles.dart';
 
-import 'package:knote/src/pages/pages/task_screen.dart';
 import 'package:utils_component/utils_component.dart';
 import '../../../data/value/dimens.dart';
 import '../../../res.dart';
@@ -103,14 +102,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: const Text('Encryption Locked'),
           content: const Text(
               'Your notes are encrypted. Please enter your PIN to unlock them.'),
           actions: [
             TextButton(
               onPressed: () async {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 final pin = await showDialog<String>(
                   context: context,
                   barrierDismissible: false,
@@ -142,18 +141,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       // For now, ask every time until setup.
       await showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: const Text('Secure your notes?'),
           content: const Text(
               'Would you like to encrypt your notes using a PIN? This ensures only you can read them.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: const Text('Later'),
             ),
             ElevatedButton(
               onPressed: () async {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 final pin = await showDialog<String>(
                   context: context,
                   barrierDismissible: false,

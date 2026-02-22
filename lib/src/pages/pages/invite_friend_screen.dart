@@ -1,6 +1,4 @@
-part of pages;
-
-
+part of '../screens.dart';
 
 class InviteFriend extends StatefulWidget {
   static const routeName = "invite-friend";
@@ -27,9 +25,7 @@ class _InviteFriendState extends State<InviteFriend> {
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                  left: 16,
-                  right: 16),
+                  top: MediaQuery.of(context).padding.top, left: 16, right: 16),
               child: Image.asset('assets/images/inviteImage.png'),
             ),
             Container(
@@ -82,7 +78,6 @@ class _InviteFriendState extends State<InviteFriend> {
                                   "dev.haspro@gmail.com",
                               subject: 'Sharing my experience with K.Note'
                           );*/
-
                         },
                         child: const Center(
                           child: Row(

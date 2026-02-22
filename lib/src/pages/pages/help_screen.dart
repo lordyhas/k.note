@@ -1,5 +1,4 @@
-part of pages;
-
+part of '../screens.dart';
 
 class HelpScreen extends StatefulWidget {
   static const routeName = "help";
@@ -25,9 +24,7 @@ class _HelpScreenState extends State<HelpScreen> {
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                  left: 16,
-                  right: 16),
+                  top: MediaQuery.of(context).padding.top, left: 16, right: 16),
               child: Image.asset('assets/images/helpImage.png'),
             ),
             Container(

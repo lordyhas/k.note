@@ -12,7 +12,7 @@ import 'package:knote/src/pages/login/signup_and_login.dart';
 import 'package:knote/src/pages/screens.dart';
 import 'package:knote/src/pages/task_editor.dart';
 import 'package:knote/src/pages/trash_can.dart';
-import 'package:knote/src/pages/pages/task_screen.dart'; // Add this import
+// Add this import
 import 'package:knote/data/database/database_model.dart';
 //import 'package:knote/widgets.dart';
 
