@@ -68,12 +68,7 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
                               maxLines: 4,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            onTap: () => Navigator.push(
-                                context,
-                                OldTextEditor.route(
-                                  note: snapshot.data![i],
-                                ))
-                            //onTap: (){},
+                            onTap: () { },
                             ),
                       ),
                     ));

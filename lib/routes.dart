@@ -5,16 +5,13 @@ import 'dart:async';
 
 import 'package:knote/navigation_home_screen.dart';
 import 'package:knote/src/pages/new_text_editor_page.dart';
-import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:knote/src/pages/setting_page.dart';
 import 'package:knote/src/pages/about_page.dart';
 import 'package:knote/src/pages/login/signup_and_login.dart';
 import 'package:knote/src/pages/screens.dart';
 import 'package:knote/src/pages/task_editor.dart';
-import 'package:knote/src/pages/trash_can.dart';
-// Add this import
+import 'package:knote/src/pages/trash_can.dart'; 
 import 'package:knote/data/database/database_model.dart';
-//import 'package:knote/widgets.dart';
 
 import 'data/app_bloc/authentication/authentication_bloc.dart';
 import 'on_error_page.dart';
@@ -137,14 +134,16 @@ class AppRouter {
                     parentNavigatorKey: key,
                     name: TextEditor.routeName,
                     path: TextEditor.routeName,
-                    builder: (context, state) => TextEditor(),
+                    builder: (context, state) =>
+                        TextEditor(note: state.extra as NoteModel?),
                   ),
-                  GoRoute(
-                    parentNavigatorKey: key,
-                    name: OldTextEditor.routeName,
-                    path: OldTextEditor.routeName,
-                    builder: (context, state) => const OldTextEditor(),
-                  ),
+                  // GoRoute(
+                  //   parentNavigatorKey: key,
+                  //   name: OldTextEditor.routeName,
+                  //   path: OldTextEditor.routeName,
+                  //   builder: (context, state) =>
+                  //       OldTextEditor(note: state.extra as NoteModel?),
+                  // ),
                   GoRoute(
                     name: TaskScreen.routeName,
                     path: TaskScreen.routeName,

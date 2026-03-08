@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:uuid/uuid.dart';
 
@@ -152,7 +153,7 @@ class _TextEditorState extends State<TextEditor> {
             icon: const Icon(Icons.done),
             onPressed: () {
               _saveNote();
-              Navigator.pop(context);
+              context.pop();
             },
           ),
           actions: [
