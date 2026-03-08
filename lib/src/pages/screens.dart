@@ -7,6 +7,7 @@ import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:knote/data/value/styles.dart';
+import 'package:knote/src/pages/new_text_editor_page.dart';
 import 'package:knote/src/pages/old_text_editor_page.dart';
 import 'package:knote/src/widgets/coming_soon.dart';
 
