@@ -1,5 +1,4 @@
-part of pages;
-
+part of '../screens.dart';
 
 class FeedbackScreen extends StatefulWidget {
   static const routeName = "feedback";
@@ -110,7 +109,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,//StyleAppTheme.white,
+          color: Theme.of(context).cardColor, //StyleAppTheme.white,
           borderRadius: BorderRadius.circular(8),
           boxShadow: <BoxShadow>[
             BoxShadow(

@@ -73,7 +73,7 @@ class _TaskScreenState extends State<TaskScreen> {
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text('Active', style: TextStyle(color: Colors.grey)),
                   ),
-                  ...activeTasks.map((t) => _buildTaskItem(t)).toList(),
+                  ...activeTasks.map((t) => _buildTaskItem(t)),
                 ],
                 if (completedTasks.isNotEmpty) ...[
                   const SizedBox(height: 16),

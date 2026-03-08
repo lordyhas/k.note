@@ -44,6 +44,9 @@ class FirebaseManager {
     return colG.doc(docName);
   }*/
 
+  /// ENCRYPTION KEYS MANAGEMENT
+  /// (Removed local E2EE keys - relying on Firestore default encryption at rest)
+
   Future<NoteModel?> getNoteInCloud({required String noteId}) async {
     var docSnap = await collectionUserNote.doc(noteId).get();
 
@@ -66,7 +69,9 @@ class FirebaseManager {
 
     final maps = docSnap.docs.map((e) => e.data()).toList();
     if (maps.isNotEmpty) {
-      return maps.map((e) => NoteModel.fromMap(e)).toList();
+      return maps.map((e) {
+        return NoteModel.fromMap(e);
+      }).toList();
     }
     return [];
   }
@@ -81,7 +86,10 @@ class FirebaseManager {
         .get();
 
     //List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
-    return docSnap.docs.map((e) => NoteModel.fromMap(e.data())).toList();
+    return docSnap.docs.map((e) {
+      var map = e.data();
+      return NoteModel.fromMap(map);
+    }).toList();
 
     /*return List<NoteModel>.generate(maps.length,
               (index) => NoteModel.fromMap(maps.elementAt(index)
@@ -100,8 +108,10 @@ class FirebaseManager {
     //var id = docSnap.docs.forEach((e) {e.id});
     List<Map<String, dynamic>> maps =
         docSnap.docs.map((e) => e.data()).toList();
-    return List<NoteModel>.generate(
-        maps.length, (index) => NoteModel.fromMap(maps.elementAt(index)));
+    return List<NoteModel>.generate(maps.length, (index) {
+      var map = maps.elementAt(index);
+      return NoteModel.fromMap(map);
+    });
   }
 
   ///  this method will add [NoteData] in Cloud firebase
@@ -112,7 +122,10 @@ class FirebaseManager {
   }) {
     //note.creationTime = new DateTime.now();
     //todo: use own firebase id
-    return collectionUserNote.doc(note.id).set(note.asMap()).then((value) {
+
+    final map = note.asMap();
+
+    return collectionUserNote.doc(note.id).set(map).then((value) {
       Log.i("Note Added : $note");
       return note.toDisplay();
     }).catchError((error) => Log.i("Failed to add note "
@@ -179,6 +192,7 @@ class FirebaseManager {
       required String id,
       required String value}) async {
     String key = 'text';
+
     return collectionUserNote
         .doc(id)
         .update({key: value})
@@ -193,6 +207,7 @@ class FirebaseManager {
       required String id,
       required String value}) async {
     String key = 'title';
+
     return collectionUserNote.doc(id).update({key: value});
   }
 
@@ -346,21 +361,25 @@ class FirebaseManager {
 
     final maps = docSnap.docs.map((e) => e.data()).toList();
     if (maps.isNotEmpty) {
-      return maps.map((e) => CheckList.fromMap(e)).toList();
+      return maps.map((e) {
+        return CheckList.fromMap(e);
+      }).toList();
     }
     return [];
   }
 
   Future<void> addTaskInCloud({required CheckList task}) {
-    return collectionUserTask.doc(task.id).set(task.asMap()).then((value) {
+    final map = task.asMap();
+    return collectionUserTask.doc(task.id).set(map).then((value) {
       Log.i("Task Added : $task");
     }).catchError((error) => Log.i("Failed to add task : $error"));
   }
 
   Future<void> updateTaskInCloud({required CheckList task}) {
+    final map = task.asMap();
     return collectionUserTask
         .doc(task.id)
-        .update(task.asMap())
+        .update(map)
         .then((value) => Log.i("Task Updated : ${task.title}"))
         .catchError((error) => Log.i("Failed to update task: $error"));
   }
@@ -372,4 +391,7 @@ class FirebaseManager {
         .then((value) => Log.i("Task Deleted : $taskId"))
         .catchError((error) => Log.i("Failed to delete task: $error"));
   }
+
+  // --- Encryption Helpers ---
+  // (Removed custom local E2EE. Relying on Firestore default encryption)
 }

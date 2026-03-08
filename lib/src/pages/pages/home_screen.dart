@@ -7,7 +7,6 @@ import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
 import 'package:knote/data/value/styles.dart';
 
-import 'package:knote/src/pages/pages/task_screen.dart';
 import 'package:utils_component/utils_component.dart';
 import '../../../data/value/dimens.dart';
 import '../../../res.dart';

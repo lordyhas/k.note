@@ -54,3 +54,7 @@ app.*.map.json
 --*.txt
 google-services.json
 firebase_app_id_file.json
+.env
+android/app/google-services.json
+android/.kotlin/
+

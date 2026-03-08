@@ -196,8 +196,9 @@ class _TextEditorState extends State<TextEditor> {
                                               // Save color immediately
                                               _firebaseManager.addNoteInCloud(
                                                   note: _noteModel);
-                                              if (!isNoteInCloud)
+                                              if (!isNoteInCloud) {
                                                 isNoteInCloud = true;
+                                              }
 
                                               Navigator.pop(context);
                                             },

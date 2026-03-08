@@ -66,7 +66,9 @@ class _TaskEditorState extends State<TaskEditor> {
   void _saveTask() {
     if (_titleController.text.isEmpty &&
         _items.isEmpty &&
-        _noteController.text.isEmpty) return;
+        _noteController.text.isEmpty) {
+      return;
+    }
 
     final newTask = CheckList(
       id: _id,
@@ -192,7 +194,7 @@ class _TaskEditorState extends State<TaskEditor> {
                   ],
                 ),
               );
-            }).toList(),
+            }),
 
             // Add Step Button
             ListTile(
@@ -339,8 +341,7 @@ class _TaskEditorState extends State<TaskEditor> {
               onPrimary: Colors.white,
               surface: Color(0xFF1F1F1F),
               onSurface: Colors.white,
-            ),
-            dialogBackgroundColor: const Color(0xFF1F1F1F),
+            ), dialogTheme: DialogThemeData(backgroundColor: const Color(0xFF1F1F1F)),
           ),
           child: child!,
         );
