@@ -71,5 +71,91 @@ void main() {
       expect(map['color'], Colors.red.value);
       expect(map['saving_mode'], 1);
     });
+
+    test('fromMap handles null timestamps gracefully', () {
+      final map = {
+        'id': '456',
+        'title': 'Null Times',
+        'text': 'Body',
+        'creation_time': null,
+        'last_time': null,
+        'is_deleted': false,
+        'permanent_delete_date': null,
+        'color': Colors.green.value,
+        'reminder_date': null,
+        'email': null,
+        'is_archived': false,
+        'is_locked': false,
+        'saving_mode': 0,
+      };
+
+      final note = NoteModel.fromMap(map);
+
+      expect(note.id, '456');
+      expect(note.creationTime, isNull);
+      expect(note.modificationTime, isNull);
+      expect(note.reminderDate, isNull);
+      expect(note.permanentDeleteDate, isNull);
+      expect(note.email, isNull);
+    });
+
+    test('default values are correct', () {
+      final note = NoteModel();
+
+      expect(note.isDeleted, false);
+      expect(note.isArchived, false);
+      expect(note.isLocked, false);
+      expect(note.colorValue, Colors.cyan.value);
+      expect(note.savingModeValue, SavingMode.cloud.index);
+    });
+
+    test('fromMap with missing saving_mode defaults to cloud (index 0)', () {
+      final map = {
+        'id': '789',
+        'title': 'No saving mode',
+        'text': 'Test',
+        'creation_time': null,
+        'last_time': null,
+        'is_deleted': true,
+        'permanent_delete_date': null,
+        'color': Colors.blue.value,
+        'reminder_date': null,
+        'email': 'user@test.com',
+        'is_archived': false,
+        'is_locked': true,
+        'saving_mode': null,
+      };
+
+      final note = NoteModel.fromMap(map);
+
+      expect(note.savingModeValue, SavingMode.cloud.index);
+      expect(note.isDeleted, true);
+      expect(note.isLocked, true);
+    });
+
+    test('SavingMode enum values are correct', () {
+      expect(SavingMode.cloud.index, 0);
+      expect(SavingMode.local.index, 1);
+      expect(SavingMode.cloudAndLocal.index, 2);
+    });
+
+    test('asMap includes all required keys', () {
+      final note = NoteModel(id: 'keys-test', title: 'T', text: 'B');
+      final map = note.asMap();
+
+      expect(map.containsKey('id'), true);
+      expect(map.containsKey('title'), true);
+      expect(map.containsKey('text'), true);
+      expect(map.containsKey('creation_time'), true);
+      expect(map.containsKey('last_time'), true);
+      expect(map.containsKey('is_deleted'), true);
+      expect(map.containsKey('permanent_delete_date'), true);
+      expect(map.containsKey('color'), true);
+      expect(map.containsKey('reminder_date'), true);
+      expect(map.containsKey('is_archived'), true);
+      expect(map.containsKey('email'), true);
+      expect(map.containsKey('is_locked'), true);
+      expect(map.containsKey('saving_mode'), true);
+    });
   });
 }
