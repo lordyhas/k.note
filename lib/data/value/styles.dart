@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 enum ThemeState{light,dark}
+
 class StyleAppTheme {
 
-  StyleAppTheme._();
   StyleAppTheme.init();
 
 
