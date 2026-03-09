@@ -328,11 +328,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       builder: (context) => _buildBottomMenu(data[index]),
                     ),
 
-                    onTap: () => Navigator.push(
-                        context,
-                        TextEditor.route(
-                          note: data[index],
-                        )),
+                    onTap: () => GoRouter.of(context).pushNamed(
+                      TextEditor.routeName,
+                      extra: data[index],
+                    ),
                   );
                 },
               ),

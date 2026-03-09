@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:knote/data/app_bloc.dart';
@@ -113,7 +114,7 @@ class _TaskEditorState extends State<TaskEditor> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
             },
           ),
           actions: [
@@ -276,10 +277,10 @@ class _TaskEditorState extends State<TaskEditor> {
                   final id = _id;
                   if (id != null) {
                     _firebaseManager.deleteTask(taskId: id).then((_) {
-                      Navigator.pop(context);
+                      context.pop();
                     });
                   } else {
-                    Navigator.pop(context);
+                    context.pop();
                   }
                 },
               ),
@@ -341,7 +342,9 @@ class _TaskEditorState extends State<TaskEditor> {
               onPrimary: Colors.white,
               surface: Color(0xFF1F1F1F),
               onSurface: Colors.white,
-            ), dialogTheme: DialogThemeData(backgroundColor: const Color(0xFF1F1F1F)),
+            ),
+            dialogTheme:
+                DialogThemeData(backgroundColor: const Color(0xFF1F1F1F)),
           ),
           child: child!,
         );
