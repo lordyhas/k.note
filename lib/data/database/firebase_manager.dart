@@ -372,7 +372,9 @@ class FirebaseManager {
     final map = task.asMap();
     return collectionUserTask.doc(task.id).set(map).then((value) {
       Log.i("Task Added : $task");
-    }).catchError((error) => Log.i("Failed to add task : $error"));
+    }).catchError((error) {
+      Log.i("Failed to add task : $error");
+    });
   }
 
   Future<void> updateTaskInCloud({required CheckList task}) {
