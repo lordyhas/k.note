@@ -23,7 +23,7 @@ void main() async {
   await authenticationRepository.user.first;
 
   Bloc.observer = AppBlocObserver();
-  runApp(App(authenticationRepository: AuthRepository()));
+  runApp(App(authenticationRepository: authenticationRepository));
 }
 
 class App extends StatelessWidget {
