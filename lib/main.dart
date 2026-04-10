@@ -9,7 +9,6 @@ import 'package:knote/routes.dart';
 
 import 'data/app_bloc.dart';
 import 'data/authentication_repository.dart';
-import 'data/database/firebase_manager.dart';
 import 'data/values.dart';
 
 import 'firebase_options.dart';
@@ -24,7 +23,6 @@ void main() async {
   await authenticationRepository.user.first;
 
   Bloc.observer = AppBlocObserver();
-  FirebaseManager.init();
   runApp(App(authenticationRepository: AuthRepository()));
 }
 
