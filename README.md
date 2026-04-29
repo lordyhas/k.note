@@ -138,3 +138,26 @@ For a historical tree snapshot in-repo, see `PROJECT_STRUCTURE.md`.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for branch/PR workflow, quality gates, and commit conventions.
+
+## Command history
+### Debug SHA output
+```powershell 
+& "C:\Program Files\Java\jdk-17\bin\keytool.exe" -list -v -keystore "$env:USERPROFILE\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+``` 
+Do not use this one : 
+```powershell
+keytool -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
+```
+### Release SHA output
+```powershell
+& "C:\Program Files\Java\jdk-17\bin\keytool.exe" -list -v -keystore "C:\Users\hkaji\upload-keystore.jks"
+``` 
+
+### Run app in release mode 
+```bash
+flutter run --release
+```
+use `-d <device_id>` to specify a target device if multiple are connected, e.g.:
+```bash
+flutter run --release -d ZY32LGN26T
+```
