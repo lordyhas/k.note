@@ -33,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _animCtrl;
   bool multiple = false;
   late final FirebaseManager _firebaseManager;
-  late final user;
   bool searching = false;
 
   final TextEditingController _searchController = TextEditingController();
@@ -43,12 +42,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Stream<String> get searchStream => _searchStreamController.stream;
 
-  Future<bool> onSearch() async {
-    //searchStream
+  /// Toggles search UI. Must not be invoked from [build] (e.g. as a [FutureBuilder.future]).
+  void _toggleSearch() {
     setState(() {
       searching = !searching;
     });
-    return searching;
   }
 
   Future<void> findNote(String data) async {
@@ -153,14 +151,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 children: [
                   IconButton(
                       icon: const Icon(Icons.search),
-                      onPressed: onSearch // Scaffold.of(context).openEndDrawer,
+                      onPressed: _toggleSearch,
                       ),
                   Expanded(
                     child: TextField(
                         controller: _searchController,
                         key: const Key('homePage_search_textField'),
                         onChanged: (query) {},
-                        onTap: onSearch,
+                        onTap: _toggleSearch,
                         decoration: const InputDecoration.collapsed(
                             hintText: 'Find a documents')),
                   ),
@@ -213,30 +211,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     height: 16.0,
                   ),
                   Expanded(
-                    child: FutureBuilder<bool>(
-                        initialData: false,
-                        future: onSearch(),
-                        builder: (context, snapshot) {
-                          if (snapshot.data == true) {
-                            return StreamBuilder<Object>(
-                                stream: searchStream,
-                                builder: (context, snapshot) {
-                                  return Column(
-                                    children: [
-                                      const Spacer(),
-                                      Text(
-                                        _searchController.text.toString(),
-                                        style: const TextStyle(fontSize: 24),
-                                      ),
-                                      ComingSoon(),
-                                      const Spacer(),
-                                    ],
-                                  );
-                                });
-                          } else {
-                            return NoteListView();
-                          }
-                        }),
+                    child: searching
+                        ? StreamBuilder<Object>(
+                            stream: searchStream,
+                            builder: (context, snapshot) {
+                              return Column(
+                                children: [
+                                  const Spacer(),
+                                  Text(
+                                    _searchController.text.toString(),
+                                    style: const TextStyle(fontSize: 24),
+                                  ),
+                                  ComingSoon(),
+                                  const Spacer(),
+                                ],
+                              );
+                            },
+                          )
+                        : NoteListView(),
                   ),
                 ],
               ),
