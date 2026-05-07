@@ -28,6 +28,7 @@ class _TaskEditorState extends State<TaskEditor> {
   // New fields state
   bool _isImportant = false;
   bool _isMyDay = false;
+  bool _isDeleted = false;
   DateTime? _dueDate;
   DateTime? _reminderTime;
   String? _repeat;
@@ -65,6 +66,7 @@ class _TaskEditorState extends State<TaskEditor> {
   }
 
   void _saveTask() {
+    if (_isDeleted) return;
     if (_titleController.text.isEmpty &&
         _items.isEmpty &&
         _noteController.text.isEmpty) {
@@ -99,11 +101,8 @@ class _TaskEditorState extends State<TaskEditor> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) {
-        // if (didPop) _saveTask(); // already saved manually or by back button potentially?
-        // PopScope(onPopInvoked: (didPop) {}) with didPop true means it ALREADY popped.
-        // We generally can't prevent pop here easily without canPop: false.
-        // But if we want to save on exit, we can do it here.
+      onPopInvokedWithResult: (didPop, _) {
+        // Save on exit; skipped when the task was just deleted.
         _saveTask();
       },
       child: Scaffold(
@@ -274,10 +273,11 @@ class _TaskEditorState extends State<TaskEditor> {
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.white),
                 onPressed: () {
+                  _isDeleted = true;
                   final id = _id;
-                  if (id != null) {
+                  if (id != null && widget.task != null) {
                     _firebaseManager.deleteTask(taskId: id).then((_) {
-                      context.pop();
+                      if (context.mounted) context.pop();
                     });
                   } else {
                     context.pop();
@@ -363,6 +363,7 @@ class _TaskEditorState extends State<TaskEditor> {
       lastDate: DateTime(2100),
     );
     if (pickedDate != null) {
+      if (!mounted) return;
       final pickedTime =
           await showTimePicker(context: context, initialTime: TimeOfDay.now());
       if (pickedTime != null) {
