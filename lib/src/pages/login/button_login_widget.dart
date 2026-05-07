@@ -18,7 +18,7 @@ class _EmailInput extends StatelessWidget {
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
             ),
-            prefixIcon: const Icon(FontAwesomeIcons.userLarge,
+            prefixIcon: const Icon(FontAwesomeIcons.user,
               color: Colors.white,
             ),
             labelText: 'Enter your mail address',
