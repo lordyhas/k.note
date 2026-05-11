@@ -192,7 +192,7 @@ class _TextEditorState extends State<TextEditor> {
                                             onTap: () {
                                               setState(() {
                                                 _noteModel.colorValue =
-                                                    color.value;
+                                                    color.toARGB32();
                                               });
                                               // Save color immediately
                                               _firebaseManager.addNoteInCloud(

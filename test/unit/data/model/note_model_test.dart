@@ -20,7 +20,7 @@ void main() {
         'last_time': timestampNow,
         'is_deleted': false,
         'permanent_delete_date': null,
-        'color': Colors.red.value,
+        'color': Colors.red.toARGB32(),
         'reminder_date': timestampNow,
         'email': 'test@example.com',
         'is_archived': true,
@@ -37,7 +37,7 @@ void main() {
       expect(note.creationTime, timestampNow.toDate());
       expect(note.modificationTime, timestampNow.toDate());
       expect(note.isDeleted, false);
-      expect(note.colorValue, Colors.red.value);
+      expect(note.colorValue, Colors.red.toARGB32());
       expect(note.email, 'test@example.com');
       expect(note.isArchived, true);
       // saving_mode 1 corresponds to SavingMode.local (index 1)
@@ -68,7 +68,7 @@ void main() {
       // NoteModel fields are DateTime, so asMap should return DateTime
       expect(map['creation_time'], now);
       expect(map['last_time'], now);
-      expect(map['color'], Colors.red.value);
+      expect(map['color'], Colors.red.toARGB32());
       expect(map['saving_mode'], 1);
     });
 
@@ -81,7 +81,7 @@ void main() {
         'last_time': null,
         'is_deleted': false,
         'permanent_delete_date': null,
-        'color': Colors.green.value,
+        'color': Colors.green.toARGB32(),
         'reminder_date': null,
         'email': null,
         'is_archived': false,
@@ -105,7 +105,7 @@ void main() {
       expect(note.isDeleted, false);
       expect(note.isArchived, false);
       expect(note.isLocked, false);
-      expect(note.colorValue, Colors.cyan.value);
+      expect(note.colorValue, Colors.cyan.toARGB32());
       expect(note.savingModeValue, SavingMode.cloud.index);
     });
 
@@ -118,7 +118,7 @@ void main() {
         'last_time': null,
         'is_deleted': true,
         'permanent_delete_date': null,
-        'color': Colors.blue.value,
+        'color': Colors.blue.toARGB32(),
         'reminder_date': null,
         'email': 'user@test.com',
         'is_archived': false,
