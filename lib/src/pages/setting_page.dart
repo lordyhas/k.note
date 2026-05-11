@@ -86,7 +86,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0).copyWith(top: 50.0),
                         child: Card(
-                          color: Theme.of(context).cardColor.withOpacity(0.7),
+                          color: Theme.of(context).cardColor.withValues(alpha: 0.7),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
@@ -245,7 +245,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    color: Theme.of(context).cardColor.withOpacity(0.7),
+                    color: Theme.of(context).cardColor.withValues(alpha: 0.7),
                     margin: const EdgeInsets.all(8.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
@@ -316,7 +316,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                    color: Theme.of(context).cardColor.withOpacity(0.7),
+                    color: Theme.of(context).cardColor.withValues(alpha: 0.7),
                     margin: const EdgeInsets.all(8.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),

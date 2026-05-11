@@ -84,7 +84,7 @@ class NoteCard extends StatelessWidget {
                     margin: const EdgeInsets.only(right: 8.0, top: 2.0),
                     child: Icon(
                       Icons.cloud_done_sharp,
-                      color: color ?? Colors.lightBlueAccent.withOpacity(0.7),
+                      color: color ?? Colors.lightBlueAccent.withValues(alpha: 0.7),
                     )),
               ),
             ],

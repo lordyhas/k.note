@@ -367,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       padding: const EdgeInsets.only(bottom: 64.0),
       //padding: const EdgeInsets.only(bottom: kBottomMarginValue,),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor.withOpacity(0.8),
+        color: Theme.of(context).cardColor.withValues(alpha: 0.8),
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(18.0),
         ),
@@ -524,7 +524,7 @@ class HomeListView extends StatelessWidget {
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        splashColor: Colors.grey.withOpacity(0.2),
+                        splashColor: Colors.grey.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(4.0),
                         onTap: onTap,
                         onLongPress: onLongPress,

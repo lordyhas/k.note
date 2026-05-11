@@ -46,7 +46,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget build(BuildContext context) {
     return Scaffold(
       // todo: add change in theme
-      //backgroundColor: Colors.grey.shade800, //StyleAppTheme.notWhite.withOpacity(0.5),
+      //backgroundColor: Colors.grey.shade800, //StyleAppTheme.notWhite.withValues(alpha: 0.5),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -83,7 +83,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                 boxShadow: <BoxShadow>[
                                   BoxShadow(
                                       color:
-                                          StyleAppTheme.grey.withOpacity(0.3),
+                                          StyleAppTheme.grey.withValues(alpha: 0.3),
                                       offset: const Offset(2.0, 4.0),
                                       blurRadius: 8),
                                 ],
@@ -129,7 +129,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           Divider(
             height: 1,
-            color: Theme.of(context).primaryColor.withOpacity(0.6),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
           ),
           Expanded(
             child: ListView.builder(
@@ -143,7 +143,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           Divider(
             height: 1,
-            color: Theme.of(context).primaryColor.withOpacity(0.6),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
           ),
           BlocBuilder<AuthenticationBloc, AuthState>(
             builder: (context, state) => Column(
@@ -255,7 +255,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        splashColor: Colors.grey.withOpacity(0.1),
+        splashColor: Colors.grey.withValues(alpha: 0.1),
         highlightColor: Colors.transparent,
         onTap: () {
           navigationToScreen(listData.index);
@@ -335,7 +335,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                             decoration: BoxDecoration(
                               color: Theme.of(context)
                                   .primaryColor
-                                  .withOpacity(0.15),
+                                  .withValues(alpha: 0.15),
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(0),
                                 topRight: Radius.circular(28),

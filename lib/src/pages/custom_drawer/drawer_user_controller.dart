@@ -143,7 +143,7 @@ class _DrawerUserControllerViewState extends State<DrawerUserControllerView>
                     color:
                         Colors.grey[850], //Theme.of(context).backgroundColor,
                     /*boxShadow: <BoxShadow>[
-                      BoxShadow(color: StyleAppTheme.dark_grey.withOpacity(0.9), blurRadius: 18),
+                      BoxShadow(color: StyleAppTheme.dark_grey.withValues(alpha: 0.9), blurRadius: 18),
                     ],*/
                   ),
                   child: Card(
