@@ -492,7 +492,7 @@ class HomeListView extends StatelessWidget {
       required this.animationController,
       required this.animation});
 
-  final listData;
+  final dynamic listData;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final AnimationController animationController;

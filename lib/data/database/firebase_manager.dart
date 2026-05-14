@@ -230,7 +230,7 @@ class FirebaseManager {
 
   /// Update image user that used as profile image
 
-  Future<void> updateImageProfile(docId, Uint8List path) async {
+  Future<void> updateImageProfile(String docId, Uint8List path) async {
     return users.doc(docId).update({'photo_profile': Blob(path)});
   }
 
@@ -258,7 +258,7 @@ class FirebaseManager {
         .catchError((error) => debugPrint("Failed to add data: $error"));
   }
 
-  Future<void> updateUserLocation(userId, GeoPoint location) {
+  Future<void> updateUserLocation(String userId, GeoPoint location) {
     return users
         .doc(userId)
         .update({'location': const GeoPoint(53.483959, -2.244644)})
@@ -329,7 +329,7 @@ class FirebaseManager {
         .catchError((error) => debugPrint("Failed to add user: $error"));
   }
 
-  Future<DocumentSnapshot> getUser(documentId) {
+  Future<DocumentSnapshot> getUser(String documentId) {
     return users.doc(documentId).get();
     /**
      * is used in a [FutureBuilder<DocumentSnapshot>] Widget with
