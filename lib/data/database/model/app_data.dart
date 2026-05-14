@@ -1,4 +1,4 @@
-part of data.model;
+part of '../database_model.dart';
 
 
 class AppData extends DataToMap{
@@ -62,7 +62,7 @@ class AppData extends DataToMap{
 
   @override
   void toDisplay() {
-    print(toString());
+    debugPrint(toString());
   }
 
   AppData copyWith({

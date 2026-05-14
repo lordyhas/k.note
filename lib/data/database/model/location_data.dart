@@ -1,4 +1,4 @@
-part of data.model;
+part of '../database_model.dart';
 
 
 class LocationData{
