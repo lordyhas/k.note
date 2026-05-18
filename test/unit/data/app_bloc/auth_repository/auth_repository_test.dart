@@ -30,14 +30,14 @@ void main() {
 
   tearDown(() => authStateController.close());
 
-  AuthRepository _buildRepo() => AuthRepository(
+  AuthRepository buildRepo() => AuthRepository(
         firebaseAuth: mockFirebaseAuth,
         googleSignIn: mockGoogleSignIn,
       );
 
   group('AuthRepository - user stream', () {
     test('emits User.empty when auth state emits null', () async {
-      final repo = _buildRepo();
+      final repo = buildRepo();
       final userFuture = repo.user.first;
       authStateController.add(null);
 
@@ -45,7 +45,7 @@ void main() {
     });
 
     test('caches user so currentUser reflects latest emitted user', () async {
-      final repo = _buildRepo();
+      final repo = buildRepo();
       final userFuture = repo.user.first;
       authStateController.add(null);
 
@@ -57,7 +57,7 @@ void main() {
 
   group('AuthRepository - currentUser', () {
     test('returns User.empty when nothing is cached', () {
-      expect(_buildRepo().currentUser, User.empty);
+      expect(buildRepo().currentUser, User.empty);
     });
   });
 
@@ -69,7 +69,7 @@ void main() {
           )).thenAnswer((_) async => MockUserCredential());
 
       await expectLater(
-        _buildRepo().logInWithEmailAndPassword(
+        buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'password123',
         ),
@@ -87,7 +87,7 @@ void main() {
       );
 
       await expectLater(
-        _buildRepo().logInWithEmailAndPassword(
+        buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'wrong',
         ),
@@ -104,7 +104,7 @@ void main() {
       );
 
       try {
-        await _buildRepo().logInWithEmailAndPassword(
+        await buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'wrong',
         );
@@ -122,7 +122,7 @@ void main() {
           )).thenThrow(Exception('network error'));
 
       await expectLater(
-        _buildRepo().logInWithEmailAndPassword(
+        buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'password',
         ),
@@ -139,7 +139,7 @@ void main() {
           )).thenAnswer((_) async => MockUserCredential());
 
       await expectLater(
-        _buildRepo().signUp(
+        buildRepo().signUp(
           email: 'new@example.com',
           password: 'password123',
         ),
@@ -152,7 +152,7 @@ void main() {
     test('calls signOut on both firebase and google', () async {
       when(() => mockFirebaseAuth.signOut()).thenAnswer((_) async {});
 
-      await _buildRepo().logOut();
+      await buildRepo().logOut();
 
       verify(() => mockFirebaseAuth.signOut()).called(1);
       verify(() => mockGoogleSignIn.signOut()).called(1);
@@ -163,7 +163,7 @@ void main() {
           .thenThrow(Exception('sign out failed'));
 
       await expectLater(
-        _buildRepo().logOut(),
+        buildRepo().logOut(),
         throwsA(isA<LogOutFailure>()),
       );
     });
