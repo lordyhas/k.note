@@ -6,15 +6,14 @@ class LoginHome extends StatefulWidget {
   const LoginHome({super.key});
 
   @override
-  _LoginHomeState createState() => _LoginHomeState();
+  State<LoginHome> createState() => _LoginHomeState();
 }
 
 class _LoginHomeState extends State<LoginHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
+      body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -44,7 +43,6 @@ class _LoginHomeState extends State<LoginHome> {
               ),
             ),
           ],
-        ),
       ),
     );
   }
