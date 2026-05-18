@@ -118,7 +118,7 @@ class _DrawerUserControllerViewState extends State<DrawerUserControllerView>
                       transform: Matrix4.translationValues(
                           scrollController.offset, 0.0, 0.0),
                       child: HomeDrawer(
-                        screenIndex: widget.screenIndex ?? DrawerIndex.HOME,
+                        screenIndex: widget.screenIndex ?? DrawerIndex.home,
                         iconAnimationController: iconAnimationController,
                         callBackIndex: (DrawerIndex indexType) {
                           onDrawerClick();

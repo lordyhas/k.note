@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import '../../../res.dart';
 
 enum DrawerIndex {
-  HOME,
-  FeedBack,
-  Help,
-  Rate,
-  About,
-  Invite,
-  Calendar,
-  NoteTrash,
-  Archived,
-  Offline,
+  home,
+  feedback,
+  help,
+  rate,
+  about,
+  invite,
+  calendar,
+  noteTrash,
+  archived,
+  offline,
   //Setting,
 }
 
@@ -92,7 +92,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(100.0)),
                                 child: //(true) ?
-                                     Image.asset(Res.IMG)
+                                     Image.asset(Res.img)
                                     //: Image.asset(Res.logo_2), //Image.network(state.user.photoMail!),
                               ),
                             ),
@@ -382,32 +382,32 @@ class DrawerList {
 
   static List<DrawerList> drawerList = <DrawerList>[
     DrawerList(
-        index: DrawerIndex.HOME,
+        index: DrawerIndex.home,
         labelName: 'Recent notes',
         iconSelected: const Icon(Icons.file_copy_outlined),
         icon: Icon(
           Icons.file_copy,
         )),
     DrawerList(
-      index: DrawerIndex.Offline,
+      index: DrawerIndex.offline,
       labelName: 'Offline notes',
       icon: Icon(Icons.offline_pin_outlined),
       iconSelected: Icon(Icons.offline_pin_rounded),
     ),
     DrawerList(
-      index: DrawerIndex.Archived,
+      index: DrawerIndex.archived,
       labelName: 'Archived notes',
       icon: Icon(Icons.archive_outlined),
       iconSelected: Icon(Icons.archive),
     ),
     DrawerList(
-      index: DrawerIndex.Calendar,
+      index: DrawerIndex.calendar,
       labelName: 'Calendar',
       icon: Icon(Icons.calendar_today_outlined),
       iconSelected: Icon(Icons.calendar_today),
     ),
     DrawerList(
-      index: DrawerIndex.NoteTrash,
+      index: DrawerIndex.noteTrash,
       labelName: 'Trash',
       icon: Icon(
         Icons.delete_outline,
@@ -430,7 +430,7 @@ class DrawerList {
 
       ),
       DrawerList(
-        index: DrawerIndex.Help,
+        index: DrawerIndex.help,
         labelName: 'Help',
         isAssetsImage: true,
         imageName: 'assets/images/supportIcon.png',
@@ -438,25 +438,25 @@ class DrawerList {
       ),*/
 
     DrawerList(
-      index: DrawerIndex.FeedBack,
+      index: DrawerIndex.feedback,
       labelName: 'FeedBack',
       icon: Icon(Icons.help_outline),
       iconSelected: Icon(Icons.help),
     ),
     DrawerList(
-      index: DrawerIndex.Invite,
+      index: DrawerIndex.invite,
       labelName: 'Invite Friend',
       icon: Icon(Icons.group_outlined),
       iconSelected: Icon(Icons.group),
     ),
     DrawerList(
-      index: DrawerIndex.Rate,
+      index: DrawerIndex.rate,
       labelName: 'Rate the app',
       icon: Icon(Icons.rate_review_outlined),
       iconSelected: Icon(Icons.rate_review),
     ),
     DrawerList(
-      index: DrawerIndex.About,
+      index: DrawerIndex.about,
       labelName: 'About Us',
       icon: Icon(Icons.info_outline_rounded),
       iconSelected: Icon(Icons.info),
