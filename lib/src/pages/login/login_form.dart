@@ -18,10 +18,12 @@ class LoginForm extends StatelessWidget {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
-                const SnackBar(
+                SnackBar(
                   backgroundColor: Colors.grey,
                   behavior: SnackBarBehavior.floating,
-                  content: Text('Authentication Failure'),
+                  content: Text(
+                    state.errorMessage ?? 'Authentication Failure',
+                  ),
                 ),
               );
           } else if (state.status.isSuccess) {
