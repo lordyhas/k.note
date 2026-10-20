@@ -95,7 +95,10 @@ class LoginForm extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 8.0),
-                            const CircularProgressIndicator(), // Show loading while redirecting
+                            OutlinedButton(onPressed: (){
+                              GoRouter.of(context).pushReplacement("/${HomeScreen.routeName}");
+                            }, child: Text("Go to Home")),
+                            //const CircularProgressIndicator(), // Show loading while redirecting
                           ],
                         ),
                       );

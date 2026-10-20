@@ -195,6 +195,12 @@ class AppRouter {
             parentNavigatorKey: key,
             name: LoginPage.routeName,
             path: "/${LoginPage.routeName}",
+            redirect: (ctx, state) {
+              if (authBloc.state.status == AuthenticationStatus.authenticated) {
+                return "/${HomeScreen.routeName}";
+              }
+              return null;
+            },
             builder: (context, state) => const LoginPage(),
           ),
         ],

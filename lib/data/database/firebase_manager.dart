@@ -10,26 +10,29 @@ import 'package:flutter/services.dart';
 
 class FirebaseManager {
   final User user;
-  FirebaseManager._(this.user);
-  FirebaseManager.empty() : this._(User.empty);
-  FirebaseManager.user(User user) : this._(user);
+  final FirebaseFirestore _firestore;
 
-  factory FirebaseManager.init([User? user]) {
+  FirebaseManager._(this.user, [FirebaseFirestore? firestore])
+      : _firestore = firestore ?? FirebaseFirestore.instance;
+  FirebaseManager.empty([FirebaseFirestore? firestore]) : this._(User.empty, firestore);
+  FirebaseManager.user(User user, [FirebaseFirestore? firestore]) : this._(user, firestore);
+
+  factory FirebaseManager.init([User? user, FirebaseFirestore? firestore]) {
     /*FirebaseFirestore.instance.settings = const Settings(
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
     );*/
-    return user == null ? FirebaseManager.empty() : FirebaseManager.user(user);
+    return user == null ? FirebaseManager.empty(firestore) : FirebaseManager.user(user, firestore);
   }
 
   void close() {}
 
   // Create a CollectionReference called users that references the firestore collection
-  CollectionReference<Map<String, dynamic>> users = FirebaseFirestore.instance
+  CollectionReference<Map<String, dynamic>> get users => _firestore
       .collection('K_NOTE')
       .doc('general_data')
       .collection('USERS');
-  CollectionReference<Map<String, dynamic>> colG =
-      FirebaseFirestore.instance.collection('K_NOTE');
+  CollectionReference<Map<String, dynamic>> get colG =>
+      _firestore.collection('K_NOTE');
 
   ///CollectionReference get collectionUser => colG.doc('general_data').collection('USERS');
   ///CollectionReference get collectionNote => colG.doc('general_data').collection('NOTES');
