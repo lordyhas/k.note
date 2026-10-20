@@ -12,8 +12,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial architecture ADR at `docs/decisions/0001-architecture-overview.md`.
 - Contributor workflow guide in `CONTRIBUTING.md`.
 
+- `firestore.rules`: each user can only read and write `K_NOTE/general_data/USERS/{uid}`, writes are schema-validated, and everything else is denied.
+- Emulator-based security rules tests (`test/firestore_rules/`) and a `firestore-rules` CI job.
+- `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
+
 ### Changed
+- `User` only holds Firebase Auth data. `isBlocked`, `verifiedAccount` and `isDataCloud` were removed: account status is managed in Firebase Auth (disabled account or `blocked` custom claim), not in a document the user can write.
+- `FirebaseManager` no longer swallows Firestore errors and no longer logs note contents or user emails.
+- The editor autosave writes title, text and modification time in one update (`updateNoteContent`) instead of three.
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
+
+### Fixed
+- The user profile is read and written by uid; it used to be looked up by email (`addUserInCloud`, now `saveUserProfile`).
+- Archived and trashed notes no longer depend on a stored `email` field matching.
+- `getNoteInCloud` returns `null` for a missing note instead of throwing.
+- Signing in without an email (anonymous account) no longer crashes.
+
+### Removed
+- Unused and unsafe `FirebaseManager` methods: arbitrary key updates, hard-coded location writes, random-id user documents (`addUserData`), and a stream over the whole `K_NOTE` collection.
+- `UserData` model.
 
 ## Process
 

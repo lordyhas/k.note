@@ -460,7 +460,7 @@ extension on firebase_auth.User {
   User get toUser {
 
     return User(
-        id: uid, email: email!,
+        id: uid, email: email ?? '',
         name: displayName, photoMail: photoURL,
         phoneNumber: phoneNumber,
         lastDate: metadata.lastSignInTime,

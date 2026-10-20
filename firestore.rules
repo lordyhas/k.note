@@ -1,0 +1,135 @@
+rules_version = '2';
+
+// Security model
+// --------------
+// * Every user owns exactly one subtree: K_NOTE/general_data/USERS/{uid}.
+//   The {uid} in the path must equal the uid in the caller's Firebase Auth
+//   token, which is signed by Google and cannot be forged by a modified app.
+// * A user is blocked by an admin, never by the client: either disable the
+//   account in Firebase Auth, or set the custom claim `blocked: true` with the
+//   Admin SDK (takes effect on the next token refresh). See docs/security.md.
+// * Everything that is not matched below is denied.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(userId) {
+      return request.auth != null
+          && request.auth.uid == userId
+          && request.auth.token.get('blocked', false) != true;
+    }
+
+    // Fields written by the app may be absent or null; when set, they must
+    // have the expected type.
+    function absent(data, key) {
+      return !(key in data) || data[key] == null;
+    }
+    function optString(data, key)    { return absent(data, key) || data[key] is string; }
+    function optBool(data, key)      { return absent(data, key) || data[key] is bool; }
+    function optInt(data, key)       { return absent(data, key) || data[key] is int; }
+    function optTimestamp(data, key) { return absent(data, key) || data[key] is timestamp; }
+
+    // On create the document may only contain known keys. On update the
+    // client may only add or change known keys, so legacy documents with
+    // extra fields stay editable, and the document id is immutable.
+    function hasValidKeys(allowed) {
+      return request.resource.data.keys().hasOnly(allowed);
+    }
+
+    function changesOnly(allowed) {
+      let diff = request.resource.data.diff(resource.data);
+      return diff.addedKeys().hasOnly(allowed)
+          && diff.changedKeys().hasOnly(allowed)
+          && !diff.changedKeys().hasAny(['id']);
+    }
+
+    function profileKeys() {
+      return ['id', 'name', 'email', 'photo_mail', 'creation_time', 'last_login'];
+    }
+
+    function noteKeys() {
+      return ['id', 'title', 'text', 'creation_time', 'last_time', 'is_deleted',
+              'permanent_delete_date', 'color', 'reminder_date', 'is_archived',
+              'email', 'is_locked', 'saving_mode'];
+    }
+
+    function taskKeys() {
+      return ['id', 'title', 'is_all_checked', 'list', 'color', 'creation_time',
+              'last_time', 'is_important', 'is_my_day', 'due_date',
+              'reminder_time', 'repeat', 'note'];
+    }
+
+    function isValidProfile(userId) {
+      let data = request.resource.data;
+      return data.id == userId
+          && data.email == request.auth.token.get('email', '')
+          && optString(data, 'name')
+          && optString(data, 'photo_mail')
+          && optTimestamp(data, 'creation_time')
+          && optTimestamp(data, 'last_login');
+    }
+
+    function isValidNote(noteId) {
+      let data = request.resource.data;
+      return data.id == noteId
+          && optString(data, 'title')
+          && optString(data, 'text')
+          && optString(data, 'email')
+          && optBool(data, 'is_deleted')
+          && optBool(data, 'is_archived')
+          && optBool(data, 'is_locked')
+          && optInt(data, 'color')
+          && optInt(data, 'saving_mode')
+          && optTimestamp(data, 'creation_time')
+          && optTimestamp(data, 'last_time')
+          && optTimestamp(data, 'reminder_date')
+          && optTimestamp(data, 'permanent_delete_date');
+    }
+
+    function isValidTask(taskId) {
+      let data = request.resource.data;
+      return data.id == taskId
+          && data.title is string
+          && data.list is list
+          && optBool(data, 'is_all_checked')
+          && optBool(data, 'is_important')
+          && optBool(data, 'is_my_day')
+          && optInt(data, 'color')
+          && optString(data, 'repeat')
+          && optString(data, 'note')
+          && optTimestamp(data, 'creation_time')
+          && optTimestamp(data, 'last_time')
+          && optTimestamp(data, 'due_date')
+          && optTimestamp(data, 'reminder_time');
+    }
+
+    match /K_NOTE/general_data/USERS/{userId} {
+      allow read, delete: if isOwner(userId);
+      allow create: if isOwner(userId)
+                    && hasValidKeys(profileKeys())
+                    && isValidProfile(userId);
+      allow update: if isOwner(userId)
+                    && changesOnly(profileKeys())
+                    && isValidProfile(userId);
+
+      match /notes/{noteId} {
+        allow read, delete: if isOwner(userId);
+        allow create: if isOwner(userId)
+                      && hasValidKeys(noteKeys())
+                      && isValidNote(noteId);
+        allow update: if isOwner(userId)
+                      && changesOnly(noteKeys())
+                      && isValidNote(noteId);
+      }
+
+      match /tasks/{taskId} {
+        allow read, delete: if isOwner(userId);
+        allow create: if isOwner(userId)
+                      && hasValidKeys(taskKeys())
+                      && isValidTask(taskId);
+        allow update: if isOwner(userId)
+                      && changesOnly(taskKeys())
+                      && isValidTask(taskId);
+      }
+    }
+  }
+}

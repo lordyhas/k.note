@@ -52,8 +52,9 @@ Typical note flow:
 
 ## Security/encryption
 
-- Encryption support is implemented via `EncryptionService` and key storage under Firestore user keys.
-- Home screen triggers setup/unlock dialogs depending on local key status and remote key presence.
+- Each user can only access `K_NOTE/general_data/USERS/{uid}`; this is enforced server-side by `firestore.rules`, not by the app. See [security.md](security.md).
+- Custom E2EE was removed; data relies on Firestore encryption at rest.
+- Account status (blocking) lives in Firebase Auth (disabled account or `blocked` custom claim), never in a client-writable document.
 
 ## Notable technical debt / to confirm
 

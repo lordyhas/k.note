@@ -85,8 +85,7 @@ void main() {
       expect(notes, isEmpty);
     });
 
-    test(
-        'getAllArchivedNoteInCloud returns only archived non-deleted notes',
+    test('getAllArchivedNoteInCloud returns only archived non-deleted notes',
         () async {
       await manager.addNoteInCloud(note: _makeNote(id: 'note-1'));
       await manager.addNoteInCloud(
@@ -96,8 +95,7 @@ void main() {
 
       final notes = await manager.getAllArchivedNoteInCloud();
 
-      expect(notes, isNotNull);
-      expect(notes!.length, 1);
+      expect(notes.length, 1);
       expect(notes.first.id, 'note-2');
     });
 
@@ -111,8 +109,7 @@ void main() {
 
       final notes = await manager.getAllDeletedNoteInCloud();
 
-      expect(notes, isNotNull);
-      expect(notes!.length, 1);
+      expect(notes.length, 1);
       expect(notes.first.id, 'note-2');
     });
 
@@ -156,7 +153,8 @@ void main() {
       expect(retrieved!.isArchived, isFalse);
     });
 
-    test('permanentlyDeleteNote removes note so it no longer appears', () async {
+    test('permanentlyDeleteNote removes note so it no longer appears',
+        () async {
       final note = _makeNote();
       await manager.addNoteInCloud(note: note);
 
@@ -166,26 +164,72 @@ void main() {
       expect(notes, isEmpty);
     });
 
-    test('updateNoteTitle changes the title', () async {
+    test('updateNoteContent saves title, text and modification time', () async {
       final note = _makeNote();
       await manager.addNoteInCloud(note: note);
 
-      await manager.updateNoteTitle(
-          userId: _testUser.id, id: note.id, value: 'New Title');
+      await manager.updateNoteContent(
+          noteId: note.id, title: 'New Title', text: 'New text body');
 
       final retrieved = await manager.getNoteInCloud(noteId: note.id);
       expect(retrieved!.title, 'New Title');
+      expect(retrieved.text, 'New text body');
+      expect(retrieved.modificationTime, isNotNull);
     });
 
-    test('updateNoteText changes the text', () async {
-      final note = _makeNote();
-      await manager.addNoteInCloud(note: note);
+    test('getNoteInCloud returns null for a missing note', () async {
+      expect(await manager.getNoteInCloud(noteId: 'missing'), isNull);
+    });
 
-      await manager.updateNoteText(
-          userId: _testUser.id, id: note.id, value: 'New text body');
+    test('archived and trashed notes do not depend on the stored email',
+        () async {
+      await manager.addNoteInCloud(
+          note: NoteModel(id: 'legacy', isArchived: true));
+      await manager.addNoteInCloud(
+          note: NoteModel(id: 'trashed', isDeleted: true));
 
-      final retrieved = await manager.getNoteInCloud(noteId: note.id);
-      expect(retrieved!.text, 'New text body');
+      expect((await manager.getAllArchivedNoteInCloud()).single.id, 'legacy');
+      expect((await manager.getAllDeletedNoteInCloud()).single.id, 'trashed');
+    });
+
+    test("only reads the signed-in user's notes", () async {
+      const other = User(
+          id: 'user-456', email: 'o@example.com', name: null, photoMail: null);
+      await FirebaseManager.user(other, fakeFirestore)
+          .addNoteInCloud(note: _makeNote(id: 'other-note'));
+      await manager.addNoteInCloud(note: _makeNote(id: 'my-note'));
+
+      final notes = await manager.getAllNoteInCloud();
+
+      expect(notes.map((n) => n.id), ['my-note']);
+    });
+
+    test('write errors are propagated instead of swallowed', () async {
+      await expectLater(
+        manager.deleteNote(noteId: 'does-not-exist'),
+        throwsA(isA<Exception>()),
+      );
+    });
+  });
+
+  group('FirebaseManager - Profile', () {
+    test('saveUserProfile writes only the allowed profile fields', () async {
+      await manager.saveUserProfile();
+
+      final doc = await fakeFirestore
+          .doc('K_NOTE/general_data/USERS/${_testUser.id}')
+          .get();
+      expect(doc.data()!.keys, unorderedEquals(_testUser.asMap().keys));
+      expect(doc.data()!['email'], _testUser.email);
+    });
+
+    test('saveUserProfile keeps the notes of an existing user', () async {
+      await manager.addNoteInCloud(note: _makeNote());
+
+      await manager.saveUserProfile();
+      await manager.saveUserProfile();
+
+      expect(await manager.getAllNoteInCloud(), hasLength(1));
     });
   });
 
@@ -204,8 +248,10 @@ void main() {
     });
 
     test('getTasksInCloud returns all added tasks', () async {
-      await manager.addTaskInCloud(task: _makeTask(id: 'task-1', title: 'Task 1'));
-      await manager.addTaskInCloud(task: _makeTask(id: 'task-2', title: 'Task 2'));
+      await manager.addTaskInCloud(
+          task: _makeTask(id: 'task-1', title: 'Task 1'));
+      await manager.addTaskInCloud(
+          task: _makeTask(id: 'task-2', title: 'Task 2'));
 
       final tasks = await manager.getTasksInCloud();
 

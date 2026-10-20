@@ -1,402 +1,138 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:utils_component/utils_component.dart';
-import '../app_database.dart';
+
 import '../app_bloc/auth_repository/user.dart';
+import 'model/note_model.dart';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-
+/// Reads and writes the signed-in [user]'s data in Cloud Firestore.
+///
+/// Everything lives under `K_NOTE/general_data/USERS/{user.id}`. Access
+/// control is enforced server side by `firestore.rules`, which only lets a
+/// user touch the subtree whose id matches their Firebase Auth uid; nothing
+/// in this class is a security boundary.
+///
+/// Errors (network, permission denied, ...) are not swallowed: every method
+/// returns the Firestore future so callers can await it and react.
 class FirebaseManager {
   final User user;
   final FirebaseFirestore _firestore;
 
   FirebaseManager._(this.user, [FirebaseFirestore? firestore])
       : _firestore = firestore ?? FirebaseFirestore.instance;
-  FirebaseManager.empty([FirebaseFirestore? firestore]) : this._(User.empty, firestore);
-  FirebaseManager.user(User user, [FirebaseFirestore? firestore]) : this._(user, firestore);
+  FirebaseManager.empty([FirebaseFirestore? firestore])
+      : this._(User.empty, firestore);
+  FirebaseManager.user(User user, [FirebaseFirestore? firestore])
+      : this._(user, firestore);
 
   factory FirebaseManager.init([User? user, FirebaseFirestore? firestore]) {
-    /*FirebaseFirestore.instance.settings = const Settings(
-        cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-    );*/
-    return user == null ? FirebaseManager.empty(firestore) : FirebaseManager.user(user, firestore);
+    return user == null
+        ? FirebaseManager.empty(firestore)
+        : FirebaseManager.user(user, firestore);
   }
 
   void close() {}
 
-  // Create a CollectionReference called users that references the firestore collection
-  CollectionReference<Map<String, dynamic>> get users => _firestore
-      .collection('K_NOTE')
-      .doc('general_data')
-      .collection('USERS');
-  CollectionReference<Map<String, dynamic>> get colG =>
-      _firestore.collection('K_NOTE');
+  CollectionReference<Map<String, dynamic>> get _users =>
+      _firestore.collection('K_NOTE').doc('general_data').collection('USERS');
 
-  ///CollectionReference get collectionUser => colG.doc('general_data').collection('USERS');
-  ///CollectionReference get collectionNote => colG.doc('general_data').collection('NOTES');
+  DocumentReference<Map<String, dynamic>> get _userDoc => _users.doc(user.id);
 
-  CollectionReference<Map<String, dynamic>> get collectionUserNote =>
-      users.doc(user.id).collection('notes');
+  CollectionReference<Map<String, dynamic>> get _notes =>
+      _userDoc.collection('notes');
 
-  CollectionReference<Map<String, dynamic>> get collectionUserTask =>
-      users.doc(user.id).collection('tasks');
+  CollectionReference<Map<String, dynamic>> get _tasks =>
+      _userDoc.collection('tasks');
 
-  /*DocumentReference getDoc({required String docName }){
-    return colG.doc(docName);
-  }*/
+  /// U S E R   P R O F I L E
 
-  /// ENCRYPTION KEYS MANAGEMENT
-  /// (Removed local E2EE keys - relying on Firestore default encryption at rest)
+  /// Creates or refreshes the user's profile document from their auth data.
+  ///
+  /// Only descriptive fields are written (see [User.asMap]). Account status,
+  /// such as being blocked, is managed by an admin in Firebase Auth and is
+  /// never stored where the client can write it.
+  Future<void> saveUserProfile() {
+    return _userDoc.set(user.asMap(), SetOptions(merge: true));
+  }
+
+  /// N O T E S   M E T H O D S
 
   Future<NoteModel?> getNoteInCloud({required String noteId}) async {
-    var docSnap = await collectionUserNote.doc(noteId).get();
-
-    Map<String, dynamic> map = docSnap.data()!;
-
-    if (docSnap.exists) return NoteModel.fromMap(map);
-    return null;
+    final data = (await _notes.doc(noteId).get()).data();
+    return data == null ? null : NoteModel.fromMap(data);
   }
 
-  /// get all note by mail
+  /// Notes that are neither in the trash nor archived.
+  Future<List<NoteModel>> getAllNoteInCloud() =>
+      _queryNotes(isDeleted: false, isArchived: false);
 
-  Future<List<NoteModel>> getAllNoteInCloud() async {
-    var docSnap = await collectionUserNote
-        //.where('email', isEqualTo: user.email)
-        .where('is_deleted', isEqualTo: false)
-        .where('is_archived', isEqualTo: false)
+  Future<List<NoteModel>> getAllArchivedNoteInCloud() =>
+      _queryNotes(isDeleted: false, isArchived: true);
+
+  /// Notes in the trash.
+  Future<List<NoteModel>> getAllDeletedNoteInCloud() =>
+      _queryNotes(isDeleted: true, isArchived: false);
+
+  Future<List<NoteModel>> _queryNotes({
+    required bool isDeleted,
+    required bool isArchived,
+  }) async {
+    final snapshot = await _notes
+        .where('is_deleted', isEqualTo: isDeleted)
+        .where('is_archived', isEqualTo: isArchived)
         .get();
-
-    debugPrint("All Note for User => [$user]");
-
-    final maps = docSnap.docs.map((e) => e.data()).toList();
-    if (maps.isNotEmpty) {
-      return maps.map((e) {
-        return NoteModel.fromMap(e);
-      }).toList();
-    }
-    return [];
+    return snapshot.docs.map((doc) => NoteModel.fromMap(doc.data())).toList();
   }
 
-  /// get all archived note by mail
-
-  Future<List<NoteModel>?> getAllArchivedNoteInCloud() async {
-    var docSnap = await collectionUserNote
-        .where('email', isEqualTo: user.email)
-        .where('is_deleted', isEqualTo: false)
-        .where('is_archived', isEqualTo: true)
-        .get();
-
-    //List<Map<String, dynamic>> maps = docSnap.docs.map((e) => e.data()).toList();
-    return docSnap.docs.map((e) {
-      var map = e.data();
-      return NoteModel.fromMap(map);
-    }).toList();
-
-    /*return List<NoteModel>.generate(maps.length,
-              (index) => NoteModel.fromMap(maps.elementAt(index)
-          )
-      );*/
+  /// Creates [note], or replaces it entirely if it already exists.
+  Future<void> addNoteInCloud({required NoteModel note}) {
+    return _notes.doc(note.id).set(note.asMap());
   }
 
-  /// get all deleted note by mail
-
-  Future<List<NoteModel>?> getAllDeletedNoteInCloud() async {
-    var docSnap = await collectionUserNote
-        .where('email', isEqualTo: user.email)
-        .where('is_deleted', isEqualTo: true)
-        .where('is_archived', isEqualTo: false)
-        .get();
-    //var id = docSnap.docs.forEach((e) {e.id});
-    List<Map<String, dynamic>> maps =
-        docSnap.docs.map((e) => e.data()).toList();
-    return List<NoteModel>.generate(maps.length, (index) {
-      var map = maps.elementAt(index);
-      return NoteModel.fromMap(map);
+  /// Saves the editable content of a note in a single write.
+  Future<void> updateNoteContent({
+    required String noteId,
+    required String? title,
+    required String text,
+  }) {
+    return _notes.doc(noteId).update({
+      'title': title,
+      'text': text,
+      'last_time': DateTime.now(),
     });
   }
-
-  ///  this method will add [NoteData] in Cloud firebase
-  ///
-  ///
-  Future<void> addNoteInCloud({
-    required NoteModel note,
-  }) {
-    //note.creationTime = new DateTime.now();
-    //todo: use own firebase id
-
-    final map = note.asMap();
-
-    return collectionUserNote.doc(note.id).set(map).then((value) {
-      Log.i("Note Added : $note");
-      return note.toDisplay();
-    }).catchError((error) => Log.i("Failed to add note "
-        ": $error"));
-    //note.toString();
-  }
-
-  ///  this method will set [NoteData] in Cloud firebase
-  ///
-  ///
-  Future<void> setNoteInCloud(String userId, {required NoteModel note}) {
-    //note.creationTime = new DateTime.now();
-    return collectionUserNote.doc(note.id).set(note.id);
-  }
-
-  //
 
   Future<void> permanentlyDeleteNote({required String noteId}) {
-    return collectionUserNote
-        .doc(noteId)
-        .delete()
-        .then((value) => Log.i("Note :$noteId Deleted"))
-        .catchError((error) => Log.i("Failed to delete note: $error"));
+    return _notes.doc(noteId).delete();
   }
 
-  Future<void> deleteNote({
-    required String noteId,
-  }) async {
-    String key = 'is_deleted';
-    return collectionUserNote
-        .doc(noteId)
-        .update({key: true})
-        .then((v) => Log.i("Note : $noteId move in trash"))
-        .catchError((error) => Log.i("Failed to put in trash : $error"));
+  /// Moves a note to the trash.
+  Future<void> deleteNote({required String noteId}) {
+    return _notes.doc(noteId).update({'is_deleted': true});
   }
 
-  Future<void> restoreDeletedNote({
-    required String noteId,
-  }) async {
-    String key = 'is_deleted';
-    return collectionUserNote
-        .doc(noteId)
-        .update({key: false})
-        .then((v) => Log.i('Restore from trash,'))
-        .catchError((error) => Log.i("Failed to restore: $error"));
+  Future<void> restoreDeletedNote({required String noteId}) {
+    return _notes.doc(noteId).update({'is_deleted': false});
   }
 
-  Future<void> archiveNote({
-    required String noteId,
-    required bool archived,
-  }) async {
-    String key = 'is_archived';
-    return collectionUserNote
-        .doc(noteId)
-        .update({key: archived})
-        .then((v) => Log.i('Restore from trash : $archived,'))
-        .catchError((error) => Log.i("Failed to archive: $error"));
+  Future<void> archiveNote({required String noteId, required bool archived}) {
+    return _notes.doc(noteId).update({'is_archived': archived});
   }
-
-  /// Update [NoteData] text with map by {key : value}
-
-  Future<void> updateNoteText(
-      {required String userId,
-      required String id,
-      required String value}) async {
-    String key = 'text';
-
-    return collectionUserNote
-        .doc(id)
-        .update({key: value})
-        .then((v) => Log.i('Updated Text'))
-        .catchError((error) => Log.i("Failed to update: $error"));
-  }
-
-  /// Update [NoteData] title with map by {key : value}
-
-  Future<void> updateNoteTitle(
-      {required String userId,
-      required String id,
-      required String value}) async {
-    String key = 'title';
-
-    return collectionUserNote.doc(id).update({key: value});
-  }
-
-  /// Update data with map by {key : value}
-
-  Future<void> updateUserInformation(
-      {required String key, required String value}) async {
-    return users.doc(user.id).update({key: value});
-  }
-
-  /// Update the all user information that has changed
-
-  Future<void> updateUser({required User user}) async {
-    //var docId = "";
-    return users.doc(user.id).update(user.asMap());
-  }
-
-  /// Update image user that used as profile image
-
-  Future<void> updateImageProfile(String docId, Uint8List path) async {
-    return users.doc(docId).update({'photo_profile': Blob(path)});
-  }
-
-  Future<void> updateLastModificationTime({
-    required String docId,
-    bool show = false,
-  }) async {
-    return users.doc(docId).update({'last_time': DateTime.now()});
-  }
-
-  Future<void> updateNoteModificationTime({
-    required String noteId,
-  }) async {
-    return collectionUserNote.doc(noteId).update({'last_time': DateTime.now()});
-  }
-
-  Future<void> updateLastLogin() async {
-    return users.doc(user.id).update({'last_login': DateTime.now()});
-  }
-
-  Future<void> addData({required Map<String, dynamic> dataAsMap, collection}) {
-    return collection
-        .add(dataAsMap)
-        .then((value) => debugPrint("Data Added "))
-        .catchError((error) => debugPrint("Failed to add data: $error"));
-  }
-
-  Future<void> updateUserLocation(String userId, GeoPoint location) {
-    return users
-        .doc(userId)
-        .update({'location': const GeoPoint(53.483959, -2.244644)})
-        .then((value) => debugPrint("User Location Updated"))
-        .catchError(
-            (error) => debugPrint("Failed to update location user: $error"));
-  }
-
-  ///this method will add [User] from [firebase_auth] in Cloud as [cloud_firestore]
-  ///- if the [User] is already exist in cloud
-  ///his information will be change by new [User] information
-  ///- else will create an new [User]
-  ///
-  Future<void> addUserInCloud({required User user}) async {
-    return users
-        .doc(user.email)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (!documentSnapshot.exists) {
-        //print('Document exists on the database');
-        return users
-            .doc(user.id)
-            .set(user.copyWith(isDataCloud: true).asMap())
-            .then((value) => Log.i("User Added : $user"))
-            .catchError(
-                (error) => Log.i("Failed to add user in cloud: $error"));
-      }
-    });
-
-    /*return users.doc(user.id).set(user.asMap())
-        .then((value) => print("User Added : " + user.toString()))
-        .catchError((error) => print("Failed to add user in cloud: $error"));*/
-  }
-
-  Future<User> getUserInCloud({String? userId}) async {
-    User user;
-    var doc = (await users.doc(userId).get());
-    if (!doc.exists) return User.empty;
-    Map<String, dynamic> data = doc.data()!;
-    user = User(
-      id: data['id'],
-      name: data['name'],
-      email: data['email'],
-      photoCloud: data['photo_profile'],
-      photoMail: data['photo_mail'],
-      creationDate: data['creation_time'].toDate(),
-      lastDate: data['last_login'].toDate(),
-      lastConnection: data['last_connection'].toDate(),
-      phoneNumber: data['phone_number'],
-      isCheckMail: data['is_check_mail'],
-      verifiedAccount: data['verified_account'],
-      location: data['location'],
-      isDataCloud: data['is_data_cloud'] ?? false,
-      isBlocked: data['isBlocked'],
-      //photo: data[''],
-    );
-
-    return user;
-  }
-
-  ///  this method will add [User] in Cloud firebase
-  ///
-  ///
-  Future<void> addUserData({required UserData userData}) {
-    return users
-        .add(userData.asMap())
-        .then((value) => debugPrint("User Added : $userData"))
-        .catchError((error) => debugPrint("Failed to add user: $error"));
-  }
-
-  Future<DocumentSnapshot> getUser(String documentId) {
-    return users.doc(documentId).get();
-    /**
-     * is used in a [FutureBuilder<DocumentSnapshot>] Widget with
-
-     FutureBuilder<DocumentSnapshot>(
-        /// put [getUser] here
-      future: users.doc(documentId).get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
-        if (snapshot.hasError) {
-          return Text("Something went wrong");
-        }
-
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data = snapshot.data.data();
-          return Text("Full Name: ${data['full_name']} ${data['last_name']}");
-        }
-
-        return Text("loading");
-      },
-    );*/
-  }
-
-  /// Call as stream of a [StreamBuilder] Widget
-  Stream get collectionNoteStream => colG.snapshots();
 
   /// T A S K S   M E T H O D S
 
   Future<List<CheckList>> getTasksInCloud() async {
-    var docSnap = await collectionUserTask.get();
-
-    final maps = docSnap.docs.map((e) => e.data()).toList();
-    if (maps.isNotEmpty) {
-      return maps.map((e) {
-        return CheckList.fromMap(e);
-      }).toList();
-    }
-    return [];
+    final snapshot = await _tasks.get();
+    return snapshot.docs.map((doc) => CheckList.fromMap(doc.data())).toList();
   }
 
   Future<void> addTaskInCloud({required CheckList task}) {
-    final map = task.asMap();
-    return collectionUserTask.doc(task.id).set(map).then((value) {
-      Log.i("Task Added : $task");
-    }).catchError((error) {
-      Log.i("Failed to add task : $error");
-    });
+    return _tasks.doc(task.id).set(task.asMap());
   }
 
   Future<void> updateTaskInCloud({required CheckList task}) {
-    final map = task.asMap();
-    return collectionUserTask
-        .doc(task.id)
-        .update(map)
-        .then((value) => Log.i("Task Updated : ${task.title}"))
-        .catchError((error) => Log.i("Failed to update task: $error"));
+    return _tasks.doc(task.id).update(task.asMap());
   }
 
   Future<void> deleteTask({required String taskId}) {
-    return collectionUserTask
-        .doc(taskId)
-        .delete()
-        .then((value) => Log.i("Task Deleted : $taskId"))
-        .catchError((error) => Log.i("Failed to delete task: $error"));
+    return _tasks.doc(taskId).delete();
   }
-
-  // --- Encryption Helpers ---
-  // (Removed custom local E2EE. Relying on Firestore default encryption)
 }
