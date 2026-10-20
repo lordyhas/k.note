@@ -44,6 +44,17 @@ class NoteModel implements DocumentModel {
         savingModeValue = savingMode.index;
 
   static NoteModel fromMap(Map<String, dynamic> map) {
+    final rawSaving = map['saving_mode'];
+    final savingIndex = rawSaving is int
+        ? rawSaving.clamp(0, SavingMode.values.length - 1)
+        : 0;
+    final rawColor = map['color'];
+    final colorArgb = rawColor is int
+        ? rawColor
+        : rawColor is num
+            ? rawColor.toInt()
+            : Colors.cyan.toARGB32();
+
     return NoteModel(
       id: map['id'],
       title: map['title'],
@@ -52,16 +63,16 @@ class NoteModel implements DocumentModel {
           (map['creation_time'] != null) ? map['creation_time'].toDate() : null,
       modificationTime:
           (map['last_time'] != null) ? map['last_time'].toDate() : null,
-      isDeleted: map['is_deleted'],
+      isDeleted: map['is_deleted'] as bool? ?? false,
       permanentDeleteDate: (map['permanent_delete_date'] != null)
           ? map['permanent_delete_date'].toDate()
           : null,
-      color: Color(map['color']),
+      color: Color(colorArgb),
       reminderDate: map['reminder_date']?.toDate(),
       email: map['email'],
-      isArchived: map['is_archived'],
-      isLocked: map['is_locked'],
-      savingMode: SavingMode.values[map['saving_mode'] ?? 0],
+      isArchived: map['is_archived'] as bool? ?? false,
+      isLocked: map['is_locked'] as bool? ?? false,
+      savingMode: SavingMode.values[savingIndex],
     );
   }
 

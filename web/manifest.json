@@ -1,11 +1,11 @@
 {
-    "name": "k_note",
-    "short_name": "k_note",
+    "name": "knote",
+    "short_name": "knote",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new K.NOTE project.",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

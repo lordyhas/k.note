@@ -4,7 +4,7 @@ description: A new K.NOTE project.
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.5.3+5
+version: 0.5.5+5
 environment:
   sdk: '>=3.1.4 <4.0.0'
 
@@ -106,25 +106,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/avatar/avatar_image1.jpg
-    - assets/bg_image/bg1.png
-    - assets/bg_image/bg2.png
-    - assets/bg_image/bg3.png
-    - assets/bg_image/bg4.png
-    - assets/bg_image/bg_image1.jpg
-    - assets/bg_image/bg_image2.jpg
-    - assets/bg_image/bg_image3.jpg
-    - assets/images/feedbackImage.png
-    - assets/images/helpImage.png
-    - assets/images/inviteImage.png
-    - assets/images/logo_1.png
-    - assets/images/logo_2.png
-    - assets/images/profile1.png
-    - assets/images/supportIcon.png
-    - assets/images/userImage.png
-    - assets/images/userImage1.JPG
-    #   - images/a_dot_burr.jpeg
-    #   - images/a_dot_ham.jpeg
+    - assets/avatar/
+    - assets/bg_image/
+    - assets/images/
 
 
   fonts:
