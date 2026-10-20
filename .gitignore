@@ -58,5 +58,6 @@ firebase_app_id_file.json
 android/app/google-services.json
 android/.kotlin/
 .claude/settings.local.json
+.env
 
 
