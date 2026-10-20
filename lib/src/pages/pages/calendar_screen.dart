@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class CalendarScreen {
 
 
-  static Future<void> calendar(context){
+  static Future<void> calendar(BuildContext context){
     return showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),

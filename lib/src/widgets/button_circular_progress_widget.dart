@@ -66,7 +66,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
           alignment: Alignment.center,
           child: PhysicalModel(
             elevation: widget.elevation ?? 8,
-            shadowColor: Theme.of(context).primaryColor.withOpacity(0.8),
+            shadowColor: Theme.of(context).primaryColor.withValues(alpha: 0.8),
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(widget.radius ??25),
             child: SizedBox(

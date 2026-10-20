@@ -40,7 +40,7 @@ class NoteModel implements DocumentModel {
     this.data,
     this.isExtraText = false,
     SavingMode savingMode = SavingMode.cloud,
-  })  : colorValue = color.value,
+  })  : colorValue = color.toARGB32(),
         savingModeValue = savingMode.index;
 
   static NoteModel fromMap(Map<String, dynamic> map) {
@@ -153,7 +153,7 @@ class CheckList extends DocumentModel {
     this.reminderTime,
     this.repeat,
     this.note,
-  }) : colorValue = color.value;
+  }) : colorValue = color.toARGB32();
 
   List<Map<String, dynamic>> get listMap => list.map((e) => e.asMap()).toList();
 
@@ -181,7 +181,7 @@ class CheckList extends DocumentModel {
         list: (map['list'] as List<dynamic>)
             .map((e) => TodoItem.fromMap(e))
             .toList(),
-        color: Color(map['color'] ?? Colors.white.value),
+        color: Color(map['color'] ?? Colors.white.toARGB32()),
         creationTime: (map['creation_time'] != null)
             ? map['creation_time'].toDate()
             : null,

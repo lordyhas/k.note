@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 //import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuthException;
@@ -10,6 +11,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 
 import 'user.dart';
+
+/// Message shown when an auth request fails because the device is offline.
+const kNetworkErrorMessage =
+    'No internet connection. Check your network and try again.';
 
 /// Thrown if during the sign up process if a failure occurs.
 class SignUpFailure implements Exception {}
@@ -45,6 +50,8 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
         return const SignUpWithEmailAndPasswordFailure(
           'Please enter a stronger password.',
         );
+      case 'network-request-failed':
+        return const SignUpWithEmailAndPasswordFailure(kNetworkErrorMessage);
       default:
         return const SignUpWithEmailAndPasswordFailure();
     }
@@ -84,6 +91,16 @@ class LogInWithEmailAndPasswordFailure implements Exception {
         return const LogInWithEmailAndPasswordFailure(
           'Incorrect password, please try again.',
         );
+      case 'invalid-credential':
+        return const LogInWithEmailAndPasswordFailure(
+          'Incorrect email or password, please try again.',
+        );
+      case 'too-many-requests':
+        return const LogInWithEmailAndPasswordFailure(
+          'Too many attempts. Please wait a moment and try again.',
+        );
+      case 'network-request-failed':
+        return const LogInWithEmailAndPasswordFailure(kNetworkErrorMessage);
       default:
         return const LogInWithEmailAndPasswordFailure();
     }
@@ -105,7 +122,34 @@ class LogInWithGoogleFailure implements Exception {
   /// {@macro log_in_with_google_failure}
   const LogInWithGoogleFailure([
     this.message = 'An unknown exception occurred.',
-  ]);
+  ]) : isCanceled = false;
+
+  /// The user closed the Google account picker without choosing an account.
+  const LogInWithGoogleFailure.canceled()
+      : message = 'Google sign-in was canceled.',
+        isCanceled = true;
+
+  /// Create an authentication message from a [PlatformException] thrown by
+  /// the native Google Sign-In SDK.
+  factory LogInWithGoogleFailure.fromPlatformException(PlatformException e) {
+    final details = '${e.message} ${e.details}';
+    if (e.code == GoogleSignIn.kSignInCanceledError) {
+      return const LogInWithGoogleFailure.canceled();
+    }
+    // On Android, Play Services reports being offline as ApiException 7 and a
+    // missing or wrong SHA fingerprint as ApiException 10 (DEVELOPER_ERROR).
+    if (e.code == GoogleSignIn.kNetworkError ||
+        details.contains('ApiException: 7')) {
+      return const LogInWithGoogleFailure(kNetworkErrorMessage);
+    }
+    if (details.contains('ApiException: 10')) {
+      return const LogInWithGoogleFailure(
+        'Google Sign-In is not configured for this app build '
+        '(check the SHA fingerprints in Firebase).',
+      );
+    }
+    return const LogInWithGoogleFailure();
+  }
 
   /// Create an authentication message
   /// from a firebase authentication exception code.
@@ -143,6 +187,11 @@ class LogInWithGoogleFailure implements Exception {
         return const LogInWithGoogleFailure(
           'The credential verification ID received is invalid.',
         );
+      case 'network-request-failed':
+        return const LogInWithGoogleFailure(kNetworkErrorMessage);
+      case 'popup-closed-by-user':
+      case 'cancelled-popup-request':
+        return const LogInWithGoogleFailure.canceled();
       default:
         return const LogInWithGoogleFailure();
     }
@@ -150,6 +199,9 @@ class LogInWithGoogleFailure implements Exception {
 
   /// The associated error message.
   final String message;
+
+  /// Whether the user canceled the flow; this is not an error to report.
+  final bool isCanceled;
 }
 
 /// Thrown during the logout process if a failure occurs.
@@ -271,11 +323,7 @@ class AuthRepository {
 
     }
     on firebase_auth.FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        debugPrint('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        debugPrint('Wrong password provided for that user.');
-      }
+      throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
     }catch (_) {
       debugPrint("Exception : Sign Up With Mail failed => $Exception ");
       throw const SignUpWithEmailAndPasswordFailure();
@@ -327,7 +375,8 @@ class AuthRepository {
         credential = userCredential.credential!;
       } else {
         final googleUser = await _googleSignIn.signIn();
-        final googleAuth = await googleUser!.authentication;
+        if (googleUser == null) throw const LogInWithGoogleFailure.canceled();
+        final googleAuth = await googleUser.authentication;
         credential = firebase_auth.GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
@@ -335,9 +384,15 @@ class AuthRepository {
       }
 
       await _firebaseAuth.signInWithCredential(credential);
+    } on LogInWithGoogleFailure {
+      rethrow;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
-    } catch (_) {
+    } on PlatformException catch (e) {
+      debugPrint('Google sign-in failed: $e');
+      throw LogInWithGoogleFailure.fromPlatformException(e);
+    } catch (e) {
+      debugPrint('Google sign-in failed: $e');
       throw const LogInWithGoogleFailure();
     }
   }

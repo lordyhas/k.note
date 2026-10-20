@@ -1,13 +1,13 @@
-part of data.model;
+part of '../database_model.dart';
 
 class UserData extends DataToMap {
-  final id;
-  final name;
-  final userCode;
-  final phoneNumber;
-  final email;
-  final location;
-  final lastConnection;
+  final dynamic id;
+  final dynamic name;
+  final dynamic userCode;
+  final dynamic phoneNumber;
+  final dynamic email;
+  final dynamic location;
+  final dynamic lastConnection;
 
   UserData({
     this.id,

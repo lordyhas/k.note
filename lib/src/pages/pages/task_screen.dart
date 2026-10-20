@@ -122,7 +122,7 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget _buildTaskItem(CheckList task) {
     Color taskColor = Color(task.colorValue);
     bool isDark = taskColor.computeLuminance() < 0.5;
-    if (taskColor.value == Colors.white.value) {
+    if (taskColor.toARGB32() == Colors.white.toARGB32()) {
       taskColor = const Color(0xFF1F1F1F);
       isDark = true;
     }

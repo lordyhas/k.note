@@ -56,7 +56,7 @@ class _ArchivedScreenState extends State<ArchivedScreen> {
                       height: 120,
                       child: Card(
                         margin: const EdgeInsets.symmetric(vertical: 4.0),
-                        color: Colors.grey.shade700.withOpacity(0.7),
+                        color: Colors.grey.shade700.withValues(alpha: 0.7),
                         child: ListTile(
                             //leading: const Icon(Icons.delete_sweep_outlined, size: 42,),
                             title: Text(

@@ -9,9 +9,9 @@ class BackgroundUI extends StatelessWidget {
       : assert(index < 3);
 
   final List<String> path = [
-    Res.bg_image1,
-    Res.bg_image2,
-    Res.bg_image3,
+    Res.bgImage1,
+    Res.bgImage2,
+    Res.bgImage3,
   ];
 
   @override

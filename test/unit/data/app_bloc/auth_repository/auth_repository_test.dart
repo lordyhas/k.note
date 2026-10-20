@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:knote/data/authentication_repository.dart';
@@ -8,8 +9,7 @@ import 'package:mocktail/mocktail.dart';
 
 class MockFirebaseAuth extends Mock implements firebase_auth.FirebaseAuth {}
 
-class MockUserCredential extends Mock
-    implements firebase_auth.UserCredential {}
+class MockUserCredential extends Mock implements firebase_auth.UserCredential {}
 
 class MockGoogleSignIn extends Mock implements GoogleSignIn {}
 
@@ -30,14 +30,14 @@ void main() {
 
   tearDown(() => authStateController.close());
 
-  AuthRepository _buildRepo() => AuthRepository(
+  AuthRepository buildRepo() => AuthRepository(
         firebaseAuth: mockFirebaseAuth,
         googleSignIn: mockGoogleSignIn,
       );
 
   group('AuthRepository - user stream', () {
     test('emits User.empty when auth state emits null', () async {
-      final repo = _buildRepo();
+      final repo = buildRepo();
       final userFuture = repo.user.first;
       authStateController.add(null);
 
@@ -45,7 +45,7 @@ void main() {
     });
 
     test('caches user so currentUser reflects latest emitted user', () async {
-      final repo = _buildRepo();
+      final repo = buildRepo();
       final userFuture = repo.user.first;
       authStateController.add(null);
 
@@ -57,7 +57,7 @@ void main() {
 
   group('AuthRepository - currentUser', () {
     test('returns User.empty when nothing is cached', () {
-      expect(_buildRepo().currentUser, User.empty);
+      expect(buildRepo().currentUser, User.empty);
     });
   });
 
@@ -69,7 +69,7 @@ void main() {
           )).thenAnswer((_) async => MockUserCredential());
 
       await expectLater(
-        _buildRepo().logInWithEmailAndPassword(
+        buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'password123',
         ),
@@ -87,7 +87,7 @@ void main() {
       );
 
       await expectLater(
-        _buildRepo().logInWithEmailAndPassword(
+        buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'wrong',
         ),
@@ -104,7 +104,7 @@ void main() {
       );
 
       try {
-        await _buildRepo().logInWithEmailAndPassword(
+        await buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'wrong',
         );
@@ -122,7 +122,7 @@ void main() {
           )).thenThrow(Exception('network error'));
 
       await expectLater(
-        _buildRepo().logInWithEmailAndPassword(
+        buildRepo().logInWithEmailAndPassword(
           email: 'test@example.com',
           password: 'password',
         ),
@@ -139,11 +139,54 @@ void main() {
           )).thenAnswer((_) async => MockUserCredential());
 
       await expectLater(
-        _buildRepo().signUp(
+        buildRepo().signUp(
           email: 'new@example.com',
           password: 'password123',
         ),
         completes,
+      );
+    });
+
+    test('throws SignUpWithEmailAndPasswordFailure on FirebaseAuthException',
+        () async {
+      when(() => mockFirebaseAuth.createUserWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          )).thenThrow(
+        firebase_auth.FirebaseAuthException(code: 'network-request-failed'),
+      );
+
+      await expectLater(
+        buildRepo().signUp(email: 'new@example.com', password: 'password123'),
+        throwsA(
+          isA<SignUpWithEmailAndPasswordFailure>()
+              .having((e) => e.message, 'message', kNetworkErrorMessage),
+        ),
+      );
+    });
+  });
+
+  group('AuthRepository - logInWithGoogle', () {
+    test('throws a canceled failure when the account picker is dismissed',
+        () async {
+      when(() => mockGoogleSignIn.signIn()).thenAnswer((_) async => null);
+
+      await expectLater(
+        (buildRepo()..isWeb = false).logInWithGoogle(),
+        throwsA(isA<LogInWithGoogleFailure>()
+            .having((e) => e.isCanceled, 'isCanceled', true)),
+      );
+    });
+
+    test('reports a network error when Google Sign-In is offline', () async {
+      when(() => mockGoogleSignIn.signIn()).thenThrow(
+        PlatformException(code: GoogleSignIn.kNetworkError),
+      );
+
+      await expectLater(
+        (buildRepo()..isWeb = false).logInWithGoogle(),
+        throwsA(isA<LogInWithGoogleFailure>()
+            .having((e) => e.message, 'message', kNetworkErrorMessage)),
       );
     });
   });
@@ -152,7 +195,7 @@ void main() {
     test('calls signOut on both firebase and google', () async {
       when(() => mockFirebaseAuth.signOut()).thenAnswer((_) async {});
 
-      await _buildRepo().logOut();
+      await buildRepo().logOut();
 
       verify(() => mockFirebaseAuth.signOut()).called(1);
       verify(() => mockGoogleSignIn.signOut()).called(1);
@@ -163,7 +206,7 @@ void main() {
           .thenThrow(Exception('sign out failed'));
 
       await expectLater(
-        _buildRepo().logOut(),
+        buildRepo().logOut(),
         throwsA(isA<LogOutFailure>()),
       );
     });
@@ -195,6 +238,21 @@ void main() {
       expect(
         LogInWithEmailAndPasswordFailure.fromCode('wrong-password').message,
         'Incorrect password, please try again.',
+      );
+    });
+
+    test('network-request-failed', () {
+      expect(
+        LogInWithEmailAndPasswordFailure.fromCode('network-request-failed')
+            .message,
+        kNetworkErrorMessage,
+      );
+    });
+
+    test('invalid-credential', () {
+      expect(
+        LogInWithEmailAndPasswordFailure.fromCode('invalid-credential').message,
+        'Incorrect email or password, please try again.',
       );
     });
 
@@ -288,6 +346,54 @@ void main() {
         LogInWithGoogleFailure.fromCode('unknown').message,
         'An unknown exception occurred.',
       );
+    });
+
+    test('network-request-failed', () {
+      expect(
+        LogInWithGoogleFailure.fromCode('network-request-failed').message,
+        kNetworkErrorMessage,
+      );
+    });
+  });
+
+  group('LogInWithGoogleFailure.fromPlatformException', () {
+    test('sign_in_canceled is a cancellation', () {
+      final failure = LogInWithGoogleFailure.fromPlatformException(
+        PlatformException(code: GoogleSignIn.kSignInCanceledError),
+      );
+      expect(failure.isCanceled, isTrue);
+    });
+
+    test('ApiException 7 is a network error', () {
+      expect(
+        LogInWithGoogleFailure.fromPlatformException(
+          PlatformException(
+            code: 'sign_in_failed',
+            message: 'com.google.android.gms.common.api.ApiException: 7: ',
+          ),
+        ).message,
+        kNetworkErrorMessage,
+      );
+    });
+
+    test('ApiException 10 points at the SHA configuration', () {
+      expect(
+        LogInWithGoogleFailure.fromPlatformException(
+          PlatformException(
+            code: 'sign_in_failed',
+            message: 'com.google.android.gms.common.api.ApiException: 10: ',
+          ),
+        ).message,
+        contains('SHA'),
+      );
+    });
+
+    test('other errors fall back to the default message', () {
+      final failure = LogInWithGoogleFailure.fromPlatformException(
+        PlatformException(code: 'sign_in_failed'),
+      );
+      expect(failure.message, 'An unknown exception occurred.');
+      expect(failure.isCanceled, isFalse);
     });
   });
 }

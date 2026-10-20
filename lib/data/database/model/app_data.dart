@@ -1,9 +1,9 @@
-part of data.model;
+part of '../database_model.dart';
 
 
 class AppData extends DataToMap{
   DateTime now = DateTime.now();
-  final id;
+  final dynamic id;
   final int? isFirstUse;
   final String? phoneName;
   final String? userCode;
@@ -13,10 +13,10 @@ class AppData extends DataToMap{
   final String? email;
   final int theme;
   final int language;
-  final userAuthState;
-  final lastAuthCheck;
-  final location;
-  final createAt;
+  final dynamic userAuthState;
+  final dynamic lastAuthCheck;
+  final dynamic location;
+  final dynamic createAt;
 
   AppData({
     this.createAt,
@@ -62,11 +62,11 @@ class AppData extends DataToMap{
 
   @override
   void toDisplay() {
-    print(toString());
+    debugPrint(toString());
   }
 
   AppData copyWith({
-    id,
+    dynamic id,
     int? isFirstUse,
     String? phoneName,
     String? userCode,
@@ -77,8 +77,8 @@ class AppData extends DataToMap{
     int? theme,
     int? language,
     int? userAuthState,
-    lastAuthCheck,
-    location,}) {
+    dynamic lastAuthCheck,
+    dynamic location,}) {
     return  AppData(
       id: id ?? this.id,
       isFirstUse: isFirstUse ?? this.isFirstUse,

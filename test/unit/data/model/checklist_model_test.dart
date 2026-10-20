@@ -48,7 +48,7 @@ void main() {
           {'text': 'Apples', 'is_done': false},
           {'text': 'Bread', 'is_done': true},
         ],
-        'color': Colors.blue.value,
+        'color': Colors.blue.toARGB32(),
         'creation_time': timestampNow,
         'last_time': timestampNow,
         'is_important': true,
@@ -69,7 +69,7 @@ void main() {
       expect(checklist.list[0].isDone, false);
       expect(checklist.list[1].text, 'Bread');
       expect(checklist.list[1].isDone, true);
-      expect(checklist.colorValue, Colors.blue.value);
+      expect(checklist.colorValue, Colors.blue.toARGB32());
       expect(checklist.isImportant, true);
       expect(checklist.isMyDay, false);
       expect(checklist.repeat, 'weekly');
@@ -99,7 +99,7 @@ void main() {
       expect(checklist.title, 'Minimal');
       expect(checklist.isAllChecked, true);
       expect(checklist.list, isEmpty);
-      expect(checklist.colorValue, Colors.white.value);
+      expect(checklist.colorValue, Colors.white.toARGB32());
       expect(checklist.creationTime, isNull);
       expect(checklist.modificationTime, isNull);
       expect(checklist.isImportant, false);
@@ -130,7 +130,7 @@ void main() {
       expect(map['is_all_checked'], false);
       expect(map['list'], isA<List>());
       expect((map['list'] as List).length, 1);
-      expect(map['color'], Colors.green.value);
+      expect(map['color'], Colors.green.toARGB32());
       expect(map['is_important'], true);
       expect(map['is_my_day'], true);
       expect(map['note'], 'Important tasks');

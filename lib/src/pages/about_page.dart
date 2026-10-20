@@ -27,8 +27,8 @@ class _AboutState extends State<AboutPage> {
   var timeUpdate = DateTime.now();
   String appVersion = "0.2.0";
 
-  Color get background2 => Theme.of(context).cardColor.withOpacity(.7);
-  //Colors.grey[200]!.withOpacity(0.8);
+  Color get background2 => Theme.of(context).cardColor.withValues(alpha: .7);
+  //Colors.grey[200]!.withValues(alpha: 0.8);
 
   @override
   initState() {

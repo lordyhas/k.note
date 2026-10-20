@@ -124,6 +124,68 @@ void main() {
           ),
         ],
       );
+
+      blocTest<LoginCubit, LoginState>(
+        'exposes the repository error message on failure',
+        setUp: () {
+          when(() => authRepository.logInWithEmailAndPassword(
+                email: any(named: 'email'),
+                password: any(named: 'password'),
+              )).thenThrow(
+            const LogInWithEmailAndPasswordFailure(kNetworkErrorMessage),
+          );
+        },
+        build: () => LoginCubit(authRepository),
+        seed: () => const LoginState(
+          email: Email.dirty('test@example.com'),
+          password: Password.dirty('password123'),
+          isValid: true,
+        ),
+        act: (cubit) => cubit.logInWithCredentials(),
+        skip: 1,
+        expect: () => const [
+          LoginState(
+            email: Email.dirty('test@example.com'),
+            password: Password.dirty('password123'),
+            isValid: true,
+            status: FormzSubmissionStatus.failure,
+            errorMessage: kNetworkErrorMessage,
+          ),
+        ],
+      );
+    });
+
+    group('logInWithGoogle', () {
+      blocTest<LoginCubit, LoginState>(
+        'returns to initial without an error when the user cancels',
+        setUp: () {
+          when(() => authRepository.logInWithGoogle())
+              .thenThrow(const LogInWithGoogleFailure.canceled());
+        },
+        build: () => LoginCubit(authRepository),
+        act: (cubit) => cubit.logInWithGoogle(),
+        expect: () => const [
+          LoginState(status: FormzSubmissionStatus.inProgress),
+          LoginState(status: FormzSubmissionStatus.initial),
+        ],
+      );
+
+      blocTest<LoginCubit, LoginState>(
+        'emits failure with the network message when offline',
+        setUp: () {
+          when(() => authRepository.logInWithGoogle())
+              .thenThrow(const LogInWithGoogleFailure(kNetworkErrorMessage));
+        },
+        build: () => LoginCubit(authRepository),
+        act: (cubit) => cubit.logInWithGoogle(),
+        expect: () => const [
+          LoginState(status: FormzSubmissionStatus.inProgress),
+          LoginState(
+            status: FormzSubmissionStatus.failure,
+            errorMessage: kNetworkErrorMessage,
+          ),
+        ],
+      );
     });
   });
 }
