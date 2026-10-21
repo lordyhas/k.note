@@ -140,6 +140,10 @@ For a historical tree snapshot in-repo, see `PROJECT_STRUCTURE.md`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for branch/PR workflow, quality gates, and commit conventions.
 
+## License
+
+Released under the [MIT License](LICENSE).
+
 ## Command history
 ### Debug SHA output
 ```powershell 

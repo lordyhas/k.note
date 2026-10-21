@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `firestore.rules`: each user can only read and write `K_NOTE/general_data/USERS/{uid}`, writes are schema-validated, and everything else is denied.
 - Emulator-based security rules tests (`test/firestore_rules/`) and a `firestore-rules` CI job.
+- MIT `LICENSE`.
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
