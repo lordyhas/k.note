@@ -30,9 +30,9 @@ Thanks for contributing to K.Note.
 
 Use Conventional Commits:
 
-- `feat: ...`
-- `fix: ...`
-- `docs: ...`
-- `refactor: ...`
-- `test: ...`
-- `chore: ...`
+- `feat/ ...`
+- `fix/ ...`
+- `docs/ ...`
+- `refactor/ ...`
+- `test/ ...`
+- `chore/ ...`
