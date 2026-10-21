@@ -26,7 +26,8 @@ Primary root collection in code:
       - `{userId}`
         - `notes`
         - `tasks`
-        - `keys/master_key`
+
+Access is restricted per user by `firestore.rules`; see [security.md](security.md).
 
 ## Auth configuration
 
@@ -42,8 +43,8 @@ Primary root collection in code:
 ## Required secrets / files checklist
 
 - [ ] Android: `android/app/google-services.json`
-- [x] iOS: `ios/Runner/GoogleService-Info.plist` present
-- [ ] Firebase project IAM/rules aligned with app access patterns
+- [ ] iOS: `ios/Runner/GoogleService-Info.plist` (not committed)
+- [ ] Firestore rules deployed from `firestore.rules` (`npx firebase-tools deploy --only firestore:rules`)
 
 ## Feature flags
 

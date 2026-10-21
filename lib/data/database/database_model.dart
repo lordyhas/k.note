@@ -1,11 +1,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 export 'model/note_model.dart';
-
-part 'model/user_data.dart';
 
 part 'model/location_data.dart';
 

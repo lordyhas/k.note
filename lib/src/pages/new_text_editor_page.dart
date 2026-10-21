@@ -124,12 +124,10 @@ class _TextEditorState extends State<TextEditor> {
       _firebaseManager.addNoteInCloud(note: _noteModel);
       isNoteInCloud = true;
     } else {
-      // Update logic
-      _firebaseManager.updateNoteTitle(
-          userId: user.id, id: _noteModel.id, value: _titleController.text);
-      _firebaseManager.updateNoteText(
-          userId: user.id, id: _noteModel.id, value: contentJson);
-      _firebaseManager.updateNoteModificationTime(noteId: _noteModel.id);
+      _firebaseManager.updateNoteContent(
+          noteId: _noteModel.id,
+          title: _titleController.text,
+          text: contentJson);
     }
   }
 

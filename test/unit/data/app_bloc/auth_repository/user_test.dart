@@ -9,9 +9,6 @@ const _fullUser = User(
   phoneNumber: '+33600000000',
   isAnonymous: false,
   isCheckMail: true,
-  verifiedAccount: true,
-  isDataCloud: true,
-  isBlocked: false,
 );
 
 void main() {
@@ -42,20 +39,26 @@ void main() {
 
   group('User - equality (Equatable)', () {
     test('two users with same id and email are equal', () {
-      const u1 = User(id: 'uid-1', email: 'a@a.com', name: 'A', photoMail: null);
-      const u2 = User(id: 'uid-1', email: 'a@a.com', name: 'A', photoMail: null);
+      const u1 =
+          User(id: 'uid-1', email: 'a@a.com', name: 'A', photoMail: null);
+      const u2 =
+          User(id: 'uid-1', email: 'a@a.com', name: 'A', photoMail: null);
       expect(u1, equals(u2));
     });
 
     test('users with different ids are not equal', () {
-      const u1 = User(id: 'uid-1', email: 'a@a.com', name: null, photoMail: null);
-      const u2 = User(id: 'uid-2', email: 'a@a.com', name: null, photoMail: null);
+      const u1 =
+          User(id: 'uid-1', email: 'a@a.com', name: null, photoMail: null);
+      const u2 =
+          User(id: 'uid-2', email: 'a@a.com', name: null, photoMail: null);
       expect(u1, isNot(equals(u2)));
     });
 
     test('users with different emails are not equal', () {
-      const u1 = User(id: 'uid-1', email: 'a@a.com', name: null, photoMail: null);
-      const u2 = User(id: 'uid-1', email: 'b@b.com', name: null, photoMail: null);
+      const u1 =
+          User(id: 'uid-1', email: 'a@a.com', name: null, photoMail: null);
+      const u2 =
+          User(id: 'uid-1', email: 'b@b.com', name: null, photoMail: null);
       expect(u1, isNot(equals(u2)));
     });
 
@@ -65,8 +68,8 @@ void main() {
         email: 'a@a.com',
         name: 'A',
         photoMail: 'url',
-        isBlocked: true,
-        verifiedAccount: true,
+        phoneNumber: '+33600000000',
+        isCheckMail: true,
       );
       expect(u.props, ['a@a.com', 'uid-1', 'A', 'url']);
     });
@@ -94,37 +97,43 @@ void main() {
       expect(copy.name, 'Bob');
     });
 
-    test('overrides isBlocked', () {
-      final copy = _fullUser.copyWith(isBlocked: true);
-      expect(copy.isBlocked, isTrue);
-    });
-
-    test('overrides isDataCloud', () {
-      final copy = _fullUser.copyWith(isDataCloud: false);
-      expect(copy.isDataCloud, isFalse);
-    });
-
-    test('overrides verifiedAccount', () {
-      final copy = _fullUser.copyWith(verifiedAccount: false);
-      expect(copy.verifiedAccount, isFalse);
+    test('overrides isCheckMail', () {
+      final copy = _fullUser.copyWith(isCheckMail: false);
+      expect(copy.isCheckMail, isFalse);
     });
 
     test('does not mutate original', () {
-      _fullUser.copyWith(name: 'X', isBlocked: true);
+      _fullUser.copyWith(name: 'X', isCheckMail: false);
       expect(_fullUser.name, 'Alice');
-      expect(_fullUser.isBlocked, isFalse);
+      expect(_fullUser.isCheckMail, isTrue);
     });
   });
 
   group('User.asMap', () {
-    test('contains all expected keys', () {
+    test('only contains the profile fields allowed by firestore.rules', () {
+      expect(
+          _fullUser.asMap().keys,
+          unorderedEquals([
+            'id',
+            'name',
+            'email',
+            'photo_mail',
+            'creation_time',
+            'last_login',
+          ]));
+    });
+
+    test('never exposes account status or private data', () {
       final map = _fullUser.asMap();
-      expect(map.keys, containsAll([
-        'id', 'name', 'email', 'photo_profile', 'photo_mail',
-        'phone_number', 'last_login', 'creation_time', 'last_connection',
-        'is_check_mail', 'verified_account', 'location', 'is_data_cloud',
+      for (final key in [
         'isBlocked',
-      ]));
+        'verified_account',
+        'is_data_cloud',
+        'phone_number',
+        'location'
+      ]) {
+        expect(map.containsKey(key), isFalse, reason: key);
+      }
     });
 
     test('maps id and email correctly', () {
@@ -135,18 +144,6 @@ void main() {
 
     test('maps name correctly', () {
       expect(_fullUser.asMap()['name'], 'Alice');
-    });
-
-    test('maps phone_number correctly', () {
-      expect(_fullUser.asMap()['phone_number'], '+33600000000');
-    });
-
-    test('maps boolean flags correctly', () {
-      final map = _fullUser.asMap();
-      expect(map['verified_account'], isTrue);
-      expect(map['is_data_cloud'], isTrue);
-      expect(map['isBlocked'], isFalse);
-      expect(map['is_check_mail'], isTrue);
     });
 
     test('User.empty asMap has empty id and email', () {

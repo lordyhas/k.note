@@ -65,7 +65,7 @@ flutter build web
 - Firestore collections used by the app are rooted under:
   - `K_NOTE/general_data/USERS/{userId}/notes`
   - `K_NOTE/general_data/USERS/{userId}/tasks`
-  - `K_NOTE/general_data/USERS/{userId}/keys/master_key`
+- Access control lives in `firestore.rules` (each user can only reach their own `{userId}`). Deploy it with `npx firebase-tools deploy --only firestore:rules`. See [docs/security.md](docs/security.md).
 
 ### Environment files
 
@@ -74,7 +74,8 @@ flutter build web
 ### Secrets and platform files
 
 - `android/app/google-services.json` is ignored by Git and must be provided locally.
-- `ios/Runner/GoogleService-Info.plist` is currently present; verify whether this is intentional for your security policy.
+- `ios/Runner/GoogleService-Info.plist` is not committed and must be provided locally.
+- Firebase API keys are public identifiers, not secrets: security comes from the Firestore rules (see [docs/security.md](docs/security.md)).
 
 ---
 
@@ -139,6 +140,10 @@ For a historical tree snapshot in-repo, see `PROJECT_STRUCTURE.md`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for branch/PR workflow, quality gates, and commit conventions.
 
+## License
+
+Released under the [MIT License](LICENSE).
+
 ## Command history
 ### Debug SHA output
 ```powershell 
@@ -150,7 +155,7 @@ keytool -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androidd
 ```
 ### Release SHA output
 ```powershell
-& "C:\Program Files\Java\jdk-17\bin\keytool.exe" -list -v -keystore "C:\Users\hkaji\upload-keystore.jks"
+& "C:\Program Files\Java\jdk-17\bin\keytool.exe" -list -v -keystore "C:\Users\username\upload-keystore.jks"
 ``` 
 
 ### Run app in release mode 

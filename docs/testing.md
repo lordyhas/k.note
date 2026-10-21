@@ -26,6 +26,13 @@ GitHub Actions workflow (`.github/workflows/flutter_ci.yml`) runs:
 2. `flutter analyze --no-fatal-warnings --no-fatal-infos`
 3. `flutter test`
 
+A second job, `firestore-rules`, runs the security rules tests in
+`test/firestore_rules/` against the Firestore emulator:
+
+```bash
+cd test/firestore_rules && npm ci && npm test   # needs Node.js 20+ and Java 11+
+```
+
 ## Testing conventions (recommended for this repo)
 
 - Keep unit tests close to BLoC/cubit and model behavior.

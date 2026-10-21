@@ -61,3 +61,14 @@ android/.kotlin/
 .env
 
 
+
+# Firebase CLI / emulator
+.firebase/
+node_modules/
+
+# Never commit credentials (service accounts, signing keys)
+*service-account*.json
+*-adminsdk-*.json
+*.jks
+*.keystore
+key.properties
