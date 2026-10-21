@@ -155,7 +155,7 @@ keytool -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androidd
 ```
 ### Release SHA output
 ```powershell
-& "C:\Program Files\Java\jdk-17\bin\keytool.exe" -list -v -keystore "C:\Users\hkaji\upload-keystore.jks"
+& "C:\Program Files\Java\jdk-17\bin\keytool.exe" -list -v -keystore "C:\Users\username\upload-keystore.jks"
 ``` 
 
 ### Run app in release mode 
