@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Microsoft To Do style quick add on the tasks screen: the + button opens an "Add a task" bar above the keyboard with due date, reminder and repeat options; tasks are added without leaving the page.
 - Professional documentation set under `docs/` (setup, architecture, configuration, testing, style guide).
 - Initial architecture ADR at `docs/decisions/0001-architecture-overview.md`.
 - Contributor workflow guide in `CONTRIBUTING.md`.
