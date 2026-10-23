@@ -7,6 +7,7 @@ import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:knote/src/pages/pages/task_pickers.dart';
+import 'package:knote/src/utils/save_in_background.dart';
 
 class TaskEditor extends StatefulWidget {
   static const String routeName = '/task_editor';
@@ -92,11 +93,12 @@ class _TaskEditorState extends State<TaskEditor> {
       note: _noteController.text,
     );
 
-    if (widget.task == null) {
-      _firebaseManager.addTaskInCloud(task: newTask);
-    } else {
-      _firebaseManager.updateTaskInCloud(task: newTask);
-    }
+    saveInBackground(
+      () => widget.task == null
+          ? _firebaseManager.addTaskInCloud(task: newTask)
+          : _firebaseManager.updateTaskInCloud(task: newTask),
+      failureMessage: "The task couldn't be saved",
+    );
   }
 
   @override
@@ -278,13 +280,13 @@ class _TaskEditorState extends State<TaskEditor> {
                 onPressed: () {
                   _isDeleted = true;
                   final id = _id;
+                  // Don't wait for the server: offline it never answers.
                   if (id != null && widget.task != null) {
-                    _firebaseManager.deleteTask(taskId: id).then((_) {
-                      if (context.mounted) context.pop();
-                    });
-                  } else {
-                    context.pop();
+                    saveInBackground(
+                        () => _firebaseManager.deleteTask(taskId: id),
+                        failureMessage: "The task couldn't be deleted");
                   }
+                  context.pop();
                 },
               ),
             ],

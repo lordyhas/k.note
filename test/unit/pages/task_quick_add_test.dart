@@ -5,11 +5,16 @@ import 'package:knote/data/app_bloc/auth_repository/user.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/src/pages/pages/task_quick_add.dart';
+import 'package:mocktail/mocktail.dart';
 
 const _user = User(id: 'user-1', email: 'a@b.c', name: null, photoMail: null);
 
+class _MockFirebaseManager extends Mock implements FirebaseManager {}
+
 void main() {
   late FirebaseManager manager;
+
+  setUpAll(() => registerFallbackValue(CheckList(title: '', list: const [])));
 
   setUp(() {
     manager = FirebaseManager.user(_user, FakeFirebaseFirestore());
@@ -20,6 +25,39 @@ void main() {
       home: Scaffold(body: TaskQuickAddSheet(firebaseManager: manager)),
     ));
   }
+
+  testWidgets('puts a rejected task back in the form for a retry',
+      (tester) async {
+    final failing = _MockFirebaseManager();
+    var attempts = 0;
+    when(() => failing.addTaskInCloud(task: any(named: 'task')))
+        .thenAnswer((_) async {
+      attempts++;
+      if (attempts == 1) throw Exception('permission-denied');
+    });
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(body: TaskQuickAddSheet(firebaseManager: failing)),
+    ));
+
+    await tester.tap(find.text('Repeat'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Weekly'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Buy milk');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Buy milk'), findsOneWidget, reason: 'title restored');
+    expect(find.text('Weekly'), findsOneWidget, reason: 'options restored');
+    expect(find.textContaining("Couldn't save this task"), findsOneWidget);
+
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.arrow_upward));
+    await tester.pumpAndSettle();
+
+    expect(attempts, 2);
+    expect(find.text('Buy milk'), findsNothing);
+    expect(find.textContaining("Couldn't save this task"), findsNothing);
+  });
 
   testWidgets('adds tasks without leaving the sheet', (tester) async {
     await pumpSheet(tester);

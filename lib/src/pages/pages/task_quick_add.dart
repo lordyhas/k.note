@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/src/pages/pages/task_pickers.dart';
+import 'package:knote/src/utils/save_in_background.dart';
 import 'package:uuid/uuid.dart';
 
 /// Opens the Microsoft To Do style "Add a task" sheet above the keyboard.
@@ -38,6 +39,10 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
   DateTime? _reminderTime;
   TaskRepeat? _repeat;
 
+  /// Shown in the sheet when a task could not be saved; a snack bar would be
+  /// hidden behind the sheet.
+  String? _error;
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -49,18 +54,37 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
     final title = _titleController.text.trim();
     if (title.isEmpty) return;
 
+    final dueDate = _dueDate;
+    final reminderTime = _reminderTime;
+    final repeat = _repeat;
     final now = DateTime.now();
-    widget.firebaseManager.addTaskInCloud(
-      task: CheckList(
-        id: const Uuid().v4(),
-        title: title,
-        list: const [],
-        creationTime: now,
-        modificationTime: now,
-        dueDate: _dueDate,
-        reminderTime: _reminderTime,
-        repeat: _repeat?.encode(),
-      ),
+    final task = CheckList(
+      id: const Uuid().v4(),
+      title: title,
+      list: const [],
+      creationTime: now,
+      modificationTime: now,
+      dueDate: dueDate,
+      reminderTime: reminderTime,
+      repeat: repeat?.encode(),
+    );
+
+    // The form is cleared right away (the write succeeds locally even
+    // offline); if the server rejects the task, it is put back for a retry.
+    saveInBackground(
+      () => widget.firebaseManager.addTaskInCloud(task: task),
+      failureMessage: "The task “$title” couldn't be saved",
+      onFailure: () {
+        if (!mounted || _titleController.text.isNotEmpty) return false;
+        setState(() {
+          _titleController.text = title;
+          _dueDate = dueDate;
+          _reminderTime = reminderTime;
+          _repeat = repeat;
+          _error = "Couldn't save this task. Tap ↑ to try again.";
+        });
+        return true;
+      },
     );
 
     setState(() {
@@ -68,6 +92,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
       _dueDate = null;
       _reminderTime = null;
       _repeat = null;
+      _error = null;
     });
     _focusNode.requestFocus();
   }
@@ -306,6 +331,15 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                   ),
                 ],
               ),
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(52, 0, 8, 4),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(_error!,
+                        style: const TextStyle(color: Colors.redAccent)),
+                  ),
+                ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(

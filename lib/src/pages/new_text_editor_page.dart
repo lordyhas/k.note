@@ -9,6 +9,7 @@ import '../../data/app_bloc/authentication/authentication_bloc.dart';
 import '../../data/database/database_model.dart';
 import '../../data/database/firebase_manager.dart';
 import 'dart:convert';
+import 'package:knote/src/utils/save_in_background.dart';
 
 class TextEditor extends StatefulWidget {
   static const routeName = "editor";
@@ -120,14 +121,21 @@ class _TextEditorState extends State<TextEditor> {
       _noteModel.modificationTime = DateTime.now();
     });
 
+    // No Retry: an old save could overwrite newer edits, and the next
+    // autosave writes the latest content anyway.
     if (!isNoteInCloud) {
-      _firebaseManager.addNoteInCloud(note: _noteModel);
+      final note = _noteModel;
+      saveInBackground(() => _firebaseManager.addNoteInCloud(note: note),
+          failureMessage: "The note couldn't be saved", canRetry: false);
       isNoteInCloud = true;
     } else {
-      _firebaseManager.updateNoteContent(
-          noteId: _noteModel.id,
-          title: _titleController.text,
-          text: contentJson);
+      final noteId = _noteModel.id;
+      final title = _titleController.text;
+      saveInBackground(
+          () => _firebaseManager.updateNoteContent(
+              noteId: noteId, title: title, text: contentJson),
+          failureMessage: "The note couldn't be saved",
+          canRetry: false);
     }
   }
 
@@ -193,8 +201,14 @@ class _TextEditorState extends State<TextEditor> {
                                                     color.toARGB32();
                                               });
                                               // Save color immediately
-                                              _firebaseManager.addNoteInCloud(
-                                                  note: _noteModel);
+                                              final note = _noteModel;
+                                              saveInBackground(
+                                                  () => _firebaseManager
+                                                      .addNoteInCloud(
+                                                          note: note),
+                                                  failureMessage:
+                                                      "The note color couldn't be saved",
+                                                  canRetry: false);
                                               if (!isNoteInCloud) {
                                                 isNoteInCloud = true;
                                               }

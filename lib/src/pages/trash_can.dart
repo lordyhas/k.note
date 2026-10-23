@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/app_database.dart';
+import 'package:knote/src/utils/save_in_background.dart';
 
 
 class NoteTrash extends StatefulWidget {
@@ -98,9 +99,12 @@ class _NoteTrashState extends State<NoteTrash> {
                             TextButton(
                               child: const Text('Restore'),
                               onPressed: () {
-                                fbm.restoreDeletedNote(
-                                    noteId: snapshot.data![i].id,
-                                );
+                                final noteId = snapshot.data![i].id;
+                                saveInBackground(
+                                    () => fbm.restoreDeletedNote(
+                                        noteId: noteId),
+                                    failureMessage:
+                                        "The note couldn't be restored");
                                 setState(() {});
                                 Navigator.of(context).pop();
                               },
@@ -108,9 +112,12 @@ class _NoteTrashState extends State<NoteTrash> {
                             TextButton(
                               child: const Text('Delete forever'),
                               onPressed: () {
-                                fbm.permanentlyDeleteNote(
-                                  noteId: snapshot.data![i].id,
-                                );
+                                final noteId = snapshot.data![i].id;
+                                saveInBackground(
+                                    () => fbm.permanentlyDeleteNote(
+                                        noteId: noteId),
+                                    failureMessage:
+                                        "The note couldn't be deleted");
                                 setState(() {});
                                 Navigator.of(context).pop();
                               },

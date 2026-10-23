@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- Failed Firestore writes (e.g. permission denied) are no longer lost silently: `saveInBackground` reports them in a snack bar with Retry, and the task quick add puts a rejected task back in its form. Writes still do not wait for the server, so the app keeps working offline.
+- "Move in archive" on the home screen archived nothing and moved the note to the bin; it now archives it.
+- Deleting a task from the task editor while offline no longer leaves the editor open forever waiting for the server.
 - Tasks screen updates live: a task added, edited or deleted shows up immediately instead of after leaving and reopening the page (`FirebaseManager.watchTasks`).
 - App bars stay transparent when content scrolls under them (Material 3 tinted them with the primary color).
 - Settings profile photo: show a placeholder when the account has no photo or it cannot be downloaded (offline), instead of loading the URL `"null"` and logging an image exception.
