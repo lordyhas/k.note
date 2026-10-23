@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- Tasks screen updates live: a task added, edited or deleted shows up immediately instead of after leaving and reopening the page (`FirebaseManager.watchTasks`).
 - App bars stay transparent when content scrolls under them (Material 3 tinted them with the primary color).
 - Settings profile photo: show a placeholder when the account has no photo or it cannot be downloaded (offline), instead of loading the URL `"null"` and logging an image exception.
 - Build with Flutter 3.47: upgrade `font_awesome_flutter` to 11 and render its icons with `FaIcon` (`IconData` is now `final`).

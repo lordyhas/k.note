@@ -119,6 +119,13 @@ class FirebaseManager {
 
   /// T A S K S   M E T H O D S
 
+  /// The user's tasks, emitted again whenever one is added, changed or
+  /// deleted (on this device or another one).
+  Stream<List<CheckList>> watchTasks() {
+    return _tasks.snapshots().map((snapshot) =>
+        snapshot.docs.map((doc) => CheckList.fromMap(doc.data())).toList());
+  }
+
   Future<List<CheckList>> getTasksInCloud() async {
     final snapshot = await _tasks.get();
     return snapshot.docs.map((doc) => CheckList.fromMap(doc.data())).toList();
