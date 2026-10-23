@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- Settings profile photo: show a placeholder when the account has no photo or it cannot be downloaded (offline), instead of loading the URL `"null"` and logging an image exception.
 - Build with Flutter 3.47: upgrade `font_awesome_flutter` to 11 and render its icons with `FaIcon` (`IconData` is now `final`).
 - App crash on start in debug: the About route under settings reused the name `about`, which go_router rejects; it now has its own name and shows `AboutPage` instead of the trash.
 - The user profile is read and written by uid; it used to be looked up by email (`addUserInCloud`, now `saveUserProfile`).

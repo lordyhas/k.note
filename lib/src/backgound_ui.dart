@@ -5,8 +5,8 @@ class BackgroundUI extends StatelessWidget {
   final Widget? child;
   final int index;
 
-  BackgroundUI({super.key, this.child, this.index = 2})
-      : assert(index < 3);
+  BackgroundUI({super.key, this.child, this.index = 1})
+      : assert(index > 1 && index <= 3);
 
   final List<String> path = [
     Res.bgImage1,
@@ -21,7 +21,7 @@ class BackgroundUI extends StatelessWidget {
       Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage(path[index]),
+              image: AssetImage(path[index-1]),
               fit: BoxFit.fill
           ),
         ),
