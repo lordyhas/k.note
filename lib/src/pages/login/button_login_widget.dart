@@ -18,7 +18,7 @@ class _EmailInput extends StatelessWidget {
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
             ),
-            prefixIcon: const Icon(FontAwesomeIcons.user,
+            prefixIcon: const FaIcon(FontAwesomeIcons.user,
               color: Colors.white,
             ),
             labelText: 'Enter your mail address',
@@ -56,9 +56,9 @@ class _PasswordInputState extends State<_PasswordInput> {
             enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
             ),
-            prefixIcon: const Icon(FontAwesomeIcons.lock, color: Colors.white),
+            prefixIcon: const FaIcon(FontAwesomeIcons.lock, color: Colors.white),
             suffixIcon: IconButton(
-              icon: Icon(showPassword
+              icon: FaIcon(showPassword
                   ? FontAwesomeIcons.eyeSlash
                   : FontAwesomeIcons.eye,
                 color: Colors.white,
@@ -105,11 +105,11 @@ class _LoginButton extends StatelessWidget {
                     : null,
                 child: const Row(
                   children: [
-                    Icon(FontAwesomeIcons.circleUser, color: Colors.white,),
+                    FaIcon(FontAwesomeIcons.circleUser, color: Colors.white,),
                     Spacer(),
                     Text('Login', style: TextStyle(color: Colors.white),),
                     Spacer(),
-                    Icon(FontAwesomeIcons.circleUser, color: Colors.transparent,),
+                    FaIcon(FontAwesomeIcons.circleUser, color: Colors.transparent,),
                   ],
                 ),
 
@@ -149,11 +149,11 @@ class _GoogleLoginButton extends StatelessWidget {
       child:  const Row(
         //mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(FontAwesomeIcons.google),
+          FaIcon(FontAwesomeIcons.google),
           Spacer(),
           Text("Sign in with Google"),
           Spacer(),
-          Icon(FontAwesomeIcons.google, color: Colors.transparent,),
+          FaIcon(FontAwesomeIcons.google, color: Colors.transparent,),
         ],
       ),
 
@@ -185,11 +185,11 @@ class _FacebookLoginButton extends StatelessWidget {
       child: const Row(
         //mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(FontAwesomeIcons.facebookF),
+          FaIcon(FontAwesomeIcons.facebookF),
           Spacer(),
           Text("Sign in with Facebook"),
           Spacer(),
-          Icon(FontAwesomeIcons.facebookF, color: Colors.transparent,),
+          FaIcon(FontAwesomeIcons.facebookF, color: Colors.transparent,),
         ],
       ),
     );
@@ -211,7 +211,7 @@ class _EmailSignInInput extends StatelessWidget {
               .emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            prefixIcon: const Icon(FontAwesomeIcons.user),
+            prefixIcon: const FaIcon(FontAwesomeIcons.user),
             labelText: 'email',
             helperText: '',
             errorText: state.email.displayError != null ? 'invalid email' : null,
@@ -242,9 +242,9 @@ class __PasswordSignInInputState extends State<_PasswordSignInInput> {
               BlocProvider.of<SignUpCubit>(context).passwordChanged(password),
           obscureText: !showPassword,
           decoration: InputDecoration(
-            prefixIcon: const Icon(FontAwesomeIcons.lock),
+            prefixIcon: const FaIcon(FontAwesomeIcons.lock),
             suffixIcon: IconButton(
-              icon: Icon(showPassword? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye),
+              icon: FaIcon(showPassword? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye),
               onPressed: (){
                 setState(() {
                   showPassword = !showPassword;
@@ -317,7 +317,7 @@ class _SignUpSignInButton extends StatelessWidget {
                     child:  Row(
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
+                        FaIcon(
                           FontAwesomeIcons.circleUser,
                           color: Colors.white,
                         ),

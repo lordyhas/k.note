@@ -186,9 +186,9 @@ class AppRouter {
                     ),
                     GoRoute(
                       //parentNavigatorKey: parentKey,
-                      name: AboutPage.routeName,
+                      name: AboutPage.settingsRouteName,
                       path: AboutPage.routeName,
-                      builder: (context, state) => const NoteTrash(),
+                      builder: (context, state) => const AboutPage(),
                     ),
                   ]),
             ],

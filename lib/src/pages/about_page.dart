@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +8,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class AboutPage extends StatefulWidget {
   static const routeName = "about";
+
+  /// Name of the copy of this route nested under the settings screen; route
+  /// names must be unique in go_router.
+  static const settingsRouteName = "settings-about";
   const AboutPage({super.key});
 
   static Route route({bool isSystemSet = false}) {
@@ -165,7 +168,7 @@ class _AboutState extends State<AboutPage> {
                 ),
               ),
               ListTile(
-                leading: const Icon(FontAwesomeIcons.user),
+                leading: const FaIcon(FontAwesomeIcons.user),
                 title: Text(
                   "Hassan Kajila",
                   style: primaryTextStyle20,
@@ -175,7 +178,7 @@ class _AboutState extends State<AboutPage> {
                 ),
               ),
               ListTile(
-                leading: const Icon(FontAwesomeIcons.googlePlay),
+                leading: const FaIcon(FontAwesomeIcons.googlePlay),
                 title: Text(
                   "Play Store",
                   style: primaryTextStyle20,
