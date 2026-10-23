@@ -76,10 +76,77 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
     _focusNode.requestFocus();
   }
 
-  Future<void> _pickDueDate() async {
-    final picked = await pickTaskDueDate(context, initial: _dueDate);
-    if (picked != null) setState(() => _dueDate = picked);
+  DateTime _shortcutDate(DueDateShortcut shortcut) => dueDateFor(
+        shortcut,
+        now: DateTime.now(),
+        firstDayOfWeekIndex:
+            MaterialLocalizations.of(context).firstDayOfWeekIndex,
+      );
+
+  Future<void> _onDueDateSelected(_DueDateChoice choice) async {
+    switch (choice) {
+      case _DueDateChoice.today:
+        setState(() => _dueDate = _shortcutDate(DueDateShortcut.today));
+      case _DueDateChoice.tomorrow:
+        setState(() => _dueDate = _shortcutDate(DueDateShortcut.tomorrow));
+      case _DueDateChoice.nextWeek:
+        setState(() => _dueDate = _shortcutDate(DueDateShortcut.nextWeek));
+      case _DueDateChoice.pick:
+        final picked = await pickTaskDueDate(context, initial: _dueDate);
+        if (picked != null) setState(() => _dueDate = picked);
+      case _DueDateChoice.remove:
+        setState(() => _dueDate = null);
+    }
     _focusNode.requestFocus();
+  }
+
+  String get _dueDateLabel {
+    final dueDate = _dueDate;
+    if (dueDate == null) return 'Set due date';
+    if (dueDate == _shortcutDate(DueDateShortcut.today)) return 'Due Today';
+    if (dueDate == _shortcutDate(DueDateShortcut.tomorrow)) {
+      return 'Due Tomorrow';
+    }
+    return 'Due ${DateFormat('EEE, MMM d').format(dueDate)}';
+  }
+
+  List<PopupMenuEntry<_DueDateChoice>> _dueDateMenu(BuildContext context) {
+    String weekday(DueDateShortcut shortcut) =>
+        DateFormat('EEEE').format(_shortcutDate(shortcut));
+    return [
+      _menuItem(_DueDateChoice.today, Icons.today_outlined,
+          'Today (${weekday(DueDateShortcut.today)})'),
+      _menuItem(_DueDateChoice.tomorrow, Icons.event_outlined,
+          'Tomorrow (${weekday(DueDateShortcut.tomorrow)})'),
+      _menuItem(_DueDateChoice.nextWeek, Icons.date_range_outlined,
+          'Next week (${weekday(DueDateShortcut.nextWeek)})'),
+      _menuItem(
+          _DueDateChoice.pick, Icons.edit_calendar_outlined, 'Pick a date'),
+      if (_dueDate != null) ...[
+        const PopupMenuDivider(),
+        _menuItem(
+            _DueDateChoice.remove, Icons.delete_outline, 'Remove due date',
+            color: Colors.redAccent),
+      ],
+    ];
+  }
+
+  PopupMenuItem<T> _menuItem<T>(T value, IconData icon, String label,
+      {Color color = Colors.white}) {
+    return PopupMenuItem(
+      value: value,
+      child: Row(
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(label,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: color, fontSize: 16)),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _pickReminder() async {
@@ -147,13 +214,19 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _OptionButton(
-                      icon: Icons.calendar_today_outlined,
-                      label: _dueDate == null
-                          ? 'Set due date'
-                          : 'Due ${DateFormat('EEE, MMM d').format(_dueDate!)}',
-                      isActive: _dueDate != null,
-                      onPressed: _pickDueDate,
+                    PopupMenuButton<_DueDateChoice>(
+                      color: const Color(0xFF2B2B2B),
+                      onSelected: _onDueDateSelected,
+                      onCanceled: _focusNode.requestFocus,
+                      itemBuilder: _dueDateMenu,
+                      child: IgnorePointer(
+                        child: _OptionButton(
+                          icon: Icons.calendar_today_outlined,
+                          label: _dueDateLabel,
+                          isActive: _dueDate != null,
+                          onPressed: () {},
+                        ),
+                      ),
                     ),
                     _OptionButton(
                       icon: Icons.notifications_none,
@@ -203,6 +276,8 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
     );
   }
 }
+
+enum _DueDateChoice { today, tomorrow, nextWeek, pick, remove }
 
 class _OptionButton extends StatelessWidget {
   const _OptionButton({

@@ -53,4 +53,44 @@ void main() {
         find.widgetWithIcon(IconButton, Icons.arrow_upward));
     expect(addButton.onPressed, isNull);
   });
+
+  testWidgets('sets a due date from the shortcut menu', (tester) async {
+    await pumpSheet(tester);
+
+    await tester.tap(find.text('Set due date'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Today ('), findsOneWidget);
+    expect(find.textContaining('Next week ('), findsOneWidget);
+    expect(find.text('Pick a date'), findsOneWidget);
+    expect(find.text('Remove due date'), findsNothing);
+
+    await tester.tap(find.textContaining('Tomorrow ('));
+    await tester.pumpAndSettle();
+    expect(find.text('Due Tomorrow'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'Pay rent');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+
+    final now = DateTime.now();
+    final task = (await manager.getTasksInCloud()).single;
+    expect(task.dueDate, DateTime(now.year, now.month, now.day + 1));
+    expect(find.text('Set due date'), findsOneWidget, reason: 'options reset');
+  });
+
+  testWidgets('removes a due date', (tester) async {
+    await pumpSheet(tester);
+
+    await tester.tap(find.text('Set due date'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('Today ('));
+    await tester.pumpAndSettle();
+    expect(find.text('Due Today'), findsOneWidget);
+
+    await tester.tap(find.text('Due Today'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Remove due date'));
+    await tester.pumpAndSettle();
+    expect(find.text('Set due date'), findsOneWidget);
+  });
 }
