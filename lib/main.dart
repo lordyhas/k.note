@@ -94,7 +94,7 @@ class AppView extends StatelessWidget {
           primaryColor: Colors.cyan.shade700,
           primaryColorDark: Colors.grey[600],
           cardTheme: CardThemeData(color: Colors.grey.shade800),
-          scaffoldBackgroundColor: Colors.grey.shade900,
+          scaffoldBackgroundColor: Colors.black,
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.transparent,
             elevation: 0.0,
