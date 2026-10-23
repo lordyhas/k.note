@@ -17,7 +17,7 @@ import 'data/app_bloc/authentication/authentication_bloc.dart';
 import 'on_error_page.dart';
 
 class AppRouter {
-  const AppRouter._();
+  //const AppRouter._();
 
   /// Builds the root [GoRouter] tree and wires route refresh to authentication
   /// state changes.
@@ -182,6 +182,12 @@ class AppRouter {
                       //parentNavigatorKey: parentKey,
                       name: NoteTrash.routeName,
                       path: NoteTrash.routeName,
+                      builder: (context, state) => const NoteTrash(),
+                    ),
+                    GoRoute(
+                      //parentNavigatorKey: parentKey,
+                      name: AboutPage.routeName,
+                      path: AboutPage.routeName,
                       builder: (context, state) => const NoteTrash(),
                     ),
                   ]),

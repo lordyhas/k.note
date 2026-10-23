@@ -26,7 +26,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
   bool notification = false;
   bool mail = false;
 
-  void logoutView() {
+  void logoutDialogView() {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -60,11 +60,11 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        //backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: [
           IconButton(
-            onPressed: () => logoutView(),
+            onPressed: () => logoutDialogView(),
             icon: const Icon(CupertinoIcons.square_arrow_right),
           )
         ],
@@ -166,7 +166,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
-                                  onTap: () => logoutView(),
+                                  onTap: () => logoutDialogView(),
                                 ),
                                 const Spacer(),
                               ],
