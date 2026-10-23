@@ -6,6 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/data/app_bloc/authentication/authentication_bloc.dart';
 import 'package:knote/data/authentication_repository.dart';
 import 'package:knote/routes.dart';
+import 'package:knote/src/pages/about_page.dart';
+import 'package:knote/src/pages/new_text_editor_page.dart';
+import 'package:knote/src/pages/screens.dart';
+import 'package:knote/src/pages/setting_page.dart';
+import 'package:knote/src/pages/task_editor.dart';
+import 'package:knote/src/pages/trash_can.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -80,15 +86,36 @@ void main() {
       router.dispose();
     });
 
-    test('home route has child routes for features', () {
+    test('home and settings routes have their feature sub-routes', () {
       final router = buildRouter(authenticated: false);
       final shellRoute =
           router.configuration.routes.whereType<ShellRoute>().first;
-      // First route in ShellRoute is the home GoRoute
-      final homeRoute = shellRoute.routes.first as GoRoute;
-      // Home should have sub-routes: about, invite-friend, help, feedback,
-      // archived, offline, editor, tasks, task-editor
-      expect(homeRoute.routes.length, greaterThanOrEqualTo(7));
+      Set<String?> childNames(String parentName) => shellRoute.routes
+          .whereType<GoRoute>()
+          .singleWhere((route) => route.name == parentName)
+          .routes
+          .whereType<GoRoute>()
+          .map((route) => route.name)
+          .toSet();
+
+      expect(
+          childNames(HomeScreen.routeName),
+          containsAll([
+            OfflineScreen.routeName,
+            TextEditor.routeName,
+            TaskScreen.routeName,
+            TaskEditor.routeName,
+          ]));
+      expect(
+          childNames(SettingProfileScreen.routeName),
+          containsAll([
+            NoteTrash.routeName,
+            AboutPage.settingsRouteName,
+            InviteFriend.routeName,
+            HelpScreen.routeName,
+            FeedbackScreen.routeName,
+            ArchivedScreen.routeName,
+          ]));
       router.dispose();
     });
   });

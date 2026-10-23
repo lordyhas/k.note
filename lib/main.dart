@@ -12,6 +12,7 @@ import 'data/authentication_repository.dart';
 import 'data/values.dart';
 
 import 'firebase_options.dart';
+import 'package:knote/src/utils/save_in_background.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,6 +77,7 @@ class AppView extends StatelessWidget {
         BlocProvider<StyleCubit>(create: (context) => StyleCubit())
       ],
       child: MaterialApp.router(
+        scaffoldMessengerKey: appMessengerKey,
         debugShowCheckedModeBanner: false,
         title: 'K.NOTE',
         localizationsDelegates: const [

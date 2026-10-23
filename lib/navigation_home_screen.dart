@@ -172,10 +172,10 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
               child: Icon(Icons.task),
               label: 'Tasks',
             ),
-            CurvedNavigationBarItem(
+            /*CurvedNavigationBarItem(
               child: Icon(Icons.search),
               label: 'Search',
-            ),
+            ),*/
 
             /*CurvedNavigationBarItem(
               child: Icon(Icons.newspaper),
@@ -187,14 +187,16 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             ),
           ],
           onTap: (index) {
-            if (index == 0) {
-              GoRouter.of(context).pushNamed(HomeScreen.routeName);
-            } else if (index == 1) {
-              GoRouter.of(context).pushNamed(TaskScreen.routeName);
-            } else if (index == 2) {
-              GoRouter.of(context).pushNamed(OfflineScreen.routeName);
-            } else if (index == 3) {
-              GoRouter.of(context).pushNamed(SettingProfileScreen.routeName);
+            switch (index) {
+              case 0:
+                GoRouter.of(context).pushReplacementNamed(HomeScreen.routeName);
+                break;
+              case 1:
+                GoRouter.of(context).pushReplacementNamed(TaskScreen.routeName);
+                break;
+              case 2:
+                GoRouter.of(context).pushReplacementNamed(SettingProfileScreen.routeName);
+                break;
             }
           },
         ),

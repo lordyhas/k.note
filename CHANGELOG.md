@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Microsoft To Do style quick add on the tasks screen: the + button opens an "Add a task" bar above the keyboard with due date, reminder and repeat options; tasks are added without leaving the page.
+- "Set due date" in the task quick add opens a Today / Tomorrow / Next week / Pick a date menu, as in Microsoft To Do, instead of going straight to the calendar.
+- "Remind me" in the task quick add opens a Later today / Tomorrow / Next week / Pick a date & time menu, as in Microsoft To Do.
+- "Repeat" offers Daily, Weekdays, Weekly, Monthly, Yearly and Custom (every N days, weeks, months or years, with weekdays for weeks). Custom rules are stored in `CheckList.repeat` as `custom:<n>:<unit>[:<days>]` (see `TaskRepeat`); existing values are unchanged.
 - Professional documentation set under `docs/` (setup, architecture, configuration, testing, style guide).
 - Initial architecture ADR at `docs/decisions/0001-architecture-overview.md`.
 - Contributor workflow guide in `CONTRIBUTING.md`.
@@ -24,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- Failed Firestore writes (e.g. permission denied) are no longer lost silently: `saveInBackground` reports them in a snack bar with Retry, and the task quick add puts a rejected task back in its form. Writes still do not wait for the server, so the app keeps working offline.
+- "Move in archive" on the home screen archived nothing and moved the note to the bin; it now archives it.
+- Deleting a task from the task editor while offline no longer leaves the editor open forever waiting for the server.
 - Tasks screen updates live: a task added, edited or deleted shows up immediately instead of after leaving and reopening the page (`FirebaseManager.watchTasks`).
 - App bars stay transparent when content scrolls under them (Material 3 tinted them with the primary color).
 - Settings profile photo: show a placeholder when the account has no photo or it cannot be downloaded (offline), instead of loading the URL `"null"` and logging an image exception.

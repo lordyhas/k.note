@@ -6,6 +6,8 @@ import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:uuid/uuid.dart';
+import 'package:knote/src/pages/pages/task_pickers.dart';
+import 'package:knote/src/utils/save_in_background.dart';
 
 class TaskEditor extends StatefulWidget {
   static const String routeName = '/task_editor';
@@ -91,11 +93,12 @@ class _TaskEditorState extends State<TaskEditor> {
       note: _noteController.text,
     );
 
-    if (widget.task == null) {
-      _firebaseManager.addTaskInCloud(task: newTask);
-    } else {
-      _firebaseManager.updateTaskInCloud(task: newTask);
-    }
+    saveInBackground(
+      () => widget.task == null
+          ? _firebaseManager.addTaskInCloud(task: newTask)
+          : _firebaseManager.updateTaskInCloud(task: newTask),
+      failureMessage: "The task couldn't be saved",
+    );
   }
 
   @override
@@ -231,7 +234,9 @@ class _TaskEditorState extends State<TaskEditor> {
             ),
             _buildOptionTile(
               icon: Icons.repeat,
-              text: _repeat ?? 'Repeat',
+              text: _repeat == null
+                  ? 'Repeat'
+                  : TaskRepeat.describeValue(_repeat!),
               isActive: _repeat != null,
               onTap: () {
                 setState(() => _repeat = _repeat == null ? 'Daily' : null);
@@ -275,13 +280,13 @@ class _TaskEditorState extends State<TaskEditor> {
                 onPressed: () {
                   _isDeleted = true;
                   final id = _id;
+                  // Don't wait for the server: offline it never answers.
                   if (id != null && widget.task != null) {
-                    _firebaseManager.deleteTask(taskId: id).then((_) {
-                      if (context.mounted) context.pop();
-                    });
-                  } else {
-                    context.pop();
+                    saveInBackground(
+                        () => _firebaseManager.deleteTask(taskId: id),
+                        failureMessage: "The task couldn't be deleted");
                   }
+                  context.pop();
                 },
               ),
             ],
@@ -329,50 +334,13 @@ class _TaskEditorState extends State<TaskEditor> {
   }
 
   Future<void> _pickDueDate() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _dueDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Colors.blueAccent,
-              onPrimary: Colors.white,
-              surface: Color(0xFF1F1F1F),
-              onSurface: Colors.white,
-            ),
-            dialogTheme:
-                DialogThemeData(backgroundColor: const Color(0xFF1F1F1F)),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null) {
-      setState(() => _dueDate = picked);
-    }
+    final picked = await pickTaskDueDate(context, initial: _dueDate);
+    if (picked != null) setState(() => _dueDate = picked);
   }
 
   Future<void> _pickReminderTime() async {
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null) {
-      if (!mounted) return;
-      final pickedTime =
-          await showTimePicker(context: context, initialTime: TimeOfDay.now());
-      if (pickedTime != null) {
-        setState(() {
-          _reminderTime = DateTime(pickedDate.year, pickedDate.month,
-              pickedDate.day, pickedTime.hour, pickedTime.minute);
-        });
-      }
-    }
+    final picked = await pickTaskReminder(context);
+    if (picked != null) setState(() => _reminderTime = picked);
   }
 
   String _dateFormat(DateTime date) {

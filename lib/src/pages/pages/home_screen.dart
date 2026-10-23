@@ -15,6 +15,7 @@ import '../../../widgets.dart';
 import 'package:flutter/material.dart';
 
 import "../new_text_editor_page.dart";
+import 'package:knote/src/utils/save_in_background.dart';
 
 part 'homelist.dart';
 
@@ -106,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       appBar: AppBar(
         centerTitle: true,
         leading: const Icon(
-          CupertinoIcons.person,
+          CupertinoIcons.home,
           color: Colors.white,
         ),
         title: const Text(
@@ -392,9 +393,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
             title: const Text("Move in archive"),
             onTap: () {
-              _firebaseManager.deleteNote(
-                noteId: note.id,
-              );
+              saveInBackground(
+                  () => _firebaseManager.archiveNote(
+                      noteId: note.id, archived: true),
+                  failureMessage: "The note couldn't be archived");
               Navigator.of(context).pop();
               setState(() {});
               ScaffoldMessenger.of(context)
@@ -434,7 +436,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       TextButton(
                         child: const Text('Delete'),
                         onPressed: () {
-                          _firebaseManager.deleteNote(noteId: note.id);
+                          saveInBackground(
+                              () =>
+                                  _firebaseManager.deleteNote(noteId: note.id),
+                              failureMessage:
+                                  "The note couldn't be moved to the bin");
                           Navigator.of(context).pop();
                           setState(() {});
                           ScaffoldMessenger.of(context)

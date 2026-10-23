@@ -5,6 +5,8 @@ import 'package:knote/data/app_bloc.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:knote/src/pages/task_editor.dart';
+import 'package:knote/src/pages/pages/task_quick_add.dart';
+import 'package:knote/src/utils/save_in_background.dart';
 
 class TaskScreen extends StatefulWidget {
   static const routeName = "tasks";
@@ -96,7 +98,8 @@ class _TaskScreenState extends State<TaskScreen> {
         padding: const EdgeInsets.only(bottom: 70),
         child: FloatingActionButton(
           backgroundColor: Colors.blueAccent,
-          onPressed: () => GoRouter.of(context).pushNamed(TaskEditor.routeName),
+          onPressed: () =>
+              showTaskQuickAdd(context, firebaseManager: _firebaseManager),
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
@@ -138,7 +141,8 @@ class _TaskScreenState extends State<TaskScreen> {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       onDismissed: (direction) {
-        _firebaseManager.deleteTask(taskId: task.id);
+        saveInBackground(() => _firebaseManager.deleteTask(taskId: task.id),
+            failureMessage: "The task couldn't be deleted");
       },
       child: Card(
         color: taskColor,
@@ -168,7 +172,10 @@ class _TaskScreenState extends State<TaskScreen> {
                       repeat: task.repeat,
                       note: task.note,
                     );
-                    _firebaseManager.updateTaskInCloud(task: updatedTask);
+                    saveInBackground(
+                        () => _firebaseManager.updateTaskInCloud(
+                            task: updatedTask),
+                        failureMessage: "The task couldn't be updated");
                   },
                   child: Container(
                     width: 24,
@@ -246,7 +253,10 @@ class _TaskScreenState extends State<TaskScreen> {
                       repeat: task.repeat,
                       note: task.note,
                     );
-                    _firebaseManager.updateTaskInCloud(task: updatedTask);
+                    saveInBackground(
+                        () => _firebaseManager.updateTaskInCloud(
+                            task: updatedTask),
+                        failureMessage: "The task couldn't be updated");
                   },
                 ),
               ],
