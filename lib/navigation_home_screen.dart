@@ -7,17 +7,41 @@ import 'package:knote/src/pages/setting_page.dart';
 import './src/backgound_ui.dart';
 import './src/pages/screens.dart';
 
-
-
 class NavigationHomeScreen extends StatefulWidget {
   final Widget child;
-  const NavigationHomeScreen({super.key, required this.child});
+
+  /// Path of the page shown in the shell; selects the bottom bar tab.
+  final String location;
+
+  const NavigationHomeScreen({
+    super.key,
+    required this.child,
+    this.location = '',
+  });
 
   static Route route() {
     return MaterialPageRoute(
         builder: (_) => const NavigationHomeScreen(
               child: SizedBox(),
             ));
+  }
+
+  /// Route names of the bottom bar tabs, in display order.
+  static const tabRouteNames = [
+    HomeScreen.routeName,
+    TaskScreen.routeName,
+    SettingProfileScreen.routeName,
+  ];
+
+  /// The bottom bar tab for [location], so the bar always matches the page
+  /// shown, including after the system back button.
+  static int tabIndexFor(String location) {
+    if (location
+        .startsWith('/${HomeScreen.routeName}/${TaskScreen.routeName}')) {
+      return 1;
+    }
+    if (location.startsWith('/${SettingProfileScreen.routeName}')) return 2;
+    return 0;
   }
 
   @override
@@ -70,10 +94,23 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   //   }
   // }
 
-
-
   @override
   Widget build(BuildContext context) {
+    final tabIndex = NavigationHomeScreen.tabIndexFor(widget.location);
+    // Tasks sits under Notes, so back already returns there; You is a
+    // top-level route where back would close the app, so send it to Notes.
+    final isSettingsRoot =
+        widget.location == '/${SettingProfileScreen.routeName}';
+    return PopScope(
+      canPop: !isSettingsRoot,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) GoRouter.of(context).goNamed(HomeScreen.routeName);
+      },
+      child: _buildShell(context, tabIndex),
+    );
+  }
+
+  Widget _buildShell(BuildContext context, int tabIndex) {
     return BackgroundUI(
       child: Scaffold(
         extendBody: true,
@@ -161,6 +198,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         //   ),
         // ),
         bottomNavigationBar: CurvedNavigationBar(
+          index: tabIndex,
           color: Colors.grey.shade900,
           backgroundColor: Colors.transparent,
           items: const [
@@ -186,22 +224,15 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
               label: 'You',
             ),
           ],
+          // go, not push: switching tabs replaces the page instead of
+          // stacking it, so back doesn't walk through previous tabs.
           onTap: (index) {
-            switch (index) {
-              case 0:
-                GoRouter.of(context).pushReplacementNamed(HomeScreen.routeName);
-                break;
-              case 1:
-                GoRouter.of(context).pushReplacementNamed(TaskScreen.routeName);
-                break;
-              case 2:
-                GoRouter.of(context).pushReplacementNamed(SettingProfileScreen.routeName);
-                break;
-            }
+            if (index == tabIndex) return;
+            GoRouter.of(context)
+                .goNamed(NavigationHomeScreen.tabRouteNames[index]);
           },
         ),
       ),
     );
   }
 }
-
