@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- Bottom navigation bar: the highlighted tab now follows the page shown, including after the back button; switching tabs no longer stacks pages, and back from You returns to Notes instead of closing the app.
 - Failed Firestore writes (e.g. permission denied) are no longer lost silently: `saveInBackground` reports them in a snack bar with Retry, and the task quick add puts a rejected task back in its form. Writes still do not wait for the server, so the app keeps working offline.
 - "Move in archive" on the home screen archived nothing and moved the note to the bin; it now archives it.
 - Deleting a task from the task editor while offline no longer leaves the editor open forever waiting for the server.

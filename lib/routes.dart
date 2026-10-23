@@ -87,7 +87,7 @@ class AppRouter {
             navigatorKey:
                 GlobalKey<NavigatorState>(debugLabel: "__ShellRoute__"),
             builder: (context, state, screen) =>
-                NavigationHomeScreen(child: screen),
+                NavigationHomeScreen(location: state.uri.path, child: screen),
             routes: <RouteBase>[
               GoRoute(
                 /// [HomeScreen]
