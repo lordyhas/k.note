@@ -189,13 +189,13 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           onTap: (index) {
             switch (index) {
               case 0:
-                GoRouter.of(context).pushNamed(HomeScreen.routeName);
+                GoRouter.of(context).pushReplacementNamed(HomeScreen.routeName);
                 break;
               case 1:
-                GoRouter.of(context).pushNamed(TaskScreen.routeName);
+                GoRouter.of(context).pushReplacementNamed(TaskScreen.routeName);
                 break;
               case 2:
-                GoRouter.of(context).pushNamed(SettingProfileScreen.routeName);
+                GoRouter.of(context).pushReplacementNamed(SettingProfileScreen.routeName);
                 break;
             }
           },
