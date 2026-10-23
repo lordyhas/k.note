@@ -6,7 +6,7 @@ class BackgroundUI extends StatelessWidget {
   final int index;
 
   BackgroundUI({super.key, this.child, this.index = 1})
-      : assert(index > 1 && index <= 3);
+      : assert(index > 0 && index <= 3);
 
   final List<String> path = [
     Res.bgImage1,
