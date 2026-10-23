@@ -98,6 +98,10 @@ class AppView extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.transparent,
             elevation: 0.0,
+            // Material 3 tints the app bar with the primary color when content
+            // scrolls under it; the design keeps it transparent.
+            scrolledUnderElevation: 0.0,
+            surfaceTintColor: Colors.transparent,
           ),
           iconTheme: const IconThemeData(
             color: Colors.white,
