@@ -68,7 +68,7 @@ dependencies:
 
   #share_plus: ^8.0.0
   #share_plus: ^7.2.1
-  font_awesome_flutter: ^10.6.0
+  font_awesome_flutter: ^11.0.0
 
   curved_labeled_navigation_bar: ^2.0.2
 

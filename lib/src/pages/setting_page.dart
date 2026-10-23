@@ -340,7 +340,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                             color: iconColor,
                           ),
                           onTap: () {
-                            GoRouter.of(context).goNamed(AboutPage.routeName);
+                            GoRouter.of(context).goNamed(AboutPage.settingsRouteName);
                           },
                         ),
 
