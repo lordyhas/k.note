@@ -104,33 +104,6 @@ class AppRouter {
             },*/
                 routes: <RouteBase>[
                   GoRoute(
-
-                      /// [AboutPage]
-                      name: AboutPage.routeName,
-                      path: AboutPage.routeName,
-                      builder: (context, state) => const AboutPage()),
-                  GoRoute(
-                    /// [InvitedFriend]
-                    name: InviteFriend.routeName,
-                    path: InviteFriend.routeName,
-                    builder: (context, state) => const InviteFriend(),
-                  ),
-                  GoRoute(
-                    name: HelpScreen.routeName,
-                    path: HelpScreen.routeName,
-                    builder: (context, state) => const HelpScreen(),
-                  ),
-                  GoRoute(
-                    name: FeedbackScreen.routeName,
-                    path: FeedbackScreen.routeName,
-                    builder: (context, state) => const FeedbackScreen(),
-                  ),
-                  GoRoute(
-                    name: ArchivedScreen.routeName,
-                    path: ArchivedScreen.routeName,
-                    builder: (context, state) => const ArchivedScreen(),
-                  ),
-                  GoRoute(
                     name: OfflineScreen.routeName,
                     path: OfflineScreen.routeName,
                     builder: (context, state) => const OfflineScreen(),
@@ -166,7 +139,6 @@ class AppRouter {
                 ],
               ),
               GoRoute(
-
                   /// [SettingProfileScreen]
                   name: SettingProfileScreen.routeName,
                   path: "/${SettingProfileScreen.routeName}",
@@ -190,7 +162,29 @@ class AppRouter {
                       path: AboutPage.routeName,
                       builder: (context, state) => const AboutPage(),
                     ),
-                  ]),
+                    GoRoute(
+                      /// [InvitedFriend]
+                      name: InviteFriend.routeName,
+                      path: InviteFriend.routeName,
+                      builder: (context, state) => const InviteFriend(),
+                    ),
+                    GoRoute(
+                      name: HelpScreen.routeName,
+                      path: HelpScreen.routeName,
+                      builder: (context, state) => const HelpScreen(),
+                    ),
+                    GoRoute(
+                      name: FeedbackScreen.routeName,
+                      path: FeedbackScreen.routeName,
+                      builder: (context, state) => const FeedbackScreen(),
+                    ),
+                    GoRoute(
+                      name: ArchivedScreen.routeName,
+                      path: ArchivedScreen.routeName,
+                      builder: (context, state) => const ArchivedScreen(),
+                    ),
+                  ]
+              ),
             ],
           ),
 

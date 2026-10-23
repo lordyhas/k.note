@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       appBar: AppBar(
         centerTitle: true,
         leading: const Icon(
-          CupertinoIcons.person,
+          CupertinoIcons.home,
           color: Colors.white,
         ),
         title: const Text(
