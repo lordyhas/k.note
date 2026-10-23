@@ -6,7 +6,6 @@ import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/data/database/database_model.dart';
 import 'package:knote/src/pages/task_editor.dart';
 
-
 class TaskScreen extends StatefulWidget {
   static const routeName = "tasks";
 
@@ -18,12 +17,14 @@ class TaskScreen extends StatefulWidget {
 
 class _TaskScreenState extends State<TaskScreen> {
   late final FirebaseManager _firebaseManager;
+  late final Stream<List<CheckList>> _tasks;
 
   @override
   void initState() {
     super.initState();
     _firebaseManager = FirebaseManager.user(
         BlocProvider.of<AuthenticationBloc>(context).state.user);
+    _tasks = _firebaseManager.watchTasks();
   }
 
   @override
@@ -38,21 +39,20 @@ class _TaskScreenState extends State<TaskScreen> {
                 fontSize: 24)),
         backgroundColor: Colors.black,
         elevation: 0,
-        leading: const Icon(Icons.task_alt, color: Colors.white),// const BackButton(color: Colors.white),
+        leading: const Icon(Icons.task_alt,
+            color: Colors.white), // const BackButton(color: Colors.white),
         actions: [
           //todo: pop up menu
           IconButton(
             icon: const Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
         ],
       ),
-      body: FutureBuilder<List<CheckList>>(
-        future: _firebaseManager.getTasksInCloud(),
+      body: StreamBuilder<List<CheckList>>(
+        stream: _tasks,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData && !snapshot.hasError) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
@@ -145,11 +145,8 @@ class _TaskScreenState extends State<TaskScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         child: InkWell(
-          onTap: () async {
-            await GoRouter.of(context)
-                .pushNamed(TaskEditor.routeName, extra: task);
-            setState(() {});
-          },
+          onTap: () =>
+              GoRouter.of(context).pushNamed(TaskEditor.routeName, extra: task),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
@@ -172,7 +169,6 @@ class _TaskScreenState extends State<TaskScreen> {
                       note: task.note,
                     );
                     _firebaseManager.updateTaskInCloud(task: updatedTask);
-                    setState(() {});
                   },
                   child: Container(
                     width: 24,
@@ -251,7 +247,6 @@ class _TaskScreenState extends State<TaskScreen> {
                       note: task.note,
                     );
                     _firebaseManager.updateTaskInCloud(task: updatedTask);
-                    setState(() {});
                   },
                 ),
               ],

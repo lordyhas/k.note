@@ -234,6 +234,33 @@ void main() {
   });
 
   group('FirebaseManager - Tasks', () {
+    test('watchTasks emits again when tasks are added, updated and deleted',
+        () async {
+      final emissions = <List<String>>[];
+      final sub = manager
+          .watchTasks()
+          .listen((tasks) => emissions.add(tasks.map((t) => t.title).toList()));
+      Future<void> settle() => Future<void>.delayed(Duration.zero);
+
+      await settle();
+      final task = _makeTask(title: 'First');
+      await manager.addTaskInCloud(task: task);
+      await settle();
+      task.title = 'Renamed';
+      await manager.updateTaskInCloud(task: task);
+      await settle();
+      await manager.deleteTask(taskId: task.id);
+      await settle();
+      await sub.cancel();
+
+      expect(emissions, [
+        <String>[],
+        ['First'],
+        ['Renamed'],
+        <String>[],
+      ]);
+    });
+
     test('addTaskInCloud then getTasksInCloud returns the task', () async {
       final task = _makeTask();
       await manager.addTaskInCloud(task: task);
