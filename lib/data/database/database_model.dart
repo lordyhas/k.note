@@ -3,6 +3,7 @@ library;
 import 'package:flutter/material.dart';
 
 export 'model/note_model.dart';
+export 'model/task_repeat.dart';
 
 part 'model/location_data.dart';
 

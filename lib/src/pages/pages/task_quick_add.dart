@@ -32,15 +32,11 @@ class TaskQuickAddSheet extends StatefulWidget {
 }
 
 class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
-  /// Menu value for clearing the repeat option; a null value would be
-  /// reported as a cancelled menu.
-  static const _never = '';
-
   final _titleController = TextEditingController();
   final _focusNode = FocusNode();
   DateTime? _dueDate;
   DateTime? _reminderTime;
-  String? _repeat;
+  TaskRepeat? _repeat;
 
   @override
   void dispose() {
@@ -63,7 +59,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
         modificationTime: now,
         dueDate: _dueDate,
         reminderTime: _reminderTime,
-        repeat: _repeat,
+        repeat: _repeat?.encode(),
       ),
     );
 
@@ -149,10 +145,110 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
     );
   }
 
-  Future<void> _pickReminder() async {
-    final picked = await pickTaskReminder(context);
-    if (picked != null) setState(() => _reminderTime = picked);
+  DateTime? _shortcutReminder(ReminderShortcut shortcut) => reminderFor(
+        shortcut,
+        now: DateTime.now(),
+        firstDayOfWeekIndex:
+            MaterialLocalizations.of(context).firstDayOfWeekIndex,
+      );
+
+  String _time(DateTime dateTime) => MaterialLocalizations.of(context)
+      .formatTimeOfDay(TimeOfDay.fromDateTime(dateTime));
+
+  Future<void> _onReminderSelected(_ReminderChoice choice) async {
+    switch (choice) {
+      case _ReminderChoice.laterToday:
+        setState(() =>
+            _reminderTime = _shortcutReminder(ReminderShortcut.laterToday));
+      case _ReminderChoice.tomorrow:
+        setState(
+            () => _reminderTime = _shortcutReminder(ReminderShortcut.tomorrow));
+      case _ReminderChoice.nextWeek:
+        setState(
+            () => _reminderTime = _shortcutReminder(ReminderShortcut.nextWeek));
+      case _ReminderChoice.pick:
+        final picked = await pickTaskReminder(context);
+        if (picked != null) setState(() => _reminderTime = picked);
+      case _ReminderChoice.remove:
+        setState(() => _reminderTime = null);
+    }
     _focusNode.requestFocus();
+  }
+
+  String get _reminderLabel {
+    final reminder = _reminderTime;
+    if (reminder == null) return 'Remind me';
+    final day = DateTime(reminder.year, reminder.month, reminder.day);
+    if (day == _shortcutDate(DueDateShortcut.today)) {
+      return 'Remind me at ${_time(reminder)}';
+    }
+    if (day == _shortcutDate(DueDateShortcut.tomorrow)) {
+      return 'Tomorrow, ${_time(reminder)}';
+    }
+    return '${DateFormat('EEE, MMM d').format(reminder)}, ${_time(reminder)}';
+  }
+
+  List<PopupMenuEntry<_ReminderChoice>> _reminderMenu(BuildContext context) {
+    final laterToday = _shortcutReminder(ReminderShortcut.laterToday);
+    final tomorrow = _shortcutReminder(ReminderShortcut.tomorrow)!;
+    final nextWeek = _shortcutReminder(ReminderShortcut.nextWeek)!;
+    String dayAndTime(DateTime dateTime) =>
+        '${DateFormat('EEE').format(dateTime)} ${_time(dateTime)}';
+    return [
+      if (laterToday != null)
+        _menuItem(_ReminderChoice.laterToday, Icons.update,
+            'Later today (${_time(laterToday)})'),
+      _menuItem(_ReminderChoice.tomorrow, Icons.schedule,
+          'Tomorrow (${dayAndTime(tomorrow)})'),
+      _menuItem(_ReminderChoice.nextWeek, Icons.arrow_circle_right_outlined,
+          'Next week (${dayAndTime(nextWeek)})'),
+      _menuItem(_ReminderChoice.pick, Icons.edit_calendar_outlined,
+          'Pick a date & time'),
+      if (_reminderTime != null) ...[
+        const PopupMenuDivider(),
+        _menuItem(
+            _ReminderChoice.remove, Icons.delete_outline, 'Remove reminder',
+            color: Colors.redAccent),
+      ],
+    ];
+  }
+
+  static const _repeatIcons = {
+    TaskRepeat.daily: Icons.today_outlined,
+    TaskRepeat.weekdaysOnly: Icons.work_outline,
+    TaskRepeat.weekly: Icons.view_week_outlined,
+    TaskRepeat.monthly: Icons.calendar_month_outlined,
+    TaskRepeat.yearly: Icons.event_repeat_outlined,
+  };
+
+  /// Menu values are a [TaskRepeat] preset or a [_RepeatAction].
+  Future<void> _onRepeatSelected(Object choice) async {
+    switch (choice) {
+      case TaskRepeat preset:
+        setState(() => _repeat = preset);
+      case _RepeatAction.custom:
+        final current = _repeat;
+        final custom = await pickCustomRepeat(context,
+            initial: current != null && current.isCustom ? current : null);
+        if (custom != null) setState(() => _repeat = custom);
+      case _RepeatAction.never:
+        setState(() => _repeat = null);
+    }
+    _focusNode.requestFocus();
+  }
+
+  List<PopupMenuEntry<Object>> _repeatMenu(BuildContext context) {
+    return [
+      for (final preset in TaskRepeat.presets)
+        _menuItem<Object>(preset, _repeatIcons[preset]!, preset.describe()),
+      _menuItem<Object>(_RepeatAction.custom, Icons.tune, 'Custom'),
+      if (_repeat != null) ...[
+        const PopupMenuDivider(),
+        _menuItem<Object>(
+            _RepeatAction.never, Icons.delete_outline, 'Never repeat',
+            color: Colors.redAccent),
+      ],
+    ];
   }
 
   @override
@@ -228,39 +324,29 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                         ),
                       ),
                     ),
-                    _OptionButton(
-                      icon: Icons.notifications_none,
-                      label: _reminderTime == null
-                          ? 'Remind me'
-                          : DateFormat('MMM d, HH:mm').format(_reminderTime!),
-                      isActive: _reminderTime != null,
-                      onPressed: _pickReminder,
+                    PopupMenuButton<_ReminderChoice>(
+                      color: const Color(0xFF2B2B2B),
+                      onSelected: _onReminderSelected,
+                      onCanceled: _focusNode.requestFocus,
+                      itemBuilder: _reminderMenu,
+                      child: IgnorePointer(
+                        child: _OptionButton(
+                          icon: Icons.notifications_none,
+                          label: _reminderLabel,
+                          isActive: _reminderTime != null,
+                          onPressed: () {},
+                        ),
+                      ),
                     ),
-                    PopupMenuButton<String>(
-                      color: const Color(0xFF1F1F1F),
-                      onSelected: (value) {
-                        setState(
-                            () => _repeat = value == _never ? null : value);
-                        _focusNode.requestFocus();
-                      },
-                      itemBuilder: (_) => [
-                        for (final option in taskRepeatOptions)
-                          PopupMenuItem(
-                            value: option,
-                            child: Text(option,
-                                style: const TextStyle(color: Colors.white)),
-                          ),
-                        if (_repeat != null)
-                          const PopupMenuItem(
-                            value: _never,
-                            child: Text('Never repeat',
-                                style: TextStyle(color: Colors.redAccent)),
-                          ),
-                      ],
+                    PopupMenuButton<Object>(
+                      color: const Color(0xFF2B2B2B),
+                      onSelected: _onRepeatSelected,
+                      onCanceled: _focusNode.requestFocus,
+                      itemBuilder: _repeatMenu,
                       child: IgnorePointer(
                         child: _OptionButton(
                           icon: Icons.repeat,
-                          label: _repeat ?? 'Repeat',
+                          label: _repeat?.describe() ?? 'Repeat',
                           isActive: _repeat != null,
                           onPressed: () {},
                         ),
@@ -278,6 +364,10 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
 }
 
 enum _DueDateChoice { today, tomorrow, nextWeek, pick, remove }
+
+enum _ReminderChoice { laterToday, tomorrow, nextWeek, pick, remove }
+
+enum _RepeatAction { custom, never }
 
 class _OptionButton extends StatelessWidget {
   const _OptionButton({

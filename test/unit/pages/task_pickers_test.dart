@@ -35,4 +35,37 @@ void main() {
           DateTime(2027, 1, 4));
     });
   });
+
+  group('reminderFor', () {
+    DateTime? remind(ReminderShortcut shortcut, DateTime now,
+            {int firstDay = 0}) =>
+        reminderFor(shortcut, now: now, firstDayOfWeekIndex: firstDay);
+
+    test('later today is three hours later, rounded up to the hour', () {
+      expect(remind(ReminderShortcut.laterToday, DateTime(2026, 10, 23, 0, 52)),
+          DateTime(2026, 10, 23, 4));
+      expect(remind(ReminderShortcut.laterToday, DateTime(2026, 10, 23, 13)),
+          DateTime(2026, 10, 23, 16));
+    });
+
+    test('later today is unavailable when it would fall tomorrow', () {
+      expect(remind(ReminderShortcut.laterToday, DateTime(2026, 10, 23, 21)),
+          isNull);
+      expect(
+          remind(ReminderShortcut.laterToday, DateTime(2026, 10, 23, 20, 30)),
+          isNull,
+          reason: 'rounds up to midnight');
+      expect(remind(ReminderShortcut.laterToday, DateTime(2026, 10, 23, 20)),
+          DateTime(2026, 10, 23, 23));
+    });
+
+    test('tomorrow and next week are at 9 a.m.', () {
+      expect(remind(ReminderShortcut.tomorrow, friday),
+          DateTime(2026, 10, 24, reminderMorningHour));
+      expect(remind(ReminderShortcut.nextWeek, friday),
+          DateTime(2026, 10, 25, reminderMorningHour));
+      expect(remind(ReminderShortcut.nextWeek, friday, firstDay: 1),
+          DateTime(2026, 10, 26, reminderMorningHour));
+    });
+  });
 }

@@ -232,7 +232,9 @@ class _TaskEditorState extends State<TaskEditor> {
             ),
             _buildOptionTile(
               icon: Icons.repeat,
-              text: _repeat ?? 'Repeat',
+              text: _repeat == null
+                  ? 'Repeat'
+                  : TaskRepeat.describeValue(_repeat!),
               isActive: _repeat != null,
               onTap: () {
                 setState(() => _repeat = _repeat == null ? 'Daily' : null);

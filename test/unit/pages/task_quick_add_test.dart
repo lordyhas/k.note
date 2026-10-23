@@ -2,6 +2,7 @@ import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:knote/data/app_bloc/auth_repository/user.dart';
+import 'package:knote/data/database/database_model.dart';
 import 'package:knote/data/database/firebase_manager.dart';
 import 'package:knote/src/pages/pages/task_quick_add.dart';
 
@@ -76,6 +77,78 @@ void main() {
     final task = (await manager.getTasksInCloud()).single;
     expect(task.dueDate, DateTime(now.year, now.month, now.day + 1));
     expect(find.text('Set due date'), findsOneWidget, reason: 'options reset');
+  });
+
+  testWidgets('sets and removes a reminder from the menu', (tester) async {
+    await pumpSheet(tester);
+
+    await tester.tap(find.text('Remind me'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Tomorrow ('), findsOneWidget);
+    expect(find.text('Pick a date & time'), findsOneWidget);
+
+    await tester.tap(find.textContaining('Tomorrow ('));
+    await tester.pumpAndSettle();
+    expect(find.text('Tomorrow, 9:00 AM'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'Dentist');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+
+    final now = DateTime.now();
+    final task = (await manager.getTasksInCloud()).single;
+    expect(task.reminderTime, DateTime(now.year, now.month, now.day + 1, 9));
+    expect(find.text('Remind me'), findsOneWidget, reason: 'options reset');
+  });
+
+  testWidgets('picks a preset repeat', (tester) async {
+    await pumpSheet(tester);
+
+    await tester.tap(find.text('Repeat'));
+    await tester.pumpAndSettle();
+    for (final label in [
+      'Daily',
+      'Weekdays',
+      'Weekly',
+      'Monthly',
+      'Yearly',
+      'Custom'
+    ]) {
+      expect(find.text(label), findsOneWidget, reason: label);
+    }
+
+    await tester.tap(find.text('Weekdays'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Stand-up');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+
+    expect((await manager.getTasksInCloud()).single.repeat, 'Weekdays');
+  });
+
+  testWidgets('saves a custom repeat rule', (tester) async {
+    await pumpSheet(tester);
+
+    await tester.tap(find.text('Repeat'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Custom'));
+    await tester.pumpAndSettle();
+    expect(find.text('Repeat every'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    final expected = TaskRepeat.custom(
+        interval: 2, unit: RepeatUnit.week, weekdays: {DateTime.now().weekday});
+    expect(find.text(expected.describe()), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'Water plants');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+
+    expect((await manager.getTasksInCloud()).single.repeat, expected.encode());
   });
 
   testWidgets('removes a due date', (tester) async {
