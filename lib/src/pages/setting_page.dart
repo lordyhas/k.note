@@ -60,7 +60,7 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        //backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: [
           IconButton(
@@ -187,12 +187,8 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
                                       ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(100.0),
-                                        child: Image.network(
-                                          "${state.user.photoMail}",
-                                          fit: BoxFit.cover,
-                                          height: 100,
-                                          //loadingBuilder: ,
-                                        ),
+                                        child: _ProfilePhoto(
+                                            url: state.user.photoMail),
                                       ),
                                       const SizedBox(
                                         height: 16.0,
@@ -384,6 +380,30 @@ class _SettingProfileScreenState extends State<SettingProfileScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The user's Google profile photo, or a placeholder when the account has no
+/// photo or it cannot be downloaded (e.g. offline).
+class _ProfilePhoto extends StatelessWidget {
+  const _ProfilePhoto({required this.url});
+
+  final String? url;
+
+  static const double _size = 100;
+
+  @override
+  Widget build(BuildContext context) {
+    const placeholder = Icon(Icons.account_circle, size: _size);
+    final url = this.url;
+    if (url == null || url.isEmpty) return placeholder;
+    return Image.network(
+      url,
+      fit: BoxFit.cover,
+      height: _size,
+      width: _size,
+      errorBuilder: (_, __, ___) => placeholder,
     );
   }
 }
