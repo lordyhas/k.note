@@ -44,8 +44,7 @@ dependencies:
 
   url_launcher: ^6.3.2
 
-  package_info_plus: ^8.3.1
-  device_info_plus: ^11.5.0
+  package_info_plus: ^10.2.2
 
   uuid: ^4.1.0
 
