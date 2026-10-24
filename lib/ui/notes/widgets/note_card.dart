@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 
 import 'package:knote/domain/models/note.dart';
+import 'package:knote/ui/notes/widgets/note_text.dart';
 
 class NoteCard extends StatelessWidget {
   final Color? color;
@@ -16,22 +14,6 @@ class NoteCard extends StatelessWidget {
     this.color,
     this.changeInList = false,
   });
-
-  //NoteModel get noteData => note;
-
-  String _previewText(String? content) {
-    if (content == null || content.isEmpty) {
-      return "";
-    }
-    try {
-      final json = jsonDecode(content);
-      // Quill adds a newline at the end of the document, trim it for preview
-      return Document.fromJson(json).toPlainText().trim();
-    } catch (e) {
-      // If it's not JSON (legacy text), return as is
-      return content;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +50,7 @@ class NoteCard extends StatelessWidget {
                       child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            _previewText(note.text),
+                            notePlainText(note.text),
                             maxLines: 4,
                             overflow: TextOverflow.ellipsis,
                           )),
@@ -86,7 +68,8 @@ class NoteCard extends StatelessWidget {
                     margin: const EdgeInsets.only(right: 8.0, top: 2.0),
                     child: Icon(
                       Icons.cloud_done_sharp,
-                      color: color ?? Colors.lightBlueAccent.withValues(alpha: 0.7),
+                      color: color ??
+                          Colors.lightBlueAccent.withValues(alpha: 0.7),
                     )),
               ),
             ],

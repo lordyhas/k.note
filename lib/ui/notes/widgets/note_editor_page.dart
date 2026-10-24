@@ -1,15 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/utils/autosave.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 class NoteEditorPage extends StatefulWidget {
@@ -17,7 +18,15 @@ class NoteEditorPage extends StatefulWidget {
   final QuillController? controller;
   final NoteModel? note;
 
-  const NoteEditorPage({super.key, this.note, this.controller});
+  /// Defaults to the signed-in user's [FirestoreService]; tests pass a fake.
+  final FirestoreService? firebaseManager;
+
+  const NoteEditorPage({
+    super.key,
+    this.note,
+    this.controller,
+    this.firebaseManager,
+  });
 
   static Route route({NoteModel? note}) {
     return MaterialPageRoute<void>(builder: (_) => NoteEditorPage(note: note));
@@ -39,21 +48,24 @@ class NoteEditorPage extends StatefulWidget {
   State<NoteEditorPage> createState() => _NoteEditorPageState();
 }
 
-class _NoteEditorPageState extends State<NoteEditorPage> {
+class _NoteEditorPageState extends State<NoteEditorPage>
+    with WidgetsBindingObserver {
   late final QuillController _quillController;
   late NoteModel _noteModel;
   late TextEditingController _titleController;
   late final User user;
   late final FirestoreService _firebaseManager;
+  late final Autosave _autosave;
+  late final StreamSubscription<DocChange> _documentChanges;
   bool isNoteInCloud = false;
-  int _autoSaveCounterText = 0;
-  int _autoSaveCounterTitle = 0;
 
   @override
   void initState() {
     super.initState();
-    user = BlocProvider.of<AuthenticationBloc>(context).state.user;
-    _firebaseManager = FirestoreService.user(user);
+    _firebaseManager = widget.firebaseManager ??
+        FirestoreService.user(
+            BlocProvider.of<AuthenticationBloc>(context).state.user);
+    user = _firebaseManager.user;
 
     _noteModel = widget.note ??
         NoteModel(
@@ -76,14 +88,29 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       isNoteInCloud = true;
     }
 
-    // Autosave listeners
-    _quillController.document.changes.listen((event) {
-      _autoSaveCounterText++;
-      if (_autoSaveCounterText > 10) {
-        _autoSaveCounterText = 0;
-        _saveNote();
-      }
-    });
+    // Saved a moment after the user stops typing, and in any case when the
+    // page is left (dispose) or the app goes to the background, so no edit
+    // depends on pressing the done button.
+    _autosave = Autosave(_saveNote);
+    _documentChanges =
+        _quillController.document.changes.listen((_) => _autosave.changed());
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // The app may be killed while in the background without notice.
+    if (state != AppLifecycleState.resumed) _autosave.flush();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _documentChanges.cancel();
+    _autosave.dispose();
+    _titleController.dispose();
+    if (widget.controller == null) _quillController.dispose();
+    super.dispose();
   }
 
   QuillController _loadContent(String? content) {
@@ -105,6 +132,18 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     }
   }
 
+  /// Copies the title and body being edited into [_noteModel].
+  String _syncModel() {
+    final String contentJson =
+        jsonEncode(_quillController.document.toDelta().toJson());
+    _noteModel.title = _titleController.text;
+    _noteModel.text = contentJson;
+    _noteModel.modificationTime = DateTime.now();
+    return contentJson;
+  }
+
+  /// Called by [_autosave]; also runs from [dispose], so it must not use
+  /// the widget's context or call setState.
   void _saveNote() {
     // Prevent saving empty new notes until there's content to save
     if (!isNoteInCloud &&
@@ -113,14 +152,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       return;
     }
 
-    final String contentJson =
-        jsonEncode(_quillController.document.toDelta().toJson());
-
-    setState(() {
-      _noteModel.title = _titleController.text;
-      _noteModel.text = contentJson;
-      _noteModel.modificationTime = DateTime.now();
-    });
+    final contentJson = _syncModel();
 
     // No Retry: an old save could overwrite newer edits, and the next
     // autosave writes the latest content anyway.
@@ -157,11 +189,10 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
           elevation: 0.0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
+            tooltip: 'Done',
             icon: const Icon(Icons.done),
-            onPressed: () {
-              _saveNote();
-              context.pop();
-            },
+            // Leaving the page saves (see dispose).
+            onPressed: () => Navigator.of(context).maybePop(),
           ),
           actions: [
             IconButton(
@@ -201,7 +232,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                                                 _noteModel.colorValue =
                                                     color.toARGB32();
                                               });
-                                              // Save color immediately
+                                              // Save color immediately, with
+                                              // the current title and text:
+                                              // the write replaces the note.
+                                              _syncModel();
+                                              _autosave.markSaved();
                                               final note = _noteModel;
                                               saveInBackground(
                                                   () => _firebaseManager
@@ -250,13 +285,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
                 cursorColor: Color(_noteModel.colorValue),
                 style: const TextStyle(fontSize: 22),
                 controller: _titleController,
-                onChanged: (t) {
-                  _autoSaveCounterTitle++;
-                  if (_autoSaveCounterTitle > 5) {
-                    _saveNote();
-                    _autoSaveCounterTitle = 0;
-                  }
-                },
+                onChanged: (_) => _autosave.changed(),
                 decoration: const InputDecoration.collapsed(hintText: "Title"),
               ),
             ),

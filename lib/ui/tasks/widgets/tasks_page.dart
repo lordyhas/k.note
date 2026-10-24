@@ -5,14 +5,19 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
+import 'package:knote/ui/tasks/widgets/task_pickers.dart';
 import 'package:knote/ui/tasks/widgets/task_quick_add.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 class TasksPage extends StatefulWidget {
   static const routeName = "tasks";
 
-  const TasksPage({super.key});
+  /// Defaults to the signed-in user's [FirestoreService]; tests pass a fake.
+  final FirestoreService? firebaseManager;
+
+  const TasksPage({super.key, this.firebaseManager});
 
   @override
   State<TasksPage> createState() => _TasksPageState();
@@ -22,11 +27,31 @@ class _TasksPageState extends State<TasksPage> {
   late final FirestoreService _firebaseManager;
   late final Stream<List<CheckList>> _tasks;
 
+  /// Tasks swiped away. They are hidden at once, because a dismissed
+  /// [Dismissible] must leave the tree before the stream reports the delete,
+  /// and shown again on Undo or if the delete fails.
+  final Set<String?> _removedIds = {};
+
+  void _delete(CheckList task) {
+    setState(() => _removedIds.add(task.id));
+    saveInBackground(() => _firebaseManager.deleteTask(taskId: task.id),
+        failureMessage: "The task couldn't be deleted", onFailure: () {
+      if (mounted) setState(() => _removedIds.remove(task.id));
+      return false;
+    });
+    showUndoSnackBar('"${task.title}" deleted', onUndo: () {
+      if (mounted) setState(() => _removedIds.remove(task.id));
+      saveInBackground(() => _firebaseManager.addTaskInCloud(task: task),
+          failureMessage: "The task couldn't be restored");
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _firebaseManager = FirestoreService.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user);
+    _firebaseManager = widget.firebaseManager ??
+        FirestoreService.user(
+            BlocProvider.of<AuthenticationBloc>(context).state.user);
     _tasks = _firebaseManager.watchTasks();
   }
 
@@ -63,12 +88,16 @@ class _TasksPageState extends State<TasksPage> {
               return Center(
                   child: Text('Error: ${snapshot.error}',
                       style: const TextStyle(color: Colors.white)));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            } else if (!snapshot.hasData ||
+                snapshot.data!.every((t) => _removedIds.contains(t.id))) {
               return _buildEmptyState();
             } else {
-              final tasks = snapshot.data!;
+              final tasks = snapshot.data!
+                  .where((t) => !_removedIds.contains(t.id))
+                  .toList();
               final activeTasks = tasks.where((t) => !t.isAllChecked).toList();
-              final completedTasks = tasks.where((t) => t.isAllChecked).toList();
+              final completedTasks =
+                  tasks.where((t) => t.isAllChecked).toList();
 
               return ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -76,7 +105,8 @@ class _TasksPageState extends State<TasksPage> {
                   if (activeTasks.isNotEmpty) ...[
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text('Active', style: TextStyle(color: Colors.grey)),
+                      child:
+                          Text('Active', style: TextStyle(color: Colors.grey)),
                     ),
                     ...activeTasks.map((t) => _buildTaskItem(t)),
                   ],
@@ -144,17 +174,14 @@ class _TasksPageState extends State<TasksPage> {
         padding: const EdgeInsets.only(right: 20.0),
         child: const Icon(Icons.delete, color: Colors.white),
       ),
-      onDismissed: (direction) {
-        saveInBackground(() => _firebaseManager.deleteTask(taskId: task.id),
-            failureMessage: "The task couldn't be deleted");
-      },
+      onDismissed: (_) => _delete(task),
       child: Card(
         color: taskColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         child: InkWell(
-          onTap: () =>
-              GoRouter.of(context).pushNamed(TaskEditorPage.routeName, extra: task),
+          onTap: () => GoRouter.of(context)
+              .pushNamed(TaskEditorPage.routeName, extra: task),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
@@ -224,10 +251,10 @@ class _TasksPageState extends State<TasksPage> {
                               Text(
                                 _formatDate(task.dueDate!),
                                 style: TextStyle(
-                                    color:
-                                        task.dueDate!.isBefore(DateTime.now())
-                                            ? Colors.red
-                                            : iconColor,
+                                    color: isOverdue(task.dueDate!,
+                                            now: DateTime.now())
+                                        ? Colors.red
+                                        : iconColor,
                                     fontSize: 12),
                               ),
                             ],

@@ -214,6 +214,45 @@ void main() {
     });
   });
 
+  group('FirestoreService - live notes', () {
+    test('watchNotes emits active notes, most recently modified first',
+        () async {
+      await manager.addNoteInCloud(
+          note: _makeNote(id: 'old')..modificationTime = DateTime(2025, 1, 1));
+      await manager.addNoteInCloud(
+          note: _makeNote(id: 'new')..modificationTime = DateTime(2025, 6, 1));
+      await manager.addNoteInCloud(
+          note: _makeNote(id: 'trashed', isDeleted: true));
+
+      final notes = await manager.watchNotes().first;
+
+      expect(notes.map((n) => n.id), ['new', 'old']);
+    });
+
+    test('watchNotes emits again when a note moves to the trash', () async {
+      await manager.addNoteInCloud(note: _makeNote(id: 'note-1'));
+
+      final emitted = manager.watchNotes().map((notes) => notes.length);
+      final expectation = expectLater(emitted, emitsInOrder([1, 0]));
+      await Future<void>.delayed(Duration.zero);
+      await manager.deleteNote(noteId: 'note-1');
+
+      await expectation;
+    });
+
+    test('watchArchivedNotes and watchDeletedNotes filter like their getters',
+        () async {
+      await manager.addNoteInCloud(note: _makeNote(id: 'active'));
+      await manager.addNoteInCloud(
+          note: _makeNote(id: 'archived', isArchived: true));
+      await manager.addNoteInCloud(
+          note: _makeNote(id: 'trashed', isDeleted: true));
+
+      expect((await manager.watchArchivedNotes().first).single.id, 'archived');
+      expect((await manager.watchDeletedNotes().first).single.id, 'trashed');
+    });
+  });
+
   group('FirestoreService - Profile', () {
     test('saveUserProfile writes only the allowed profile fields', () async {
       await manager.saveUserProfile();

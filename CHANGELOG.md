@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Note search: the search bar on the notes screen filters notes live by title and text, ignoring case and accents; back clears the search.
+- Undo after archiving a note, moving it to the bin, or swiping a task away. Moving a note to the bin no longer asks for confirmation.
 - Microsoft To Do style quick add on the tasks screen: the + button opens an "Add a task" bar above the keyboard with due date, reminder and repeat options; tasks are added without leaving the page.
 - "Set due date" in the task quick add opens a Today / Tomorrow / Next week / Pick a date menu, as in Microsoft To Do, instead of going straight to the calendar.
 - "Remind me" in the task quick add opens a Later today / Tomorrow / Next week / Pick a date & time menu, as in Microsoft To Do.
@@ -22,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- The notes, archive and bin lists update live (`FirestoreService.watchNotes`, `watchArchivedNotes`, `watchDeletedNotes`), most recently modified first.
+- The note editor saves one second after typing stops, when the page is left by any means (including the system back button) and when the app goes to the background, instead of every 10 changes and on the done button only. Opening a note and leaving it unchanged no longer writes it.
 - Project reorganized into the Flutter app-architecture layout (`config/`, `routing/`, `domain/models/`, `data/repositories|services/`, `ui/<feature>/{bloc,widgets}`, `ui/core/`, `utils/`), with `test/` mirroring `lib/`. Barrel files and `part`-based screen libraries replaced by direct imports. Classes renamed after their role (`FirebaseManager` → `FirestoreService`, `HomeScreen` → `NotesPage`, `TextEditor` → `NoteEditorPage`, `TaskScreen` → `TasksPage`, `SettingProfileScreen` → `SettingsPage`, `NavigationHomeScreen` → `AppShell`, ...); route paths unchanged. See `PROJECT_STRUCTURE.md` and ADR 0002.
 - `User` only holds Firebase Auth data. `isBlocked`, `verifiedAccount` and `isDataCloud` were removed: account status is managed in Firebase Auth (disabled account or `blocked` custom claim), not in a document the user can write.
 - `FirebaseManager` no longer swallows Firestore errors and no longer logs note contents or user emails.
@@ -29,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- The bin and archive showed the raw Quill JSON of notes instead of their text.
+- A task due today was shown as overdue (red) all day.
+- Changing a note's color could overwrite edits not yet saved.
+- The note actions sheet overflowed on small screens.
 - Bottom navigation bar: the highlighted tab now follows the page shown, including after the back button; switching tabs no longer stacks pages, and back from You returns to Notes instead of closing the app.
 - Failed Firestore writes (e.g. permission denied) are no longer lost silently: `saveInBackground` reports them in a snack bar with Retry, and the task quick add puts a rejected task back in its form. Writes still do not wait for the server, so the app keeps working offline.
 - "Move in archive" on the home screen archived nothing and moved the note to the bin; it now archives it.
