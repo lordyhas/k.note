@@ -7,7 +7,27 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:knote/domain/models/user.dart';
 
-/// Message shown when an auth request fails because the device is offline.
+/// Why an auth request failed. The UI shows a translated message for each
+/// value; the failures' English `message` is only meant for logs.
+enum AuthError {
+  invalidEmail,
+  userDisabled,
+  emailAlreadyInUse,
+  operationNotAllowed,
+  weakPassword,
+  userNotFound,
+  wrongPassword,
+  invalidCredential,
+  expiredCredential,
+  tooManyRequests,
+  network,
+  googleNotConfigured,
+  accountExistsWithDifferentCredential,
+  invalidVerification,
+  unknown,
+}
+
+/// Message logged when an auth request fails because the device is offline.
 const kNetworkErrorMessage =
     'No internet connection. Check your network and try again.';
 
@@ -18,6 +38,7 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
   /// {@macro sign_up_with_email_and_password_failure}
   const SignUpWithEmailAndPasswordFailure([
     this.message = 'An unknown exception occurred.',
+    this.error = AuthError.unknown,
   ]);
 
   /// Create an authentication message
@@ -28,32 +49,40 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
       case 'invalid-email':
         return const SignUpWithEmailAndPasswordFailure(
           'Email is not valid or badly formatted.',
+          AuthError.invalidEmail,
         );
       case 'user-disabled':
         return const SignUpWithEmailAndPasswordFailure(
           'This user has been disabled. Please contact support for help.',
+          AuthError.userDisabled,
         );
       case 'email-already-in-use':
         return const SignUpWithEmailAndPasswordFailure(
           'An account already exists for that email.',
+          AuthError.emailAlreadyInUse,
         );
       case 'operation-not-allowed':
         return const SignUpWithEmailAndPasswordFailure(
           'Operation is not allowed.  Please contact support.',
+          AuthError.operationNotAllowed,
         );
       case 'weak-password':
         return const SignUpWithEmailAndPasswordFailure(
           'Please enter a stronger password.',
+          AuthError.weakPassword,
         );
       case 'network-request-failed':
-        return const SignUpWithEmailAndPasswordFailure(kNetworkErrorMessage);
+        return const SignUpWithEmailAndPasswordFailure(kNetworkErrorMessage, AuthError.network);
       default:
         return const SignUpWithEmailAndPasswordFailure();
     }
   }
 
-  /// The associated error message.
+  /// The associated error message, in English, for logs.
   final String message;
+
+  /// Why it failed, for the message shown to the user.
+  final AuthError error;
 }
 
 
@@ -64,6 +93,7 @@ class LogInWithEmailAndPasswordFailure implements Exception {
   /// {@macro log_in_with_email_and_password_failure}
   const LogInWithEmailAndPasswordFailure([
     this.message = 'An unknown exception occurred.',
+    this.error = AuthError.unknown,
   ]);
 
   /// Create an authentication message
@@ -73,36 +103,45 @@ class LogInWithEmailAndPasswordFailure implements Exception {
       case 'invalid-email':
         return const LogInWithEmailAndPasswordFailure(
           'Email is not valid or badly formatted.',
+          AuthError.invalidEmail,
         );
       case 'user-disabled':
         return const LogInWithEmailAndPasswordFailure(
           'This user has been disabled. Please contact support for help.',
+          AuthError.userDisabled,
         );
       case 'user-not-found':
         return const LogInWithEmailAndPasswordFailure(
           'Email is not found, please create an account.',
+          AuthError.userNotFound,
         );
       case 'wrong-password':
         return const LogInWithEmailAndPasswordFailure(
           'Incorrect password, please try again.',
+          AuthError.wrongPassword,
         );
       case 'invalid-credential':
         return const LogInWithEmailAndPasswordFailure(
           'Incorrect email or password, please try again.',
+          AuthError.invalidCredential,
         );
       case 'too-many-requests':
         return const LogInWithEmailAndPasswordFailure(
           'Too many attempts. Please wait a moment and try again.',
+          AuthError.tooManyRequests,
         );
       case 'network-request-failed':
-        return const LogInWithEmailAndPasswordFailure(kNetworkErrorMessage);
+        return const LogInWithEmailAndPasswordFailure(kNetworkErrorMessage, AuthError.network);
       default:
         return const LogInWithEmailAndPasswordFailure();
     }
   }
 
-  /// The associated error message.
+  /// The associated error message, in English, for logs.
   final String message;
+
+  /// Why it failed, for the message shown to the user.
+  final AuthError error;
 }
 
 
@@ -117,11 +156,13 @@ class LogInWithGoogleFailure implements Exception {
   /// {@macro log_in_with_google_failure}
   const LogInWithGoogleFailure([
     this.message = 'An unknown exception occurred.',
+    this.error = AuthError.unknown,
   ]) : isCanceled = false;
 
   /// The user closed the Google account picker without choosing an account.
   const LogInWithGoogleFailure.canceled()
       : message = 'Google sign-in was canceled.',
+        error = AuthError.unknown,
         isCanceled = true;
 
   /// Create an authentication message from a [PlatformException] thrown by
@@ -135,12 +176,13 @@ class LogInWithGoogleFailure implements Exception {
     // missing or wrong SHA fingerprint as ApiException 10 (DEVELOPER_ERROR).
     if (e.code == GoogleSignIn.kNetworkError ||
         details.contains('ApiException: 7')) {
-      return const LogInWithGoogleFailure(kNetworkErrorMessage);
+      return const LogInWithGoogleFailure(kNetworkErrorMessage, AuthError.network);
     }
     if (details.contains('ApiException: 10')) {
       return const LogInWithGoogleFailure(
         'Google Sign-In is not configured for this app build '
         '(check the SHA fingerprints in Firebase).',
+        AuthError.googleNotConfigured,
       );
     }
     return const LogInWithGoogleFailure();
@@ -153,37 +195,45 @@ class LogInWithGoogleFailure implements Exception {
       case 'account-exists-with-different-credential':
         return const LogInWithGoogleFailure(
           'Account exists with different credentials.',
+          AuthError.accountExistsWithDifferentCredential,
         );
       case 'invalid-credential':
         return const LogInWithGoogleFailure(
           'The credential received is malformed or has expired.',
+          AuthError.expiredCredential,
         );
       case 'operation-not-allowed':
         return const LogInWithGoogleFailure(
           'Operation is not allowed.  Please contact support.',
+          AuthError.operationNotAllowed,
         );
       case 'user-disabled':
         return const LogInWithGoogleFailure(
           'This user has been disabled. Please contact support for help.',
+          AuthError.userDisabled,
         );
       case 'user-not-found':
         return const LogInWithGoogleFailure(
           'Email is not found, please create an account.',
+          AuthError.userNotFound,
         );
       case 'wrong-password':
         return const LogInWithGoogleFailure(
           'Incorrect password, please try again.',
+          AuthError.wrongPassword,
         );
       case 'invalid-verification-code':
         return const LogInWithGoogleFailure(
           'The credential verification code received is invalid.',
+          AuthError.invalidVerification,
         );
       case 'invalid-verification-id':
         return const LogInWithGoogleFailure(
           'The credential verification ID received is invalid.',
+          AuthError.invalidVerification,
         );
       case 'network-request-failed':
-        return const LogInWithGoogleFailure(kNetworkErrorMessage);
+        return const LogInWithGoogleFailure(kNetworkErrorMessage, AuthError.network);
       case 'popup-closed-by-user':
       case 'cancelled-popup-request':
         return const LogInWithGoogleFailure.canceled();
@@ -192,8 +242,11 @@ class LogInWithGoogleFailure implements Exception {
     }
   }
 
-  /// The associated error message.
+  /// The associated error message, in English, for logs.
   final String message;
+
+  /// Why it failed, for the message shown to the user.
+  final AuthError error;
 
   /// Whether the user canceled the flow; this is not an error to report.
   final bool isCanceled;

@@ -8,6 +8,8 @@ import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/shell/app_shell.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
 
+import '../../helpers/localized_app.dart';
+
 void main() {
   group('AppShell.tabIndexFor', () {
     test('maps each section to its tab', () {
@@ -58,7 +60,7 @@ void main() {
     tearDown(() => router.dispose());
 
     Future<void> pumpApp(WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpWidget(localizedRouterApp(routerConfig: router));
       await tester.pumpAndSettle();
     }
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
+
 class InviteFriendPage extends StatefulWidget {
   static const routeName = "invite-friend";
   const InviteFriendPage({super.key});
@@ -16,6 +19,8 @@ class _InviteFriendPageState extends State<InviteFriendPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -30,20 +35,20 @@ class _InviteFriendPageState extends State<InviteFriendPage> {
             ),
             Container(
               padding: const EdgeInsets.only(top: 8),
-              child: const Text(
-                'Invite Your Friends',
-                style: TextStyle(
+              child: Text(
+                l10n.inviteTitle,
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Container(
-              padding: const EdgeInsets.only(top: 16),
-              child: const Text(
-                'Are you one of those who makes everything\n at the last moment?',
+              padding: const EdgeInsets.fromLTRB(32, 16, 32, 0),
+              child: Text(
+                l10n.inviteBody,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                 ),
               ),
@@ -56,12 +61,12 @@ class _InviteFriendPageState extends State<InviteFriendPage> {
                     width: 120,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                      color: colors.link,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(4.0)),
                       boxShadow: <BoxShadow>[
                         BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.6),
+                            color: colors.textMuted.withValues(alpha: 0.6),
                             offset: const Offset(4, 4),
                             blurRadius: 2.0),
                       ],
@@ -79,23 +84,23 @@ class _InviteFriendPageState extends State<InviteFriendPage> {
                               subject: 'Sharing my experience with K.Note'
                           );*/
                         },
-                        child: const Center(
+                        child: Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Icon(
                                 Icons.share,
-                                color: Colors.white,
+                                color: colors.text,
                                 size: 22,
                               ),
                               Padding(
-                                padding: EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(4.0),
                                 child: Text(
-                                  'Share',
+                                  l10n.share,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                                    color: colors.text,
                                   ),
                                 ),
                               ),

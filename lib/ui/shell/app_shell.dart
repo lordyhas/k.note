@@ -3,6 +3,8 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/widgets/background_ui.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
@@ -51,8 +53,6 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   //late final FirestoreService _firebaseManager;
-
-  final screenColor = Colors.black;
 
   @override
   void initState() {
@@ -123,17 +123,17 @@ class _AppShellState extends State<AppShell> {
 
         bottomNavigationBar: CurvedNavigationBar(
           index: tabIndex,
-          color: Colors.grey.shade900,
+          color: AppColors.of(context).navigationBar,
           backgroundColor: Colors.transparent,
           iconPadding: 20.00,
-          items: const [
+          items: [
             CurvedNavigationBarItem(
-              child: Icon(Icons.file_copy_outlined),
-              label: 'Notes',
+              child: const Icon(Icons.file_copy_outlined),
+              label: context.l10n.navNotes,
             ),
             CurvedNavigationBarItem(
-              child: Icon(Icons.task),
-              label: 'Tasks',
+              child: const Icon(Icons.task),
+              label: context.l10n.navTasks,
             ),
             /*CurvedNavigationBarItem(
               child: Icon(Icons.search),
@@ -145,8 +145,8 @@ class _AppShellState extends State<AppShell> {
               label: 'Feeds',
             ),*/
             CurvedNavigationBarItem(
-              child: Icon(Icons.perm_identity),
-              label: 'You',
+              child: const Icon(Icons.perm_identity),
+              label: context.l10n.navYou,
             ),
           ],
           // go, not push: switching tabs replaces the page instead of

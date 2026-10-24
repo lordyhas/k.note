@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
+import 'package:knote/ui/tasks/widgets/task_text.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 class TaskEditorPage extends StatefulWidget {
@@ -70,6 +72,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
   }
 
   void _saveTask() {
+    final l10n = context.l10n;
     if (_isDeleted) return;
     if (_titleController.text.isEmpty &&
         _items.isEmpty &&
@@ -80,7 +83,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
     final newTask = CheckList(
       id: _id,
       title: _titleController.text.isEmpty
-          ? 'Untitled Task'
+          ? l10n.untitledTask
           : _titleController.text,
       list: _items,
       color: _color,
@@ -99,36 +102,43 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
       () => widget.task == null
           ? _firebaseManager.addTaskInCloud(task: newTask)
           : _firebaseManager.updateTaskInCloud(task: newTask),
-      failureMessage: "The task couldn't be saved",
+      failureMessage: l10n.taskSaveFailed,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
         // Save on exit; skipped when the task was just deleted.
         _saveTask();
       },
       child: Scaffold(
-        backgroundColor: Colors.black, // Dark theme
+        backgroundColor: colors.background,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+            icon: Icon(Icons.arrow_back, color: colors.text),
             onPressed: () {
               context.pop();
             },
           ),
           actions: [
             IconButton(
+              tooltip: l10n.taskColor,
               icon: Icon(Icons.circle, color: _color),
               onPressed: _showColorPicker,
             ),
             IconButton(
+              tooltip: _isImportant
+                  ? l10n.taskRemoveImportance
+                  : l10n.taskMarkImportant,
               icon: Icon(_isImportant ? Icons.star : Icons.star_border,
-                  color: _isImportant ? Colors.blueAccent : Colors.white),
+                  color: _isImportant ? colors.accent : colors.text),
               onPressed: () {
                 setState(() => _isImportant = !_isImportant);
               },
@@ -141,13 +151,13 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
             // Title
             TextField(
               controller: _titleController,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white),
-              decoration: const InputDecoration(
-                hintText: 'Title',
-                hintStyle: TextStyle(color: Colors.grey),
+                  color: colors.text),
+              decoration: InputDecoration(
+                hintText: l10n.titleHint,
+                hintStyle: TextStyle(color: colors.textMuted),
                 border: InputBorder.none,
               ),
             ),
@@ -173,27 +183,28 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                         });
                       },
                       shape: const CircleBorder(), // Round checkbox
-                      side: const BorderSide(color: Colors.grey),
-                      checkColor: Colors.white,
-                      activeColor: Colors.blueAccent,
+                      side: BorderSide(color: colors.textMuted),
+                      checkColor: colors.text,
+                      activeColor: colors.accent,
                     ),
                     Expanded(
                       child: TextFormField(
                         initialValue: item.text,
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: colors.text),
                         onChanged: (val) {
                           _items[index] =
                               TodoItem(text: val, isDone: item.isDone);
                         },
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Step',
-                          hintStyle: TextStyle(color: Colors.grey),
+                          hintText: l10n.taskStepHint,
+                          hintStyle: TextStyle(color: colors.textMuted),
                         ),
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.grey),
+                      tooltip: l10n.taskRemoveStep,
+                      icon: Icon(Icons.close, color: colors.textMuted),
                       onPressed: () => setState(() => _items.removeAt(index)),
                     ),
                   ],
@@ -203,82 +214,86 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
 
             // Add Step Button
             ListTile(
-              leading: const Icon(Icons.add, color: Colors.blueAccent),
-              title: const Text('Add step',
-                  style: TextStyle(color: Colors.blueAccent)),
+              leading: Icon(Icons.add, color: colors.accent),
+              title: Text(l10n.taskAddStep,
+                  style: TextStyle(color: colors.accent)),
               onTap: _addItem,
               contentPadding: EdgeInsets.zero,
             ),
-            const Divider(color: Colors.grey),
+            Divider(color: colors.textMuted),
 
             // Options
             _buildOptionTile(
               icon: Icons.wb_sunny_outlined,
-              text: _isMyDay ? 'Added to My Day' : 'Add to My Day',
+              text: _isMyDay ? l10n.taskAddedToMyDay : l10n.taskAddToMyDay,
               isActive: _isMyDay,
               onTap: () => setState(() => _isMyDay = !_isMyDay),
             ),
             _buildOptionTile(
               icon: Icons.notifications_none,
               text: _reminderTime == null
-                  ? 'Remind me'
-                  : 'Remind me at ${DateFormat('HH:mm').format(_reminderTime!)}',
+                  ? l10n.remindMe
+                  : l10n.remindMeAt(MaterialLocalizations.of(context)
+                      .formatTimeOfDay(TimeOfDay.fromDateTime(_reminderTime!))),
               isActive: _reminderTime != null,
               onTap: _pickReminderTime,
             ),
             _buildOptionTile(
               icon: Icons.calendar_today,
               text: _dueDate == null
-                  ? 'Add due date'
-                  : 'Due ${DateFormat('EEE, MMM d').format(_dueDate!)}',
+                  ? l10n.taskAddDueDate
+                  : l10n.dueOn(shortDate(l10n, _dueDate!)),
               isActive: _dueDate != null,
               onTap: _pickDueDate,
             ),
             _buildOptionTile(
               icon: Icons.repeat,
               text: _repeat == null
-                  ? 'Repeat'
-                  : TaskRepeat.describeValue(_repeat!),
+                  ? l10n.repeat
+                  : repeatValueText(l10n, _repeat!),
               isActive: _repeat != null,
               onTap: () {
-                setState(() => _repeat = _repeat == null ? 'Daily' : null);
+                setState(() =>
+                    _repeat = _repeat == null ? TaskRepeat.daily.encode() : null);
               },
             ),
             _buildOptionTile(
               icon: Icons.attach_file,
-              text: 'Add file',
+              text: l10n.taskAddFile,
               isActive: false,
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('File attachment not implemented yet')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.taskFilesUnavailable)));
               },
             ),
-            const Divider(color: Colors.grey),
+            Divider(color: colors.textMuted),
 
             // Note
             TextField(
               controller: _noteController,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: TextStyle(color: colors.text, fontSize: 14),
               maxLines: null,
-              decoration: const InputDecoration(
-                hintText: 'Add note',
-                hintStyle: TextStyle(color: Colors.grey),
+              decoration: InputDecoration(
+                hintText: l10n.taskNoteHint,
+                hintStyle: TextStyle(color: colors.textMuted),
                 border: InputBorder.none,
               ),
             ),
           ],
         ),
         bottomNavigationBar: BottomAppBar(
-          color: const Color(0xFF1F1F1F),
+          color: colors.surface,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Created on ${_dateFormat(widget.task?.creationTime ?? DateTime.now())}',
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                l10n.taskCreatedOn(shortDate(
+                    l10n, widget.task?.creationTime ?? DateTime.now())),
+                style: TextStyle(color: colors.textMuted, fontSize: 12),
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.white),
+                tooltip: l10n.taskDelete,
+                icon: Icon(Icons.delete_outline, color: colors.text),
                 onPressed: () {
                   _isDeleted = true;
                   final id = _id;
@@ -286,7 +301,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                   if (id != null && widget.task != null) {
                     saveInBackground(
                         () => _firebaseManager.deleteTask(taskId: id),
-                        failureMessage: "The task couldn't be deleted");
+                        failureMessage: l10n.taskDeleteFailed);
                   }
                   context.pop();
                 },
@@ -303,16 +318,20 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
       required String text,
       required bool isActive,
       required VoidCallback onTap}) {
+    final colors = AppColors.of(context);
     return ListTile(
-      leading: Icon(icon, color: isActive ? Colors.blueAccent : Colors.grey),
+      leading: Icon(icon, color: isActive ? colors.accent : colors.textMuted),
       title: Text(text,
-          style:
-              TextStyle(color: isActive ? Colors.blueAccent : Colors.white70)),
+          style: TextStyle(
+              color: isActive
+                  ? colors.accent
+                  : colors.text.withValues(alpha: 0.7))),
       onTap: onTap,
       contentPadding: EdgeInsets.zero,
       trailing: isActive
           ? IconButton(
-              icon: const Icon(Icons.close, color: Colors.grey),
+              tooltip: context.l10n.remove,
+              icon: Icon(Icons.close, color: colors.textMuted),
               onPressed: () {
                 if (icon == Icons.wb_sunny_outlined) {
                   setState(() => _isMyDay = false);
@@ -345,14 +364,10 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
     if (picked != null) setState(() => _reminderTime = picked);
   }
 
-  String _dateFormat(DateTime date) {
-    return DateFormat('EEE, MMM d').format(date);
-  }
-
   void _showColorPicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1F1F1F),
+      backgroundColor: AppColors.of(context).surface,
       builder: (context) {
         return SizedBox(
           height: 100,

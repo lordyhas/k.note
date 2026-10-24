@@ -4,7 +4,9 @@ import 'package:formz/formz.dart';
 
 import 'package:knote/config/assets.dart';
 import 'package:knote/ui/auth/bloc/sign_up_cubit.dart';
+import 'package:knote/ui/auth/widgets/auth_error_text.dart';
 import 'package:knote/ui/auth/widgets/login_buttons.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
 
 
 
@@ -21,7 +23,8 @@ class SignUpForm extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? 'Sign Up Failure'),
+                content: Text(authErrorText(context.l10n, state.error,
+                    isSignUp: true)),
               ),
             );
         }
@@ -44,29 +47,29 @@ class SignUpForm extends StatelessWidget {
                 child: Column(
                   //crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text("Welcome to K22D",
+                    Text(context.l10n.welcome,
                       style: TextStyle(
                           fontSize: 20,
                           color: Theme.of(context).primaryColor),
                     ),
-                    const Text("create an account to continue"),
+                    Text(context.l10n.createAccountToContinue),
 
                   ],
                 )
             ),
-            const Padding(
-                padding:  EdgeInsets.only(
+            Padding(
+                padding: const EdgeInsets.only(
                     left: 25.0, right: 25.0, top: 25.0),
-                child:  Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                     Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                         Text(
-                          'Email',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.emailLabel,
+                          style: const TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold),
                         ),
@@ -82,19 +85,19 @@ class SignUpForm extends StatelessWidget {
             ),
             //EmailSignInInput(),
             const SizedBox(height: 8.0),
-            const Padding(
-                padding: EdgeInsets.only(
+            Padding(
+                padding: const EdgeInsets.only(
                     left: 25.0, right: 25.0, top: 25.0),
-                child:  Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                     Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                         Text(
-                          'Password',
-                          style: TextStyle(
+                        Text(
+                          context.l10n.passwordLabel,
+                          style: const TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold),
                         ),

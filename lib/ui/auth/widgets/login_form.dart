@@ -6,7 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/config/assets.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/bloc/login_cubit.dart';
+import 'package:knote/ui/auth/widgets/auth_error_text.dart';
 import 'package:knote/ui/auth/widgets/login_buttons.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 
 class LoginForm extends StatelessWidget {
@@ -14,6 +17,8 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     final navigatorKey = GlobalKey<NavigatorState>(
       debugLabel: "__LoginFormBlocListener__",
     );
@@ -28,11 +33,8 @@ class LoginForm extends StatelessWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  backgroundColor: Colors.grey,
                   behavior: SnackBarBehavior.floating,
-                  content: Text(
-                    state.errorMessage ?? 'Authentication Failure',
-                  ),
+                  content: Text(authErrorText(l10n, state.error)),
                 ),
               );
           } else if (state.status.isSuccess) {
@@ -41,12 +43,11 @@ class LoginForm extends StatelessWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  backgroundColor: Colors.grey,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
-                  content: const Text('Authenticated Successfully'),
+                  content: Text(l10n.signedIn),
                 ),
               );
             GoRouter.of(context).pushReplacement("/${NotesPage.routeName}");
@@ -72,8 +73,7 @@ class LoginForm extends StatelessWidget {
                           BlocBuilder<AuthenticationBloc, AuthState>(
                             builder: (context, state) {
                               return Text(
-                                "Welcome to konte"
-                                "${state.isAuthenticated ? " # " : ""}",
+                                l10n.welcome,
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Theme.of(context).primaryColor,
@@ -81,7 +81,7 @@ class LoginForm extends StatelessWidget {
                               );
                             },
                           ),
-                          const Text("Sign in to continue"),
+                          Text(l10n.signInToContinue),
                         ],
                       )),
                 ],
@@ -100,15 +100,14 @@ class LoginForm extends StatelessWidget {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.75,
                               child: Text(
-                                "You're already signed in with mail \n"
-                                "[${state.user.email}]",
+                                l10n.alreadySignedIn(state.user.email),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                             const SizedBox(height: 8.0),
                             OutlinedButton(onPressed: (){
                               GoRouter.of(context).pushReplacement("/${NotesPage.routeName}");
-                            }, child: Text("Go to Home")),
+                            }, child: Text(l10n.goToHome)),
                             //const CircularProgressIndicator(), // Show loading while redirecting
                           ],
                         ),
@@ -150,14 +149,14 @@ class LoginForm extends StatelessWidget {
                                       Container(
                                         height: 1,
                                         width: 70,
-                                        color: Colors.grey,
+                                        color: colors.textMuted,
                                       ),
                                       const SizedBox(
                                         width: 4.0,
                                       ),
-                                      const Text(
-                                        "OR",
-                                        style: TextStyle(fontSize: 16),
+                                      Text(
+                                        l10n.or,
+                                        style: const TextStyle(fontSize: 16),
                                       ),
                                       const SizedBox(
                                         width: 4.0,
@@ -165,7 +164,7 @@ class LoginForm extends StatelessWidget {
                                       Container(
                                         height: 1,
                                         width: 70,
-                                        color: Colors.grey,
+                                        color: colors.textMuted,
                                       ),
                                     ],
                                   ),

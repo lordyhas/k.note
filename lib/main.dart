@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
 import 'package:knote/data/repositories/auth_repository.dart';
@@ -11,7 +10,9 @@ import 'package:knote/firebase_options.dart';
 import 'package:knote/routing/router.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/app_bloc_observer.dart';
-import 'package:knote/ui/core/localization/strings.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/themes/app_theme.dart';
 import 'package:knote/ui/core/themes/style_cubit.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -66,7 +67,7 @@ class AppView extends StatelessWidget {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.grey.shade900,
+        systemNavigationBarColor: AppColors.dark.navigationBar,
         //systemNavigationBarDividerColor: Colors.cyan.shade700,
         systemNavigationBarIconBrightness: Brightness.dark,
       ));
@@ -74,47 +75,20 @@ class AppView extends StatelessWidget {
     //var user = BlocProvider.of<AuthenticationBloc>(context).state.user;
     return MultiBlocProvider(
       providers: [
-        BlocProvider<LanguageBloc>(create: (context) => LanguageBloc()),
         BlocProvider<StyleCubit>(create: (context) => StyleCubit())
       ],
       child: MaterialApp.router(
         scaffoldMessengerKey: appMessengerKey,
         debugShowCheckedModeBanner: false,
         title: 'KNOTE',
+        // The app follows the device language (English or French), and
+        // falls back to English.
         localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
+          ...AppLocalizations.localizationsDelegates,
           FlutterQuillLocalizations.delegate,
         ],
-        supportedLocales: const <Locale>[
-          Locale('en'),
-          Locale('fr'),
-        ],
-        theme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.dark,
-          primaryColor: Colors.cyan.shade700,
-          primaryColorDark: Colors.grey[600],
-          cardTheme: CardThemeData(color: Colors.grey.shade800),
-          scaffoldBackgroundColor: Colors.black,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            // Material 3 tints the app bar with the primary color when content
-            // scrolls under it; the design keeps it transparent.
-            scrolledUnderElevation: 0.0,
-            surfaceTintColor: Colors.transparent,
-          ),
-          iconTheme: const IconThemeData(
-            color: Colors.white,
-          ),
-          colorScheme: ColorScheme.fromSwatch(
-            brightness: Brightness.dark,
-            primarySwatch: Colors.cyan,
-            accentColor: Colors.cyan,
-          ),
-        ),
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: AppTheme.dark,
 
         /// [AppRouter] is call here
         routerConfig: AppRouter.routes(

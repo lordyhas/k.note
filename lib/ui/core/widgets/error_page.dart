@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:knote/ui/core/localization/l10n.dart';
+
 enum ErrorType{unknown, e404, offline,}
 
 class ErrorPage extends StatefulWidget {
@@ -56,7 +58,7 @@ class _ErrorPageState extends State<ErrorPage>
                     rect: _relativeRectTween.animate(_controller),
                     child: Image.asset('assets/images/404error.png'),
                   ),
-                  const Positioned(
+                  Positioned(
                     top: 170,
                     bottom: 0,
                     left: 24,
@@ -65,7 +67,7 @@ class _ErrorPageState extends State<ErrorPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           '404',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -76,9 +78,9 @@ class _ErrorPageState extends State<ErrorPage>
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'Sorry, we couldn\'t find the page!',
+                          context.l10n.pageNotFound,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 30,
                             //color: Color(0xff2f3640),
                           ),

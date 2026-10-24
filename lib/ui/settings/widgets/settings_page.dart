@@ -6,6 +6,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/widgets/login_page.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
@@ -28,33 +30,37 @@ class _SettingsPageState extends State<SettingsPage> {
   bool mail = false;
 
   void logoutDialogView() {
+    final l10n = context.l10n;
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
               actions: [
                 ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.of(context).danger),
                   onPressed: () {
                     BlocProvider.of<AuthenticationBloc>(context).logout();
                     //GoRouter.of(context).pop();
                     GoRouter.of(context).goNamed(LoginPage.routeName);
                   },
                   icon: const Icon(CupertinoIcons.square_arrow_right),
-                  label: const Text("Log Out"),
+                  label: Text(l10n.logOut),
                 ),
                 TextButton(
                   onPressed: GoRouter.of(context).pop,
-                  child: const Text("Cancel"),
+                  child: Text(l10n.cancel),
                 )
               ],
-              title: const Text("Log Out"),
-              content: const Text("Do you want to logout ?"),
+              title: Text(l10n.logOut),
+              content: Text(l10n.logOutQuestion),
             ));
   }
 
   @override
   Widget build(BuildContext context) {
-    const Color iconColor = Colors.white;
+    final l10n = context.l10n;
+    final iconColor = AppColors.of(context).text;
+    final mutedText = AppColors.of(context).text.withValues(alpha: 0.6);
 
     //BlocProvider.of<NavigationController>(context).setState(NavigationScreen.setting);
     return Scaffold(
@@ -65,13 +71,14 @@ class _SettingsPageState extends State<SettingsPage> {
         elevation: 0.0,
         actions: [
           IconButton(
+            tooltip: l10n.logOut,
             onPressed: () => logoutDialogView(),
             icon: const Icon(CupertinoIcons.square_arrow_right),
           )
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 32.0, bottom: 64.0),
+        padding: const EdgeInsets.only(top: 32.0, bottom: 42.0),
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 910),
@@ -81,7 +88,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   height: 40,
                 ),
                 SizedBox(
-                  height: 560,
+                  //height: 560,
                   child: Stack(
                     children: [
                       Padding(
@@ -91,41 +98,41 @@ class _SettingsPageState extends State<SettingsPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 100.0),
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 108.0),
                             child: Column(
                               children: [
                                 ListTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.person,
                                     color: iconColor,
                                   ),
-                                  title: const Text("Modifier le profile"),
-                                  trailing: const Icon(
+                                  title: Text(l10n.editProfile),
+                                  trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
                                   onTap: () {},
                                 ),
                                 ListTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.password,
                                     color: iconColor,
                                   ),
-                                  title: const Text("Modifier le mot de passe"),
-                                  trailing: const Icon(
+                                  title: Text(l10n.changePassword),
+                                  trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
                                   onTap: () {},
                                 ),
                                 ListTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.delete_outline,
                                     color: iconColor,
                                   ),
-                                  title: const Text("Trash"),
-                                  trailing: const Icon(
+                                  title: Text(l10n.binTitle),
+                                  trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
@@ -133,12 +140,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                       .goNamed(TrashPage.routeName),
                                 ),
                                 ListTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.archive_outlined,
                                     color: iconColor,
                                   ),
-                                  title: const Text("Archived notes"),
-                                  trailing: const Icon(
+                                  title: Text(l10n.archiveTitle),
+                                  trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
@@ -146,30 +153,30 @@ class _SettingsPageState extends State<SettingsPage> {
                                       .goNamed(ArchivedNotesPage.routeName),
                                 ),
                                 ListTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.calendar_today_outlined,
                                     color: iconColor,
                                   ),
-                                  title: const Text("Calendar"),
-                                  trailing: const Icon(
+                                  title: Text(l10n.calendar),
+                                  trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
                                   onTap: () {},
                                 ),
                                 ListTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.output,
                                     color: iconColor,
                                   ),
-                                  title: const Text("Se deconnecter"),
-                                  trailing: const Icon(
+                                  title: Text(l10n.logOut),
+                                  trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
                                   onTap: () => logoutDialogView(),
                                 ),
-                                const Spacer(),
+
                               ],
                             ),
                           ),
@@ -192,7 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                             url: state.user.photoMail),
                                       ),
                                       const SizedBox(
-                                        height: 16.0,
+                                        height: 8.0,
                                       ),
                                       SelectableText("${state.user.name}",
                                           style: const TextStyle(
@@ -201,8 +208,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           )),
                                       SelectableText(
                                         state.user.email,
-                                        style: const TextStyle(
-                                            color: Colors.white60),
+                                        style: TextStyle(color: mutedText),
                                       ),
                                     ],
                                   );
@@ -218,16 +224,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                         ),
                                       ),
                                       const SizedBox(
-                                        height: 16.0,
+                                        height: 8.0,
                                       ),
-                                      const SelectableText("Unknown Name",
-                                          style: TextStyle(
+                                      SelectableText(l10n.unknownName,
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20.0,
                                           )),
-                                      const SelectableText(
-                                        "guest-user@exploress.org",
-                                        style: TextStyle(color: Colors.white60),
+                                      SelectableText(
+                                        "guest-user@k8note.com",
+                                        style: TextStyle(color: mutedText),
                                       ),
                                     ],
                                   );
@@ -250,11 +256,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: const Icon(
+                          leading: Icon(
                             Icons.dark_mode,
                             color: iconColor,
                           ),
-                          title: const Text("Dark Mode"),
+                          title: Text(l10n.darkMode),
                           trailing: Switch(
                             value: true,
                             onChanged: (bool value) {},
@@ -262,11 +268,11 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: () {},
                         ),
                         ListTile(
-                          leading: const Icon(
+                          leading: Icon(
                             Icons.notifications,
                             color: iconColor,
                           ),
-                          title: const Text("Notification"),
+                          title: Text(l10n.notifications),
                           trailing: Switch(
                             value: notification,
                             onChanged: (bool value) {
@@ -278,12 +284,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: () {},
                         ),
                         ListTile(
-                          leading: const Icon(
+                          leading: Icon(
                             Icons.mail_rounded,
                             color: iconColor,
                           ),
-                          title: const Text("Avis via mail"),
-                          subtitle: const Text("M'envoyer des avis par mail"),
+                          title: Text(l10n.emailUpdates),
+                          subtitle: Text(l10n.emailUpdatesSubtitle),
                           trailing: Switch(
                             value: mail,
                             onChanged: (bool value) {
@@ -295,12 +301,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: () {},
                         ),
                         ListTile(
-                          leading: const Icon(
+                          leading: Icon(
                             Icons.more_horiz,
                             color: iconColor,
                           ),
-                          title: const Text("More"),
-                          trailing: const Icon(
+                          title: Text(l10n.more),
+                          trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: iconColor,
                           ),
@@ -322,8 +328,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         ListTile(
                           //leading: const Icon(Icons.dark_mode),
-                          title: const Text("About Us"),
-                          trailing: const Icon(
+                          title: Text(l10n.aboutUs),
+                          trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: iconColor,
                           ),
@@ -331,8 +337,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         ListTile(
                           //leading: const Icon(Icons.dark_mode),
-                          title: const Text("About this app"),
-                          trailing: const Icon(
+                          title: Text(l10n.aboutApp),
+                          trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: iconColor,
                           ),
@@ -352,14 +358,14 @@ class _SettingsPageState extends State<SettingsPage> {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return ListTile(
-                                  leading: const Icon(
+                                  leading: Icon(
                                     Icons.launch_sharp,
                                     color: iconColor,
                                   ),
-                                  title: const Text("Last Update"),
-                                  subtitle: Text(
-                                      "version beta : ${snapshot.data?.version} "),
-                                  trailing: const Icon(
+                                  title: Text(l10n.lastUpdate),
+                                  subtitle: Text(l10n.betaVersion(
+                                      snapshot.data?.version ?? '')),
+                                  trailing: Icon(
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),

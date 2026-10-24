@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:knote/ui/core/localization/l10n.dart';
+
 /// App-wide messenger, so a write that fails after its page was closed can
 /// still be reported. Set on [MaterialApp.router] in `main.dart`.
 final appMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -32,11 +34,18 @@ void saveInBackground(
         content: Text(failureMessage),
         action: canRetry
             ? SnackBarAction(
-                label: 'Retry',
+                label: _retryLabel(),
                 onPressed: () => saveInBackground(write,
                     failureMessage: failureMessage, onFailure: onFailure),
               )
             : null,
       ));
   });
+}
+
+/// The messenger sits below the app's [Localizations], so its context can
+/// translate.
+String _retryLabel() {
+  final context = appMessengerKey.currentContext;
+  return context == null ? 'Retry' : context.l10n.retry;
 }

@@ -115,12 +115,6 @@ class AppRouter {
                   routes: [
                     GoRoute(
                       //parentNavigatorKey: parentKey,
-                      name: 'table',
-                      path: "product-table",
-                      builder: (context, state) => const SizedBox(),
-                    ),
-                    GoRoute(
-                      //parentNavigatorKey: parentKey,
                       name: TrashPage.routeName,
                       path: TrashPage.routeName,
                       builder: (context, state) => const TrashPage(),

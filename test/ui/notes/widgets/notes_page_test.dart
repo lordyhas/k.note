@@ -12,6 +12,8 @@ import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/utils/save_in_background.dart';
 
+import '../../../helpers/localized_app.dart';
+
 const _user = User(id: 'user-1', email: 'a@b.c', name: null, photoMail: null);
 
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -38,7 +40,7 @@ void main() {
   Future<void> pumpPage(WidgetTester tester) async {
     await tester.pumpWidget(BlocProvider.value(
       value: authBloc,
-      child: MaterialApp(
+      child: localizedApp(
         scaffoldMessengerKey: appMessengerKey,
         home: NotesPage(firebaseManager: manager),
       ),

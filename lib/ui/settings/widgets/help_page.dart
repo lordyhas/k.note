@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
+
 class HelpPage extends StatefulWidget {
   static const routeName = "help";
 
@@ -16,6 +19,8 @@ class _HelpPageState extends State<HelpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -29,20 +34,20 @@ class _HelpPageState extends State<HelpPage> {
             ),
             Container(
               padding: const EdgeInsets.only(top: 8),
-              child: const Text(
-                'How can we help you?',
-                style: TextStyle(
+              child: Text(
+                l10n.helpTitle,
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Container(
-              padding: const EdgeInsets.only(top: 16),
-              child: const Text(
-                'It looks like you are experiencing problems\nwith our sign up process. We are here to\nhelp so please get in touch with us',
+              padding: const EdgeInsets.fromLTRB(32, 16, 32, 0),
+              child: Text(
+                l10n.helpBody,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                 ),
               ),
@@ -55,12 +60,12 @@ class _HelpPageState extends State<HelpPage> {
                     width: 140,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                      color: colors.link,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(4.0)),
                       boxShadow: <BoxShadow>[
                         BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.6),
+                            color: colors.textMuted.withValues(alpha: 0.6),
                             offset: const Offset(4, 4),
                             blurRadius: 8.0),
                       ],
@@ -69,14 +74,14 @@ class _HelpPageState extends State<HelpPage> {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {},
-                        child: const Center(
+                        child: Center(
                           child: Padding(
-                            padding: EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Text(
-                              'Chat with Us',
+                              l10n.helpChat,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white,
+                                color: colors.text,
                               ),
                             ),
                           ),

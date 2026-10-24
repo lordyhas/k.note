@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
 
@@ -33,13 +35,14 @@ class _ArchivedNotesPageState extends State<ArchivedNotesPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        centerTitle: true,
+        title: Text(context.l10n.archiveTitle),
       ),
       body: StreamBuilder<List<NoteModel>>(
           stream: _notes,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Center(
-                  child: Text("Archived notes couldn't be loaded"));
+              return Center(child: Text(context.l10n.archiveLoadError));
             }
             if (!snapshot.hasData) {
               return const Center(
@@ -48,18 +51,18 @@ class _ArchivedNotesPageState extends State<ArchivedNotesPage> {
             }
             final notes = snapshot.data!;
             if (notes.isEmpty) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.archive_outlined,
                       size: 100,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8.0,
                     ),
-                    Text('No archived notes')
+                    Text(context.l10n.archiveEmpty)
                   ],
                 ),
               );
@@ -70,7 +73,7 @@ class _ArchivedNotesPageState extends State<ArchivedNotesPage> {
                       height: 120,
                       child: Card(
                         margin: const EdgeInsets.symmetric(vertical: 4.0),
-                        color: Colors.grey.shade700.withValues(alpha: 0.7),
+                        color: AppColors.of(context).tile,
                         child: ListTile(
                           title: Text(
                             notes[i].title ?? '',

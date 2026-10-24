@@ -3,9 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:knote/utils/save_in_background.dart';
 
+import '../helpers/localized_app.dart';
+
 void main() {
   Future<void> pumpApp(WidgetTester tester) => tester.pumpWidget(
-        MaterialApp(
+        localizedApp(
           scaffoldMessengerKey: appMessengerKey,
           home: const Scaffold(body: SizedBox()),
         ),
