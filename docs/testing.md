@@ -6,16 +6,16 @@
 - Bloc testing: `bloc_test`
 - Mocking: `mocktail`
 
-Current tests are mostly unit-oriented (`test/unit/...`) and include:
-- login cubit state transitions
-- note model mapping
+`test/` mirrors `lib/`: blocs and cubits (`test/ui/auth/bloc/`), widgets
+(`test/ui/...`), models (`test/domain/models/`), `FirestoreService` with
+`fake_cloud_firestore` (`test/data/services/`) and the router (`test/routing/`).
 
 ## Commands
 
 ```bash
 flutter test
-flutter test test/unit/data/app_bloc/login_bloc/login_cubit_test.dart
-flutter test test/unit/data/model/note_model_test.dart
+flutter test test/ui/auth/bloc/login_cubit_test.dart
+flutter test test/domain/models/note_test.dart
 ```
 
 ## CI checks

@@ -5,7 +5,11 @@
 - [Configuration](configuration.md)
 - [Testing](testing.md)
 - [Style Guide](style_guide.md)
-- [Architecture decisions (ADR)](decisions/0001-architecture-overview.md)
+- [Project structure](../PROJECT_STRUCTURE.md)
+- [Security](security.md)
+- Architecture decisions (ADR):
+  [0001 architecture overview](decisions/0001-architecture-overview.md),
+  [0002 project structure](decisions/0002-project-structure.md)
 
 ## Recommended reading order
 

@@ -16,11 +16,14 @@ flutter analyze --no-fatal-warnings --no-fatal-infos
 
 - Route names are exposed as static `routeName` fields on screens.
 - State management uses BLoC/Cubit with immutable states (where implemented).
-- Shared exports are grouped in barrel files (`lib/data/app_bloc.dart`, `lib/src/pages/screens.dart`, etc.).
+- Screens are `*Page` classes in `*_page.dart` files under `lib/ui/<feature>/widgets/`.
+- Imports are `package:knote/...` imports, sorted (`dart:`, packages, `package:knote`);
+  no relative imports, no barrel files. `part` is only used for bloc events/states.
+- See [PROJECT_STRUCTURE.md](../PROJECT_STRUCTURE.md) for where new code goes.
 
 ## Architecture guardrails for contributors
 
-- Keep navigation declarations centralized in `lib/routes.dart`.
+- Keep navigation declarations centralized in `lib/routing/router.dart`.
 - Keep auth/session logic in `AuthenticationBloc`/`AuthRepository`, not in UI widgets.
-- Keep Firestore access concentrated in manager/repository classes.
+- Keep Firestore access in `lib/data/` (`FirestoreService`, repositories).
 - Add DartDoc for public service/repository/routing APIs when their behavior changes.
