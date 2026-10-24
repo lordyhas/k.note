@@ -20,12 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial architecture ADR at `docs/decisions/0001-architecture-overview.md`.
 - Contributor workflow guide in `CONTRIBUTING.md`.
 
-- `firestore.rules`: each user can only read and write `K_NOTE/general_data/USERS/{uid}`, writes are schema-validated, and everything else is denied.
+- `firestore.rules`: each user can only read and write `users/{uid}`, writes are schema-validated, and everything else is denied.
 - Emulator-based security rules tests (`test/firestore_rules/`) and a `firestore-rules` CI job.
 - MIT `LICENSE`.
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- Android build: Android Gradle Plugin 8.13.0 → 9.0.1 and Kotlin 2.2.20 → 2.3.20, as required by upcoming Flutter versions.
+- The app now uses its own Firebase project, `k8note`, instead of the project it shared with another app (`parents-data-8c0ee`). Existing accounts and data were not migrated. The leftover iOS config, which still pointed to the old project, was removed.
+- Firestore data moved from `K_NOTE/general_data/USERS/{uid}` (a namespace needed in the shared project) to `users/{uid}`, with `notes` and `tasks` below it.
 - Auth failures carry an `AuthError` code, translated by the UI, instead of an English sentence shown as is. Task repeat rules are described by the UI (`repeatText`) instead of `TaskRepeat.describe()`.
 - Colors are read from the `AppColors` theme extension instead of literals spread across widgets; the theme moved to `AppTheme.dark`. The look is unchanged.
 - Task due dates in the list read Yesterday / Today / Tomorrow or a short date ("Fri, Oct 30") instead of "30/10".
@@ -60,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Signing in without an email (anonymous account) no longer crashes.
 
 ### Removed
+- The unused `file_picker` dependency, which did not compile with Android Gradle Plugin 9.
 - `LanguageBloc` and `strings.dart`, left over from another app and only used by the About screen.
 - Dead code unreachable from `main.dart` or unused: old text editor, splash/log/generate pages, drawer, calendar screen, ObjectBox `DatabaseManager`, `AppData`/`LocationData`/`SettingData` models, empty files; and the unused `hive`, `hive_flutter` and `hydrated_bloc` dependencies.
 - Unused and unsafe `FirebaseManager` methods: arbitrary key updates, hard-coded location writes, random-id user documents (`addUserData`), and a stream over the whole `K_NOTE` collection.

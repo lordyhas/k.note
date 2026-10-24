@@ -2,7 +2,7 @@ rules_version = '2';
 
 // Security model
 // --------------
-// * Every user owns exactly one subtree: K_NOTE/general_data/USERS/{uid}.
+// * Every user owns exactly one subtree: users/{uid}.
 //   The {uid} in the path must equal the uid in the caller's Firebase Auth
 //   token, which is signed by Google and cannot be forged by a modified app.
 // * A user is blocked by an admin, never by the client: either disable the
@@ -102,7 +102,7 @@ service cloud.firestore {
           && optTimestamp(data, 'reminder_time');
     }
 
-    match /K_NOTE/general_data/USERS/{userId} {
+    match /users/{userId} {
       allow read, delete: if isOwner(userId);
       allow create: if isOwner(userId)
                     && hasValidKeys(profileKeys())

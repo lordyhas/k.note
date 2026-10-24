@@ -19,14 +19,14 @@ not secrets. They are shipped inside every build anyway.
 Each user owns one subtree:
 
 ```
-K_NOTE/general_data/USERS/{uid}          profile (optional)
-K_NOTE/general_data/USERS/{uid}/notes/*  notes
-K_NOTE/general_data/USERS/{uid}/tasks/*  tasks
+users/{uid}          profile (optional)
+users/{uid}/notes/*  notes
+users/{uid}/tasks/*  tasks
 ```
 
 The rules allow a request only when the `{uid}` in the path equals
 `request.auth.uid`. A modified app that asks for another user's path gets
-`PERMISSION_DENIED`. Listing `USERS`, and any path not matched in the rules,
+`PERMISSION_DENIED`. Listing `users`, and any path not matched in the rules,
 is denied.
 
 The rules also validate writes. Only known fields are accepted, with the
@@ -99,5 +99,3 @@ busy. If the next run reports "port taken", stop that `java` process.
       package + SHA-1, iOS bundle id, web HTTP referrers.
 - [ ] Enable App Check (Play Integrity / App Attest / reCAPTCHA) and enforce it
       for Firestore. This is defence in depth and does not replace the rules.
-- [ ] Remove data from the removed E2EE feature
-      (`USERS/{uid}/keys/master_key`). Clients can no longer access it.

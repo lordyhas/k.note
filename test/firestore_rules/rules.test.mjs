@@ -17,7 +17,7 @@ import {
   setLogLevel,
 } from 'firebase/firestore';
 
-const USERS = 'K_NOTE/general_data/USERS';
+const USERS = 'users';
 const ALICE = 'alice';
 const BOB = 'bob';
 
@@ -122,8 +122,8 @@ describe('ownership', () => {
 
   test('paths outside the user subtree are denied', async () => {
     const alice = db(ALICE);
-    await assertFails(getDocs(collection(alice, 'K_NOTE')));
-    await assertFails(setDoc(doc(alice, 'K_NOTE/general_data'), { a: 1 }));
+    await assertFails(getDocs(collection(alice, 'notes')));
+    await assertFails(setDoc(doc(alice, 'config/app'), { a: 1 }));
     await assertFails(setDoc(doc(alice, `${USERS}/${ALICE}/keys/master_key`), { k: 1 }));
   });
 });

@@ -20,12 +20,10 @@ Not configured:
 
 Primary root collection in code:
 
-- `K_NOTE`
-  - `general_data`
-    - `USERS`
-      - `{userId}`
-        - `notes`
-        - `tasks`
+- `users`
+  - `{userId}`
+    - `notes`
+    - `tasks`
 
 Access is restricted per user by `firestore.rules`; see [security.md](security.md).
 

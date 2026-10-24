@@ -257,9 +257,7 @@ void main() {
     test('saveUserProfile writes only the allowed profile fields', () async {
       await manager.saveUserProfile();
 
-      final doc = await fakeFirestore
-          .doc('K_NOTE/general_data/USERS/${_testUser.id}')
-          .get();
+      final doc = await fakeFirestore.doc('users/${_testUser.id}').get();
       expect(doc.data()!.keys, unorderedEquals(_testUser.asMap().keys));
       expect(doc.data()!['email'], _testUser.email);
     });

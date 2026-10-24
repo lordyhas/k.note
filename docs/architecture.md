@@ -55,12 +55,12 @@ Typical note flow:
 
 ## Persistence model
 
-- Cloud: Cloud Firestore (`K_NOTE/general_data/USERS/...`).
+- Cloud: Cloud Firestore (`users/...`).
 - Local: Firestore's offline cache only; there is no separate local database.
 
 ## Security/encryption
 
-- Each user can only access `K_NOTE/general_data/USERS/{uid}`; this is enforced server-side by `firestore.rules`, not by the app. See [security.md](security.md).
+- Each user can only access `users/{uid}`; this is enforced server-side by `firestore.rules`, not by the app. See [security.md](security.md).
 - Custom E2EE was removed; data relies on Firestore encryption at rest.
 - Account status (blocking) lives in Firebase Auth (disabled account or `blocked` custom claim), never in a client-writable document.
 
