@@ -1,0 +1,162 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:knote/domain/models/note.dart';
+
+void main() {
+  group('NoteModel', () {
+    // Timestamp uses seconds and nanoseconds.
+    // We use a fixed time to ensure stability, but converting to/from can lose precision
+    // if we aren't careful. For this test we just want to ensure the flow works.
+    final now = DateTime.now();
+    final timestampNow = Timestamp.fromDate(now);
+
+    test('fromMap creates correct NoteModel from Firestore-like map', () {
+      final map = {
+        'id': '123',
+        'title': 'Test Title',
+        'text': 'Test Text',
+        'creation_time': timestampNow,
+        'last_time': timestampNow,
+        'is_deleted': false,
+        'permanent_delete_date': null,
+        'color': Colors.red.toARGB32(),
+        'reminder_date': timestampNow,
+        'email': 'test@example.com',
+        'is_archived': true,
+        'is_locked': false,
+        'saving_mode': 1, // local
+      };
+
+      final note = NoteModel.fromMap(map);
+
+      expect(note.id, '123');
+      expect(note.title, 'Test Title');
+      expect(note.text, 'Test Text');
+      // Timestamp.toDate() returns a DateTime.
+      expect(note.creationTime, timestampNow.toDate());
+      expect(note.modificationTime, timestampNow.toDate());
+      expect(note.isDeleted, false);
+      expect(note.colorValue, Colors.red.toARGB32());
+      expect(note.email, 'test@example.com');
+      expect(note.isArchived, true);
+      // saving_mode 1 corresponds to SavingMode.local (index 1)
+      expect(note.savingModeValue, 1);
+    });
+
+    test('asMap returns correct map with DateTime objects', () {
+      final note = NoteModel(
+        id: '123',
+        title: 'Test Title',
+        text: 'Test Text',
+        creationTime: now,
+        modificationTime: now,
+        isDeleted: false,
+        color: Colors.red,
+        reminderDate: now,
+        email: 'test@example.com',
+        isArchived: true,
+        isLocked: false,
+        savingMode: SavingMode.local,
+      );
+
+      final map = note.asMap();
+
+      expect(map['id'], '123');
+      expect(map['title'], 'Test Title');
+      expect(map['text'], 'Test Text');
+      // NoteModel fields are DateTime, so asMap should return DateTime
+      expect(map['creation_time'], now);
+      expect(map['last_time'], now);
+      expect(map['color'], Colors.red.toARGB32());
+      expect(map['saving_mode'], 1);
+    });
+
+    test('fromMap handles null timestamps gracefully', () {
+      final map = {
+        'id': '456',
+        'title': 'Null Times',
+        'text': 'Body',
+        'creation_time': null,
+        'last_time': null,
+        'is_deleted': false,
+        'permanent_delete_date': null,
+        'color': Colors.green.toARGB32(),
+        'reminder_date': null,
+        'email': null,
+        'is_archived': false,
+        'is_locked': false,
+        'saving_mode': 0,
+      };
+
+      final note = NoteModel.fromMap(map);
+
+      expect(note.id, '456');
+      expect(note.creationTime, isNull);
+      expect(note.modificationTime, isNull);
+      expect(note.reminderDate, isNull);
+      expect(note.permanentDeleteDate, isNull);
+      expect(note.email, isNull);
+    });
+
+    test('default values are correct', () {
+      final note = NoteModel();
+
+      expect(note.isDeleted, false);
+      expect(note.isArchived, false);
+      expect(note.isLocked, false);
+      expect(note.colorValue, Colors.cyan.toARGB32());
+      expect(note.savingModeValue, SavingMode.cloud.index);
+    });
+
+    test('fromMap with missing saving_mode defaults to cloud (index 0)', () {
+      final map = {
+        'id': '789',
+        'title': 'No saving mode',
+        'text': 'Test',
+        'creation_time': null,
+        'last_time': null,
+        'is_deleted': true,
+        'permanent_delete_date': null,
+        'color': Colors.blue.toARGB32(),
+        'reminder_date': null,
+        'email': 'user@test.com',
+        'is_archived': false,
+        'is_locked': true,
+        'saving_mode': null,
+      };
+
+      final note = NoteModel.fromMap(map);
+
+      expect(note.savingModeValue, SavingMode.cloud.index);
+      expect(note.isDeleted, true);
+      expect(note.isLocked, true);
+    });
+
+    test('SavingMode enum values are correct', () {
+      expect(SavingMode.cloud.index, 0);
+      expect(SavingMode.local.index, 1);
+      expect(SavingMode.cloudAndLocal.index, 2);
+    });
+
+    test('asMap includes all required keys', () {
+      final note = NoteModel(id: 'keys-test', title: 'T', text: 'B');
+      final map = note.asMap();
+
+      expect(map.containsKey('id'), true);
+      expect(map.containsKey('title'), true);
+      expect(map.containsKey('text'), true);
+      expect(map.containsKey('creation_time'), true);
+      expect(map.containsKey('last_time'), true);
+      expect(map.containsKey('is_deleted'), true);
+      expect(map.containsKey('permanent_delete_date'), true);
+      expect(map.containsKey('color'), true);
+      expect(map.containsKey('reminder_date'), true);
+      expect(map.containsKey('is_archived'), true);
+      expect(map.containsKey('email'), true);
+      expect(map.containsKey('is_locked'), true);
+      expect(map.containsKey('saving_mode'), true);
+    });
+  });
+}

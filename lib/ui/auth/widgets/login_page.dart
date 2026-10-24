@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:knote/data/repositories/auth_repository.dart';
+import 'package:knote/ui/auth/bloc/login_cubit.dart';
+import 'package:knote/ui/auth/widgets/login_form.dart';
+
+class LoginPage extends StatelessWidget {
+  static const routeName = "login";
+
+  const LoginPage({super.key});
+
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => const LoginPage());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0).copyWith(top:32.0),
+          child: BlocProvider(
+            create: (_) => LoginCubit(
+              context.read<AuthRepository>(),
+            ),
+            child: const LoginForm(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class LogOut extends StatefulWidget {
+  static const routeName = "logout";
+  const LogOut({super.key});
+
+  @override
+  State<LogOut> createState() => _LogOutState();
+}
+
+class _LogOutState extends State<LogOut> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}

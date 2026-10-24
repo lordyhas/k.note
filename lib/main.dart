@@ -2,17 +2,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:knote/routes.dart';
 
-import 'data/app_bloc.dart';
-import 'data/authentication_repository.dart';
-import 'data/values.dart';
-
-import 'firebase_options.dart';
-import 'package:knote/src/utils/save_in_background.dart';
+import 'package:knote/data/repositories/auth_repository.dart';
+import 'package:knote/firebase_options.dart';
+import 'package:knote/routing/router.dart';
+import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/app_bloc_observer.dart';
+import 'package:knote/ui/core/localization/strings.dart';
+import 'package:knote/ui/core/themes/style_cubit.dart';
+import 'package:knote/utils/save_in_background.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
