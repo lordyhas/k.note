@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/notes/widgets/note_text.dart';
 import 'package:knote/utils/save_in_background.dart';
-
 
 class TrashPage extends StatefulWidget {
   const TrashPage({super.key});
@@ -16,45 +16,84 @@ class TrashPage extends StatefulWidget {
 }
 
 class _TrashPageState extends State<TrashPage> {
-  late FirestoreService fbm ;
+  late final FirestoreService fbm;
+  late final Stream<List<NoteModel>> _notes;
 
-  /*String troncate(String text){
-    if(text.length > 150){
-      return text.substring(start)
-    }
-  }*/
+  @override
+  void initState() {
+    super.initState();
+    fbm = FirestoreService.user(
+        BlocProvider.of<AuthenticationBloc>(context).state.user);
+    _notes = fbm.watchDeletedNotes();
+  }
+
+  void _showActions(NoteModel note) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(note.title?.isNotEmpty == true ? note.title! : 'Untitled'),
+        content: const Text(
+            'Restore this note, or delete it forever? Deleting it forever '
+            "can't be undone."),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            child: const Text('Delete forever'),
+            onPressed: () {
+              saveInBackground(() => fbm.permanentlyDeleteNote(noteId: note.id),
+                  failureMessage: "The note couldn't be deleted");
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Restore'),
+            onPressed: () {
+              saveInBackground(() => fbm.restoreDeletedNote(noteId: note.id),
+                  failureMessage: "The note couldn't be restored");
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    fbm = FirestoreService.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user
-    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        //backgroundColor: Colors.cyan.withValues(alpha: opacity),
         title: const Text("Corbeille"),
       ),
-      body: FutureBuilder<List<NoteModel>?>(
-          future: fbm.getAllDeletedNoteInCloud(),
+      body: StreamBuilder<List<NoteModel>>(
+          stream: _notes,
           builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(child: Text("The bin couldn't be loaded"));
+            }
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (snapshot.data!.isEmpty) {
+            }
+            final notes = snapshot.data!;
+            if (notes.isEmpty) {
               return const Center(
                 child: Column(
-                  children:  [
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     Icon(
-                      Icons.file_copy_outlined,
+                      Icons.delete_outline,
                       size: 100,
                     ),
                     SizedBox(
                       height: 8.0,
                     ),
-                    Text('No document deleted')
+                    Text('The bin is empty')
                   ],
                 ),
               );
@@ -63,71 +102,23 @@ class _TrashPageState extends State<TrashPage> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: ListView.builder(
                 padding: const EdgeInsets.only(top: 16.0),
-                itemCount: snapshot.data!.length,
+                itemCount: notes.length,
                 itemBuilder: (context, i) => SizedBox(
                   height: 120,
                   child: Card(
                     margin: const EdgeInsets.symmetric(vertical: 4.0),
                     color: Colors.grey.shade700.withValues(alpha: 0.7),
                     child: ListTile(
-                      //leading: const Icon(Icons.delete_sweep_outlined, size: 42,),
                       title: Text(
-                        "${snapshot.data![i].title}",
+                        notes[i].title ?? '',
                         style: const TextStyle(fontSize: 18),
                       ),
                       subtitle: Text(
-                        "${snapshot.data![i].text}",
+                        notePlainText(notes[i].text),
                         maxLines: 4,
                         overflow: TextOverflow.ellipsis,
                       ),
-
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text(""),
-                          content: const SizedBox(
-                            //height: 20,
-                            child: Text(
-                                "Do you want to permanently delete this note ?"
-                                "(is an irreversible action) \n Or you want to restore from bin ? "),
-                          ),
-                          actions: [
-                            TextButton(
-                              child: const Text('Cancel'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            TextButton(
-                              child: const Text('Restore'),
-                              onPressed: () {
-                                final noteId = snapshot.data![i].id;
-                                saveInBackground(
-                                    () => fbm.restoreDeletedNote(
-                                        noteId: noteId),
-                                    failureMessage:
-                                        "The note couldn't be restored");
-                                setState(() {});
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            TextButton(
-                              child: const Text('Delete forever'),
-                              onPressed: () {
-                                final noteId = snapshot.data![i].id;
-                                saveInBackground(
-                                    () => fbm.permanentlyDeleteNote(
-                                        noteId: noteId),
-                                    failureMessage:
-                                        "The note couldn't be deleted");
-                                setState(() {});
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      //onTap: (){},
+                      onTap: () => _showActions(notes[i]),
                     ),
                   ),
                 ),

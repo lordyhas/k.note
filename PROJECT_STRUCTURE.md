@@ -32,7 +32,7 @@ lib/
 │   │   ├── app_bloc_observer.dart
 │   │   ├── localization/      # strings.dart (Language, LanguageBloc)
 │   │   ├── themes/            # styles.dart, style_cubit.dart, dimens.dart
-│   │   └── widgets/           # BackgroundUI, ComingSoon, ErrorPage
+│   │   └── widgets/           # BackgroundUI, ComingSoon, ErrorPage, undo snack bar
 │   ├── shell/
 │   │   └── app_shell.dart     # AppShell: bottom navigation around the tabs
 │   ├── auth/
@@ -45,6 +45,7 @@ lib/
 │   └── settings/
 │       └── widgets/           # SettingsPage, AboutPage, HelpPage, FeedbackPage, ...
 └── utils/
+    ├── autosave.dart            # Debounced saves for editors
     └── save_in_background.dart  # Fire-and-forget Firestore writes with error reporting
 ```
 

@@ -76,11 +76,48 @@ class FirestoreService {
     required bool isDeleted,
     required bool isArchived,
   }) async {
-    final snapshot = await _notes
-        .where('is_deleted', isEqualTo: isDeleted)
-        .where('is_archived', isEqualTo: isArchived)
-        .get();
+    final snapshot =
+        await _notesWhere(isDeleted: isDeleted, isArchived: isArchived).get();
     return snapshot.docs.map((doc) => NoteModel.fromMap(doc.data())).toList();
+  }
+
+  /// Live version of [getAllNoteInCloud]: emitted again whenever a note is
+  /// added, changed or deleted, most recently modified first.
+  Stream<List<NoteModel>> watchNotes() =>
+      _watchNotes(isDeleted: false, isArchived: false);
+
+  Stream<List<NoteModel>> watchArchivedNotes() =>
+      _watchNotes(isDeleted: false, isArchived: true);
+
+  /// Notes in the trash, live.
+  Stream<List<NoteModel>> watchDeletedNotes() =>
+      _watchNotes(isDeleted: true, isArchived: false);
+
+  Stream<List<NoteModel>> _watchNotes({
+    required bool isDeleted,
+    required bool isArchived,
+  }) {
+    return _notesWhere(isDeleted: isDeleted, isArchived: isArchived)
+        .snapshots()
+        .map((snapshot) {
+      final notes =
+          snapshot.docs.map((doc) => NoteModel.fromMap(doc.data())).toList();
+      // Sorted here rather than with orderBy, which would need a composite
+      // index alongside the two where clauses.
+      final epoch = DateTime.fromMillisecondsSinceEpoch(0);
+      notes.sort((a, b) => (b.modificationTime ?? b.creationTime ?? epoch)
+          .compareTo(a.modificationTime ?? a.creationTime ?? epoch));
+      return notes;
+    });
+  }
+
+  Query<Map<String, dynamic>> _notesWhere({
+    required bool isDeleted,
+    required bool isArchived,
+  }) {
+    return _notes
+        .where('is_deleted', isEqualTo: isDeleted)
+        .where('is_archived', isEqualTo: isArchived);
   }
 
   /// Creates [note], or replaces it entirely if it already exists.

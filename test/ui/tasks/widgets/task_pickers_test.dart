@@ -69,4 +69,19 @@ void main() {
           DateTime(2026, 10, 26, reminderMorningHour));
     });
   });
+
+  group('isOverdue', () {
+    test('a task due today is not late, even in the evening', () {
+      final today = DateTime(2026, 10, 23);
+      expect(isOverdue(today, now: DateTime(2026, 10, 23, 23, 59)), isFalse);
+    });
+
+    test('a task due yesterday is late', () {
+      expect(isOverdue(DateTime(2026, 10, 22), now: friday), isTrue);
+    });
+
+    test('a task due later is not late', () {
+      expect(isOverdue(DateTime(2026, 10, 24), now: friday), isFalse);
+    });
+  });
 }

@@ -72,6 +72,13 @@ DateTime dueDateFor(
   }
 }
 
+/// Whether a task due on [dueDate] is late at [now]. Due dates are days,
+/// stored at midnight: a task due today is not late until tomorrow.
+bool isOverdue(DateTime dueDate, {required DateTime now}) {
+  final dueDay = DateTime(dueDate.year, dueDate.month, dueDate.day);
+  return dueDay.isBefore(DateTime(now.year, now.month, now.day));
+}
+
 DateTime _startOfNextWeek(DateTime today, int firstDayOfWeekIndex) {
   final todayIndex = today.weekday % 7; // DateTime.sunday (7) -> 0
   var days = (firstDayOfWeekIndex - todayIndex) % 7;
