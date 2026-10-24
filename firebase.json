@@ -9,5 +9,25 @@
     "ui": {
       "enabled": false
     }
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "k8note",
+          "appId": "1:727681498864:android:1e1634c38d015bdf054c35",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "k8note",
+          "configurations": {
+            "android": "1:727681498864:android:1e1634c38d015bdf054c35",
+            "web": "1:727681498864:web:3c80b7beb083ffde054c35"
+          }
+        }
+      }
+    }
   }
 }

@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- The app now uses its own Firebase project, `k8note`, instead of the project it shared with another app (`parents-data-8c0ee`). Existing accounts and data were not migrated. The leftover iOS config, which still pointed to the old project, was removed.
 - Auth failures carry an `AuthError` code, translated by the UI, instead of an English sentence shown as is. Task repeat rules are described by the UI (`repeatText`) instead of `TaskRepeat.describe()`.
 - Colors are read from the `AppColors` theme extension instead of literals spread across widgets; the theme moved to `AppTheme.dark`. The look is unchanged.
 - Task due dates in the list read Yesterday / Today / Tomorrow or a short date ("Fri, Oct 30") instead of "30/10".
