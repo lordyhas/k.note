@@ -119,88 +119,12 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           padding: const EdgeInsets.only(),
           child: widget.child,
         ),
-        // floatingActionButton: BooleanBuilder(
-        //   condition: () {
-        //     return _currentIndex != 1;
-        //     // BlocProvider.of<AuthenticationBloc>(context)
-        //     //     .state
-        //     //     .isAuthenticated;
-        //     //return true;
-        //   },
-        //   ifTrue: FloatingActionButton(
-        //     child: const Icon(Icons.add),
-        //     onPressed: () {
-        //       showDialog(
-        //         context: context,
-        //         builder: (context) {
-        //           return AlertDialog(
-        //             title: const Text(
-        //               "Choissisez un editeur",
-        //               style: TextStyle(
-        //                 fontWeight: FontWeight.w600,
-        //               ),
-        //             ),
-        //             content: SizedBox(
-        //               height: 120,
-        //               child: Column(
-        //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //                 children: [
-        //                   ListTile(
-        //                     shape: RoundedRectangleBorder(
-        //                         borderRadius: BorderRadius.circular(10),
-        //                         side: const BorderSide(
-        //                           color: Colors.white,
-        //                           width: 1,
-        //                         )),
-        //                     onTap: () {
-        //                       GoRouter.of(context)
-        //                           .pushNamed(TextEditor.routeName);
-        //                       Navigator.of(context).pop();
-        //                     },
-        //                     title: const Text("Quill TextEditor"),
-        //                   ),
-        //                   ListTile(
-        //                     shape: RoundedRectangleBorder(
-        //                         borderRadius: BorderRadius.circular(10),
-        //                         side: const BorderSide(
-        //                           color: Colors.white,
-        //                           width: 1,
-        //                         )),
-        //                     onTap: () {
-        //                       GoRouter.of(context)
-        //                           .pushNamed(OldTextEditor.routeName);
-        //                       Navigator.of(context).pop();
-        //                     },
-        //                     title: const Text("Classic TextEditor"),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //             actions: [
-        //               ElevatedButton(
-        //                   onPressed: Navigator.of(context).pop,
-        //                   child: const Text("Annulé")),
-        //             ],
-        //           );
-        //         },
-        //       );
-        //     },
-        //   ),
-        //   ifFalse: FloatingActionButton(
-        //     onPressed: () async {
-        //       await Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => const TaskEditor()),
-        //       );
-        //       setState(() {});
-        //     },
-        //     child: const Icon(Icons.task),
-        //   ),
-        // ),
+
         bottomNavigationBar: CurvedNavigationBar(
           index: tabIndex,
           color: Colors.grey.shade900,
           backgroundColor: Colors.transparent,
+          iconPadding: 20.00,
           items: const [
             CurvedNavigationBarItem(
               child: Icon(Icons.file_copy_outlined),

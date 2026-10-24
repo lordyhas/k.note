@@ -55,7 +55,7 @@ class _OnErrorPageState extends State<OnErrorPage>
                 children: [
                   PositionedTransition(
                     rect: _relativeRectTween.animate(_controller),
-                    child: Image.asset('assets/img/brain.png'),
+                    child: Image.asset('assets/images/404error.png'),
                   ),
                   const Positioned(
                     top: 170,

@@ -37,10 +37,9 @@ class AppRouter {
         //initialLocation: "/${SettingProfileScreen.routeName}",
         routes: <RouteBase>[
           GoRoute(
-            /// []
+            /// [Redirect to home screen or login page]
             name: "/",
             path: "/",
-            //builder: (context, state) => const LogPage(),
             redirect: (ctx, state) {
               if (authBloc.state.status == AuthenticationStatus.authenticated) {
                 return "/${HomeScreen.routeName}";
@@ -49,14 +48,7 @@ class AppRouter {
               }
             },
           ),
-          GoRoute(
-            /// [/]
-            path: "/r/home",
-            //pageBuilder: ,
-            redirect: (ctx, state) {
-              return "/${HomeScreen.routeName}";
-            },
-          ),
+
           GoRoute(
             /// [/]
             path: LogOut.routeName,
@@ -67,22 +59,7 @@ class AppRouter {
               return "/${LoginPage.routeName}";
             },
           ),
-          // GoRoute(
-          //   /// [/]
-          //   path: "/signup",
-          //   //pageBuilder: ,
-          //   redirect: (ctx, state) {
-          //     //var user = BlocProvider.of<AuthenticationBloc>(ctx).state.user;
-          //     //print('AppRouter.routes: ${user.email}');
 
-          //     switch (ctx.read<AuthenticationBloc>().state.status) {
-          //       case AuthenticationStatus.authenticated:
-          //         return "/${HomeScreen.routeName}";
-          //       case AuthenticationStatus.unauthenticated:
-          //         return "/${LoginPage.routeName}";
-          //     }
-          //   },
-          // ),
           ShellRoute(
             navigatorKey:
                 GlobalKey<NavigatorState>(debugLabel: "__ShellRoute__"),
@@ -94,14 +71,6 @@ class AppRouter {
                 name: HomeScreen.routeName,
                 path: "/${HomeScreen.routeName}",
                 builder: (context, state) => const HomeScreen(),
-                /*redirect: (_,state) {
-              switch(BlocProvider.of<AuthenticationBloc>(_).state.status){
-                case AuthenticationStatus.authenticated:
-                  return null;
-                case AuthenticationStatus.unauthenticated:
-                  return LoginPage.routeName;
-              }
-            },*/
                 routes: <RouteBase>[
                   GoRoute(
                     name: OfflineScreen.routeName,
@@ -115,13 +84,6 @@ class AppRouter {
                     builder: (context, state) =>
                         TextEditor(note: state.extra as NoteModel?),
                   ),
-                  // GoRoute(
-                  //   parentNavigatorKey: key,
-                  //   name: OldTextEditor.routeName,
-                  //   path: OldTextEditor.routeName,
-                  //   builder: (context, state) =>
-                  //       OldTextEditor(note: state.extra as NoteModel?),
-                  // ),
                   GoRoute(
                     name: TaskScreen.routeName,
                     path: TaskScreen.routeName,

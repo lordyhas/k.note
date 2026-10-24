@@ -79,7 +79,7 @@ class AppView extends StatelessWidget {
       child: MaterialApp.router(
         scaffoldMessengerKey: appMessengerKey,
         debugShowCheckedModeBanner: false,
-        title: 'K.NOTE',
+        title: 'KNOTE',
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

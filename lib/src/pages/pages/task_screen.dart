@@ -51,47 +51,50 @@ class _TaskScreenState extends State<TaskScreen> {
           ),
         ],
       ),
-      body: StreamBuilder<List<CheckList>>(
-        stream: _tasks,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData && !snapshot.hasError) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text('Error: ${snapshot.error}',
-                    style: const TextStyle(color: Colors.white)));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return _buildEmptyState();
-          } else {
-            final tasks = snapshot.data!;
-            final activeTasks = tasks.where((t) => !t.isAllChecked).toList();
-            final completedTasks = tasks.where((t) => t.isAllChecked).toList();
+      body: Container(
+        constraints: const BoxConstraints(maxWidth: 910),
+        child: StreamBuilder<List<CheckList>>(
+          stream: _tasks,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData && !snapshot.hasError) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text('Error: ${snapshot.error}',
+                      style: const TextStyle(color: Colors.white)));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return _buildEmptyState();
+            } else {
+              final tasks = snapshot.data!;
+              final activeTasks = tasks.where((t) => !t.isAllChecked).toList();
+              final completedTasks = tasks.where((t) => t.isAllChecked).toList();
 
-            return ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              children: [
-                if (activeTasks.isNotEmpty) ...[
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text('Active', style: TextStyle(color: Colors.grey)),
-                  ),
-                  ...activeTasks.map((t) => _buildTaskItem(t)),
+              return ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                children: [
+                  if (activeTasks.isNotEmpty) ...[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text('Active', style: TextStyle(color: Colors.grey)),
+                    ),
+                    ...activeTasks.map((t) => _buildTaskItem(t)),
+                  ],
+                  if (completedTasks.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    ExpansionTile(
+                      title: Text('Completed ${completedTasks.length}',
+                          style: const TextStyle(color: Colors.white)),
+                      iconColor: Colors.white,
+                      collapsedIconColor: Colors.white,
+                      children:
+                          completedTasks.map((t) => _buildTaskItem(t)).toList(),
+                    ),
+                  ],
                 ],
-                if (completedTasks.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  ExpansionTile(
-                    title: Text('Completed ${completedTasks.length}',
-                        style: const TextStyle(color: Colors.white)),
-                    iconColor: Colors.white,
-                    collapsedIconColor: Colors.white,
-                    children:
-                        completedTasks.map((t) => _buildTaskItem(t)).toList(),
-                  ),
-                ],
-              ],
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
       ),
       //bottomNavigationBar: const SizedBox(height: 70),
       floatingActionButton: Padding(
