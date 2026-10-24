@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:knote/config/assets.dart';
-import 'package:knote/ui/core/localization/strings.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 
 class AboutPage extends StatefulWidget {
   static const routeName = "about";
@@ -26,7 +26,6 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutState extends State<AboutPage> {
-  late final Map<String, String> text;
   var timeUpdate = DateTime.now();
   String appVersion = "0.2.0";
 
@@ -37,7 +36,6 @@ class _AboutState extends State<AboutPage> {
   initState() {
     super.initState();
     initPlatformPackageInfo();
-    text = BlocProvider.of<LanguageBloc>(context).state.strings!;
   }
 
   Future<void> initPlatformPackageInfo() async {
@@ -66,10 +64,11 @@ class _AboutState extends State<AboutPage> {
   }
 
   Widget contentAbout() {
+    final l10n = context.l10n;
     var primaryTextStyle20 = Theme.of(context).textTheme.bodyMedium!.copyWith(
           fontSize: 17,
         );
-    var textSettingsStyle = TextStyle(color: Colors.blue[600]);
+    var textSettingsStyle = TextStyle(color: AppColors.of(context).link);
 
     return ListView(
       physics: const BouncingScrollPhysics(),
@@ -116,35 +115,34 @@ class _AboutState extends State<AboutPage> {
               ListTile(
                 leading: const Icon(Icons.info),
                 title: Text(
-                  "Version",
+                  l10n.version,
                   style: primaryTextStyle20,
                 ),
-                subtitle: Text(
-                  "$appVersion (non-stable)",
-                ),
+                subtitle: Text(l10n.versionUnstable(appVersion)),
               ),
               ListTile(
                 leading: const Icon(Icons.update),
                 title: Text(
-                  text['about_update']!,
+                  l10n.lastUpdate,
                   style: primaryTextStyle20,
                 ),
                 subtitle: Text(
-                  "${DateTime(2021, 5, 4, 21, 0)}",
+                  MaterialLocalizations.of(context)
+                      .formatFullDate(DateTime(2021, 5, 4)),
                 ),
                 //${timeUpdate.subtract(Duration(days: 35, hours: 1))}
               ),
               ListTile(
                 leading: const Icon(Icons.sync),
                 title: Text(
-                  "Checking for update",
+                  l10n.checkingForUpdates,
                   style: primaryTextStyle20,
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.turned_in_not),
                 title: Text(
-                  text['about_licence']!,
+                  l10n.licenses,
                   style: primaryTextStyle20,
                 ),
                 onTap: () => showLicensePage(
@@ -163,7 +161,7 @@ class _AboutState extends State<AboutPage> {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  text['about_author']!,
+                  l10n.author,
                   style: textSettingsStyle,
                 ),
               ),
@@ -187,7 +185,7 @@ class _AboutState extends State<AboutPage> {
               ListTile(
                 leading: const Icon(Icons.group_outlined),
                 title: Text(
-                  "Our team",
+                  l10n.ourTeam,
                   style: primaryTextStyle20,
                 ),
               ),
@@ -200,7 +198,7 @@ class _AboutState extends State<AboutPage> {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  text['about_company']!,
+                  l10n.company,
                   style: textSettingsStyle,
                 ),
               ),
@@ -210,19 +208,15 @@ class _AboutState extends State<AboutPage> {
                   "KDynamic Inc.",
                   style: primaryTextStyle20,
                 ),
-                subtitle: const Text(
-                  "Mobile App Developers ",
-                ),
+                subtitle: Text(l10n.companyTagline),
               ),
               ListTile(
                 leading: const Icon(Icons.location_on),
                 title: Text(
-                  text['about_add']!,
+                  l10n.address,
                   style: primaryTextStyle20,
                 ),
-                subtitle: const Text(
-                  "None ",
-                ),
+                subtitle: Text(l10n.none),
               ),
             ],
           ),

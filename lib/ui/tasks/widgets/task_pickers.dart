@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:knote/domain/models/task_repeat.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/tasks/widgets/task_text.dart';
 
 Widget _darkPickerTheme(BuildContext context, Widget? child) {
+  final colors = AppColors.of(context);
   return Theme(
     data: ThemeData.dark().copyWith(
-      colorScheme: const ColorScheme.dark(
-        primary: Colors.blueAccent,
-        onPrimary: Colors.white,
-        surface: Color(0xFF1F1F1F),
-        onSurface: Colors.white,
+      colorScheme: ColorScheme.dark(
+        primary: colors.accent,
+        onPrimary: colors.text,
+        surface: colors.surface,
+        onSurface: colors.text,
       ),
-      dialogTheme: const DialogThemeData(backgroundColor: Color(0xFF1F1F1F)),
+      dialogTheme: DialogThemeData(backgroundColor: colors.surface),
+      extensions: [colors],
     ),
     child: child!,
   );
@@ -134,10 +139,11 @@ Future<TaskRepeat?> pickCustomRepeat(BuildContext context,
     context: context,
     builder: (context) => Theme(
       data: ThemeData.dark().copyWith(
-        colorScheme: const ColorScheme.dark(
-          primary: Colors.blueAccent,
-          surface: Color(0xFF1F1F1F),
+        colorScheme: ColorScheme.dark(
+          primary: AppColors.of(context).accent,
+          surface: AppColors.of(context).surface,
         ),
+        extensions: [AppColors.of(context)],
       ),
       child: CustomRepeatDialog(initial: initial),
     ),
@@ -162,11 +168,10 @@ class _CustomRepeatDialogState extends State<CustomRepeatDialog> {
     if (widget.initial?.weekdays.isEmpty ?? true) DateTime.now().weekday,
   };
 
-  String _unitLabel(RepeatUnit unit) =>
-      _interval == 1 ? unit.name : '${unit.name}s';
-
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     final localizations = MaterialLocalizations.of(context);
     // ISO weekdays (1 = Monday ... 7 = Sunday) in the locale's week order.
     final orderedDays = [
@@ -178,8 +183,8 @@ class _CustomRepeatDialogState extends State<CustomRepeatDialog> {
     ];
 
     return AlertDialog(
-      backgroundColor: const Color(0xFF1F1F1F),
-      title: const Text('Repeat every'),
+      backgroundColor: colors.surface,
+      title: Text(l10n.repeatEveryTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,14 +192,14 @@ class _CustomRepeatDialogState extends State<CustomRepeatDialog> {
           Row(
             children: [
               IconButton(
-                tooltip: 'Fewer',
+                tooltip: l10n.fewer,
                 onPressed:
                     _interval > 1 ? () => setState(() => _interval--) : null,
                 icon: const Icon(Icons.remove),
               ),
               Text('$_interval', style: const TextStyle(fontSize: 18)),
               IconButton(
-                tooltip: 'More',
+                tooltip: l10n.more,
                 onPressed:
                     _interval < 99 ? () => setState(() => _interval++) : null,
                 icon: const Icon(Icons.add),
@@ -202,12 +207,13 @@ class _CustomRepeatDialogState extends State<CustomRepeatDialog> {
               const SizedBox(width: 8),
               DropdownButton<RepeatUnit>(
                 value: _unit,
-                dropdownColor: const Color(0xFF2B2B2B),
+                dropdownColor: colors.surfaceHigh,
                 onChanged: (unit) => setState(() => _unit = unit!),
                 items: [
                   for (final unit in RepeatUnit.values)
                     DropdownMenuItem(
-                        value: unit, child: Text(_unitLabel(unit))),
+                        value: unit,
+                        child: Text(repeatUnitText(l10n, unit, _interval))),
                 ],
               ),
             ],
@@ -240,7 +246,7 @@ class _CustomRepeatDialogState extends State<CustomRepeatDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.pop(
@@ -251,7 +257,7 @@ class _CustomRepeatDialogState extends State<CustomRepeatDialog> {
               weekdays: _unit == RepeatUnit.week ? {..._weekdays} : const {},
             ),
           ),
-          child: const Text('Save'),
+          child: Text(l10n.save),
         ),
       ],
     );

@@ -30,8 +30,8 @@ lib/
 ├── ui/
 │   ├── core/                  # Shared by every feature
 │   │   ├── app_bloc_observer.dart
-│   │   ├── localization/      # strings.dart (Language, LanguageBloc)
-│   │   ├── themes/            # styles.dart, style_cubit.dart, dimens.dart
+│   │   ├── localization/      # app_en.arb, app_fr.arb, l10n.dart (+ generated app_localizations*.dart)
+│   │   ├── themes/            # app_theme.dart, app_colors.dart, dimens.dart, styles.dart, style_cubit.dart
 │   │   └── widgets/           # BackgroundUI, ComingSoon, ErrorPage, undo snack bar
 │   ├── shell/
 │   │   └── app_shell.dart     # AppShell: bottom navigation around the tabs
@@ -79,6 +79,8 @@ ui  ──▶  data  ──▶  domain
 | A Firestore field | the model in `domain/models/`, `FirestoreService`, **and** `firestore.rules` (see `docs/security.md`) |
 | Access to a new backend or API | `data/services/` (raw access) or `data/repositories/` (app-facing data) |
 | An asset | `assets/` + `pubspec.yaml` + a constant in `config/assets.dart` |
+| Text shown to the user | a key in `ui/core/localization/app_en.arb` **and** `app_fr.arb`, read with `context.l10n.<key>` |
+| A color | a role in `AppColors` (`ui/core/themes/app_colors.dart`), read with `AppColors.of(context)` |
 
 ### Conventions
 
@@ -87,6 +89,7 @@ ui  ──▶  data  ──▶  domain
 - Imports use `package:knote/...` (no relative imports, no barrel files), sorted
   in groups: `dart:`, packages, then `package:knote`.
 - `part` is only used for a bloc's events and states.
+- No user-visible text or color literal in widgets: see the table above.
 
 ## `test/`
 
@@ -97,6 +100,7 @@ live in `test/ui/tasks/widgets/task_quick_add_test.dart`.
 test/
 ├── data/                # AuthRepository, FirestoreService (fake_cloud_firestore)
 ├── domain/models/       # model mapping
+├── helpers/             # localizedApp(): MaterialApp with the app's translations
 ├── routing/             # AppRouter configuration
 ├── ui/                  # blocs (bloc_test) and widget tests
 ├── utils/

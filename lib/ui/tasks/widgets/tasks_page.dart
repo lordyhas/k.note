@@ -5,10 +5,14 @@ import 'package:go_router/go_router.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/themes/dimens.dart';
 import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
 import 'package:knote/ui/tasks/widgets/task_quick_add.dart';
+import 'package:knote/ui/tasks/widgets/task_text.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 class TasksPage extends StatefulWidget {
@@ -33,16 +37,17 @@ class _TasksPageState extends State<TasksPage> {
   final Set<String?> _removedIds = {};
 
   void _delete(CheckList task) {
+    final l10n = context.l10n;
     setState(() => _removedIds.add(task.id));
     saveInBackground(() => _firebaseManager.deleteTask(taskId: task.id),
-        failureMessage: "The task couldn't be deleted", onFailure: () {
+        failureMessage: l10n.taskDeleteFailed, onFailure: () {
       if (mounted) setState(() => _removedIds.remove(task.id));
       return false;
     });
-    showUndoSnackBar('"${task.title}" deleted', onUndo: () {
+    showUndoSnackBar(l10n.taskDeleted(task.title), onUndo: () {
       if (mounted) setState(() => _removedIds.remove(task.id));
       saveInBackground(() => _firebaseManager.addTaskInCloud(task: task),
-          failureMessage: "The task couldn't be restored");
+          failureMessage: l10n.taskRestoreFailed);
     });
   }
 
@@ -57,22 +62,22 @@ class _TasksPageState extends State<TasksPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        title: const Text('Tasks',
+        title: Text(l10n.tasksTitle,
             style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 24)),
-        backgroundColor: Colors.black,
+                color: colors.text, fontWeight: FontWeight.bold, fontSize: 24)),
+        backgroundColor: colors.background,
         elevation: 0,
-        leading: const Icon(Icons.task_alt,
-            color: Colors.white), // const BackButton(color: Colors.white),
+        leading: Icon(Icons.task_alt, color: colors.text),
         actions: [
           //todo: pop up menu
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
+            tooltip: l10n.moreOptions,
+            icon: Icon(Icons.more_vert, color: colors.text),
             onPressed: () {},
           ),
         ],
@@ -85,12 +90,11 @@ class _TasksPageState extends State<TasksPage> {
             if (!snapshot.hasData && !snapshot.hasError) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(
-                  child: Text('Error: ${snapshot.error}',
-                      style: const TextStyle(color: Colors.white)));
+              debugPrint('Tasks could not be loaded: ${snapshot.error}');
+              return _buildMessage(Icons.error_outline, l10n.tasksLoadError);
             } else if (!snapshot.hasData ||
                 snapshot.data!.every((t) => _removedIds.contains(t.id))) {
-              return _buildEmptyState();
+              return _buildMessage(Icons.task_alt, l10n.tasksEmpty);
             } else {
               final tasks = snapshot.data!
                   .where((t) => !_removedIds.contains(t.id))
@@ -103,20 +107,20 @@ class _TasksPageState extends State<TasksPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: [
                   if (activeTasks.isNotEmpty) ...[
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child:
-                          Text('Active', style: TextStyle(color: Colors.grey)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(l10n.tasksActive,
+                          style: TextStyle(color: colors.textMuted)),
                     ),
                     ...activeTasks.map((t) => _buildTaskItem(t)),
                   ],
                   if (completedTasks.isNotEmpty) ...[
                     const SizedBox(height: 16),
                     ExpansionTile(
-                      title: Text('Completed ${completedTasks.length}',
-                          style: const TextStyle(color: Colors.white)),
-                      iconColor: Colors.white,
-                      collapsedIconColor: Colors.white,
+                      title: Text(l10n.tasksCompleted(completedTasks.length),
+                          style: TextStyle(color: colors.text)),
+                      iconColor: colors.text,
+                      collapsedIconColor: colors.text,
                       children:
                           completedTasks.map((t) => _buildTaskItem(t)).toList(),
                     ),
@@ -129,38 +133,48 @@ class _TasksPageState extends State<TasksPage> {
       ),
       //bottomNavigationBar: const SizedBox(height: 70),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 70),
+        padding: const EdgeInsets.only(bottom: fabBottomPadding),
         child: FloatingActionButton(
-          backgroundColor: Colors.blueAccent,
+          tooltip: l10n.tasksNew,
+          backgroundColor: colors.accent,
           onPressed: () =>
               showTaskQuickAdd(context, firebaseManager: _firebaseManager),
-          child: const Icon(Icons.add, color: Colors.white),
+          child: Icon(Icons.add, color: colors.text),
         ),
       ),
     );
   }
 
-  Widget _buildEmptyState() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.task_alt, size: 100, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
-            'No tasks found',
-            style: TextStyle(color: Colors.grey, fontSize: 18),
-          ),
-        ],
+  /// Empty and error states.
+  Widget _buildMessage(IconData icon, String text) {
+    final color = AppColors.of(context).textMuted;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 100, color: color),
+            const SizedBox(height: 16),
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: color, fontSize: 18),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTaskItem(CheckList task) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     Color taskColor = Color(task.colorValue);
     bool isDark = taskColor.computeLuminance() < 0.5;
+    // White is the default task color, shown as a plain card.
     if (taskColor.toARGB32() == Colors.white.toARGB32()) {
-      taskColor = const Color(0xFF1F1F1F);
+      taskColor = colors.surface;
       isDark = true;
     }
     Color textColor = isDark ? Colors.white : Colors.black;
@@ -170,9 +184,9 @@ class _TasksPageState extends State<TasksPage> {
       key: Key(task.id ?? task.title),
       background: Container(
         alignment: Alignment.centerRight,
-        color: Colors.red,
+        color: colors.danger,
         padding: const EdgeInsets.only(right: 20.0),
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: Icon(Icons.delete, color: colors.text),
       ),
       onDismissed: (_) => _delete(task),
       child: Card(
@@ -183,50 +197,64 @@ class _TasksPageState extends State<TasksPage> {
           onTap: () => GoRouter.of(context)
               .pushNamed(TaskEditorPage.routeName, extra: task),
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
             child: Row(
               children: [
-                InkWell(
-                  onTap: () {
-                    final updatedTask = CheckList(
-                      id: task.id,
-                      title: task.title,
-                      list: task.list,
-                      isAllChecked: !task.isAllChecked,
-                      color: Color(task.colorValue),
-                      creationTime: task.creationTime,
-                      modificationTime: DateTime.now(),
-                      isImportant: task.isImportant,
-                      isMyDay: task.isMyDay,
-                      dueDate: task.dueDate,
-                      reminderTime: task.reminderTime,
-                      repeat: task.repeat,
-                      note: task.note,
-                    );
-                    saveInBackground(
-                        () => _firebaseManager.updateTaskInCloud(
-                            task: updatedTask),
-                        failureMessage: "The task couldn't be updated");
-                  },
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                          color:
-                              task.isAllChecked ? Colors.blueAccent : iconColor,
-                          width: 2),
-                      color: task.isAllChecked
-                          ? Colors.blueAccent
-                          : Colors.transparent,
+                Semantics(
+                  button: true,
+                  checked: task.isAllChecked,
+                  label: task.isAllChecked
+                      ? l10n.taskMarkNotCompleted
+                      : l10n.taskMarkCompleted,
+                  child: InkResponse(
+                    radius: 24,
+                    onTap: () {
+                      final updatedTask = CheckList(
+                        id: task.id,
+                        title: task.title,
+                        list: task.list,
+                        isAllChecked: !task.isAllChecked,
+                        color: Color(task.colorValue),
+                        creationTime: task.creationTime,
+                        modificationTime: DateTime.now(),
+                        isImportant: task.isImportant,
+                        isMyDay: task.isMyDay,
+                        dueDate: task.dueDate,
+                        reminderTime: task.reminderTime,
+                        repeat: task.repeat,
+                        note: task.note,
+                      );
+                      saveInBackground(
+                          () => _firebaseManager.updateTaskInCloud(
+                              task: updatedTask),
+                          failureMessage: l10n.taskUpdateFailed);
+                    },
+                    // 48 x 48: the minimum touch target.
+                    child: SizedBox.square(
+                      dimension: 48,
+                      child: Center(
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: task.isAllChecked
+                                    ? colors.accent
+                                    : iconColor,
+                                width: 2),
+                            color: task.isAllChecked
+                                ? colors.accent
+                                : Colors.transparent,
+                          ),
+                          child: task.isAllChecked
+                              ? Icon(Icons.check, size: 16, color: colors.text)
+                              : null,
+                        ),
+                      ),
                     ),
-                    child: task.isAllChecked
-                        ? const Icon(Icons.check, size: 16, color: Colors.white)
-                        : null,
                   ),
                 ),
-                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,7 +262,9 @@ class _TasksPageState extends State<TasksPage> {
                       Text(
                         task.title,
                         style: TextStyle(
-                            color: task.isAllChecked ? Colors.grey : textColor,
+                            color: task.isAllChecked
+                                ? colors.textMuted
+                                : textColor,
                             fontSize: 16,
                             decoration: task.isAllChecked
                                 ? TextDecoration.lineThrough
@@ -249,11 +279,12 @@ class _TasksPageState extends State<TasksPage> {
                                   size: 12, color: iconColor),
                               const SizedBox(width: 4),
                               Text(
-                                _formatDate(task.dueDate!),
+                                dueDateText(l10n, task.dueDate!,
+                                    now: DateTime.now()),
                                 style: TextStyle(
                                     color: isOverdue(task.dueDate!,
                                             now: DateTime.now())
-                                        ? Colors.red
+                                        ? colors.danger
                                         : iconColor,
                                     fontSize: 12),
                               ),
@@ -264,9 +295,12 @@ class _TasksPageState extends State<TasksPage> {
                   ),
                 ),
                 IconButton(
+                  tooltip: task.isImportant
+                      ? l10n.taskRemoveImportance
+                      : l10n.taskMarkImportant,
                   icon: Icon(
                     task.isImportant ? Icons.star : Icons.star_border,
-                    color: task.isImportant ? Colors.blueAccent : iconColor,
+                    color: task.isImportant ? colors.accent : iconColor,
                   ),
                   onPressed: () {
                     final updatedTask = CheckList(
@@ -287,7 +321,7 @@ class _TasksPageState extends State<TasksPage> {
                     saveInBackground(
                         () => _firebaseManager.updateTaskInCloud(
                             task: updatedTask),
-                        failureMessage: "The task couldn't be updated");
+                        failureMessage: l10n.taskUpdateFailed);
                   },
                 ),
               ],
@@ -296,9 +330,5 @@ class _TasksPageState extends State<TasksPage> {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return "${date.day}/${date.month}";
   }
 }

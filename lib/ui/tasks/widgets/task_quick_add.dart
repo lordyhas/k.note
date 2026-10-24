@@ -5,7 +5,10 @@ import 'package:uuid/uuid.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/task_repeat.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
+import 'package:knote/ui/tasks/widgets/task_text.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 /// Opens the Microsoft To Do style "Add a task" sheet above the keyboard.
@@ -19,7 +22,7 @@ Future<void> showTaskQuickAdd(
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: const Color(0xFF2B2B2B),
+    backgroundColor: AppColors.of(context).surfaceHigh,
     shape: const RoundedRectangleBorder(),
     builder: (_) => TaskQuickAddSheet(firebaseManager: firebaseManager),
   );
@@ -53,6 +56,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
   }
 
   void _submit() {
+    final l10n = context.l10n;
     final title = _titleController.text.trim();
     if (title.isEmpty) return;
 
@@ -75,7 +79,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
     // offline); if the server rejects the task, it is put back for a retry.
     saveInBackground(
       () => widget.firebaseManager.addTaskInCloud(task: task),
-      failureMessage: "The task “$title” couldn't be saved",
+      failureMessage: l10n.taskSaveFailedNamed(title),
       onFailure: () {
         if (!mounted || _titleController.text.isNotEmpty) return false;
         setState(() {
@@ -83,7 +87,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
           _dueDate = dueDate;
           _reminderTime = reminderTime;
           _repeat = repeat;
-          _error = "Couldn't save this task. Tap ↑ to try again.";
+          _error = l10n.taskQuickAddFailed;
         });
         return true;
       },
@@ -124,38 +128,41 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
   }
 
   String get _dueDateLabel {
+    final l10n = context.l10n;
     final dueDate = _dueDate;
-    if (dueDate == null) return 'Set due date';
-    if (dueDate == _shortcutDate(DueDateShortcut.today)) return 'Due Today';
+    if (dueDate == null) return l10n.setDueDate;
+    if (dueDate == _shortcutDate(DueDateShortcut.today)) return l10n.dueToday;
     if (dueDate == _shortcutDate(DueDateShortcut.tomorrow)) {
-      return 'Due Tomorrow';
+      return l10n.dueTomorrow;
     }
-    return 'Due ${DateFormat('EEE, MMM d').format(dueDate)}';
+    return l10n.dueOn(shortDate(l10n, dueDate));
   }
 
   List<PopupMenuEntry<_DueDateChoice>> _dueDateMenu(BuildContext context) {
+    final l10n = context.l10n;
     String weekday(DueDateShortcut shortcut) =>
-        DateFormat('EEEE').format(_shortcutDate(shortcut));
+        weekdayName(l10n, _shortcutDate(shortcut));
     return [
       _menuItem(_DueDateChoice.today, Icons.today_outlined,
-          'Today (${weekday(DueDateShortcut.today)})'),
+          l10n.menuToday(weekday(DueDateShortcut.today))),
       _menuItem(_DueDateChoice.tomorrow, Icons.event_outlined,
-          'Tomorrow (${weekday(DueDateShortcut.tomorrow)})'),
+          l10n.menuTomorrow(weekday(DueDateShortcut.tomorrow))),
       _menuItem(_DueDateChoice.nextWeek, Icons.date_range_outlined,
-          'Next week (${weekday(DueDateShortcut.nextWeek)})'),
+          l10n.menuNextWeek(weekday(DueDateShortcut.nextWeek))),
       _menuItem(
-          _DueDateChoice.pick, Icons.edit_calendar_outlined, 'Pick a date'),
+          _DueDateChoice.pick, Icons.edit_calendar_outlined, l10n.pickDate),
       if (_dueDate != null) ...[
         const PopupMenuDivider(),
         _menuItem(
-            _DueDateChoice.remove, Icons.delete_outline, 'Remove due date',
-            color: Colors.redAccent),
+            _DueDateChoice.remove, Icons.delete_outline, l10n.removeDueDate,
+            color: AppColors.of(context).danger),
       ],
     ];
   }
 
   PopupMenuItem<T> _menuItem<T>(T value, IconData icon, String label,
-      {Color color = Colors.white}) {
+      {Color? color}) {
+    color ??= AppColors.of(context).text;
     return PopupMenuItem(
       value: value,
       child: Row(
@@ -203,39 +210,41 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
   }
 
   String get _reminderLabel {
+    final l10n = context.l10n;
     final reminder = _reminderTime;
-    if (reminder == null) return 'Remind me';
+    if (reminder == null) return l10n.remindMe;
     final day = DateTime(reminder.year, reminder.month, reminder.day);
     if (day == _shortcutDate(DueDateShortcut.today)) {
-      return 'Remind me at ${_time(reminder)}';
+      return l10n.remindMeAt(_time(reminder));
     }
     if (day == _shortcutDate(DueDateShortcut.tomorrow)) {
-      return 'Tomorrow, ${_time(reminder)}';
+      return l10n.reminderTomorrowAt(_time(reminder));
     }
-    return '${DateFormat('EEE, MMM d').format(reminder)}, ${_time(reminder)}';
+    return l10n.reminderOn(shortDate(l10n, reminder), _time(reminder));
   }
 
   List<PopupMenuEntry<_ReminderChoice>> _reminderMenu(BuildContext context) {
     final laterToday = _shortcutReminder(ReminderShortcut.laterToday);
     final tomorrow = _shortcutReminder(ReminderShortcut.tomorrow)!;
     final nextWeek = _shortcutReminder(ReminderShortcut.nextWeek)!;
+    final l10n = context.l10n;
     String dayAndTime(DateTime dateTime) =>
-        '${DateFormat('EEE').format(dateTime)} ${_time(dateTime)}';
+        '${DateFormat.E(l10n.localeName).format(dateTime)} ${_time(dateTime)}';
     return [
       if (laterToday != null)
         _menuItem(_ReminderChoice.laterToday, Icons.update,
-            'Later today (${_time(laterToday)})'),
+            l10n.menuLaterToday(_time(laterToday))),
       _menuItem(_ReminderChoice.tomorrow, Icons.schedule,
-          'Tomorrow (${dayAndTime(tomorrow)})'),
+          l10n.menuTomorrow(dayAndTime(tomorrow))),
       _menuItem(_ReminderChoice.nextWeek, Icons.arrow_circle_right_outlined,
-          'Next week (${dayAndTime(nextWeek)})'),
+          l10n.menuNextWeek(dayAndTime(nextWeek))),
       _menuItem(_ReminderChoice.pick, Icons.edit_calendar_outlined,
-          'Pick a date & time'),
+          l10n.pickDateAndTime),
       if (_reminderTime != null) ...[
         const PopupMenuDivider(),
         _menuItem(
-            _ReminderChoice.remove, Icons.delete_outline, 'Remove reminder',
-            color: Colors.redAccent),
+            _ReminderChoice.remove, Icons.delete_outline, l10n.removeReminder,
+            color: AppColors.of(context).danger),
       ],
     ];
   }
@@ -265,21 +274,26 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
   }
 
   List<PopupMenuEntry<Object>> _repeatMenu(BuildContext context) {
+    final l10n = context.l10n;
     return [
       for (final preset in TaskRepeat.presets)
-        _menuItem<Object>(preset, _repeatIcons[preset]!, preset.describe()),
-      _menuItem<Object>(_RepeatAction.custom, Icons.tune, 'Custom'),
+        _menuItem<Object>(
+            preset, _repeatIcons[preset]!, repeatText(l10n, preset)),
+      _menuItem<Object>(_RepeatAction.custom, Icons.tune, l10n.repeatCustom),
       if (_repeat != null) ...[
         const PopupMenuDivider(),
         _menuItem<Object>(
-            _RepeatAction.never, Icons.delete_outline, 'Never repeat',
-            color: Colors.redAccent),
+            _RepeatAction.never, Icons.delete_outline, l10n.repeatNever,
+            color: AppColors.of(context).danger),
       ],
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
+    final repeat = _repeat;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SafeArea(
@@ -291,10 +305,10 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
             children: [
               Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Icon(Icons.radio_button_unchecked,
-                        color: Colors.grey, size: 28),
+                        color: colors.textMuted, size: 28),
                   ),
                   Expanded(
                     child: TextField(
@@ -303,10 +317,10 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                       autofocus: true,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.done,
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
-                      decoration: const InputDecoration(
-                        hintText: 'Add a task',
-                        hintStyle: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: colors.text, fontSize: 18),
+                      decoration: InputDecoration(
+                        hintText: l10n.quickAddHint,
+                        hintStyle: TextStyle(color: colors.textMuted),
                         border: InputBorder.none,
                       ),
                       // Keeps the keyboard open so the next task can be typed.
@@ -318,16 +332,15 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                     builder: (context, value, _) {
                       final canSubmit = value.text.trim().isNotEmpty;
                       return IconButton.filled(
-                        tooltip: 'Add',
+                        tooltip: l10n.quickAddSubmit,
                         onPressed: canSubmit ? _submit : null,
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          disabledBackgroundColor: Colors.grey.shade700,
+                          backgroundColor: colors.accent,
+                          disabledBackgroundColor: colors.disabled,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(6)),
                         ),
-                        icon:
-                            const Icon(Icons.arrow_upward, color: Colors.white),
+                        icon: Icon(Icons.arrow_upward, color: colors.text),
                       );
                     },
                   ),
@@ -338,8 +351,8 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                   padding: const EdgeInsets.fromLTRB(52, 0, 8, 4),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(_error!,
-                        style: const TextStyle(color: Colors.redAccent)),
+                    child:
+                        Text(_error!, style: TextStyle(color: colors.danger)),
                   ),
                 ),
               SingleChildScrollView(
@@ -347,7 +360,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                 child: Row(
                   children: [
                     PopupMenuButton<_DueDateChoice>(
-                      color: const Color(0xFF2B2B2B),
+                      color: colors.surfaceHigh,
                       onSelected: _onDueDateSelected,
                       onCanceled: _focusNode.requestFocus,
                       itemBuilder: _dueDateMenu,
@@ -361,7 +374,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                       ),
                     ),
                     PopupMenuButton<_ReminderChoice>(
-                      color: const Color(0xFF2B2B2B),
+                      color: colors.surfaceHigh,
                       onSelected: _onReminderSelected,
                       onCanceled: _focusNode.requestFocus,
                       itemBuilder: _reminderMenu,
@@ -375,14 +388,16 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                       ),
                     ),
                     PopupMenuButton<Object>(
-                      color: const Color(0xFF2B2B2B),
+                      color: colors.surfaceHigh,
                       onSelected: _onRepeatSelected,
                       onCanceled: _focusNode.requestFocus,
                       itemBuilder: _repeatMenu,
                       child: IgnorePointer(
                         child: _OptionButton(
                           icon: Icons.repeat,
-                          label: _repeat?.describe() ?? 'Repeat',
+                          label: repeat == null
+                              ? l10n.repeat
+                              : repeatText(l10n, repeat),
                           isActive: _repeat != null,
                           onPressed: () {},
                         ),
@@ -420,7 +435,8 @@ class _OptionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? Colors.blueAccent : Colors.white;
+    final colors = AppColors.of(context);
+    final color = isActive ? colors.accent : colors.text;
     return TextButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, color: color),

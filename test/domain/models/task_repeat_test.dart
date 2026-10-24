@@ -15,9 +15,8 @@ void main() {
       }
     });
 
-    test('are not custom and describe themselves by name', () {
+    test('are not custom', () {
       expect(TaskRepeat.weekly.isCustom, isFalse);
-      expect(TaskRepeat.weekdaysOnly.describe(), 'Weekdays');
     });
   });
 
@@ -41,15 +40,6 @@ void main() {
               interval: 3, unit: RepeatUnit.day, weekdays: {1}).encode(),
           'custom:3:day');
     });
-
-    test('describe reads naturally', () {
-      expect(TaskRepeat.parse('custom:1:day')!.describe(), 'Every day');
-      expect(TaskRepeat.parse('custom:3:month')!.describe(), 'Every 3 months');
-      expect(TaskRepeat.parse('custom:2:week:1,3')!.describe(),
-          'Every 2 weeks on Mon, Wed');
-      expect(
-          TaskRepeat.parse('custom:1:week:7')!.describe(), 'Every week on Sun');
-    });
   });
 
   group('TaskRepeat.parse', () {
@@ -69,11 +59,6 @@ void main() {
 
     test('ignores invalid weekdays', () {
       expect(TaskRepeat.parse('custom:1:week:0,2,9,x')!.weekdays, {2});
-    });
-
-    test('describeValue shows unknown values as they are', () {
-      expect(TaskRepeat.describeValue('custom:2:year'), 'Every 2 years');
-      expect(TaskRepeat.describeValue('Hourly'), 'Hourly');
     });
   });
 }

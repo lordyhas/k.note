@@ -5,6 +5,8 @@ import 'package:formz/formz.dart';
 
 import 'package:knote/ui/auth/bloc/login_cubit.dart';
 import 'package:knote/ui/auth/bloc/sign_up_cubit.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 
 
 
@@ -23,17 +25,17 @@ class EmailInput extends StatelessWidget {
               .emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppColors.of(context).text),
             ),
-            prefixIcon: const FaIcon(FontAwesomeIcons.user,
-              color: Colors.white,
+            prefixIcon: FaIcon(FontAwesomeIcons.user,
+              color: AppColors.of(context).text,
             ),
-            labelText: 'Enter your mail address',
+            labelText: context.l10n.emailLabel,
             helperText: '',
             errorText: state.email.displayError != null
-                ? 'invalid email'
-                : null, // 231010-012084
+                ? context.l10n.invalidEmail
+                : null,
           ),
         );
       },
@@ -63,15 +65,19 @@ class _PasswordInputState extends State<PasswordInput> {
           obscureText: !showPassword,
           //focusNode: FocusNode(),
           decoration: InputDecoration(
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppColors.of(context).text),
             ),
-            prefixIcon: const FaIcon(FontAwesomeIcons.lock, color: Colors.white),
+            prefixIcon: FaIcon(FontAwesomeIcons.lock,
+                color: AppColors.of(context).text),
             suffixIcon: IconButton(
+              tooltip: showPassword
+                  ? context.l10n.hidePassword
+                  : context.l10n.showPassword,
               icon: FaIcon(showPassword
                   ? FontAwesomeIcons.eyeSlash
                   : FontAwesomeIcons.eye,
-                color: Colors.white,
+                color: AppColors.of(context).text,
               ),
               onPressed: (){
                 setState(() {
@@ -79,10 +85,10 @@ class _PasswordInputState extends State<PasswordInput> {
                 });
               },
             ),
-            labelText: 'Enter your password',
+            labelText: context.l10n.passwordLabel,
             helperText: '',
             errorText: state.password.displayError != null
-                ? 'invalid password'
+                ? context.l10n.invalidPassword
                 : null,
           ),
         );
@@ -107,7 +113,7 @@ class LoginButton extends StatelessWidget {
               child: ElevatedButton(
                 key: const Key('__loginForm_continue_raisedButton__'),
                 style: ElevatedButton.styleFrom(
-                  disabledBackgroundColor: Colors.grey.shade700,
+                  disabledBackgroundColor: AppColors.of(context).disabled,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -115,13 +121,16 @@ class LoginButton extends StatelessWidget {
                 onPressed: state.isValid
                     ? () => context.read<LoginCubit>().logInWithCredentials()
                     : null,
-                child: const Row(
+                child: Row(
                   children: [
-                    FaIcon(FontAwesomeIcons.circleUser, color: Colors.white,),
-                    Spacer(),
-                    Text('Login', style: TextStyle(color: Colors.white),),
-                    Spacer(),
-                    FaIcon(FontAwesomeIcons.circleUser, color: Colors.transparent,),
+                    FaIcon(FontAwesomeIcons.circleUser,
+                        color: AppColors.of(context).text),
+                    const Spacer(),
+                    Text(context.l10n.logIn,
+                        style: TextStyle(color: AppColors.of(context).text)),
+                    const Spacer(),
+                    const FaIcon(FontAwesomeIcons.circleUser,
+                        color: Colors.transparent),
                   ],
                 ),
 
@@ -146,10 +155,7 @@ class GoogleLoginButton extends StatelessWidget {
     Widget googleOutlineButton = OutlinedButton(
       onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
       style: ElevatedButton.styleFrom(
-        side: const BorderSide(
-            width: 2.0,
-            color: Colors.blue //theme.primaryColor,
-        ),
+        side: BorderSide(width: 2.0, color: AppColors.of(context).link),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -160,14 +166,13 @@ class GoogleLoginButton extends StatelessWidget {
       //highlightedBorderColor: theme.primaryColor,
       //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
 
-      child:  const Row(
-        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Row(
         children: [
-          FaIcon(FontAwesomeIcons.google),
-          Spacer(),
-          Text("Sign in with Google"),
-          Spacer(),
-          FaIcon(FontAwesomeIcons.google, color: Colors.transparent,),
+          const FaIcon(FontAwesomeIcons.google),
+          const Spacer(),
+          Text(context.l10n.signInWithGoogle),
+          const Spacer(),
+          const FaIcon(FontAwesomeIcons.google, color: Colors.transparent),
         ],
       ),
 
@@ -187,10 +192,7 @@ class FacebookLoginButton extends StatelessWidget {
     Widget facebookOutlineButton = OutlinedButton(
       key: const Key('__loginForm_facebookLogin_outlineButton__'),
       style: OutlinedButton.styleFrom(
-        side: const BorderSide(
-            width: 2.0,
-            color: Colors.blue //theme.primaryColor,
-        ),
+        side: BorderSide(width: 2.0, color: AppColors.of(context).link),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -198,14 +200,13 @@ class FacebookLoginButton extends StatelessWidget {
 
       onPressed: () {}, //=> context.bloc<LoginCubit>().logInWithFacebook(),
 
-      child: const Row(
-        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Row(
         children: [
-          FaIcon(FontAwesomeIcons.facebookF),
-          Spacer(),
-          Text("Sign in with Facebook"),
-          Spacer(),
-          FaIcon(FontAwesomeIcons.facebookF, color: Colors.transparent,),
+          const FaIcon(FontAwesomeIcons.facebookF),
+          const Spacer(),
+          Text(context.l10n.signInWithFacebook),
+          const Spacer(),
+          const FaIcon(FontAwesomeIcons.facebookF, color: Colors.transparent),
         ],
       ),
     );
@@ -230,9 +231,11 @@ class EmailSignInInput extends StatelessWidget {
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             prefixIcon: const FaIcon(FontAwesomeIcons.user),
-            labelText: 'email',
+            labelText: context.l10n.emailLabel,
             helperText: '',
-            errorText: state.email.displayError != null ? 'invalid email' : null,
+            errorText: state.email.displayError != null
+                ? context.l10n.invalidEmail
+                : null,
           ),
         );
       },
@@ -264,6 +267,9 @@ class _PasswordSignInInputState extends State<PasswordSignInInput> {
           decoration: InputDecoration(
             prefixIcon: const FaIcon(FontAwesomeIcons.lock),
             suffixIcon: IconButton(
+              tooltip: showPassword
+                  ? context.l10n.hidePassword
+                  : context.l10n.showPassword,
               icon: FaIcon(showPassword? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye),
               onPressed: (){
                 setState(() {
@@ -272,10 +278,10 @@ class _PasswordSignInInputState extends State<PasswordSignInInput> {
 
               },
             ),
-            labelText: 'password',
+            labelText: context.l10n.passwordLabel,
             helperText: '',
             errorText: state.password.displayError != null
-                ? 'invalid password'
+                ? context.l10n.invalidPassword
                 : null,
           ),
         );
@@ -335,19 +341,17 @@ class SignUpSignInButton extends StatelessWidget {
                   onPressed: state.isValid
                       ? () => context.read<SignUpCubit>().signUpFormSubmitted()
                       : null,
-                  child: const SizedBox(
-                    child:  Row(
-                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.circleUser,
-                          color: Colors.white,
-                        ),
-                        Spacer(),
-                        Text('Sign Up', style: TextStyle(color: Colors.white),),
-                        Spacer(),
-                      ],
-                    ),
+                  child: Row(
+                    children: [
+                      FaIcon(
+                        FontAwesomeIcons.circleUser,
+                        color: AppColors.of(context).text,
+                      ),
+                      const Spacer(),
+                      Text(context.l10n.signUp,
+                          style: TextStyle(color: AppColors.of(context).text)),
+                      const Spacer(),
+                    ],
                   ),
 
           ),

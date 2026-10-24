@@ -22,7 +22,7 @@ class _OfflineNotesPageState extends State<OfflineNotesPage> {
     return Column(
       children: [
         const Spacer(),
-        ComingSoon(),
+        const ComingSoon(),
         const Spacer(),
       ],
     );

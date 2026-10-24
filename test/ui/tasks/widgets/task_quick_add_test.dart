@@ -1,6 +1,7 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:knote/data/services/firestore_service.dart';
@@ -8,6 +9,8 @@ import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/ui/tasks/widgets/task_quick_add.dart';
+
+import '../../../helpers/localized_app.dart';
 
 const _user = User(id: 'user-1', email: 'a@b.c', name: null, photoMail: null);
 
@@ -23,7 +26,7 @@ void main() {
   });
 
   Future<void> pumpSheet(WidgetTester tester) {
-    return tester.pumpWidget(MaterialApp(
+    return tester.pumpWidget(localizedApp(
       home: Scaffold(body: TaskQuickAddSheet(firebaseManager: manager)),
     ));
   }
@@ -37,7 +40,7 @@ void main() {
       attempts++;
       if (attempts == 1) throw Exception('permission-denied');
     });
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(localizedApp(
       home: Scaffold(body: TaskQuickAddSheet(firebaseManager: failing)),
     ));
 
@@ -182,7 +185,7 @@ void main() {
 
     final expected = TaskRepeat.custom(
         interval: 2, unit: RepeatUnit.week, weekdays: {DateTime.now().weekday});
-    expect(find.text(expected.describe()), findsOneWidget);
+    expect(find.text('Every 2 weeks on ${_weekday(expected)}'), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), 'Water plants');
     await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -207,3 +210,6 @@ void main() {
     expect(find.text('Set due date'), findsOneWidget);
   });
 }
+
+String _weekday(TaskRepeat repeat) =>
+    DateFormat.E('en').format(DateTime(2024, 1, repeat.weekdays.single));

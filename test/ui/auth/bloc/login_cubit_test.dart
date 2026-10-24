@@ -133,7 +133,8 @@ void main() {
                 email: any(named: 'email'),
                 password: any(named: 'password'),
               )).thenThrow(
-            const LogInWithEmailAndPasswordFailure(kNetworkErrorMessage),
+            const LogInWithEmailAndPasswordFailure(
+                kNetworkErrorMessage, AuthError.network),
           );
         },
         build: () => LoginCubit(authRepository),
@@ -151,6 +152,7 @@ void main() {
             isValid: true,
             status: FormzSubmissionStatus.failure,
             errorMessage: kNetworkErrorMessage,
+            error: AuthError.network,
           ),
         ],
       );
@@ -175,7 +177,8 @@ void main() {
         'emits failure with the network message when offline',
         setUp: () {
           when(() => authRepository.logInWithGoogle())
-              .thenThrow(const LogInWithGoogleFailure(kNetworkErrorMessage));
+              .thenThrow(const LogInWithGoogleFailure(
+                  kNetworkErrorMessage, AuthError.network));
         },
         build: () => LoginCubit(authRepository),
         act: (cubit) => cubit.logInWithGoogle(),
@@ -184,6 +187,7 @@ void main() {
           LoginState(
             status: FormzSubmissionStatus.failure,
             errorMessage: kNetworkErrorMessage,
+            error: AuthError.network,
           ),
         ],
       );

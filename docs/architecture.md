@@ -38,7 +38,7 @@ Key state objects:
 
 - `AuthenticationBloc`: user session state and logout flow.
 - `LoginCubit` / `SignUpCubit`: auth form state + submission status.
-- `LanguageBloc` and `StyleCubit`: app UI preferences.
+- `StyleCubit`: app UI preferences. The language follows the device (English or French) through `AppLocalizations`.
 
 `AuthRepository.user` is a stream backed by Firebase auth state changes and cached current user.
 
@@ -67,4 +67,4 @@ Typical note flow:
 ## Notable technical debt / to confirm
 
 - `.env` exists but active runtime use is not evident in startup code.
-- `LanguageBloc` and `StyleCubit` are not persisted between launches.
+- `StyleCubit` is not persisted between launches.

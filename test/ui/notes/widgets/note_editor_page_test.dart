@@ -1,12 +1,13 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
+
+import '../../../helpers/localized_app.dart';
 
 const _user = User(id: 'user-1', email: 'a@b.c', name: null, photoMail: null);
 
@@ -19,8 +20,7 @@ void main() {
 
   /// Opens the editor above a home page, as the router does.
   Future<void> openEditor(WidgetTester tester, {NoteModel? note}) async {
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: const [FlutterQuillLocalizations.delegate],
+    await tester.pumpWidget(localizedApp(
       home: Builder(
         builder: (context) => TextButton(
           onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(

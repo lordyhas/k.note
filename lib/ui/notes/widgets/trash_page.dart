@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -28,32 +30,32 @@ class _TrashPageState extends State<TrashPage> {
   }
 
   void _showActions(NoteModel note) {
+    final l10n = context.l10n;
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(note.title?.isNotEmpty == true ? note.title! : 'Untitled'),
-        content: const Text(
-            'Restore this note, or delete it forever? Deleting it forever '
-            "can't be undone."),
+        title: Text(note.title?.isNotEmpty == true ? note.title! : l10n.untitled),
+        content: Text(l10n.binDialogContent),
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
             onPressed: () => Navigator.of(context).pop(),
           ),
           TextButton(
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
-            child: const Text('Delete forever'),
+            style: TextButton.styleFrom(
+                foregroundColor: AppColors.of(context).danger),
+            child: Text(l10n.binDeleteForever),
             onPressed: () {
               saveInBackground(() => fbm.permanentlyDeleteNote(noteId: note.id),
-                  failureMessage: "The note couldn't be deleted");
+                  failureMessage: l10n.noteDeleteFailed);
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: const Text('Restore'),
+            child: Text(l10n.binRestore),
             onPressed: () {
               saveInBackground(() => fbm.restoreDeletedNote(noteId: note.id),
-                  failureMessage: "The note couldn't be restored");
+                  failureMessage: l10n.noteRestoreFailed);
               Navigator.of(context).pop();
             },
           ),
@@ -67,13 +69,13 @@ class _TrashPageState extends State<TrashPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Corbeille"),
+        title: Text(context.l10n.binTitle),
       ),
       body: StreamBuilder<List<NoteModel>>(
           stream: _notes,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Center(child: Text("The bin couldn't be loaded"));
+              return Center(child: Text(context.l10n.binLoadError));
             }
             if (!snapshot.hasData) {
               return const Center(
@@ -82,18 +84,18 @@ class _TrashPageState extends State<TrashPage> {
             }
             final notes = snapshot.data!;
             if (notes.isEmpty) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.delete_outline,
                       size: 100,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8.0,
                     ),
-                    Text('The bin is empty')
+                    Text(context.l10n.binEmpty)
                   ],
                 ),
               );
@@ -107,7 +109,7 @@ class _TrashPageState extends State<TrashPage> {
                   height: 120,
                   child: Card(
                     margin: const EdgeInsets.symmetric(vertical: 4.0),
-                    color: Colors.grey.shade700.withValues(alpha: 0.7),
+                    color: AppColors.of(context).tile,
                     child: ListTile(
                       title: Text(
                         notes[i].title ?? '',

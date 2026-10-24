@@ -82,22 +82,6 @@ class TaskRepeat {
     if (unit != RepeatUnit.week || weekdays.isEmpty) return base;
     return '$base:${(weekdays.toList()..sort()).join(',')}';
   }
-
-  /// A short English description, e.g. "Every 2 weeks on Mon, Wed".
-  String describe() {
-    final preset = this.preset;
-    if (preset != null) return preset;
-    final every =
-        interval == 1 ? 'Every ${unit.name}' : 'Every $interval ${unit.name}s';
-    if (weekdays.isEmpty) return every;
-    const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    final days = (weekdays.toList()..sort()).map((day) => names[day - 1]);
-    return '$every on ${days.join(', ')}';
-  }
-
-  /// [describe] for a stored value; unknown values are shown as is.
-  static String describeValue(String value) =>
-      parse(value)?.describe() ?? value;
 }
 
 enum RepeatUnit { day, week, month, year }

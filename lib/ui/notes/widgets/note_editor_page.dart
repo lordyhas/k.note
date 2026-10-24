@@ -10,6 +10,7 @@ import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/utils/autosave.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -58,6 +59,16 @@ class _NoteEditorPageState extends State<NoteEditorPage>
   late final Autosave _autosave;
   late final StreamSubscription<DocChange> _documentChanges;
   bool isNoteInCloud = false;
+
+  /// Kept for [_saveNote], which also runs from [dispose] where the context
+  /// can no longer be used.
+  late AppLocalizations _l10n;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _l10n = context.l10n;
+  }
 
   @override
   void initState() {
@@ -159,7 +170,7 @@ class _NoteEditorPageState extends State<NoteEditorPage>
     if (!isNoteInCloud) {
       final note = _noteModel;
       saveInBackground(() => _firebaseManager.addNoteInCloud(note: note),
-          failureMessage: "The note couldn't be saved", canRetry: false);
+          failureMessage: _l10n.noteSaveFailed, canRetry: false);
       isNoteInCloud = true;
     } else {
       final noteId = _noteModel.id;
@@ -167,7 +178,7 @@ class _NoteEditorPageState extends State<NoteEditorPage>
       saveInBackground(
           () => _firebaseManager.updateNoteContent(
               noteId: noteId, title: title, text: contentJson),
-          failureMessage: "The note couldn't be saved",
+          failureMessage: _l10n.noteSaveFailed,
           canRetry: false);
     }
   }
@@ -189,13 +200,14 @@ class _NoteEditorPageState extends State<NoteEditorPage>
           elevation: 0.0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
-            tooltip: 'Done',
+            tooltip: context.l10n.editorDone,
             icon: const Icon(Icons.done),
             // Leaving the page saves (see dispose).
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           actions: [
             IconButton(
+              tooltip: context.l10n.editorColor,
               icon: Icon(
                 Icons.style,
                 color: Color(_noteModel.colorValue),
@@ -213,9 +225,9 @@ class _NoteEditorPageState extends State<NoteEditorPage>
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 4.0),
-                                  child: const Text(
-                                    'Change the note color',
-                                    style: TextStyle(
+                                  child: Text(
+                                    context.l10n.editorColorTitle,
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -243,7 +255,7 @@ class _NoteEditorPageState extends State<NoteEditorPage>
                                                       .addNoteInCloud(
                                                           note: note),
                                                   failureMessage:
-                                                      "The note color couldn't be saved",
+                                                      _l10n.noteColorSaveFailed,
                                                   canRetry: false);
                                               if (!isNoteInCloud) {
                                                 isNoteInCloud = true;
@@ -268,6 +280,7 @@ class _NoteEditorPageState extends State<NoteEditorPage>
               },
             ),
             IconButton(
+              tooltip: context.l10n.moreOptions,
               icon: const Icon(Icons.more_vert),
               onPressed: () {
                 // Future cleanup or detailed menu
@@ -286,7 +299,8 @@ class _NoteEditorPageState extends State<NoteEditorPage>
                 style: const TextStyle(fontSize: 22),
                 controller: _titleController,
                 onChanged: (_) => _autosave.changed(),
-                decoration: const InputDecoration.collapsed(hintText: "Title"),
+                decoration:
+                    InputDecoration.collapsed(hintText: context.l10n.titleHint),
               ),
             ),
             Expanded(

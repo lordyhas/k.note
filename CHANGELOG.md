@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- French translation. The app follows the device language (English or French, English otherwise). All text lives in `lib/ui/core/localization/app_en.arb` and `app_fr.arb` (`flutter gen-l10n`); dates, weekdays and times are formatted for the language.
+- Tooltips on every icon-only button (also read by screen readers), and a labelled 48 dp touch target for the task completion circle.
 - Note search: the search bar on the notes screen filters notes live by title and text, ignoring case and accents; back clears the search.
 - Undo after archiving a note, moving it to the bin, or swiping a task away. Moving a note to the bin no longer asks for confirmation.
 - Microsoft To Do style quick add on the tasks screen: the + button opens an "Add a task" bar above the keyboard with due date, reminder and repeat options; tasks are added without leaving the page.
@@ -24,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- Auth failures carry an `AuthError` code, translated by the UI, instead of an English sentence shown as is. Task repeat rules are described by the UI (`repeatText`) instead of `TaskRepeat.describe()`.
+- Colors are read from the `AppColors` theme extension instead of literals spread across widgets; the theme moved to `AppTheme.dark`. The look is unchanged.
+- Task due dates in the list read Yesterday / Today / Tomorrow or a short date ("Fri, Oct 30") instead of "30/10".
+- Empty and error states of the tasks screen explain what to do instead of "No tasks found" or a raw error.
 - The notes, archive and bin lists update live (`FirestoreService.watchNotes`, `watchArchivedNotes`, `watchDeletedNotes`), most recently modified first.
 - The note editor saves one second after typing stops, when the page is left by any means (including the system back button) and when the app goes to the background, instead of every 10 changes and on the done button only. Opening a note and leaving it unchanged no longer writes it.
 - Project reorganized into the Flutter app-architecture layout (`config/`, `routing/`, `domain/models/`, `data/repositories|services/`, `ui/<feature>/{bloc,widgets}`, `ui/core/`, `utils/`), with `test/` mirroring `lib/`. Barrel files and `part`-based screen libraries replaced by direct imports. Classes renamed after their role (`FirebaseManager` → `FirestoreService`, `HomeScreen` → `NotesPage`, `TextEditor` → `NoteEditorPage`, `TaskScreen` → `TasksPage`, `SettingProfileScreen` → `SettingsPage`, `NavigationHomeScreen` → `AppShell`, ...); route paths unchanged. See `PROJECT_STRUCTURE.md` and ADR 0002.
@@ -33,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- Mixed French and English text and typos ("Welcome to konte", "Welcome to K22D", "Find a documents", "Se deconnecter", ...).
+- The About screen printed its update date as a raw timestamp.
 - The bin and archive showed the raw Quill JSON of notes instead of their text.
 - A task due today was shown as overdue (red) all day.
 - Changing a note's color could overwrite edits not yet saved.
@@ -52,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Signing in without an email (anonymous account) no longer crashes.
 
 ### Removed
+- `LanguageBloc` and `strings.dart`, left over from another app and only used by the About screen.
 - Dead code unreachable from `main.dart` or unused: old text editor, splash/log/generate pages, drawer, calendar screen, ObjectBox `DatabaseManager`, `AppData`/`LocationData`/`SettingData` models, empty files; and the unused `hive`, `hive_flutter` and `hydrated_bloc` dependencies.
 - Unused and unsafe `FirebaseManager` methods: arbitrary key updates, hard-coded location writes, random-id user documents (`addUserData`), and a stream over the whole `K_NOTE` collection.
 - `UserData` model.

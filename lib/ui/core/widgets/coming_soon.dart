@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:knote/ui/core/localization/l10n.dart';
+
 class ComingSoon extends StatelessWidget {
   const ComingSoon({super.key});
 
@@ -8,8 +10,8 @@ class ComingSoon extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          Icon(Icons.emoji_emotions_outlined, size:100),
-          Text("Coming Soon"),
+          const Icon(Icons.emoji_emotions_outlined, size: 100),
+          Text(context.l10n.comingSoon),
         ],
       ),
     );

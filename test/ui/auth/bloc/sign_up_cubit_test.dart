@@ -239,6 +239,7 @@ void main() {
             ),
             isValid: true,
             errorMessage: 'Sign up failed',
+            error: AuthError.unknown,
             status: FormzSubmissionStatus.failure,
           ),
         ],

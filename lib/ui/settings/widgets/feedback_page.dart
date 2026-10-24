@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/themes/styles.dart';
 
 class FeedbackPage extends StatefulWidget {
@@ -18,6 +20,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = AppColors.of(context);
     return SizedBox(
       //color: StyleAppTheme.nearlyWhite,
       child: SafeArea(
@@ -38,9 +42,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 8),
-                    child: const Text(
-                      'Your FeedBack',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.feedbackTitle,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -48,10 +52,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 16),
-                    child: const Text(
-                      'Give your best time for this moment.',
+                    child: Text(
+                      l10n.feedbackBody,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
@@ -64,12 +68,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         width: 120,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: colors.link,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4.0)),
                           boxShadow: <BoxShadow>[
                             BoxShadow(
-                                color: Colors.grey.withValues(alpha: 0.6),
+                                color:
+                                    colors.textMuted.withValues(alpha: 0.6),
                                 offset: const Offset(4, 4),
                                 blurRadius: 2.0),
                           ],
@@ -80,14 +85,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());
                             },
-                            child: const Center(
+                            child: Center(
                               child: Padding(
-                                padding: EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(4.0),
                                 child: Text(
-                                  'Send',
+                                  l10n.send,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                                    color: colors.text,
                                   ),
                                 ),
                               ),
@@ -115,7 +120,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
           borderRadius: BorderRadius.circular(8),
           boxShadow: <BoxShadow>[
             BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.8),
+                color: AppColors.of(context)
+                    .textMuted
+                    .withValues(alpha: 0.8),
                 offset: const Offset(4, 4),
                 blurRadius: 2),
           ],
@@ -137,10 +144,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   fontSize: 16,
                   color: StyleAppTheme.darkGrey,
                 ),
-                cursorColor: Colors.blue,
-                decoration: const InputDecoration(
+                cursorColor: AppColors.of(context).link,
+                decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Enter your feedback...'),
+                    hintText: context.l10n.feedbackHint),
               ),
             ),
           ),

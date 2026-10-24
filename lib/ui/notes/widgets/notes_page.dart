@@ -8,6 +8,8 @@ import 'package:knote/config/assets.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/themes/dimens.dart';
 import 'package:knote/ui/core/themes/styles.dart';
 import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
@@ -78,9 +80,9 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          leading: const Icon(
+          leading: Icon(
             CupertinoIcons.home,
-            color: Colors.white,
+            color: AppColors.of(context).text,
           ),
           title: const Text(
             'K.NOTE',
@@ -92,10 +94,12 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
           ),
           actions: [
             IconButton(
-              tooltip: multiple ? 'List view' : 'Grid view',
+              tooltip: multiple
+                  ? context.l10n.notesListView
+                  : context.l10n.notesGridView,
               icon: Icon(
                 multiple ? Icons.dashboard : Icons.view_agenda,
-                color: Colors.white,
+                color: AppColors.of(context).text,
               ),
               onPressed: () => setState(() {
                 multiple = !multiple;
@@ -110,7 +114,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                 child: Row(
                   children: [
                     IconButton(
-                      tooltip: 'Search',
+                      tooltip: context.l10n.notesSearch,
                       icon: const Icon(Icons.search),
                       onPressed: _searchFocus.requestFocus,
                     ),
@@ -121,19 +125,20 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                         key: const Key('homePage_search_textField'),
                         textInputAction: TextInputAction.search,
                         onChanged: (_) => setState(() {}),
-                        decoration: const InputDecoration.collapsed(
-                            hintText: 'Search notes'),
+                        decoration: InputDecoration.collapsed(
+                            hintText: context.l10n.notesSearchHint),
                       ),
                     ),
                     if (_query.isEmpty)
                       IconButton(
+                        tooltip: context.l10n.notifications,
                         icon: const Icon(Icons.notifications_none_rounded),
                         onPressed: () {},
                       )
                     else
                       IconButton(
                         key: const Key('homePage_search_clear'),
-                        tooltip: 'Clear search',
+                        tooltip: context.l10n.notesClearSearch,
                         icon: const Icon(Icons.close),
                         onPressed: _clearSearch,
                       ),
@@ -150,9 +155,9 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                 .isAuthenticated;
           },
           ifTrue: Padding(
-            padding: const EdgeInsets.only(bottom: 70),
+            padding: const EdgeInsets.only(bottom: fabBottomPadding),
             child: FloatingActionButton(
-              tooltip: 'New note',
+              tooltip: context.l10n.notesNew,
               child: const Icon(Icons.add),
               onPressed: () {
                 GoRouter.of(context).pushNamed(NoteEditorPage.routeName);
@@ -175,25 +180,25 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
       stream: _notes,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const _Message(
+          return _Message(
             icon: Icons.error_outline,
-            text: "Your notes couldn't be loaded",
+            text: context.l10n.notesLoadError,
           );
         }
         if (!snapshot.hasData) return const CircularProgressMultiBar();
 
         final allNotes = snapshot.data!;
         if (allNotes.isEmpty) {
-          return const _Message(
+          return _Message(
             icon: Icons.note_add_outlined,
-            text: 'No notes yet. Tap + to write one.',
+            text: context.l10n.notesEmpty,
           );
         }
         final data = searchNotes(allNotes, _query);
         if (data.isEmpty) {
           return _Message(
             icon: Icons.search_off,
-            text: 'No notes match "$_query"',
+            text: context.l10n.notesNoMatch(_query),
           );
         }
         return GridView(
@@ -264,6 +269,9 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
   }
 
   Widget _buildBottomMenu(NoteModel note) {
+    final l10n = context.l10n;
+    final title =
+        note.title?.isNotEmpty == true ? note.title! : l10n.untitled;
     // Scrolls rather than overflowing on small screens; the bottom padding
     // keeps the last item above the navigation bar drawn over the sheet.
     return SingleChildScrollView(
@@ -277,29 +285,29 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
               height: 30,
             ),
             title: Text(
-              note.title?.isNotEmpty == true ? note.title! : 'Untitled',
+              title,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
-          const Divider(color: Colors.white),
+          Divider(color: AppColors.of(context).text),
           ListTile(
             leading: Icon(
               Icons.archive_outlined,
               color: Theme.of(context).iconTheme.color,
             ),
-            title: const Text("Archive"),
+            title: Text(l10n.noteArchive),
             onTap: () {
               saveInBackground(
                   () => _firebaseManager.archiveNote(
                       noteId: note.id, archived: true),
-                  failureMessage: "The note couldn't be archived");
+                  failureMessage: l10n.noteArchiveFailed);
               Navigator.of(context).pop();
               showUndoSnackBar(
-                '"${note.title ?? 'Untitled'}" archived',
+                l10n.noteArchived(title),
                 onUndo: () => saveInBackground(
                     () => _firebaseManager.archiveNote(
                         noteId: note.id, archived: false),
-                    failureMessage: "The note couldn't be unarchived"),
+                    failureMessage: l10n.noteUnarchiveFailed),
               );
             },
           ),
@@ -308,18 +316,18 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                 Icons.delete_outline,
                 color: Theme.of(context).iconTheme.color,
               ),
-              title: const Text("Move to bin"),
+              title: Text(l10n.noteMoveToBin),
               onTap: () {
                 saveInBackground(
                     () => _firebaseManager.deleteNote(noteId: note.id),
-                    failureMessage: "The note couldn't be moved to the bin");
+                    failureMessage: l10n.noteMoveToBinFailed);
                 Navigator.of(context).pop();
                 showUndoSnackBar(
-                  '"${note.title ?? 'Untitled'}" moved to the bin',
+                  l10n.noteMovedToBin(title),
                   onUndo: () => saveInBackground(
                       () =>
                           _firebaseManager.restoreDeletedNote(noteId: note.id),
-                      failureMessage: "The note couldn't be restored"),
+                      failureMessage: l10n.noteRestoreFailed),
                 );
               }),
           ListTile(
@@ -327,19 +335,19 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
               Icons.color_lens_outlined,
               color: Theme.of(context).iconTheme.color,
             ),
-            title: const Text("Change color"),
+            title: Text(l10n.noteChangeColor),
             onTap: () {},
           ),
-          const Divider(
+          Divider(
             indent: 42.0,
-            color: Colors.white,
+            color: AppColors.of(context).text,
           ),
           ListTile(
             leading: Icon(
               Icons.save_alt_rounded,
               color: Theme.of(context).iconTheme.color,
             ),
-            title: const Text("Saving mode"),
+            title: Text(l10n.noteSavingMode),
             onTap: () {},
           ),
         ],
@@ -422,7 +430,9 @@ class _Message extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 80, color: Colors.white54),
+            Icon(icon,
+                size: 80,
+                color: AppColors.of(context).text.withValues(alpha: 0.54)),
             const SizedBox(height: 12.0),
             Text(text, textAlign: TextAlign.center),
           ],
