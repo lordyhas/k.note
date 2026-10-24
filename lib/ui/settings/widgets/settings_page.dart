@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 32.0, bottom: 64.0),
+        padding: const EdgeInsets.only(top: 32.0, bottom: 42.0),
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: 910),
@@ -88,7 +88,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   height: 40,
                 ),
                 SizedBox(
-                  height: 560,
+                  //height: 560,
                   child: Stack(
                     children: [
                       Padding(
@@ -98,8 +98,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 100.0),
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 108.0),
                             child: Column(
                               children: [
                                 ListTile(
@@ -176,7 +176,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   onTap: () => logoutDialogView(),
                                 ),
-                                const Spacer(),
+
                               ],
                             ),
                           ),
@@ -199,7 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                             url: state.user.photoMail),
                                       ),
                                       const SizedBox(
-                                        height: 16.0,
+                                        height: 8.0,
                                       ),
                                       SelectableText("${state.user.name}",
                                           style: const TextStyle(
@@ -224,7 +224,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                         ),
                                       ),
                                       const SizedBox(
-                                        height: 16.0,
+                                        height: 8.0,
                                       ),
                                       SelectableText(l10n.unknownName,
                                           style: const TextStyle(
@@ -232,7 +232,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                             fontSize: 20.0,
                                           )),
                                       SelectableText(
-                                        "guest-user@exploress.org",
+                                        "guest-user@k8note.com",
                                         style: TextStyle(color: mutedText),
                                       ),
                                     ],

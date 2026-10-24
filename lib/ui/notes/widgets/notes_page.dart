@@ -167,8 +167,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
           ifFalse: const SizedBox.shrink(),
         ),
         body: Padding(
-          padding:
-              EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20.0),
+          padding: EdgeInsets.only(top: 8.0),
           child: _buildNoteList(),
         ),
       ),
