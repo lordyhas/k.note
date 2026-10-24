@@ -36,6 +36,11 @@ Adopt a layered Flutter architecture based on:
 
 ## Verification pointers
 
+> Paths below predate the restructuring in [ADR 0002](0002-project-structure.md):
+> `lib/routing/router.dart`, `lib/ui/auth/bloc/authentication_bloc.dart`,
+> `lib/data/repositories/auth_repository.dart`, `lib/data/services/firestore_service.dart`.
+
+
 - Router and redirects: `lib/routes.dart`
 - Session state handling: `lib/data/app_bloc/authentication/authentication_bloc.dart`
 - Auth integration: `lib/data/app_bloc/auth_repository/repository.dart`

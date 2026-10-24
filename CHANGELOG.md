@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- Project reorganized into the Flutter app-architecture layout (`config/`, `routing/`, `domain/models/`, `data/repositories|services/`, `ui/<feature>/{bloc,widgets}`, `ui/core/`, `utils/`), with `test/` mirroring `lib/`. Barrel files and `part`-based screen libraries replaced by direct imports. Classes renamed after their role (`FirebaseManager` → `FirestoreService`, `HomeScreen` → `NotesPage`, `TextEditor` → `NoteEditorPage`, `TaskScreen` → `TasksPage`, `SettingProfileScreen` → `SettingsPage`, `NavigationHomeScreen` → `AppShell`, ...); route paths unchanged. See `PROJECT_STRUCTURE.md` and ADR 0002.
 - `User` only holds Firebase Auth data. `isBlocked`, `verifiedAccount` and `isDataCloud` were removed: account status is managed in Firebase Auth (disabled account or `blocked` custom claim), not in a document the user can write.
 - `FirebaseManager` no longer swallows Firestore errors and no longer logs note contents or user emails.
 - The editor autosave writes title, text and modification time in one update (`updateNoteContent`) instead of three.
@@ -43,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Signing in without an email (anonymous account) no longer crashes.
 
 ### Removed
+- Dead code unreachable from `main.dart` or unused: old text editor, splash/log/generate pages, drawer, calendar screen, ObjectBox `DatabaseManager`, `AppData`/`LocationData`/`SettingData` models, empty files; and the unused `hive`, `hive_flutter` and `hydrated_bloc` dependencies.
 - Unused and unsafe `FirebaseManager` methods: arbitrary key updates, hard-coded location writes, random-id user documents (`addUserData`), and a stream over the whole `K_NOTE` collection.
 - `UserData` model.
 

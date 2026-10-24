@@ -22,9 +22,10 @@ Thanks for contributing to K.Note.
 ## Coding standards
 
 - Follow `flutter_lints` from `analysis_options.yaml`.
-- Keep routing updates in `lib/routes.dart`.
+- Keep routing updates in `lib/routing/router.dart`.
+- Put new code where [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) says.
 - Keep auth/session logic in bloc/repository layers.
-- Keep Firestore operations in data manager/repository classes.
+- Keep Firestore operations in `lib/data/` (`FirestoreService`, repositories).
 
 ## Commit message recommendation
 

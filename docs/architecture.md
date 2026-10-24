@@ -2,11 +2,17 @@
 
 ## High-level design
 
-K.Note follows a pragmatic layered structure:
+K.Note follows the layered structure of the official Flutter architecture guide
+(see [PROJECT_STRUCTURE.md](../PROJECT_STRUCTURE.md) and
+[ADR 0002](decisions/0002-project-structure.md)):
 
-- **Presentation layer**: widgets and screens under `lib/src/`.
-- **Application/state layer**: blocs/cubits in `lib/data/app_bloc/`.
-- **Data layer**: authentication repository + Firestore/local managers under `lib/data/`.
+- **UI layer** (`lib/ui/`): screens and widgets per feature (`auth`, `notes`,
+  `tasks`, `settings`), with their blocs/cubits in `ui/<feature>/bloc/`, and shared
+  theme, localization and widgets in `ui/core/`.
+- **Data layer** (`lib/data/`): `AuthRepository` (Firebase Auth, Google Sign-In)
+  and `FirestoreService` (notes, tasks, profile).
+- **Domain models** (`lib/domain/models/`): plain data classes mapped to and from
+  Firestore documents.
 
 ## Application bootstrap
 
@@ -20,10 +26,11 @@ K.Note follows a pragmatic layered structure:
 
 ## Routing and navigation
 
-- Routing is centralized in `lib/routes.dart` via `go_router`.
+- Routing is centralized in `lib/routing/router.dart` via `go_router`.
 - Entry route (`/`) redirects based on `AuthenticationBloc` status.
-- A `ShellRoute` hosts authenticated app sections under `NavigationHomeScreen`.
-- Important areas include home, settings, note editor(s), task screen/editor, archived/offline/trash pages.
+- A `ShellRoute` hosts the authenticated tabs (notes, tasks, settings) in `AppShell`,
+  which derives the selected bottom bar tab from the current path.
+- Full-screen editors (`NoteEditorPage`, `TaskEditorPage`) open above the shell.
 
 ## State management
 
@@ -40,15 +47,16 @@ Key state objects:
 Typical note flow:
 
 1. UI action from screen/widget.
-2. Data operation executed through `FirebaseManager`.
-3. Firestore update/read in user-scoped subcollections.
-4. Note model mapping (`NoteModel.fromMap` / `asMap`).
-5. Optional encryption/decryption on note title/text values.
+2. Data operation executed through `FirestoreService`, usually wrapped in
+   `saveInBackground` so the UI does not wait for the server (offline support).
+3. Firestore update/read in user-scoped subcollections; lists listen live with
+   `snapshots()`.
+4. Model mapping (`NoteModel` / `CheckList` `fromMap` / `asMap`).
 
 ## Persistence model
 
 - Cloud: Cloud Firestore (`K_NOTE/general_data/USERS/...`).
-- Local: additional local persistence dependencies exist (`hive`, `hydrated_bloc`); verify active paths per feature when changing persistence behavior.
+- Local: Firestore's offline cache only; there is no separate local database.
 
 ## Security/encryption
 
@@ -58,5 +66,5 @@ Typical note flow:
 
 ## Notable technical debt / to confirm
 
-- Some files contain legacy/commented sections (ObjectBox remnants, alternate editor page, etc.).
 - `.env` exists but active runtime use is not evident in startup code.
+- `LanguageBloc` and `StyleCubit` are not persisted between launches.

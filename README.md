@@ -96,14 +96,19 @@ CI uses GitHub Actions and runs `flutter pub get`, `flutter analyze`, and `flutt
 
 ```text
 lib/
-  main.dart                      # App entrypoint, Firebase init, DI for AuthRepository and blocs
-  routes.dart                    # go_router tree + auth-aware redirects
+  main.dart                      # App entrypoint, Firebase init, AuthRepository and blocs
+  config/                        # Asset paths
+  routing/router.dart            # go_router tree + auth-aware redirects
+  domain/models/                 # Note, task, user models
   data/
-    app_bloc/                    # Authentication/Login/Signup/navigation state logic
-    database/                    # Firestore + local database managers and models
-  src/
-    pages/                       # Feature screens (home, editor, settings, auth, etc.)
-    widgets/                     # Reusable UI widgets
+    repositories/                # AuthRepository
+    services/                    # FirestoreService
+  ui/
+    core/                        # Theme, localization, shared widgets
+    shell/                       # Bottom navigation
+    auth/ notes/ tasks/ settings/  # bloc/ and widgets/ per feature
+  utils/
+test/                            # Mirrors lib/
 
 docs/
   README.md                      # Documentation index
@@ -114,9 +119,11 @@ docs/
   style_guide.md
   decisions/
     0001-architecture-overview.md
+    0002-project-structure.md
 ```
 
-For a historical tree snapshot in-repo, see `PROJECT_STRUCTURE.md`.
+The full layout, its dependency rules and where new code goes are described in
+[`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md).
 
 ---
 
@@ -132,7 +139,7 @@ For a historical tree snapshot in-repo, see `PROJECT_STRUCTURE.md`.
   Desktop platforms are not configured in `lib/firebase_options.dart`; use Android/iOS/Web or re-run FlutterFire configuration.
 
 - **Auth redirect loops / unexpected route landing**  
-  Check `AuthenticationBloc` state transitions and redirects defined in `lib/routes.dart`.
+  Check `AuthenticationBloc` state transitions and redirects defined in `lib/routing/router.dart`.
 
 ---
 
