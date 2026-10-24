@@ -6,7 +6,7 @@ import 'package:knote/domain/models/user.dart';
 
 /// Reads and writes the signed-in [user]'s data in Cloud Firestore.
 ///
-/// Everything lives under `K_NOTE/general_data/USERS/{user.id}`. Access
+/// Everything lives under `users/{user.id}`. Access
 /// control is enforced server side by `firestore.rules`, which only lets a
 /// user touch the subtree whose id matches their Firebase Auth uid; nothing
 /// in this class is a security boundary.
@@ -33,7 +33,7 @@ class FirestoreService {
   void close() {}
 
   CollectionReference<Map<String, dynamic>> get _users =>
-      _firestore.collection('K_NOTE').doc('general_data').collection('USERS');
+      _firestore.collection('users');
 
   DocumentReference<Map<String, dynamic>> get _userDoc => _users.doc(user.id);
 

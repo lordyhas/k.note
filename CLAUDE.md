@@ -54,7 +54,7 @@ All routes live in `AppRouter.routes(...)`. They are GoRouter routes that refres
 
 ### Data (`lib/data/services/firestore_service.dart`)
 
-- `FirestoreService` is **not a singleton**. Pages construct it per user with `FirestoreService.user(user)`. Every constructor accepts an optional `FirebaseFirestore`, and tests inject `FakeFirebaseFirestore` through it. Paths: `K_NOTE/general_data/USERS/{userId}/notes` and `.../tasks`. Methods return the Firestore futures and don't swallow errors; lists use live `snapshots()` streams (`watchNotes`, `watchArchivedNotes`, `watchDeletedNotes`, `watchTasks`). Pages take an optional `firebaseManager` so widget tests can pass one backed by `FakeFirebaseFirestore`.
+- `FirestoreService` is **not a singleton**. Pages construct it per user with `FirestoreService.user(user)`. Every constructor accepts an optional `FirebaseFirestore`, and tests inject `FakeFirebaseFirestore` through it. Paths: `users/{userId}/notes` and `.../tasks`. Methods return the Firestore futures and don't swallow errors; lists use live `snapshots()` streams (`watchNotes`, `watchArchivedNotes`, `watchDeletedNotes`, `watchTasks`). Pages take an optional `firebaseManager` so widget tests can pass one backed by `FakeFirebaseFirestore`.
 - UI writes go through `saveInBackground` (`lib/utils/`): not awaited (Firestore completes writes only on server ack, never offline), with failures reported via the app-wide `ScaffoldMessenger`. Removals offer Undo with `showUndoSnackBar` (`ui/core/widgets/`).
 - Models implement `DataToMap` (`fromMap`/`asMap`), and `fromMap` is deliberately defensive about malformed docs. `CheckList.repeat` is encoded/decoded by `TaskRepeat`.
 - There is no local database; persistence offline relies on Firestore's cache.
