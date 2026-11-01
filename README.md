@@ -1,15 +1,13 @@
 # K.Note
 
-K.Note is a Flutter application for note-taking and task management with Firebase-backed authentication and cloud sync, plus local/offline persistence and optional note encryption. It targets mobile and web (Firebase options are configured for Android, iOS, and Web). 
+K.Note is an open-source notes and tasks app for Android and the web, built with Flutter and Firebase.
 
-## Scope
-
-- User authentication (email/password, Google sign-in).
-- Notes CRUD with archive/trash flows.
-- Task/checklist management.
-- Cloud persistence in Firestore.
-- Local persistence and app-state hydration.
-- Optional PIN-based encryption workflow for note content.
+- **Notes**: rich-text editor, colors, search, archive and trash with undo. Changes save automatically as you type.
+- **Tasks**: quick add, due dates, reminders, repeat rules (daily, weekdays, custom), a "My Day" list and a collapsible completed section.
+- **Sync**: your notes and tasks follow your account across devices through Cloud Firestore, and stay available offline thanks to Firestore's cache.
+- **Accounts**: sign in with email/password or Google.
+- **Private by design**: Firestore security rules ensure each user can only read and write their own data.
+- **Languages**: English and French, following the device language.
 
 ---
 

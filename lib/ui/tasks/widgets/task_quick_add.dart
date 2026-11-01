@@ -11,7 +11,7 @@ import 'package:knote/ui/tasks/widgets/task_pickers.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
 import 'package:knote/utils/save_in_background.dart';
 
-/// Opens the Microsoft To Do style "Add a task" sheet above the keyboard.
+/// Opens the "Add a task" sheet above the keyboard.
 ///
 /// Each submitted title is saved right away and the field is cleared, so
 /// several tasks can be added in a row without leaving the tasks screen.

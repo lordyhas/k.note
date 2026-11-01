@@ -12,9 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tooltips on every icon-only button (also read by screen readers), and a labelled 48 dp touch target for the task completion circle.
 - Note search: the search bar on the notes screen filters notes live by title and text, ignoring case and accents; back clears the search.
 - Undo after archiving a note, moving it to the bin, or swiping a task away. Moving a note to the bin no longer asks for confirmation.
-- Microsoft To Do style quick add on the tasks screen: the + button opens an "Add a task" bar above the keyboard with due date, reminder and repeat options; tasks are added without leaving the page.
-- "Set due date" in the task quick add opens a Today / Tomorrow / Next week / Pick a date menu, as in Microsoft To Do, instead of going straight to the calendar.
-- "Remind me" in the task quick add opens a Later today / Tomorrow / Next week / Pick a date & time menu, as in Microsoft To Do.
+- Quick add on the tasks screen: the + button opens an "Add a task" bar above the keyboard with due date, reminder and repeat options; tasks are added without leaving the page.
+- "Set due date" in the task quick add opens a Today / Tomorrow / Next week / Pick a date menu instead of going straight to the calendar.
+- "Remind me" in the task quick add opens a Later today / Tomorrow / Next week / Pick a date & time menu.
 - "Repeat" offers Daily, Weekdays, Weekly, Monthly, Yearly and Custom (every N days, weeks, months or years, with weekdays for weeks). Custom rules are stored in `CheckList.repeat` as `custom:<n>:<unit>[:<days>]` (see `TaskRepeat`); existing values are unchanged.
 - Professional documentation set under `docs/` (setup, architecture, configuration, testing, style guide).
 - Initial architecture ADR at `docs/decisions/0001-architecture-overview.md`.
