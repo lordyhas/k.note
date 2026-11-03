@@ -45,6 +45,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navYou => 'Moi';
 
   @override
+  String get navProfile => 'Profil et paramètres';
+
+  @override
   String get notesGridView => 'Affichage en grille';
 
   @override

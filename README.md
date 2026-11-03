@@ -103,7 +103,7 @@ lib/
     services/                    # FirestoreService
   ui/
     core/                        # Theme, localization, shared widgets
-    shell/                       # Bottom navigation
+    shell/                       # Bottom bar (mobile), side drawer (wide web)
     auth/ notes/ tasks/ settings/  # bloc/ and widgets/ per feature
   utils/
 test/                            # Mirrors lib/

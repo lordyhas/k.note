@@ -8,6 +8,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/widgets/login_page.dart';
+import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/widgets/error_page.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
@@ -108,6 +109,7 @@ class AppRouter {
                 ],
               ),
               GoRoute(
+
                   /// [SettingsPage]
                   name: SettingsPage.routeName,
                   path: "/${SettingsPage.routeName}",
@@ -146,8 +148,12 @@ class AppRouter {
                       path: ArchivedNotesPage.routeName,
                       builder: (context, state) => const ArchivedNotesPage(),
                     ),
-                  ]
-              ),
+                    GoRoute(
+                      name: CalendarPage.routeName,
+                      path: CalendarPage.routeName,
+                      builder: (context, state) => const CalendarPage(),
+                    ),
+                  ]),
             ],
           ),
 

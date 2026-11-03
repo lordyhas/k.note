@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'You'**
   String get navYou;
 
+  /// No description provided for @navProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile & settings'**
+  String get navProfile;
+
   /// No description provided for @notesGridView.
   ///
   /// In en, this message translates to:
