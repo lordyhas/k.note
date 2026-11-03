@@ -53,7 +53,7 @@ Future<DateTime?> pickTaskReminder(BuildContext context) async {
   return DateTime(date.year, date.month, date.day, time.hour, time.minute);
 }
 
-/// Shortcuts offered by the "Set due date" menu, as in Microsoft To Do.
+/// Shortcuts offered by the "Set due date" menu.
 enum DueDateShortcut { today, tomorrow, nextWeek }
 
 /// The date (at midnight) a [shortcut] stands for, counted from [now].
@@ -91,7 +91,7 @@ DateTime _startOfNextWeek(DateTime today, int firstDayOfWeekIndex) {
   return DateTime(today.year, today.month, today.day + days);
 }
 
-/// Shortcuts offered by the "Remind me" menu, as in Microsoft To Do.
+/// Shortcuts offered by the "Remind me" menu.
 enum ReminderShortcut { laterToday, tomorrow, nextWeek }
 
 /// Hour of the day used by the "Tomorrow" and "Next week" reminders.
