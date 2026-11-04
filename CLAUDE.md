@@ -37,7 +37,7 @@ There are no barrel files: import each file directly with `package:knote/...`. `
 ### Navigation (`lib/routing/router.dart`)
 
 All routes live in `AppRouter.routes(...)`. They are GoRouter routes that refresh on `GoRouterRefreshStream(authBloc.stream)`, with `redirectLimit: 1`.
-- `/` redirects to `/home` or `/login` based on `AuthenticationStatus`. `/login` redirects to `/home` when authenticated.
+- `/` redirects to `/home` or `/login` based on `AuthenticationStatus`. `/login` redirects to `/home` when authenticated. A top-level redirect sends users with an unverified email to `/verify-email`, and away from it otherwise.
 - A `ShellRoute` wraps the tabs in `AppShell`, which picks the bottom bar tab from the current path (`AppShell.tabIndexFor`) and switches tabs with `goNamed`. Notes is `/home`, Tasks is `/home/tasks`, settings (with trash, archive, calendar, about, help…) is `/user`.
 - On the web at ≥ 840 dp (`AppShell.showsSideNavigation`), `AppShell` shows a permanent left drawer instead of the bottom bar (`sideIndexFor` / `sideRouteNames`). Pages check `SideNavigationScope.of(context)` (`ui/shell/side_navigation_scope.dart`; never import `app_shell.dart` from a page: the import cycle crashes `flutter run -d chrome`); `SettingsPage` hides Bin, Archived notes and Calendar then.
 - Full-screen editors (`NoteEditorPage`, `TaskEditorPage`) set `parentNavigatorKey: key` to escape the shell. They receive their model through `state.extra` (`NoteModel?` / `CheckList?`; `null` means create new).
@@ -51,7 +51,7 @@ All routes live in `AppRouter.routes(...)`. They are GoRouter routes that refres
 
 ### Auth (`lib/data/repositories/auth_repository.dart`)
 
-`AuthRepository` wraps `firebase_auth` and `google_sign_in` (email/password, Google). It exposes the app's own `User` model (`domain/models/user.dart`), which is not `firebase_auth.User`. It only holds Firebase Auth data (`isAnonymous`, `isCheckMail`, ...), and `User.empty` means signed out. Account status such as blocking is managed in Firebase Auth (disabled account or `blocked` custom claim), never stored in a client-writable document. `User.asMap()` is the Firestore profile and must match `profileKeys()` in `firestore.rules`.
+`AuthRepository` wraps `firebase_auth` and `google_sign_in` (email/password, Google). It exposes the app's own `User` model (`domain/models/user.dart`), which is not `firebase_auth.User`. It only holds Firebase Auth data (`isAnonymous`, `isCheckMail`, ...), and `User.empty` means signed out. Account status such as blocking is managed in Firebase Auth (disabled account or `blocked` custom claim), never stored in a client-writable document. Email accounts must verify their address: `signUp` sends the link, `User.needsEmailVerification` makes the router's top-level redirect (`redirectForEmailVerification`) keep them on `VerifyEmailPage`, `reloadUser()` refreshes the token once verified, and `firestore.rules` requires `email_verified`. `User.asMap()` is the Firestore profile and must match `profileKeys()` in `firestore.rules`.
 
 ### Data (`lib/data/services/firestore_service.dart`)
 

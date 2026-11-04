@@ -63,7 +63,7 @@ void main() {
       expect(u1, isNot(equals(u2)));
     });
 
-    test('props only includes email, id, name, photoMail', () {
+    test('props only includes email, id, name, photoMail, isCheckMail', () {
       const u = User(
         id: 'uid-1',
         email: 'a@a.com',
@@ -72,7 +72,36 @@ void main() {
         phoneNumber: '+33600000000',
         isCheckMail: true,
       );
-      expect(u.props, ['a@a.com', 'uid-1', 'A', 'url']);
+      expect(u.props, ['a@a.com', 'uid-1', 'A', 'url', true]);
+    });
+  });
+
+  group('User.needsEmailVerification', () {
+    const base =
+        User(id: 'uid-1', email: 'a@a.com', name: null, photoMail: null);
+
+    test('true for an email account that is not verified', () {
+      expect(base.copyWith(isCheckMail: false).needsEmailVerification, isTrue);
+    });
+
+    test('false once the email is verified', () {
+      expect(base.copyWith(isCheckMail: true).needsEmailVerification, isFalse);
+    });
+
+    test('false when the verification state is unknown or there is no email',
+        () {
+      expect(base.needsEmailVerification, isFalse);
+      expect(User.empty.needsEmailVerification, isFalse);
+      expect(
+        const User(
+                id: 'anon',
+                email: '',
+                name: null,
+                photoMail: null,
+                isCheckMail: false)
+            .needsEmailVerification,
+        isFalse,
+      );
     });
   });
 

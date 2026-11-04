@@ -186,6 +186,13 @@
   "signedIn": "Connexion réussie",
   "alreadySignedIn": "Vous êtes déjà connecté avec\n{email}",
   "goToHome": "Aller à l'accueil",
+  "verifyEmailTitle": "Vérifiez votre adresse e-mail",
+  "verifyEmailBody": "Nous avons envoyé un lien à {email}. Ouvrez-le pour confirmer que cette adresse est la vôtre, puis revenez ici.",
+  "verifyEmailSpamHint": "Vous ne le trouvez pas ? Regardez dans vos spams.",
+  "verifyEmailCheck": "J'ai vérifié mon adresse",
+  "verifyEmailResend": "Renvoyer l'e-mail",
+  "verifyEmailSent": "E-mail de vérification envoyé.",
+  "verifyEmailNotVerified": "Votre adresse n'est pas encore vérifiée. Ouvrez le lien envoyé, puis réessayez.",
 
   "authErrorInvalidEmail": "Cette adresse e-mail n'est pas valide.",
   "authErrorUserDisabled": "Ce compte a été désactivé. Veuillez contacter l'assistance.",

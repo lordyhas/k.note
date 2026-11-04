@@ -62,6 +62,12 @@ class User extends Equatable {
   /// Convenience getter to determine whether the current user is not empty.
   bool get isNotEmpty => this != User.empty;
 
+  /// Whether the user signed up with an email address they have not
+  /// verified yet. They must open the link sent by Firebase before using the
+  /// app; `firestore.rules` denies their requests until then. Google accounts
+  /// are always verified.
+  bool get needsEmailVerification => email.isNotEmpty && isCheckMail == false;
+
   User copyWith({
     String? id,
     String? email,
@@ -99,5 +105,6 @@ class User extends Equatable {
       };
 
   @override
-  List<Object?> get props => [email, id, name, photoMail];
+  // isCheckMail is included so that verifying the email emits a new state.
+  List<Object?> get props => [email, id, name, photoMail, isCheckMail];
 }

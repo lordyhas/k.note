@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- Email verification. Signing up with an email address sends a verification link, and the app keeps the account on a "Verify your email" page (resend the link, check again, log out) until it is opened. `firestore.rules` now requires a verified email (`email_verified` in the token), so an account created with someone else's address cannot use the app. Google accounts are already verified. Existing unverified email accounts must verify before seeing their notes again.
+
 ### Added
 - Web layout: in a wide browser window, a drawer on the left (Notes, Tasks, Calendar, Archived notes, Bin, Profile & settings) replaces the bottom bar, and the settings page no longer repeats Bin, Archived notes and Calendar. Phones and narrow windows keep the bottom bar.
 - Calendar page (`/user/calendar`), a "coming soon" placeholder for now, opened from the drawer or from settings.

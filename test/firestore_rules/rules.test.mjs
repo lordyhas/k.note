@@ -24,7 +24,9 @@ const BOB = 'bob';
 let env;
 
 const db = (uid, claims = {}) =>
-  env.authenticatedContext(uid, { email: `${uid}@example.com`, ...claims }).firestore();
+  env
+    .authenticatedContext(uid, { email: `${uid}@example.com`, email_verified: true, ...claims })
+    .firestore();
 
 const note = (id, extra = {}) => ({
   id,
@@ -125,6 +127,29 @@ describe('ownership', () => {
     await assertFails(getDocs(collection(alice, 'notes')));
     await assertFails(setDoc(doc(alice, 'config/app'), { a: 1 }));
     await assertFails(setDoc(doc(alice, `${USERS}/${ALICE}/keys/master_key`), { k: 1 }));
+  });
+});
+
+describe('email verification', () => {
+  test('an unverified email account cannot read or write its own data', async () => {
+    await seed(`${USERS}/${ALICE}/notes/n1`, note('n1'));
+    const unverified = db(ALICE, { email_verified: false });
+    await assertFails(getDoc(doc(unverified, `${USERS}/${ALICE}/notes/n1`)));
+    await assertFails(getDocs(collection(unverified, `${USERS}/${ALICE}/notes`)));
+    await assertFails(setDoc(doc(unverified, `${USERS}/${ALICE}/notes/n2`), note('n2')));
+    await assertFails(setDoc(doc(unverified, `${USERS}/${ALICE}/tasks/t1`), task('t1')));
+    await assertFails(setDoc(doc(unverified, `${USERS}/${ALICE}`), profile(ALICE)));
+  });
+
+  test('a token without email_verified (e.g. anonymous) is denied', async () => {
+    await seed(`${USERS}/${ALICE}/notes/n1`, note('n1'));
+    const noClaim = env.authenticatedContext(ALICE, {}).firestore();
+    await assertFails(getDoc(doc(noClaim, `${USERS}/${ALICE}/notes/n1`)));
+  });
+
+  test('access works once the email is verified', async () => {
+    await seed(`${USERS}/${ALICE}/notes/n1`, note('n1'));
+    await assertSucceeds(getDoc(doc(db(ALICE), `${USERS}/${ALICE}/notes/n1`)));
   });
 });
 

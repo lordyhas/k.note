@@ -1118,6 +1118,48 @@ abstract class AppLocalizations {
   /// **'Go to home'**
   String get goToHome;
 
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a link to {email}. Open it to confirm this address is yours, then come back here.'**
+  String verifyEmailBody(String email);
+
+  /// No description provided for @verifyEmailSpamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t find it? Check your spam folder.'**
+  String get verifyEmailSpamHint;
+
+  /// No description provided for @verifyEmailCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve verified my email'**
+  String get verifyEmailCheck;
+
+  /// No description provided for @verifyEmailResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend the email'**
+  String get verifyEmailResend;
+
+  /// No description provided for @verifyEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification email sent.'**
+  String get verifyEmailSent;
+
+  /// No description provided for @verifyEmailNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email isn\'t verified yet. Open the link we sent, then try again.'**
+  String get verifyEmailNotVerified;
+
   /// No description provided for @authErrorInvalidEmail.
   ///
   /// In en, this message translates to:

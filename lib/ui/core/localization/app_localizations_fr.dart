@@ -631,6 +631,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get goToHome => 'Aller à l\'accueil';
 
   @override
+  String get verifyEmailTitle => 'Vérifiez votre adresse e-mail';
+
+  @override
+  String verifyEmailBody(String email) {
+    return 'Nous avons envoyé un lien à $email. Ouvrez-le pour confirmer que cette adresse est la vôtre, puis revenez ici.';
+  }
+
+  @override
+  String get verifyEmailSpamHint =>
+      'Vous ne le trouvez pas ? Regardez dans vos spams.';
+
+  @override
+  String get verifyEmailCheck => 'J\'ai vérifié mon adresse';
+
+  @override
+  String get verifyEmailResend => 'Renvoyer l\'e-mail';
+
+  @override
+  String get verifyEmailSent => 'E-mail de vérification envoyé.';
+
+  @override
+  String get verifyEmailNotVerified =>
+      'Votre adresse n\'est pas encore vérifiée. Ouvrez le lien envoyé, puis réessayez.';
+
+  @override
   String get authErrorInvalidEmail => 'Cette adresse e-mail n\'est pas valide.';
 
   @override

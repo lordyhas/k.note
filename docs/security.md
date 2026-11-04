@@ -29,6 +29,29 @@ The rules allow a request only when the `{uid}` in the path equals
 `PERMISSION_DENIED`. Listing `users`, and any path not matched in the rules,
 is denied.
 
+## Email verification
+
+Firebase lets anyone create an email/password account with an address they
+do not own. Such an account cannot reach anyone else's data (it has its own
+`uid`), but it squats the address, shows an email nobody checked, and Firebase
+may later hand the account to whoever signs in with Google for that address.
+
+So the rules also require `request.auth.token.email_verified == true`:
+
+- Google accounts are verified by Google, so nothing changes for them.
+- Email/password accounts get a verification link at sign-up
+  (`AuthRepository.signUp`). Until they open it, the router keeps them on
+  `VerifyEmailPage`, which can resend the link, checks every 5 seconds whether
+  it was opened, and lets them log out. Once verified, the app refreshes the
+  ID token (`AuthRepository.reloadUser`): the old token still says `false`.
+- Anonymous accounts have no verified email and are denied. The app does not
+  offer anonymous sign-in.
+
+Existing unverified email accounts are blocked from their notes until they
+verify. They see `VerifyEmailPage` after updating the app; an older app
+version only gets permission errors, so deploy the rules once the new version
+is out.
+
 The rules also validate writes. Only known fields are accepted, with the
 expected types, and the stored `id` must match the document id and cannot
 change. Legacy documents with extra fields can still be updated or
@@ -63,8 +86,8 @@ Only an admin can block someone:
 Never commit a service account key. `.gitignore` excludes the usual file
 names.
 
-Email verification, which `verifiedAccount` used to mimic, is available in the
-rules as `request.auth.token.email_verified` if it ever needs to be required.
+Email verification, which `verifiedAccount` used to mimic, is required by the
+rules through `request.auth.token.email_verified` (see above).
 
 ## Deploying the rules
 

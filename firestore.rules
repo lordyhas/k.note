@@ -5,6 +5,10 @@ rules_version = '2';
 // * Every user owns exactly one subtree: users/{uid}.
 //   The {uid} in the path must equal the uid in the caller's Firebase Auth
 //   token, which is signed by Google and cannot be forged by a modified app.
+// * The email address in the token must be verified (`email_verified`), so
+//   nobody can use an account created with someone else's address. Google
+//   accounts are verified; email/password accounts are once the user opens
+//   the link sent at sign-up. Anonymous accounts are therefore denied.
 // * A user is blocked by an admin, never by the client: either disable the
 //   account in Firebase Auth, or set the custom claim `blocked: true` with the
 //   Admin SDK (takes effect on the next token refresh). See docs/security.md.
@@ -15,6 +19,7 @@ service cloud.firestore {
     function isOwner(userId) {
       return request.auth != null
           && request.auth.uid == userId
+          && request.auth.token.get('email_verified', false) == true
           && request.auth.token.get('blocked', false) != true;
     }
 

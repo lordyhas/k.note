@@ -86,6 +86,21 @@ void main() {
       );
     });
 
+    group('email verification', () {
+      blocTest<AuthenticationBloc, AuthState>(
+        'emits a new state when the user verifies their email',
+        build: () {
+          when(() => authRepository.currentUser)
+              .thenReturn(_testUser.copyWith(isCheckMail: false));
+          return AuthenticationBloc(authRepository: authRepository);
+        },
+        act: (bloc) => bloc.updateUser(_testUser.copyWith(isCheckMail: true)),
+        expect: () => [
+          AuthState.authenticated(_testUser.copyWith(isCheckMail: true)),
+        ],
+      );
+    });
+
     group('updateUser', () {
       blocTest<AuthenticationBloc, AuthState>(
         'emits authenticated state when updateUser is called with valid user',

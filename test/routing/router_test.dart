@@ -128,6 +128,39 @@ void main() {
     });
   });
 
+  group('redirectForEmailVerification', () {
+    final unverified =
+        AuthState.authenticated(_testUser.copyWith(isCheckMail: false));
+    final verified =
+        AuthState.authenticated(_testUser.copyWith(isCheckMail: true));
+    const signedOut = AuthState.unauthenticated();
+
+    test('keeps an unverified user on the verification page', () {
+      for (final location in ['/home', '/user/trash', '/login', '/']) {
+        expect(
+            redirectForEmailVerification(unverified, location), '/verify-email',
+            reason: location);
+      }
+      expect(redirectForEmailVerification(unverified, '/verify-email'), isNull);
+    });
+
+    test('sends verified and signed-out users away from the page', () {
+      expect(redirectForEmailVerification(verified, '/verify-email'), '/home');
+      expect(
+          redirectForEmailVerification(signedOut, '/verify-email'), '/login');
+    });
+
+    test('leaves other routes to the route redirects', () {
+      expect(redirectForEmailVerification(verified, '/home'), isNull);
+      expect(redirectForEmailVerification(signedOut, '/home'), isNull);
+      // Users built without a verification state are not held back.
+      expect(
+          redirectForEmailVerification(
+              const AuthState.authenticated(_testUser), '/home'),
+          isNull);
+    });
+  });
+
   group('GoRouterRefreshStream', () {
     test('notifies listeners when stream emits an event', () async {
       final controller = StreamController<dynamic>();
