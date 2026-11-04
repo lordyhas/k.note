@@ -34,7 +34,7 @@ K.Note follows the layered structure of the official Flutter architecture guide
   `AppShell` replaces the bottom bar with a permanent drawer on the left: Notes, Tasks,
   Calendar, Archived notes, Bin, Profile & settings (`AppShell.sideIndexFor` picks the
   selected entry). Phones and narrow browser windows keep the bottom bar. Pages read
-  `AppShell.usesSideNavigationOf(context)`; the settings page uses it to hide the Bin,
+  `SideNavigationScope.of(context)` (`lib/ui/shell/side_navigation_scope.dart`, kept out of `app_shell.dart` because an import cycle with the pages crashes the incremental web compiler); the settings page uses it to hide the Bin,
   Archived notes and Calendar entries the drawer already has.
 - Calendar (`/user/calendar`, `CalendarPage`) is a "coming soon" placeholder.
 - Full-screen editors (`NoteEditorPage`, `TaskEditorPage`) open above the shell.

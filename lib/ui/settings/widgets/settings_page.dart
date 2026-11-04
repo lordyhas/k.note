@@ -12,7 +12,7 @@ import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
-import 'package:knote/ui/shell/app_shell.dart';
+import 'package:knote/ui/shell/side_navigation_scope.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = "user";
@@ -64,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final iconColor = AppColors.of(context).text;
     final mutedText = AppColors.of(context).text.withValues(alpha: 0.6);
     // The web side drawer already has Bin, Archived notes and Calendar.
-    final sideNavigation = AppShell.usesSideNavigationOf(context);
+    final sideNavigation = SideNavigationScope.of(context);
 
     //BlocProvider.of<NavigationController>(context).setState(NavigationScreen.setting);
     return Scaffold(

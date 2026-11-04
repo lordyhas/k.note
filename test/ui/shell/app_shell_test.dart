@@ -9,6 +9,7 @@ import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/shell/app_shell.dart';
+import 'package:knote/ui/shell/side_navigation_scope.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
 
 import '../../helpers/localized_app.dart';
@@ -56,11 +57,10 @@ void main() {
   group('web side drawer', () {
     late GoRouter router;
 
-    // A page that shows what AppShell.usesSideNavigationOf returns.
+    // A page that shows what SideNavigationScope.of returns.
     Widget page(String name) => Builder(
           builder: (context) => Center(
-            child: Text(
-                'page:$name side:${AppShell.usesSideNavigationOf(context)}'),
+            child: Text('page:$name side:${SideNavigationScope.of(context)}'),
           ),
         );
 

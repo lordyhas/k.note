@@ -12,6 +12,7 @@ import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
+import 'package:knote/ui/shell/side_navigation_scope.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
 
 class AppShell extends StatefulWidget {
@@ -41,14 +42,6 @@ class AppShell extends StatefulWidget {
     required double width,
   }) =>
       isWeb && width >= sideNavigationMinWidth;
-
-  /// Whether the shell around [context] shows the side drawer, so pages can
-  /// leave out the entries it already has.
-  static bool usesSideNavigationOf(BuildContext context) =>
-      context
-          .dependOnInheritedWidgetOfExactType<_SideNavigationScope>()
-          ?.enabled ??
-      false;
 
   /// Route names of the side drawer entries, in display order.
   static const sideRouteNames = [
@@ -164,7 +157,7 @@ class _AppShellState extends State<AppShell> {
           isWeb: widget.isWeb,
           width: constraints.maxWidth,
         );
-        return _SideNavigationScope(
+        return SideNavigationScope(
           enabled: sideNavigation,
           child: sideNavigation
               ? _buildWideShell(context)
@@ -239,17 +232,6 @@ class _AppShellState extends State<AppShell> {
       ),
     );
   }
-}
-
-/// Tells the pages inside [AppShell] whether the side drawer is shown.
-class _SideNavigationScope extends InheritedWidget {
-  const _SideNavigationScope({required this.enabled, required super.child});
-
-  final bool enabled;
-
-  @override
-  bool updateShouldNotify(_SideNavigationScope oldWidget) =>
-      enabled != oldWidget.enabled;
 }
 
 /// The permanent drawer on the left of the wide web layout.

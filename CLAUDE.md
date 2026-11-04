@@ -39,7 +39,7 @@ There are no barrel files: import each file directly with `package:knote/...`. `
 All routes live in `AppRouter.routes(...)`. They are GoRouter routes that refresh on `GoRouterRefreshStream(authBloc.stream)`, with `redirectLimit: 1`.
 - `/` redirects to `/home` or `/login` based on `AuthenticationStatus`. `/login` redirects to `/home` when authenticated.
 - A `ShellRoute` wraps the tabs in `AppShell`, which picks the bottom bar tab from the current path (`AppShell.tabIndexFor`) and switches tabs with `goNamed`. Notes is `/home`, Tasks is `/home/tasks`, settings (with trash, archive, calendar, about, help…) is `/user`.
-- On the web at ≥ 840 dp (`AppShell.showsSideNavigation`), `AppShell` shows a permanent left drawer instead of the bottom bar (`sideIndexFor` / `sideRouteNames`). Pages check `AppShell.usesSideNavigationOf(context)`; `SettingsPage` hides Bin, Archived notes and Calendar then.
+- On the web at ≥ 840 dp (`AppShell.showsSideNavigation`), `AppShell` shows a permanent left drawer instead of the bottom bar (`sideIndexFor` / `sideRouteNames`). Pages check `SideNavigationScope.of(context)` (`ui/shell/side_navigation_scope.dart`; never import `app_shell.dart` from a page: the import cycle crashes `flutter run -d chrome`); `SettingsPage` hides Bin, Archived notes and Calendar then.
 - Full-screen editors (`NoteEditorPage`, `TaskEditorPage`) set `parentNavigatorKey: key` to escape the shell. They receive their model through `state.extra` (`NoteModel?` / `CheckList?`; `null` means create new).
 - Route path segments and names come from each page's static `routeName`; route names must be unique.
 
