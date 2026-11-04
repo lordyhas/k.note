@@ -30,6 +30,13 @@ K.Note follows the layered structure of the official Flutter architecture guide
 - Entry route (`/`) redirects based on `AuthenticationBloc` status.
 - A `ShellRoute` hosts the authenticated tabs (notes, tasks, settings) in `AppShell`,
   which derives the selected bottom bar tab from the current path.
+- On the web, in a window at least 840 dp wide (`AppShell.sideNavigationMinWidth`),
+  `AppShell` replaces the bottom bar with a permanent drawer on the left: Notes, Tasks,
+  Calendar, Archived notes, Bin, Profile & settings (`AppShell.sideIndexFor` picks the
+  selected entry). Phones and narrow browser windows keep the bottom bar. Pages read
+  `SideNavigationScope.of(context)` (`lib/ui/shell/side_navigation_scope.dart`, kept out of `app_shell.dart` because an import cycle with the pages crashes the incremental web compiler); the settings page uses it to hide the Bin,
+  Archived notes and Calendar entries the drawer already has.
+- Calendar (`/user/calendar`, `CalendarPage`) is a "coming soon" placeholder.
 - Full-screen editors (`NoteEditorPage`, `TaskEditorPage`) open above the shell.
 
 ## State management

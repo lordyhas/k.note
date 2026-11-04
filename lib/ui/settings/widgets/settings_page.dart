@@ -6,11 +6,13 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/widgets/login_page.dart';
+import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
+import 'package:knote/ui/shell/side_navigation_scope.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = "user";
@@ -61,6 +63,8 @@ class _SettingsPageState extends State<SettingsPage> {
     final l10n = context.l10n;
     final iconColor = AppColors.of(context).text;
     final mutedText = AppColors.of(context).text.withValues(alpha: 0.6);
+    // The web side drawer already has Bin, Archived notes and Calendar.
+    final sideNavigation = SideNavigationScope.of(context);
 
     //BlocProvider.of<NavigationController>(context).setState(NavigationScreen.setting);
     return Scaffold(
@@ -94,7 +98,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0).copyWith(top: 50.0),
                         child: Card(
-                          color: Theme.of(context).cardColor.withValues(alpha: 0.7),
+                          color: Theme.of(context)
+                              .cardColor
+                              .withValues(alpha: 0.7),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
@@ -126,44 +132,47 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   onTap: () {},
                                 ),
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.delete_outline,
-                                    color: iconColor,
+                                if (!sideNavigation) ...[
+                                  ListTile(
+                                    leading: Icon(
+                                      Icons.delete_outline,
+                                      color: iconColor,
+                                    ),
+                                    title: Text(l10n.binTitle),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: iconColor,
+                                    ),
+                                    onTap: () => GoRouter.of(context)
+                                        .goNamed(TrashPage.routeName),
                                   ),
-                                  title: Text(l10n.binTitle),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: iconColor,
+                                  ListTile(
+                                    leading: Icon(
+                                      Icons.archive_outlined,
+                                      color: iconColor,
+                                    ),
+                                    title: Text(l10n.archiveTitle),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: iconColor,
+                                    ),
+                                    onTap: () => GoRouter.of(context)
+                                        .goNamed(ArchivedNotesPage.routeName),
                                   ),
-                                  onTap: () => GoRouter.of(context)
-                                      .goNamed(TrashPage.routeName),
-                                ),
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.archive_outlined,
-                                    color: iconColor,
+                                  ListTile(
+                                    leading: Icon(
+                                      Icons.calendar_today_outlined,
+                                      color: iconColor,
+                                    ),
+                                    title: Text(l10n.calendar),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: iconColor,
+                                    ),
+                                    onTap: () => GoRouter.of(context)
+                                        .goNamed(CalendarPage.routeName),
                                   ),
-                                  title: Text(l10n.archiveTitle),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: iconColor,
-                                  ),
-                                  onTap: () => GoRouter.of(context)
-                                      .goNamed(ArchivedNotesPage.routeName),
-                                ),
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.calendar_today_outlined,
-                                    color: iconColor,
-                                  ),
-                                  title: Text(l10n.calendar),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: iconColor,
-                                  ),
-                                  onTap: () {},
-                                ),
+                                ],
                                 ListTile(
                                   leading: Icon(
                                     Icons.output,
@@ -176,7 +185,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   onTap: () => logoutDialogView(),
                                 ),
-
                               ],
                             ),
                           ),
@@ -343,7 +351,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             color: iconColor,
                           ),
                           onTap: () {
-                            GoRouter.of(context).goNamed(AboutPage.settingsRouteName);
+                            GoRouter.of(context)
+                                .goNamed(AboutPage.settingsRouteName);
                           },
                         ),
 

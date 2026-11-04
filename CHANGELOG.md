@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Web layout: in a wide browser window, a drawer on the left (Notes, Tasks, Calendar, Archived notes, Bin, Profile & settings) replaces the bottom bar, and the settings page no longer repeats Bin, Archived notes and Calendar. Phones and narrow windows keep the bottom bar.
+- Calendar page (`/user/calendar`), a "coming soon" placeholder for now, opened from the drawer or from settings.
 - French translation. The app follows the device language (English or French, English otherwise). All text lives in `lib/ui/core/localization/app_en.arb` and `app_fr.arb` (`flutter gen-l10n`); dates, weekdays and times are formatted for the language.
 - Tooltips on every icon-only button (also read by screen readers), and a labelled 48 dp touch target for the task completion circle.
 - Note search: the search bar on the notes screen filters notes live by title and text, ignoring case and accents; back clears the search.
