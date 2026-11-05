@@ -15,6 +15,25 @@ class MockUserCredential extends Mock implements firebase_auth.UserCredential {}
 
 class MockGoogleSignIn extends Mock implements GoogleSignIn {}
 
+class MockFirebaseUser extends Mock implements firebase_auth.User {}
+
+class MockUserMetadata extends Mock implements firebase_auth.UserMetadata {}
+
+/// A signed-in Firebase user whose email is [verified] or not.
+MockFirebaseUser firebaseUser({required bool verified}) {
+  final user = MockFirebaseUser();
+  final metadata = MockUserMetadata();
+  when(() => user.uid).thenReturn('uid-1');
+  when(() => user.email).thenReturn('new@example.com');
+  when(() => user.emailVerified).thenReturn(verified);
+  when(() => user.isAnonymous).thenReturn(false);
+  when(() => user.metadata).thenReturn(metadata);
+  when(() => user.reload()).thenAnswer((_) async {});
+  when(() => user.getIdToken(true)).thenAnswer((_) async => 'token');
+  when(() => user.sendEmailVerification()).thenAnswer((_) async {});
+  return user;
+}
+
 void main() {
   late MockFirebaseAuth mockFirebaseAuth;
   late MockGoogleSignIn mockGoogleSignIn;
@@ -164,6 +183,110 @@ void main() {
           isA<SignUpWithEmailAndPasswordFailure>()
               .having((e) => e.message, 'message', kNetworkErrorMessage),
         ),
+      );
+    });
+
+    test('sends the verification email to the new account', () async {
+      final user = firebaseUser(verified: false);
+      final credential = MockUserCredential();
+      when(() => credential.user).thenReturn(user);
+      when(() => mockFirebaseAuth.createUserWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          )).thenAnswer((_) async => credential);
+
+      await buildRepo()
+          .signUp(email: 'new@example.com', password: 'password123');
+
+      verify(() => user.sendEmailVerification()).called(1);
+    });
+
+    test('still succeeds when the verification email cannot be sent', () async {
+      final user = firebaseUser(verified: false);
+      when(() => user.sendEmailVerification()).thenThrow(
+        firebase_auth.FirebaseAuthException(code: 'network-request-failed'),
+      );
+      final credential = MockUserCredential();
+      when(() => credential.user).thenReturn(user);
+      when(() => mockFirebaseAuth.createUserWithEmailAndPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          )).thenAnswer((_) async => credential);
+
+      await expectLater(
+        buildRepo().signUp(email: 'new@example.com', password: 'password123'),
+        completes,
+      );
+    });
+  });
+
+  group('AuthRepository - sendEmailVerification', () {
+    test('sends the email to the signed-in user', () async {
+      final user = firebaseUser(verified: false);
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await buildRepo().sendEmailVerification();
+
+      verify(() => user.sendEmailVerification()).called(1);
+    });
+
+    test('reports too many requests', () async {
+      final user = firebaseUser(verified: false);
+      when(() => user.sendEmailVerification()).thenThrow(
+        firebase_auth.FirebaseAuthException(code: 'too-many-requests'),
+      );
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await expectLater(
+        buildRepo().sendEmailVerification(),
+        throwsA(isA<EmailVerificationFailure>()
+            .having((e) => e.error, 'error', AuthError.tooManyRequests)),
+      );
+    });
+  });
+
+  group('AuthRepository - reloadUser', () {
+    test('returns User.empty when nobody is signed in', () async {
+      when(() => mockFirebaseAuth.currentUser).thenReturn(null);
+
+      expect(await buildRepo().reloadUser(), User.empty);
+    });
+
+    test('returns a still unverified user without refreshing the token',
+        () async {
+      final user = firebaseUser(verified: false);
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      final reloaded = await buildRepo().reloadUser();
+
+      expect(reloaded.needsEmailVerification, isTrue);
+      verify(() => user.reload()).called(1);
+      verifyNever(() => user.getIdToken(true));
+    });
+
+    test('refreshes the token once the email is verified', () async {
+      final user = firebaseUser(verified: true);
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+      final repo = buildRepo();
+
+      final reloaded = await repo.reloadUser();
+
+      expect(reloaded.needsEmailVerification, isFalse);
+      expect(repo.currentUser, reloaded);
+      verify(() => user.getIdToken(true)).called(1);
+    });
+
+    test('reports a network error', () async {
+      final user = firebaseUser(verified: false);
+      when(() => user.reload()).thenThrow(
+        firebase_auth.FirebaseAuthException(code: 'network-request-failed'),
+      );
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await expectLater(
+        buildRepo().reloadUser(),
+        throwsA(isA<EmailVerificationFailure>()
+            .having((e) => e.error, 'error', AuthError.network)),
       );
     });
   });

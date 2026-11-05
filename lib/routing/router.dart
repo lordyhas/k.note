@@ -8,6 +8,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/widgets/login_page.dart';
+import 'package:knote/ui/auth/widgets/verify_email_page.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/widgets/error_page.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
@@ -31,7 +32,8 @@ class AppRouter {
   /// state changes.
   ///
   /// The `/` route redirects authenticated users to the main shell and
-  /// unauthenticated users to the login page.
+  /// unauthenticated users to the login page. Users who must verify their
+  /// email are kept on [VerifyEmailPage] (see [redirectForEmailVerification]).
   static GoRouter routes({
     required GlobalKey<NavigatorState> key,
     required AuthenticationBloc authBloc,
@@ -41,6 +43,8 @@ class AppRouter {
         refreshListenable: GoRouterRefreshStream(authBloc.stream),
         errorBuilder: (context, state) => ErrorPage(error: state.error),
         redirectLimit: 1,
+        redirect: (ctx, state) =>
+            redirectForEmailVerification(authBloc.state, state.uri.path),
         //initialLocation: NotesPage.routeName,
         //initialLocation: "/${SettingsPage.routeName}",
         routes: <RouteBase>[
@@ -160,6 +164,13 @@ class AppRouter {
           //_homeGoRoute(parentKey: key),
 
           GoRoute(
+            parentNavigatorKey: key,
+            name: VerifyEmailPage.routeName,
+            path: "/${VerifyEmailPage.routeName}",
+            builder: (context, state) => const VerifyEmailPage(),
+          ),
+
+          GoRoute(
             /// Login router
             parentNavigatorKey: key,
             name: LoginPage.routeName,
@@ -174,6 +185,27 @@ class AppRouter {
           ),
         ],
       );
+}
+
+/// Where to send the user for [location] because of email verification, or
+/// null to let the routes decide.
+///
+/// A user with an unverified email address can only see [VerifyEmailPage],
+/// which also lets them log out; the page is useless to everyone else.
+/// Firestore denies their requests anyway, this only avoids showing empty
+/// pages.
+@visibleForTesting
+String? redirectForEmailVerification(AuthState auth, String location) {
+  const verifyPath = "/${VerifyEmailPage.routeName}";
+  if (auth.isAuthenticated && auth.user.needsEmailVerification) {
+    return location == verifyPath ? null : verifyPath;
+  }
+  if (location == verifyPath) {
+    return auth.isAuthenticated
+        ? "/${NotesPage.routeName}"
+        : "/${LoginPage.routeName}";
+  }
+  return null;
 }
 
 class GoRouterRefreshStream extends ChangeNotifier {

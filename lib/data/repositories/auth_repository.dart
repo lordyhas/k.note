@@ -255,6 +255,42 @@ class LogInWithGoogleFailure implements Exception {
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
 
+/// Thrown when the verification email cannot be sent, or the user's
+/// verification state cannot be refreshed.
+class EmailVerificationFailure implements Exception {
+  const EmailVerificationFailure([
+    this.message = 'An unknown exception occurred.',
+    this.error = AuthError.unknown,
+  ]);
+
+  /// Create a failure from a firebase authentication exception code.
+  factory EmailVerificationFailure.fromCode(String code) {
+    switch (code) {
+      case 'too-many-requests':
+        return const EmailVerificationFailure(
+          'Too many attempts. Please wait a moment and try again.',
+          AuthError.tooManyRequests,
+        );
+      case 'network-request-failed':
+        return const EmailVerificationFailure(
+            kNetworkErrorMessage, AuthError.network);
+      case 'user-disabled':
+        return const EmailVerificationFailure(
+          'This user has been disabled. Please contact support for help.',
+          AuthError.userDisabled,
+        );
+      default:
+        return const EmailVerificationFailure();
+    }
+  }
+
+  /// The associated error message, in English, for logs.
+  final String message;
+
+  /// Why it failed, for the message shown to the user.
+  final AuthError error;
+}
+
 
 
 class CacheClient {
@@ -352,33 +388,75 @@ class AuthRepository {
     return _cache.read<User>(key: userCacheKey) ?? User.empty;
   }
 
-  /// Creates a new user with the provided [email] and [password].
+  /// Creates a new user with the provided [email] and [password], and sends
+  /// them a link to verify that the address is theirs.
   ///
-  /// Throws a [SignUpFailure] if an exception occurs.
+  /// Throws a [SignUpWithEmailAndPasswordFailure] if the account cannot be
+  /// created. A failure to send the email is only logged: the account
+  /// exists, and the verification page can send it again.
   Future<void> signUp({
     required String email,
     required String password,
   }) async {
-    //assert(email != null && password != null);
-
+    final firebase_auth.UserCredential credential;
     try {
-
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-
-
-    }
-    on firebase_auth.FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
-    }catch (_) {
-      debugPrint("Exception : Sign Up With Mail failed => $Exception ");
+    } catch (e) {
+      debugPrint('Sign up with email failed: $e');
       throw const SignUpWithEmailAndPasswordFailure();
+    }
+    try {
+      await credential.user?.sendEmailVerification();
+    } catch (e) {
+      debugPrint('Sending the verification email failed: $e');
     }
   }
 
+  /// Sends the signed-in user a new link to verify their email address.
+  ///
+  /// Throws an [EmailVerificationFailure] if it cannot be sent.
+  Future<void> sendEmailVerification() async {
+    try {
+      await _firebaseAuth.currentUser?.sendEmailVerification();
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw EmailVerificationFailure.fromCode(e.code);
+    } catch (e) {
+      debugPrint('Sending the verification email failed: $e');
+      throw const EmailVerificationFailure();
+    }
+  }
 
+  /// Fetches the signed-in user again from Firebase, e.g. to learn that they
+  /// opened the verification link, and returns it.
+  ///
+  /// Once the email is verified, the ID token is refreshed too: Firestore
+  /// reads `email_verified` from the token, and the current one predates the
+  /// verification. [user] does not emit for a reload, so callers pass the
+  /// result to `AuthenticationBloc.updateUser`.
+  ///
+  /// Throws an [EmailVerificationFailure] if Firebase cannot be reached.
+  Future<User> reloadUser() async {
+    try {
+      final current = _firebaseAuth.currentUser;
+      if (current == null) return User.empty;
+      await current.reload();
+      final reloaded = _firebaseAuth.currentUser ?? current;
+      if (reloaded.emailVerified) await reloaded.getIdToken(true);
+      final user = reloaded.toUser;
+      _cache.write(key: userCacheKey, value: user);
+      return user;
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw EmailVerificationFailure.fromCode(e.code);
+    } catch (e) {
+      debugPrint('Reloading the user failed: $e');
+      throw const EmailVerificationFailure();
+    }
+  }
 
   /// Starts the Sign In Anonymously .
   ///

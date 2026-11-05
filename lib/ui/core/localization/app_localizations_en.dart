@@ -626,6 +626,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goToHome => 'Go to home';
 
   @override
+  String get verifyEmailTitle => 'Verify your email';
+
+  @override
+  String verifyEmailBody(String email) {
+    return 'We sent a link to $email. Open it to confirm this address is yours, then come back here.';
+  }
+
+  @override
+  String get verifyEmailSpamHint => 'Can\'t find it? Check your spam folder.';
+
+  @override
+  String get verifyEmailCheck => 'I\'ve verified my email';
+
+  @override
+  String get verifyEmailResend => 'Resend the email';
+
+  @override
+  String get verifyEmailSent => 'Verification email sent.';
+
+  @override
+  String get verifyEmailNotVerified =>
+      'Your email isn\'t verified yet. Open the link we sent, then try again.';
+
+  @override
   String get authErrorInvalidEmail => 'This email address is not valid.';
 
   @override
