@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Email verification. Signing up with an email address sends a verification link, and the app keeps the account on a "Verify your email" page (resend the link, check again, log out) until it is opened. `firestore.rules` now requires a verified email (`email_verified` in the token), so an account created with someone else's address cannot use the app. Google accounts are already verified. Existing unverified email accounts must verify before seeing their notes again.
 
 ### Added
+- Release workflow: merging into `production` builds a signed app bundle and APK and publishes them as a GitHub release (`.github/workflows/release.yml`, see `docs/release.md`). New upload key (alias `lordyhas`), registered in Firebase.
 - Task reminders: a notification at the reminder time of each open task, on Android (and iOS once configured), scheduled again when tasks change on any device and cancelled on sign-out. Not available on the web.
 - Repeating tasks: completing one adds its next occurrence, due on the next date of its rule, with its reminder moved by the same number of days and its steps unchecked.
 - Calendar page: a month view of tasks by due date (or reminder date), with the selected day's tasks; side by side on wide screens.

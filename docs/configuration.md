@@ -46,15 +46,16 @@ Access is restricted per user by `firestore.rules`; see [security.md](security.m
 ```properties
 storePassword=...
 keyPassword=...
-keyAlias=upload
-storeFile=C:/Users/<you>/upload-keystore.jks
+keyAlias=lordyhas
+storeFile=C:/Users/<you>/knote-upload-keystore.jks
 ```
 
 Create the key once with
 `keytool -genkey -v -keystore upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload`,
 keep the `.jks` and its passwords backed up, and let Google Play manage the app signing
 key (Play App Signing). Without `key.properties` the release build falls back to the debug
-key and cannot be uploaded to Play.
+key and cannot be uploaded to Play. CI signs releases from repository secrets instead:
+see [release.md](release.md).
 
 Register the SHA-1 and SHA-256 of the upload key and of the Play app signing key in
 Firebase (Project settings > Android app), or Google sign-in fails in release builds:
