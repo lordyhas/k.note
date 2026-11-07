@@ -763,4 +763,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordRequired => 'Enter your password';
+
+  @override
+  String get profileTitle => 'My profile';
+
+  @override
+  String get profileAddName => 'Add your name';
+
+  @override
+  String get profileName => 'Name';
+
+  @override
+  String get profileNameHint => 'How should we call you?';
+
+  @override
+  String get profileNameInvalid => 'Enter a name of 100 characters or fewer';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get profileSaveFailed =>
+      'Your profile couldn\'t be saved. Please try again.';
+
+  @override
+  String get profileSignInMethod => 'Sign-in method';
+
+  @override
+  String get profileEmailPassword => 'Email and password';
+
+  @override
+  String get profileMemberSince => 'Member since';
+
+  @override
+  String get preferencesTitle => 'Preferences';
+
+  @override
+  String get preferencesGeneral => 'General';
+
+  @override
+  String get preferencesLanguage => 'Language';
+
+  @override
+  String get preferencesLanguageSystem => 'Device language';
+
+  @override
+  String get preferencesNotesLayout => 'Notes layout';
+
+  @override
+  String get preferencesLayoutList => 'List';
+
+  @override
+  String get preferencesLayoutGrid => 'Grid';
+
+  @override
+  String get preferencesReminders => 'Task reminders';
+
+  @override
+  String get preferencesRemindersSubtitle =>
+      'Show a notification at the reminder time';
+
+  @override
+  String get preferencesRemindersWeb =>
+      'Notifications are shown by the mobile app';
+
+  @override
+  String get preferencesReminderHour => 'Default reminder time';
+
+  @override
+  String get preferencesReminderHourSubtitle =>
+      'for \"Tomorrow\" and \"Next week\"';
+
+  @override
+  String get preferencesFirstDay => 'First day of the week';
+
+  @override
+  String preferencesFirstDaySystem(String day) {
+    return 'Language default ($day)';
+  }
+
+  @override
+  String get preferencesSynced =>
+      'Your preferences are saved to your account and apply on all your devices.';
+
+  @override
+  String get preferencesSaveFailed => 'Your preferences couldn\'t be saved.';
 }

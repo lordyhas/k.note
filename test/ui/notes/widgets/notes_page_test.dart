@@ -8,7 +8,9 @@ import 'package:knote/data/repositories/auth_repository.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user.dart';
+import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
+import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -51,8 +53,7 @@ void main() {
 
   Finder searchField() => find.byKey(const Key('homePage_search_textField'));
 
-  testWidgets('filters notes while typing, ignoring accents',
-      (tester) async {
+  testWidgets('filters notes while typing, ignoring accents', (tester) async {
     await pumpPage(tester);
     expect(find.text('Groceries'), findsOneWidget);
 
@@ -107,5 +108,31 @@ void main() {
 
     expect(find.text('Groceries'), findsOneWidget);
     expect(await manager.getAllDeletedNoteInCloud(), isEmpty);
+  });
+
+  testWidgets('follows the layout preference, and the toggle saves it',
+      (tester) async {
+    final saved = <UserPreferences>[];
+    await tester.pumpWidget(PreferencesScope(
+      preferences: const UserPreferences(notesLayout: NotesLayout.grid),
+      onChanged: (preferences) async => saved.add(preferences),
+      child: BlocProvider.value(
+        value: authBloc,
+        child: localizedApp(
+          scaffoldMessengerKey: appMessengerKey,
+          home: NotesPage(firebaseManager: manager),
+        ),
+      ),
+    ));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    // In a grid, the toggle offers the list.
+    expect(find.byTooltip('List view'), findsOneWidget);
+    await tester.tap(find.byTooltip('List view'));
+    await tester.pump();
+
+    expect(saved.single.notesLayout, NotesLayout.list);
+    expect(find.byTooltip('Grid view'), findsOneWidget);
   });
 }

@@ -99,3 +99,25 @@ Typical note flow:
 Firestore data (`FirestoreService.deleteAllUserData`: notes, tasks, feedback, profile; it
 waits for the server), then the Firebase Auth account, which signs them out.
 
+## Profile and preferences
+
+- The display name lives in Firebase Auth (`AuthRepository.updateDisplayName`) and is
+  copied to the profile document `users/{uid}` (`FirestoreService.saveUserProfile`).
+  `ProfilePage` (`/user/profile`) edits it through `ProfileCubit`; accounts without a name
+  show their initials (`UserAvatar`).
+- `UserPreferences` (`lib/domain/models/user_preferences.dart`) is stored in
+  `users/{uid}/settings/preferences` so it follows the account to every device.
+  `PreferencesCubit`, created in `main.dart`, follows the signed-in user and their
+  preferences live (defaults when signed out). `main.dart` puts them in a
+  `PreferencesScope` above `MaterialApp`: pages read `PreferencesScope.of(context)` and
+  change them with `PreferencesScope.update(context, ...)`, which saves in the background.
+  Without a scope (widget tests) pages get the defaults.
+- What each preference drives: `language` → `MaterialApp.locale`; `notesLayout` →
+  `NotesPage`; `remindersEnabled` → `ReminderService.setEnabled`; `reminderHour` → the
+  "Tomorrow"/"Next week" reminder shortcuts; `firstDayOfWeek` →
+  `PreferencesScope.firstDayOfWeekIndex` (calendar, "Next week" shortcuts).
+- Adding a preference: a field with a default in `UserPreferences`, read defensively in
+  `fromMap`, its key and allowed values in `preferenceKeys()`/`isValidPreferences()` in
+  `firestore.rules`, and a tile in `PreferencesPage`.
+- There is only a dark theme for now, so there is no theme preference yet.
+

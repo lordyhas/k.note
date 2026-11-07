@@ -264,6 +264,41 @@ class LogInWithGoogleFailure implements Exception {
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
 
+/// Thrown when the profile (display name) cannot be updated.
+class ProfileUpdateFailure implements Exception {
+  const ProfileUpdateFailure([
+    this.message = 'An unknown exception occurred.',
+    this.error = AuthError.unknown,
+  ]);
+
+  /// Create a failure from a firebase authentication exception code.
+  factory ProfileUpdateFailure.fromCode(String code) {
+    switch (code) {
+      case 'network-request-failed':
+        return const ProfileUpdateFailure(
+            kNetworkErrorMessage, AuthError.network);
+      case 'too-many-requests':
+        return const ProfileUpdateFailure(
+          'Too many attempts. Please wait a moment and try again.',
+          AuthError.tooManyRequests,
+        );
+      case 'user-disabled':
+        return const ProfileUpdateFailure(
+          'This user has been disabled. Please contact support for help.',
+          AuthError.userDisabled,
+        );
+      default:
+        return const ProfileUpdateFailure();
+    }
+  }
+
+  /// The associated error message, in English, for logs.
+  final String message;
+
+  /// Why it failed, for the message shown to the user.
+  final AuthError error;
+}
+
 /// Thrown when the password reset email cannot be sent.
 class PasswordResetFailure implements Exception {
   const PasswordResetFailure([
@@ -683,6 +718,35 @@ class AuthRepository {
       throw const PasswordResetFailure();
     }
   }
+
+  /// Changes the signed-in user's display name ([User.name]) and returns the
+  /// updated user. [user] does not emit for this change, so callers pass the
+  /// result to `AuthenticationBloc.updateUser`.
+  ///
+  /// Throws a [ProfileUpdateFailure] if it fails.
+  Future<User> updateDisplayName(String name) async {
+    final current = _firebaseAuth.currentUser;
+    if (current == null) throw const ProfileUpdateFailure();
+    try {
+      await current.updateDisplayName(name.trim());
+      await current.reload();
+      final user = (_firebaseAuth.currentUser ?? current).toUser;
+      _cache.write(key: userCacheKey, value: user);
+      return user;
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw ProfileUpdateFailure.fromCode(e.code);
+    } catch (e) {
+      debugPrint('Updating the display name failed: $e');
+      throw const ProfileUpdateFailure();
+    }
+  }
+
+  /// Which sign-in methods the signed-in user has: `password`, `google.com`.
+  List<String> get signInMethods =>
+      _firebaseAuth.currentUser?.providerData
+          .map((info) => info.providerId)
+          .toList() ??
+      const [];
 
   /// Whether the signed-in user has a password, which then confirms their
   /// identity (otherwise Google does).

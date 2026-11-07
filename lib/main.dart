@@ -10,14 +10,17 @@ import 'package:knote/data/repositories/auth_repository.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/data/services/reminder_service.dart';
 import 'package:knote/domain/models/user.dart';
+import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/firebase_options.dart';
 import 'package:knote/routing/router.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/app_bloc_observer.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/themes/app_theme.dart';
 import 'package:knote/ui/core/themes/style_cubit.dart';
+import 'package:knote/ui/settings/bloc/preferences_cubit.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 void main() async {
@@ -109,18 +112,49 @@ class App extends StatelessWidget {
           );
           return bloc;
         },
-        child: AppView(),
+        child: BlocProvider(
+          create: (context) {
+            final cubit = PreferencesCubit(
+              users: _users(context.read<AuthenticationBloc>()),
+              firestore: FirestoreService.user,
+            );
+            // The "Task reminders" preference turns notifications on or off.
+            cubit.stream
+                .map((preferences) => preferences.remindersEnabled)
+                .distinct()
+                .listen(reminderService.setEnabled);
+            return cubit;
+          },
+          child: const AppView(),
+        ),
       ),
     );
   }
 }
 
-class AppView extends StatelessWidget {
+class AppView extends StatefulWidget {
+  const AppView({super.key});
+
+  @override
+  State<AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<AppView> {
   /// Global Key for GoRouter parent routes
   final _navigatorKey = GlobalKey<NavigatorState>(debugLabel: "__RouterKey__");
-  //final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-  AppView({super.key});
+  /// Built once: the app rebuilds when the preferences change (language),
+  /// and a new router would lose the navigation stack.
+  late final _router = AppRouter.routes(
+    key: _navigatorKey,
+    authBloc: context.read<AuthenticationBloc>(),
+  );
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,31 +165,34 @@ class AppView extends StatelessWidget {
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.light,
         systemNavigationBarColor: AppColors.dark.navigationBar,
-        //systemNavigationBarDividerColor: Colors.cyan.shade700,
         systemNavigationBarIconBrightness: Brightness.dark,
       ));
     }
-    //var user = BlocProvider.of<AuthenticationBloc>(context).state.user;
     return MultiBlocProvider(
       providers: [BlocProvider<StyleCubit>(create: (context) => StyleCubit())],
-      child: MaterialApp.router(
-        scaffoldMessengerKey: appMessengerKey,
-        debugShowCheckedModeBanner: false,
-        title: 'KNOTE',
-        // The app follows the device language (English or French), and
-        // falls back to English.
-        localizationsDelegates: const [
-          ...AppLocalizations.localizationsDelegates,
-          FlutterQuillLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: AppTheme.dark,
-
-        /// [AppRouter] is call here
-        routerConfig: AppRouter.routes(
-          key: _navigatorKey,
-          authBloc: BlocProvider.of<AuthenticationBloc>(context),
-        ),
+      child: BlocBuilder<PreferencesCubit, UserPreferences>(
+        builder: (context, preferences) {
+          final languageCode = preferences.languageCode;
+          return PreferencesScope(
+            preferences: preferences,
+            onChanged: context.read<PreferencesCubit>().update,
+            child: MaterialApp.router(
+              scaffoldMessengerKey: appMessengerKey,
+              debugShowCheckedModeBanner: false,
+              title: 'KNOTE',
+              // The device language (English or French, English otherwise),
+              // unless the user chose one in the preferences.
+              locale: languageCode == null ? null : Locale(languageCode),
+              localizationsDelegates: const [
+                ...AppLocalizations.localizationsDelegates,
+                FlutterQuillLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              theme: AppTheme.dark,
+              routerConfig: _router,
+            ),
+          );
+        },
       ),
     );
   }

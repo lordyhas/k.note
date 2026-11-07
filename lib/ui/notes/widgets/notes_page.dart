@@ -7,8 +7,10 @@ import 'package:utils_component/utils_component.dart';
 import 'package:knote/config/assets.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
+import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/themes/dimens.dart';
 import 'package:knote/ui/core/themes/styles.dart';
@@ -32,7 +34,14 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
   late AnimationController _animCtrl;
-  bool multiple = false;
+
+  /// The layout chosen here, shown at once while the preference is saved
+  /// (and kept when nothing stores preferences, e.g. in widget tests).
+  NotesLayout? _layout;
+
+  /// Whether notes are shown as a grid (two columns) rather than a list.
+  bool get multiple =>
+      (_layout ?? PreferencesScope.of(context).notesLayout) == NotesLayout.grid;
   late final FirestoreService _firebaseManager;
   late final Stream<List<NoteModel>> _notes;
 
@@ -101,9 +110,12 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                 multiple ? Icons.dashboard : Icons.view_agenda,
                 color: AppColors.of(context).text,
               ),
-              onPressed: () => setState(() {
-                multiple = !multiple;
-              }),
+              onPressed: () {
+                final layout = multiple ? NotesLayout.list : NotesLayout.grid;
+                setState(() => _layout = layout);
+                PreferencesScope.update(context,
+                    PreferencesScope.of(context).copyWith(notesLayout: layout));
+              },
             ),
           ],
           bottom: PreferredSize(
@@ -263,8 +275,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
 
   Widget _buildBottomMenu(NoteModel note) {
     final l10n = context.l10n;
-    final title =
-        note.title?.isNotEmpty == true ? note.title! : l10n.untitled;
+    final title = note.title?.isNotEmpty == true ? note.title! : l10n.untitled;
     // Scrolls rather than overflowing on small screens; the bottom padding
     // keeps the last item above the navigation bar drawn over the sheet.
     return SingleChildScrollView(

@@ -12,11 +12,14 @@ import 'package:knote/ui/auth/widgets/password_reset_dialog.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/user_avatar.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
 import 'package:knote/ui/settings/widgets/delete_account_dialog.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
+import 'package:knote/ui/settings/widgets/preferences_page.dart';
+import 'package:knote/ui/settings/widgets/profile_page.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -98,6 +101,34 @@ class _SettingsPageState extends State<SettingsPage> {
                             padding: const EdgeInsets.only(top: 108.0),
                             child: Column(
                               children: [
+                                ListTile(
+                                  key: const Key('__settings_profile__'),
+                                  leading: Icon(
+                                    Icons.person_outline,
+                                    color: iconColor,
+                                  ),
+                                  title: Text(l10n.profileTitle),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: iconColor,
+                                  ),
+                                  onTap: () => GoRouter.of(context)
+                                      .goNamed(ProfilePage.routeName),
+                                ),
+                                ListTile(
+                                  key: const Key('__settings_preferences__'),
+                                  leading: Icon(
+                                    Icons.tune,
+                                    color: iconColor,
+                                  ),
+                                  title: Text(l10n.preferencesTitle),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: iconColor,
+                                  ),
+                                  onTap: () => GoRouter.of(context)
+                                      .goNamed(PreferencesPage.routeName),
+                                ),
                                 if (signedInWithPassword)
                                   ListTile(
                                     leading: Icon(
@@ -197,22 +228,38 @@ class _SettingsPageState extends State<SettingsPage> {
                                 builder: (_, state) {
                               switch (state.status) {
                                 case AuthenticationStatus.authenticated:
+                                  final name = state.user.name?.trim() ?? '';
+                                  void openProfile() => GoRouter.of(context)
+                                      .goNamed(ProfilePage.routeName);
                                   return Column(
                                     children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100.0),
-                                        child: _ProfilePhoto(
-                                            url: state.user.photoMail),
+                                      Semantics(
+                                        button: true,
+                                        label: l10n.profileTitle,
+                                        child: InkResponse(
+                                          onTap: openProfile,
+                                          radius: 56,
+                                          child: UserAvatar(user: state.user),
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 8.0,
                                       ),
-                                      SelectableText("${state.user.name}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0,
-                                          )),
+                                      if (name.isNotEmpty)
+                                        SelectableText(name,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                            ))
+                                      else
+                                        TextButton.icon(
+                                          key:
+                                              const Key('__settings_addName__'),
+                                          onPressed: openProfile,
+                                          icon:
+                                              const Icon(Icons.edit, size: 18),
+                                          label: Text(l10n.profileAddName),
+                                        ),
                                       SelectableText(
                                         state.user.email,
                                         style: TextStyle(color: mutedText),
@@ -318,30 +365,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// The user's Google profile photo, or a placeholder when the account has no
-/// photo or it cannot be downloaded (e.g. offline).
-class _ProfilePhoto extends StatelessWidget {
-  const _ProfilePhoto({required this.url});
-
-  final String? url;
-
-  static const double _size = 100;
-
-  @override
-  Widget build(BuildContext context) {
-    const placeholder = Icon(Icons.account_circle, size: _size);
-    final url = this.url;
-    if (url == null || url.isEmpty) return placeholder;
-    return Image.network(
-      url,
-      fit: BoxFit.cover,
-      height: _size,
-      width: _size,
-      errorBuilder: (_, __, ___) => placeholder,
     );
   }
 }

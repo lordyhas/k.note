@@ -22,6 +22,7 @@ Each user owns one subtree:
 users/{uid}          profile (optional)
 users/{uid}/notes/*  notes
 users/{uid}/tasks/*  tasks
+users/{uid}/settings/preferences   the user's preferences
 feedback/{id}        messages sent from the Feedback page
 ```
 

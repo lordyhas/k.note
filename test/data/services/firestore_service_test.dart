@@ -5,6 +5,7 @@ import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/user.dart';
+import 'package:knote/domain/models/user_preferences.dart';
 
 const _testUser = User(
   id: 'user-123',
@@ -384,6 +385,8 @@ void main() {
       await manager.addNoteInCloud(note: _makeNote(id: 'note-1'));
       await manager.addTaskInCloud(task: _makeTask(id: 'task-1'));
       await manager.sendFeedback(message: 'Bye');
+      await manager
+          .savePreferences(const UserPreferences(language: AppLanguage.fr));
 
       await manager.deleteAllUserData();
 
@@ -391,6 +394,7 @@ void main() {
       expect((await userDoc.get()).exists, isFalse);
       expect((await userDoc.collection('notes').get()).docs, isEmpty);
       expect((await userDoc.collection('tasks').get()).docs, isEmpty);
+      expect((await userDoc.collection('settings').get()).docs, isEmpty);
       expect((await fakeFirestore.collection('feedback').get()).docs, isEmpty);
     });
 
@@ -407,6 +411,22 @@ void main() {
       expect(await other.getAllNoteInCloud(), hasLength(1));
       expect((await fakeFirestore.collection('feedback').get()).docs,
           hasLength(1));
+    });
+  });
+
+  group('FirestoreService - Preferences', () {
+    test('are the defaults until saved, then follow the saved ones', () async {
+      expect(await manager.watchPreferences().first, UserPreferences.defaults);
+
+      const preferences =
+          UserPreferences(notesLayout: NotesLayout.grid, reminderHour: 7);
+      await manager.savePreferences(preferences);
+
+      expect(await manager.watchPreferences().first, preferences);
+      final doc = await fakeFirestore
+          .doc('users/${_testUser.id}/settings/preferences')
+          .get();
+      expect(doc.data()?['reminder_hour'], 7);
     });
   });
 }

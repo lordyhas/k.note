@@ -773,4 +773,90 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get passwordRequired => 'Saisissez votre mot de passe';
+
+  @override
+  String get profileTitle => 'Mon profil';
+
+  @override
+  String get profileAddName => 'Ajouter votre nom';
+
+  @override
+  String get profileName => 'Nom';
+
+  @override
+  String get profileNameHint => 'Comment doit-on vous appeler ?';
+
+  @override
+  String get profileNameInvalid => 'Saisissez un nom de 100 caractères maximum';
+
+  @override
+  String get profileSaved => 'Profil enregistré';
+
+  @override
+  String get profileSaveFailed =>
+      'Votre profil n\'a pas pu être enregistré. Veuillez réessayer.';
+
+  @override
+  String get profileSignInMethod => 'Méthode de connexion';
+
+  @override
+  String get profileEmailPassword => 'E-mail et mot de passe';
+
+  @override
+  String get profileMemberSince => 'Membre depuis';
+
+  @override
+  String get preferencesTitle => 'Préférences';
+
+  @override
+  String get preferencesGeneral => 'Général';
+
+  @override
+  String get preferencesLanguage => 'Langue';
+
+  @override
+  String get preferencesLanguageSystem => 'Langue de l\'appareil';
+
+  @override
+  String get preferencesNotesLayout => 'Affichage des notes';
+
+  @override
+  String get preferencesLayoutList => 'Liste';
+
+  @override
+  String get preferencesLayoutGrid => 'Grille';
+
+  @override
+  String get preferencesReminders => 'Rappels des tâches';
+
+  @override
+  String get preferencesRemindersSubtitle =>
+      'Afficher une notification à l\'heure du rappel';
+
+  @override
+  String get preferencesRemindersWeb =>
+      'Les notifications sont affichées par l\'application mobile';
+
+  @override
+  String get preferencesReminderHour => 'Heure de rappel par défaut';
+
+  @override
+  String get preferencesReminderHourSubtitle =>
+      'pour « Demain » et « La semaine prochaine »';
+
+  @override
+  String get preferencesFirstDay => 'Premier jour de la semaine';
+
+  @override
+  String preferencesFirstDaySystem(String day) {
+    return 'Selon la langue ($day)';
+  }
+
+  @override
+  String get preferencesSynced =>
+      'Vos préférences sont enregistrées dans votre compte et s\'appliquent sur tous vos appareils.';
+
+  @override
+  String get preferencesSaveFailed =>
+      'Vos préférences n\'ont pas pu être enregistrées.';
 }

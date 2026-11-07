@@ -6,6 +6,7 @@ import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
@@ -106,8 +107,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
   DateTime _shortcutDate(DueDateShortcut shortcut) => dueDateFor(
         shortcut,
         now: DateTime.now(),
-        firstDayOfWeekIndex:
-            MaterialLocalizations.of(context).firstDayOfWeekIndex,
+        firstDayOfWeekIndex: PreferencesScope.firstDayOfWeekIndex(context),
       );
 
   Future<void> _onDueDateSelected(_DueDateChoice choice) async {
@@ -182,8 +182,8 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
   DateTime? _shortcutReminder(ReminderShortcut shortcut) => reminderFor(
         shortcut,
         now: DateTime.now(),
-        firstDayOfWeekIndex:
-            MaterialLocalizations.of(context).firstDayOfWeekIndex,
+        firstDayOfWeekIndex: PreferencesScope.firstDayOfWeekIndex(context),
+        morningHour: PreferencesScope.of(context).reminderHour,
       );
 
   String _time(DateTime dateTime) => MaterialLocalizations.of(context)

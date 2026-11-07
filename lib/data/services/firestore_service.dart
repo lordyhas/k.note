@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/user.dart';
+import 'package:knote/domain/models/user_preferences.dart';
 
 /// Reads and writes the signed-in [user]'s data in Cloud Firestore.
 ///
@@ -43,6 +44,12 @@ class FirestoreService {
   CollectionReference<Map<String, dynamic>> get _tasks =>
       _userDoc.collection('tasks');
 
+  CollectionReference<Map<String, dynamic>> get _settings =>
+      _userDoc.collection('settings');
+
+  DocumentReference<Map<String, dynamic>> get _preferences =>
+      _settings.doc('preferences');
+
   CollectionReference<Map<String, dynamic>> get _feedback =>
       _firestore.collection('feedback');
 
@@ -55,6 +62,18 @@ class FirestoreService {
   /// never stored where the client can write it.
   Future<void> saveUserProfile() {
     return _userDoc.set(user.asMap(), SetOptions(merge: true));
+  }
+
+  /// P R E F E R E N C E S
+
+  /// The user's preferences, emitted again whenever they change (on this
+  /// device or another one). [UserPreferences.defaults] until they save any.
+  Stream<UserPreferences> watchPreferences() => _preferences
+      .snapshots()
+      .map((snapshot) => UserPreferences.fromMap(snapshot.data()));
+
+  Future<void> savePreferences(UserPreferences preferences) {
+    return _preferences.set(preferences.asMap());
   }
 
   /// N O T E S   M E T H O D S
@@ -220,8 +239,8 @@ class FirestoreService {
 
   /// A C C O U N T
 
-  /// Deletes everything stored for the user: notes, tasks, feedback and the
-  /// profile document. Called just before their auth account is deleted,
+  /// Deletes everything stored for the user: notes, tasks, settings,
+  /// feedback and the profile document. Called just before their auth account is deleted,
   /// while the rules still let them.
   ///
   /// Unlike the other writes, this waits for the server: the account must not
@@ -230,6 +249,7 @@ class FirestoreService {
     final docs = [
       ...(await _notes.get(const GetOptions(source: Source.server))).docs,
       ...(await _tasks.get(const GetOptions(source: Source.server))).docs,
+      ...(await _settings.get(const GetOptions(source: Source.server))).docs,
       ...(await _feedback
               .where('uid', isEqualTo: user.id)
               .get(const GetOptions(source: Source.server)))

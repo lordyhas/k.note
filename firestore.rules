@@ -66,6 +66,23 @@ service cloud.firestore {
               'reminder_time', 'repeat', 'note'];
     }
 
+    function preferenceKeys() {
+      return ['language', 'notes_layout', 'reminders_enabled', 'reminder_hour',
+              'first_day_of_week'];
+    }
+
+    function isValidPreferences() {
+      let data = request.resource.data;
+      return (!('language' in data) || data.language in ['system', 'en', 'fr'])
+          && (!('notes_layout' in data) || data.notes_layout in ['grid', 'list'])
+          && (!('reminders_enabled' in data) || data.reminders_enabled is bool)
+          && (!('reminder_hour' in data)
+              || (data.reminder_hour is int
+                  && data.reminder_hour >= 0 && data.reminder_hour <= 23))
+          && (!('first_day_of_week' in data)
+              || data.first_day_of_week in ['system', 'monday', 'sunday', 'saturday']);
+    }
+
     function feedbackKeys() {
       return ['id', 'uid', 'email', 'message', 'app_version', 'platform',
               'locale', 'creation_time'];
@@ -90,6 +107,7 @@ service cloud.firestore {
       return data.id == userId
           && data.email == request.auth.token.get('email', '')
           && optString(data, 'name')
+          && (absent(data, 'name') || data.name.size() <= 100)
           && optString(data, 'photo_mail')
           && optTimestamp(data, 'creation_time')
           && optTimestamp(data, 'last_login');
@@ -154,6 +172,15 @@ service cloud.firestore {
         allow update: if isOwner(userId)
                       && changesOnly(noteKeys())
                       && isValidNote(noteId);
+      }
+
+      // Only one settings document for now: the user's preferences.
+      match /settings/{settingsId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+                              && settingsId == 'preferences'
+                              && hasValidKeys(preferenceKeys())
+                              && isValidPreferences();
       }
 
       match /tasks/{taskId} {

@@ -16,6 +16,8 @@ import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
+import 'package:knote/ui/settings/widgets/preferences_page.dart';
+import 'package:knote/ui/settings/widgets/profile_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/shell/app_shell.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
@@ -110,6 +112,16 @@ class AppRouter {
                       name: AboutPage.settingsRouteName,
                       path: AboutPage.routeName,
                       builder: (context, state) => const AboutPage(),
+                    ),
+                    GoRoute(
+                      name: ProfilePage.routeName,
+                      path: ProfilePage.routeName,
+                      builder: (context, state) => const ProfilePage(),
+                    ),
+                    GoRoute(
+                      name: PreferencesPage.routeName,
+                      path: PreferencesPage.routeName,
+                      builder: (context, state) => const PreferencesPage(),
                     ),
                     GoRoute(
                       name: FeedbackPage.routeName,
