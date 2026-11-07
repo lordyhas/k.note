@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class LoginHome extends StatefulWidget {
   const LoginHome({super.key});
 
@@ -14,35 +12,39 @@ class _LoginHomeState extends State<LoginHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PageView(),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PageView(),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Placeholder(),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Placeholder(),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Placeholder(),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Placeholder(),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Placeholder(),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Placeholder(),
-                  ),Container(
-                    margin: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Placeholder(),
-                  ),Container(
-                    margin: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Placeholder(),
-                  ),Container(
-                    margin: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Placeholder(),
-                  ),Container(
-                    margin: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Placeholder(),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
+        ],
       ),
     );
   }

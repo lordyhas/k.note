@@ -30,9 +30,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get untitled => 'Sans titre';
 
   @override
-  String get comingSoon => 'Bientôt disponible';
-
-  @override
   String get titleHint => 'Titre';
 
   @override
@@ -63,9 +60,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notesClearSearch => 'Effacer la recherche';
 
   @override
-  String get notifications => 'Notifications';
-
-  @override
   String get notesNew => 'Nouvelle note';
 
   @override
@@ -85,12 +79,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noteMoveToBin => 'Mettre à la corbeille';
-
-  @override
-  String get noteChangeColor => 'Changer la couleur';
-
-  @override
-  String get noteSavingMode => 'Mode d\'enregistrement';
 
   @override
   String noteArchived(String title) {
@@ -475,9 +463,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logOutQuestion => 'Voulez-vous vous déconnecter ?';
 
   @override
-  String get editProfile => 'Modifier le profil';
-
-  @override
   String get changePassword => 'Modifier le mot de passe';
 
   @override
@@ -487,27 +472,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get unknownName => 'Nom inconnu';
 
   @override
-  String get darkMode => 'Mode sombre';
-
-  @override
-  String get emailUpdates => 'Avis par e-mail';
-
-  @override
-  String get emailUpdatesSubtitle => 'M\'envoyer des avis par e-mail';
-
-  @override
-  String get aboutUs => 'À propos de nous';
-
-  @override
   String get aboutApp => 'À propos de l\'application';
 
   @override
   String get lastUpdate => 'Dernière mise à jour';
-
-  @override
-  String betaVersion(String version) {
-    return 'Version bêta $version';
-  }
 
   @override
   String get version => 'Version';
@@ -542,16 +510,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get none => 'Aucune';
 
   @override
-  String get helpTitle => 'Comment pouvons-nous vous aider ?';
-
-  @override
-  String get helpBody =>
-      'Un problème ? Nous sommes là pour vous aider, n\'hésitez pas à nous contacter.';
-
-  @override
-  String get helpChat => 'Discuter avec nous';
-
-  @override
   String get feedbackTitle => 'Votre avis';
 
   @override
@@ -562,16 +520,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get send => 'Envoyer';
-
-  @override
-  String get inviteTitle => 'Invitez vos amis';
-
-  @override
-  String get inviteBody =>
-      'Êtes-vous de ceux qui font tout au dernier moment ?';
-
-  @override
-  String get share => 'Partager';
 
   @override
   String get pageNotFound => 'Désolé, cette page est introuvable !';
@@ -615,9 +563,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signInWithGoogle => 'Se connecter avec Google';
-
-  @override
-  String get signInWithFacebook => 'Se connecter avec Facebook';
 
   @override
   String get signedIn => 'Connexion réussie';
@@ -715,4 +660,107 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authErrorSignUp => 'L\'inscription a échoué. Veuillez réessayer.';
+
+  @override
+  String get authErrorUserMismatch =>
+      'Choisissez le compte avec lequel vous êtes connecté.';
+
+  @override
+  String get forgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get resetPasswordTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get resetPasswordBody =>
+      'Saisissez l\'adresse e-mail de votre compte. Nous vous enverrons un lien pour choisir un nouveau mot de passe.';
+
+  @override
+  String get resetPasswordSend => 'Envoyer le lien';
+
+  @override
+  String resetPasswordSent(String email) {
+    return 'Si un compte utilise $email, un lien pour réinitialiser son mot de passe est en route. Pensez à vérifier les spams.';
+  }
+
+  @override
+  String get resetPasswordFailed =>
+      'L\'e-mail n\'a pas pu être envoyé. Veuillez réessayer.';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountTitle => 'Supprimer votre compte ?';
+
+  @override
+  String get deleteAccountBody =>
+      'Vos notes, vos tâches et votre compte seront définitivement supprimés. Cette action est irréversible.';
+
+  @override
+  String get deleteAccountPasswordHint =>
+      'Saisissez votre mot de passe pour confirmer.';
+
+  @override
+  String get deleteAccountGoogleHint =>
+      'Pour confirmer, vous devrez choisir votre compte Google.';
+
+  @override
+  String get deleteAccountConfirm => 'Supprimer définitivement';
+
+  @override
+  String get deleteAccountDone => 'Votre compte a été supprimé.';
+
+  @override
+  String get deleteAccountFailed =>
+      'Votre compte n\'a pas pu être supprimé. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get sendFeedback => 'Envoyer un avis';
+
+  @override
+  String get feedbackSent => 'Merci ! Votre avis a été envoyé.';
+
+  @override
+  String get feedbackFailed =>
+      'Votre avis n\'a pas pu être envoyé. Veuillez réessayer.';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get reminderChannelName => 'Rappels des tâches';
+
+  @override
+  String get reminderChannelDescription =>
+      'Notifications à l\'heure du rappel choisie pour vos tâches';
+
+  @override
+  String get calendarToday => 'Aujourd\'hui';
+
+  @override
+  String get calendarPreviousMonth => 'Mois précédent';
+
+  @override
+  String get calendarNextMonth => 'Mois suivant';
+
+  @override
+  String get calendarNoTasks => 'Rien de prévu ce jour-là.';
+
+  @override
+  String get calendarLoadError => 'Vos tâches n\'ont pas pu être chargées';
+
+  @override
+  String calendarDayTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tâches',
+      one: '1 tâche',
+      zero: 'aucune tâche',
+    );
+    return '$_temp0';
+  }
 }

@@ -5,8 +5,6 @@ import 'package:knote/data/repositories/auth_repository.dart';
 import 'package:knote/ui/auth/bloc/sign_up_cubit.dart';
 import 'package:knote/ui/auth/widgets/sign_up_form.dart';
 
-
-
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
@@ -73,14 +74,6 @@ class _TasksPageState extends State<TasksPage> {
         backgroundColor: colors.background,
         elevation: 0,
         leading: Icon(Icons.task_alt, color: colors.text),
-        actions: [
-          //todo: pop up menu
-          IconButton(
-            tooltip: l10n.moreOptions,
-            icon: Icon(Icons.more_vert, color: colors.text),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Container(
         constraints: const BoxConstraints(maxWidth: 910),
@@ -224,9 +217,13 @@ class _TasksPageState extends State<TasksPage> {
                         repeat: task.repeat,
                         note: task.note,
                       );
+                      // Completing a repeating task adds its next one.
+                      final next = updatedTask.isAllChecked
+                          ? task.nextOccurrence(id: const Uuid().v4())
+                          : null;
                       saveInBackground(
-                          () => _firebaseManager.updateTaskInCloud(
-                              task: updatedTask),
+                          () => _firebaseManager.updateTaskWithNext(
+                              task: updatedTask, next: next),
                           failureMessage: l10n.taskUpdateFailed);
                     },
                     // 48 x 48: the minimum touch target.

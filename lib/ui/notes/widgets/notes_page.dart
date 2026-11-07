@@ -129,13 +129,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                             hintText: context.l10n.notesSearchHint),
                       ),
                     ),
-                    if (_query.isEmpty)
-                      IconButton(
-                        tooltip: context.l10n.notifications,
-                        icon: const Icon(Icons.notifications_none_rounded),
-                        onPressed: () {},
-                      )
-                    else
+                    if (_query.isNotEmpty)
                       IconButton(
                         key: const Key('homePage_search_clear'),
                         tooltip: context.l10n.notesClearSearch,
@@ -329,26 +323,6 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                       failureMessage: l10n.noteRestoreFailed),
                 );
               }),
-          ListTile(
-            leading: Icon(
-              Icons.color_lens_outlined,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            title: Text(l10n.noteChangeColor),
-            onTap: () {},
-          ),
-          Divider(
-            indent: 42.0,
-            color: AppColors.of(context).text,
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.save_alt_rounded,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            title: Text(l10n.noteSavingMode),
-            onTap: () {},
-          ),
         ],
       ),
     );

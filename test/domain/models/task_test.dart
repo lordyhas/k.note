@@ -165,4 +165,58 @@ void main() {
       expect(checklist.asMap()['list'], isEmpty);
     });
   });
+
+  group('CheckList.nextOccurrence', () {
+    final now = DateTime(2026, 3, 1, 12);
+
+    CheckList task({String? repeat, DateTime? due, DateTime? reminder}) =>
+        CheckList(
+          id: 'task-1',
+          title: 'Water the plants',
+          list: const [TodoItem(text: 'Balcony', isDone: true)],
+          isAllChecked: true,
+          isImportant: true,
+          isMyDay: true,
+          dueDate: due,
+          reminderTime: reminder,
+          repeat: repeat,
+          note: 'Not too much',
+        );
+
+    test('is null for a task that does not repeat', () {
+      expect(task(due: now).nextOccurrence(id: 'next', now: now), isNull);
+    });
+
+    test('is due on the next date, unchecked, with the reminder moved', () {
+      final next = task(
+        repeat: 'Weekly',
+        due: DateTime(2026, 3, 2),
+        reminder: DateTime(2026, 3, 2, 8, 15),
+      ).nextOccurrence(id: 'next', now: now)!;
+
+      expect(next.id, 'next');
+      expect(next.isAllChecked, isFalse);
+      expect(next.list.single.isDone, isFalse);
+      expect(next.list.single.text, 'Balcony');
+      expect(next.dueDate, DateTime(2026, 3, 9));
+      expect(next.reminderTime, DateTime(2026, 3, 9, 8, 15));
+      expect(next.repeat, 'Weekly');
+      expect(next.isImportant, isTrue);
+      expect(next.isMyDay, isFalse);
+      expect(next.note, 'Not too much');
+      expect(next.creationTime, now);
+    });
+
+    test('a reminder without a due date repeats from the reminder', () {
+      final next = task(repeat: 'Daily', reminder: DateTime(2026, 3, 1, 7))
+          .nextOccurrence(id: 'next', now: now)!;
+      expect(next.dueDate, isNull);
+      expect(next.reminderTime, DateTime(2026, 3, 2, 7));
+    });
+
+    test('a task without dates repeats from now', () {
+      final next = task(repeat: 'Daily').nextOccurrence(id: 'next', now: now)!;
+      expect(next.dueDate, DateTime(2026, 3, 2, 12));
+    });
+  });
 }

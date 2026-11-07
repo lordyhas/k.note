@@ -8,6 +8,7 @@ import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/bloc/login_cubit.dart';
 import 'package:knote/ui/auth/widgets/auth_error_text.dart';
 import 'package:knote/ui/auth/widgets/login_buttons.dart';
+import 'package:knote/ui/auth/widgets/password_reset_dialog.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
@@ -105,9 +106,12 @@ class LoginForm extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 8.0),
-                            OutlinedButton(onPressed: (){
-                              GoRouter.of(context).pushReplacement("/${NotesPage.routeName}");
-                            }, child: Text(l10n.goToHome)),
+                            OutlinedButton(
+                                onPressed: () {
+                                  GoRouter.of(context).pushReplacement(
+                                      "/${NotesPage.routeName}");
+                                },
+                                child: Text(l10n.goToHome)),
                             //const CircularProgressIndicator(), // Show loading while redirecting
                           ],
                         ),
@@ -130,9 +134,26 @@ class LoginForm extends StatelessWidget {
                                 left: 25, right: 25, top: 2),
                             child: PasswordInput(),
                           ),
-                          //
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 13),
+                              child: TextButton(
+                                key: const Key('__loginForm_forgotPassword__'),
+                                onPressed: () => showPasswordResetDialog(
+                                  context,
+                                  email: context
+                                      .read<LoginCubit>()
+                                      .state
+                                      .email
+                                      .value,
+                                ),
+                                child: Text(l10n.forgotPassword),
+                              ),
+                            ),
+                          ),
 
-                          const SizedBox(height: 32.0),
+                          const SizedBox(height: 16.0),
                           SizedBox(
                             child: Column(
                               children: [
@@ -170,10 +191,6 @@ class LoginForm extends StatelessWidget {
                                   ),
                                 ),
                                 GoogleLoginButton(),
-                                const SizedBox(
-                                  height: 16.0,
-                                ),
-                                FacebookLoginButton(),
                                 //const Spacer(),
                               ],
                             ),

@@ -74,6 +74,42 @@ class TaskRepeat {
     );
   }
 
+  /// The next date the task falls on after [date], at the same time of day.
+  ///
+  /// Weekly rules with [weekdays] move to the next selected day of the same
+  /// week, or to the first selected day [interval] weeks later. Months and
+  /// years keep the day of the month, clamped to the length of the month
+  /// (January 31 is followed by the last day of February).
+  DateTime nextAfter(DateTime date) {
+    switch (unit) {
+      case RepeatUnit.day:
+        return _addDays(date, interval);
+      case RepeatUnit.week:
+        if (weekdays.isEmpty) return _addDays(date, 7 * interval);
+        final days = weekdays.toList()..sort();
+        for (final day in days) {
+          if (day > date.weekday) return _addDays(date, day - date.weekday);
+        }
+        // Monday of the week [interval] weeks later, then its first day.
+        final monday = _addDays(date, 7 * interval - (date.weekday - 1));
+        return _addDays(monday, days.first - 1);
+      case RepeatUnit.month:
+        return _withMonth(date, date.year, date.month + interval);
+      case RepeatUnit.year:
+        return _withMonth(date, date.year + interval, date.month);
+    }
+  }
+
+  /// Calendar days, so that a daylight saving change keeps the time of day.
+  static DateTime _addDays(DateTime date, int days) => DateTime(date.year,
+      date.month, date.day + days, date.hour, date.minute, date.second);
+
+  static DateTime _withMonth(DateTime date, int year, int month) {
+    final lastDay = DateTime(year, month + 1, 0).day;
+    final day = date.day > lastDay ? lastDay : date.day;
+    return DateTime(year, month, day, date.hour, date.minute, date.second);
+  }
+
   /// The value to store in [CheckList.repeat].
   String encode() {
     final preset = this.preset;

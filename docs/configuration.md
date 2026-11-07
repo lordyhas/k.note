@@ -31,7 +31,34 @@ Access is restricted per user by `firestore.rules`; see [security.md](security.m
 
 `AuthRepository` uses:
 - Firebase email/password auth
-- Google sign-in (via `google_sign_in`)
+- Google sign-in (via `google_sign_in` 7). On Android the OAuth client comes from
+  `default_web_client_id`, generated from `google-services.json`; the debug and release
+  SHA-1/SHA-256 fingerprints must be registered in Firebase. On the web, Firebase opens its
+  own popup.
+- Password reset emails (`sendPasswordResetEmail`): customise the template in
+  Firebase console > Authentication > Templates.
+
+## Release signing
+
+`android/app/build.gradle.kts` signs release builds with the upload key described by
+`android/key.properties` (never committed):
+
+```properties
+storePassword=...
+keyPassword=...
+keyAlias=upload
+storeFile=C:/Users/<you>/upload-keystore.jks
+```
+
+Create the key once with
+`keytool -genkey -v -keystore upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload`,
+keep the `.jks` and its passwords backed up, and let Google Play manage the app signing
+key (Play App Signing). Without `key.properties` the release build falls back to the debug
+key and cannot be uploaded to Play.
+
+Register the SHA-1 and SHA-256 of the upload key and of the Play app signing key in
+Firebase (Project settings > Android app), or Google sign-in fails in release builds:
+`keytool -list -v -keystore upload-keystore.jks -alias upload`.
 
 ## Local config files
 
