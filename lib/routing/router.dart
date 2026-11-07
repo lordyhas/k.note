@@ -19,7 +19,6 @@ import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
 import 'package:knote/ui/settings/widgets/help_page.dart';
-import 'package:knote/ui/settings/widgets/invite_friend_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/shell/app_shell.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
@@ -130,12 +129,6 @@ class AppRouter {
                       name: AboutPage.settingsRouteName,
                       path: AboutPage.routeName,
                       builder: (context, state) => const AboutPage(),
-                    ),
-                    GoRoute(
-                      /// [InvitedFriend]
-                      name: InviteFriendPage.routeName,
-                      path: InviteFriendPage.routeName,
-                      builder: (context, state) => const InviteFriendPage(),
                     ),
                     GoRoute(
                       name: HelpPage.routeName,

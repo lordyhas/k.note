@@ -564,13 +564,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get send => 'Envoyer';
 
   @override
-  String get inviteTitle => 'Invitez vos amis';
-
-  @override
-  String get inviteBody =>
-      'Êtes-vous de ceux qui font tout au dernier moment ?';
-
-  @override
   String get share => 'Partager';
 
   @override

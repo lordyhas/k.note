@@ -11,7 +11,6 @@ class AppAssets {
   static const String feedbackImage = "assets/images/feedbackImage.png";
   static const String helpImage = "assets/images/helpImage.png";
   static const String img = "assets/avatar/--dan-img.jpg";
-  static const String inviteImage = "assets/images/inviteImage.png";
   static const String logo_1 = "assets/images/logo_1.png";
   static const String logo_2 = "assets/images/logo_2.png";
   static const String profile1 = "assets/images/profile1.png";

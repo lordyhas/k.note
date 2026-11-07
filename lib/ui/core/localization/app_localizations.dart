@@ -992,18 +992,6 @@ abstract class AppLocalizations {
   /// **'Send'**
   String get send;
 
-  /// No description provided for @inviteTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Invite your friends'**
-  String get inviteTitle;
-
-  /// No description provided for @inviteBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Are you one of those who do everything at the last moment?'**
-  String get inviteBody;
-
   /// No description provided for @share.
   ///
   /// In en, this message translates to:

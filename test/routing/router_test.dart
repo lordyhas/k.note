@@ -17,7 +17,6 @@ import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
 import 'package:knote/ui/settings/widgets/help_page.dart';
-import 'package:knote/ui/settings/widgets/invite_friend_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
@@ -119,7 +118,6 @@ void main() {
           containsAll([
             TrashPage.routeName,
             AboutPage.settingsRouteName,
-            InviteFriendPage.routeName,
             HelpPage.routeName,
             FeedbackPage.routeName,
             ArchivedNotesPage.routeName,
