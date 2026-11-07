@@ -223,5 +223,12 @@
   "appVersion": "Version {version}",
 
   "reminderChannelName": "Rappels des tâches",
-  "reminderChannelDescription": "Notifications à l'heure du rappel choisie pour vos tâches"
+  "reminderChannelDescription": "Notifications à l'heure du rappel choisie pour vos tâches",
+
+  "calendarToday": "Aujourd'hui",
+  "calendarPreviousMonth": "Mois précédent",
+  "calendarNextMonth": "Mois suivant",
+  "calendarNoTasks": "Rien de prévu ce jour-là.",
+  "calendarLoadError": "Vos tâches n'ont pas pu être chargées",
+  "calendarDayTasks": "{count, plural, =0{aucune tâche} =1{1 tâche} other{{count} tâches}}"
 }

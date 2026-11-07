@@ -748,4 +748,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reminderChannelDescription =>
       'Notifications at the reminder time set on your tasks';
+
+  @override
+  String get calendarToday => 'Today';
+
+  @override
+  String get calendarPreviousMonth => 'Previous month';
+
+  @override
+  String get calendarNextMonth => 'Next month';
+
+  @override
+  String get calendarNoTasks => 'Nothing planned on this day.';
+
+  @override
+  String get calendarLoadError => 'Your tasks couldn\'t be loaded';
+
+  @override
+  String calendarDayTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks',
+      one: '1 task',
+      zero: 'no tasks',
+    );
+    return '$_temp0';
+  }
 }

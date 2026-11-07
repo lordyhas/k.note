@@ -758,4 +758,31 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get reminderChannelDescription =>
       'Notifications à l\'heure du rappel choisie pour vos tâches';
+
+  @override
+  String get calendarToday => 'Aujourd\'hui';
+
+  @override
+  String get calendarPreviousMonth => 'Mois précédent';
+
+  @override
+  String get calendarNextMonth => 'Mois suivant';
+
+  @override
+  String get calendarNoTasks => 'Rien de prévu ce jour-là.';
+
+  @override
+  String get calendarLoadError => 'Vos tâches n\'ont pas pu être chargées';
+
+  @override
+  String calendarDayTasks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tâches',
+      one: '1 tâche',
+      zero: 'aucune tâche',
+    );
+    return '$_temp0';
+  }
 }

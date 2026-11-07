@@ -1321,6 +1321,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications at the reminder time set on your tasks'**
   String get reminderChannelDescription;
+
+  /// No description provided for @calendarToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get calendarToday;
+
+  /// No description provided for @calendarPreviousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get calendarPreviousMonth;
+
+  /// No description provided for @calendarNextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get calendarNextMonth;
+
+  /// No description provided for @calendarNoTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing planned on this day.'**
+  String get calendarNoTasks;
+
+  /// No description provided for @calendarLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Your tasks couldn\'t be loaded'**
+  String get calendarLoadError;
+
+  /// No description provided for @calendarDayTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no tasks} =1{1 task} other{{count} tasks}}'**
+  String calendarDayTasks(int count);
 }
 
 class _AppLocalizationsDelegate
