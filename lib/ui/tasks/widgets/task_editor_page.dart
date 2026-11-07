@@ -98,10 +98,17 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
       note: _noteController.text,
     );
 
+    // Checking the last step of a repeating task completes it, which adds
+    // its next occurrence.
+    final previous = widget.task;
+    final next =
+        previous != null && !previous.isAllChecked && newTask.isAllChecked
+            ? newTask.nextOccurrence(id: const Uuid().v4())
+            : null;
     saveInBackground(
-      () => widget.task == null
+      () => previous == null
           ? _firebaseManager.addTaskInCloud(task: newTask)
-          : _firebaseManager.updateTaskInCloud(task: newTask),
+          : _firebaseManager.updateTaskWithNext(task: newTask, next: next),
       failureMessage: l10n.taskSaveFailed,
     );
   }
@@ -253,8 +260,8 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                   : repeatValueText(l10n, _repeat!),
               isActive: _repeat != null,
               onTap: () {
-                setState(() =>
-                    _repeat = _repeat == null ? TaskRepeat.daily.encode() : null);
+                setState(() => _repeat =
+                    _repeat == null ? TaskRepeat.daily.encode() : null);
               },
             ),
             _buildOptionTile(

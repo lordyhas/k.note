@@ -180,6 +180,16 @@ class FirestoreService {
     return _tasks.doc(task.id).update(task.asMap());
   }
 
+  /// Saves [task], and creates [next] in the same write: the following
+  /// occurrence of a repeating task that was just completed.
+  Future<void> updateTaskWithNext({required CheckList task, CheckList? next}) {
+    if (next == null) return updateTaskInCloud(task: task);
+    final batch = _firestore.batch()
+      ..update(_tasks.doc(task.id), task.asMap())
+      ..set(_tasks.doc(next.id), next.asMap());
+    return batch.commit();
+  }
+
   Future<void> deleteTask({required String taskId}) {
     return _tasks.doc(taskId).delete();
   }

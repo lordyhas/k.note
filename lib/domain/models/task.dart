@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:knote/domain/models/document_model.dart';
+import 'package:knote/domain/models/task_repeat.dart';
 
 class TodoItem implements DataToMap {
   final String text;
@@ -97,6 +98,42 @@ class CheckList extends DocumentModel {
         repeat: map['repeat'],
         note: map['note'],
       );
+
+  /// The copy of a repeating task to do next, once this one is completed:
+  /// unchecked, due on the next date of [repeat] after [dueDate], with the
+  /// reminder moved by the same number of days. A task with neither a due
+  /// date nor a reminder repeats from [now]. Null if the task does not repeat.
+  CheckList? nextOccurrence({required String id, DateTime? now}) {
+    final rule = TaskRepeat.parse(repeat);
+    if (rule == null) return null;
+    now ??= DateTime.now();
+    final due = dueDate;
+    final reminder = reminderTime;
+    final from = due ?? reminder ?? now;
+    final next = rule.nextAfter(from);
+    final days = DateTime.utc(next.year, next.month, next.day)
+        .difference(DateTime.utc(from.year, from.month, from.day))
+        .inDays;
+    DateTime shift(DateTime date) => DateTime(date.year, date.month,
+        date.day + days, date.hour, date.minute, date.second);
+    return CheckList(
+      id: id,
+      title: title,
+      list: [for (final item in list) TodoItem(text: item.text, isDone: false)],
+      color: Color(colorValue),
+      creationTime: now,
+      modificationTime: now,
+      isImportant: isImportant,
+      dueDate: due != null
+          ? shift(due)
+          : reminder == null
+              ? next
+              : null,
+      reminderTime: reminder == null ? null : shift(reminder),
+      repeat: repeat,
+      note: note,
+    );
+  }
 
   @override
   void toDisplay() {
