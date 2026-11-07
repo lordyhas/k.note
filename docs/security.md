@@ -22,7 +22,14 @@ Each user owns one subtree:
 users/{uid}          profile (optional)
 users/{uid}/notes/*  notes
 users/{uid}/tasks/*  tasks
+feedback/{id}        messages sent from the Feedback page
 ```
+
+`feedback` is the only collection outside a user's subtree, so that the team
+can read it in the Firebase console. A verified user can only create feedback
+under their own `uid` and email, with a non-empty message of at most 5000
+characters and known fields; they can read and delete only their own (account
+deletion removes it) and never edit it.
 
 The rules allow a request only when the `{uid}` in the path equals
 `request.auth.uid`. A modified app that asks for another user's path gets

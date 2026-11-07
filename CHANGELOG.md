@@ -11,8 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Email verification. Signing up with an email address sends a verification link, and the app keeps the account on a "Verify your email" page (resend the link, check again, log out) until it is opened. `firestore.rules` now requires a verified email (`email_verified` in the token), so an account created with someone else's address cannot use the app. Google accounts are already verified. Existing unverified email accounts must verify before seeing their notes again.
 
 ### Added
+- Task reminders: a notification at the reminder time of each open task, on Android (and iOS once configured), scheduled again when tasks change on any device and cancelled on sign-out. Not available on the web.
+- Repeating tasks: completing one adds its next occurrence, due on the next date of its rule, with its reminder moved by the same number of days and its steps unchecked.
+- Calendar page: a month view of tasks by due date (or reminder date), with the selected day's tasks; side by side on wide screens.
+- "Forgot password?" on the login page, and "Change password" in the settings for email accounts: both send a reset link.
+- Delete account in the settings: after signing in again (password or Google), deletes the notes, tasks, feedback, profile and Firebase Auth account.
+- The Feedback page sends the message to the team (`feedback/{id}` in Firestore, allowed by `firestore.rules`), and is linked from the settings.
 - Web layout: in a wide browser window, a drawer on the left (Notes, Tasks, Calendar, Archived notes, Bin, Profile & settings) replaces the bottom bar, and the settings page no longer repeats Bin, Archived notes and Calendar. Phones and narrow windows keep the bottom bar.
-- Calendar page (`/user/calendar`), a "coming soon" placeholder for now, opened from the drawer or from settings.
 - French translation. The app follows the device language (English or French, English otherwise). All text lives in `lib/ui/core/localization/app_en.arb` and `app_fr.arb` (`flutter gen-l10n`); dates, weekdays and times are formatted for the language.
 - Tooltips on every icon-only button (also read by screen readers), and a labelled 48 dp touch target for the task completion circle.
 - Note search: the search bar on the notes screen filters notes live by title and text, ignoring case and accents; back clears the search.
@@ -31,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- `google_sign_in` 6 → 7 (`GoogleSignIn.instance`, `authenticate()`).
+- Settings only show working entries: Change password (email accounts), Send feedback, About, version, Log out, Delete account.
 - Android build: Android Gradle Plugin 8.13.0 → 9.0.1 and Kotlin 2.2.20 → 2.3.20, as required by upcoming Flutter versions. The app module uses AGP's built-in Kotlin (`android.builtInKotlin=true`) instead of applying the Kotlin Gradle Plugin.
 - `package_info_plus` 8 → 10.
 - The app now uses its own Firebase project, `k8note`, instead of the project it shared with another app (`parents-data-8c0ee`). Existing accounts and data were not migrated. The leftover iOS config, which still pointed to the old project, was removed.
@@ -69,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Signing in without an email (anonymous account) no longer crashes.
 
 ### Removed
+- Buttons and pages that did nothing: Invite a friend, Facebook sign-in, Edit profile, the dark mode / notifications / email update switches, More, About us, the notifications bell on the notes screen, "Change color" and "Saving mode" in the note actions, the tasks "More options" menu, and the unreachable Help and Offline notes pages.
 - The unused `file_picker` dependency, which did not compile with Android Gradle Plugin 9.
 - The unused `device_info_plus` dependency.
 - `LanguageBloc` and `strings.dart`, left over from another app and only used by the About screen.
