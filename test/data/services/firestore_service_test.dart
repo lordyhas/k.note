@@ -362,4 +362,51 @@ void main() {
       expect(tasks.first.id, 'task-2');
     });
   });
+
+  group('FirestoreService - Feedback', () {
+    test('sendFeedback stores the message with its author', () async {
+      await manager.sendFeedback(
+          message: 'Great app', appVersion: '1.0.0', platform: 'android');
+
+      final docs = (await fakeFirestore.collection('feedback').get()).docs;
+      expect(docs, hasLength(1));
+      final data = docs.single.data();
+      expect(data['id'], docs.single.id);
+      expect(data['uid'], _testUser.id);
+      expect(data['message'], 'Great app');
+      expect(data['app_version'], '1.0.0');
+    });
+  });
+
+  group('FirestoreService - deleteAllUserData', () {
+    test("removes the user's notes, tasks, feedback and profile", () async {
+      await manager.saveUserProfile();
+      await manager.addNoteInCloud(note: _makeNote(id: 'note-1'));
+      await manager.addTaskInCloud(task: _makeTask(id: 'task-1'));
+      await manager.sendFeedback(message: 'Bye');
+
+      await manager.deleteAllUserData();
+
+      final userDoc = fakeFirestore.collection('users').doc(_testUser.id);
+      expect((await userDoc.get()).exists, isFalse);
+      expect((await userDoc.collection('notes').get()).docs, isEmpty);
+      expect((await userDoc.collection('tasks').get()).docs, isEmpty);
+      expect((await fakeFirestore.collection('feedback').get()).docs, isEmpty);
+    });
+
+    test("keeps other users' data", () async {
+      final other = FirestoreService.user(
+          const User(
+              id: 'other', email: 'o@example.com', name: null, photoMail: null),
+          fakeFirestore);
+      await other.addNoteInCloud(note: _makeNote(id: 'note-x'));
+      await other.sendFeedback(message: 'Hi');
+
+      await manager.deleteAllUserData();
+
+      expect(await other.getAllNoteInCloud(), hasLength(1));
+      expect((await fakeFirestore.collection('feedback').get()).docs,
+          hasLength(1));
+    });
+  });
 }

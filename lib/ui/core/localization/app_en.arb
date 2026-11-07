@@ -158,18 +158,11 @@
 
   "logOut": "Log out",
   "logOutQuestion": "Do you want to log out?",
-  "editProfile": "Edit profile",
   "changePassword": "Change password",
   "calendar": "Calendar",
   "unknownName": "Unknown name",
-  "darkMode": "Dark mode",
-  "emailUpdates": "Email updates",
-  "emailUpdatesSubtitle": "Send me updates by email",
-  "aboutUs": "About us",
   "aboutApp": "About this app",
   "lastUpdate": "Last update",
-  "betaVersion": "Beta version {version}",
-  "@betaVersion": {"placeholders": {"version": {"type": "String"}}},
 
   "version": "Version",
   "versionUnstable": "{version} (unstable)",
@@ -190,7 +183,6 @@
   "feedbackBody": "Tell us what you think of K.Note.",
   "feedbackHint": "Enter your feedback…",
   "send": "Send",
-  "share": "Share",
   "pageNotFound": "Sorry, we couldn't find this page!",
 
   "welcome": "Welcome to K.Note",
@@ -243,5 +235,19 @@
   "resetPasswordSend": "Send the link",
   "resetPasswordSent": "If an account uses {email}, a link to reset its password is on its way. Check your spam folder too.",
   "@resetPasswordSent": {"placeholders": {"email": {"type": "String"}}},
-  "resetPasswordFailed": "The email couldn't be sent. Please try again."
+  "resetPasswordFailed": "The email couldn't be sent. Please try again.",
+
+  "deleteAccount": "Delete account",
+  "deleteAccountTitle": "Delete your account?",
+  "deleteAccountBody": "Your notes, tasks and account will be permanently deleted. This can't be undone.",
+  "deleteAccountPasswordHint": "Enter your password to confirm.",
+  "deleteAccountGoogleHint": "To confirm, you'll be asked to choose your Google account.",
+  "deleteAccountConfirm": "Delete permanently",
+  "deleteAccountDone": "Your account has been deleted.",
+  "deleteAccountFailed": "Your account couldn't be deleted. Check your connection and try again.",
+  "sendFeedback": "Send feedback",
+  "feedbackSent": "Thank you! Your feedback has been sent.",
+  "feedbackFailed": "Your feedback couldn't be sent. Please try again.",
+  "appVersion": "Version {version}",
+  "@appVersion": {"placeholders": {"version": {"type": "String"}}}
 }

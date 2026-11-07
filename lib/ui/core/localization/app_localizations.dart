@@ -824,12 +824,6 @@ abstract class AppLocalizations {
   /// **'Do you want to log out?'**
   String get logOutQuestion;
 
-  /// No description provided for @editProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit profile'**
-  String get editProfile;
-
   /// No description provided for @changePassword.
   ///
   /// In en, this message translates to:
@@ -848,30 +842,6 @@ abstract class AppLocalizations {
   /// **'Unknown name'**
   String get unknownName;
 
-  /// No description provided for @darkMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Dark mode'**
-  String get darkMode;
-
-  /// No description provided for @emailUpdates.
-  ///
-  /// In en, this message translates to:
-  /// **'Email updates'**
-  String get emailUpdates;
-
-  /// No description provided for @emailUpdatesSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Send me updates by email'**
-  String get emailUpdatesSubtitle;
-
-  /// No description provided for @aboutUs.
-  ///
-  /// In en, this message translates to:
-  /// **'About us'**
-  String get aboutUs;
-
   /// No description provided for @aboutApp.
   ///
   /// In en, this message translates to:
@@ -883,12 +853,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last update'**
   String get lastUpdate;
-
-  /// No description provided for @betaVersion.
-  ///
-  /// In en, this message translates to:
-  /// **'Beta version {version}'**
-  String betaVersion(String version);
 
   /// No description provided for @version.
   ///
@@ -991,12 +955,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send'**
   String get send;
-
-  /// No description provided for @share.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get share;
 
   /// No description provided for @pageNotFound.
   ///
@@ -1279,6 +1237,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The email couldn\'t be sent. Please try again.'**
   String get resetPasswordFailed;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your notes, tasks and account will be permanently deleted. This can\'t be undone.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to confirm.'**
+  String get deleteAccountPasswordHint;
+
+  /// No description provided for @deleteAccountGoogleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To confirm, you\'ll be asked to choose your Google account.'**
+  String get deleteAccountGoogleHint;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get deleteAccountDone;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account couldn\'t be deleted. Check your connection and try again.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @sendFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send feedback'**
+  String get sendFeedback;
+
+  /// No description provided for @feedbackSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! Your feedback has been sent.'**
+  String get feedbackSent;
+
+  /// No description provided for @feedbackFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback couldn\'t be sent. Please try again.'**
+  String get feedbackFailed;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String appVersion(String version);
 }
 
 class _AppLocalizationsDelegate

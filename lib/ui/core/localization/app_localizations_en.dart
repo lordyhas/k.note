@@ -470,9 +470,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logOutQuestion => 'Do you want to log out?';
 
   @override
-  String get editProfile => 'Edit profile';
-
-  @override
   String get changePassword => 'Change password';
 
   @override
@@ -482,27 +479,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownName => 'Unknown name';
 
   @override
-  String get darkMode => 'Dark mode';
-
-  @override
-  String get emailUpdates => 'Email updates';
-
-  @override
-  String get emailUpdatesSubtitle => 'Send me updates by email';
-
-  @override
-  String get aboutUs => 'About us';
-
-  @override
   String get aboutApp => 'About this app';
 
   @override
   String get lastUpdate => 'Last update';
-
-  @override
-  String betaVersion(String version) {
-    return 'Beta version $version';
-  }
 
   @override
   String get version => 'Version';
@@ -557,9 +537,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get send => 'Send';
-
-  @override
-  String get share => 'Share';
 
   @override
   String get pageNotFound => 'Sorry, we couldn\'t find this page!';
@@ -722,4 +699,46 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resetPasswordFailed =>
       'The email couldn\'t be sent. Please try again.';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountBody =>
+      'Your notes, tasks and account will be permanently deleted. This can\'t be undone.';
+
+  @override
+  String get deleteAccountPasswordHint => 'Enter your password to confirm.';
+
+  @override
+  String get deleteAccountGoogleHint =>
+      'To confirm, you\'ll be asked to choose your Google account.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete permanently';
+
+  @override
+  String get deleteAccountDone => 'Your account has been deleted.';
+
+  @override
+  String get deleteAccountFailed =>
+      'Your account couldn\'t be deleted. Check your connection and try again.';
+
+  @override
+  String get sendFeedback => 'Send feedback';
+
+  @override
+  String get feedbackSent => 'Thank you! Your feedback has been sent.';
+
+  @override
+  String get feedbackFailed =>
+      'Your feedback couldn\'t be sent. Please try again.';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
 }

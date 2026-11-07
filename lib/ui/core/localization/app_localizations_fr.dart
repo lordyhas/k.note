@@ -475,9 +475,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logOutQuestion => 'Voulez-vous vous déconnecter ?';
 
   @override
-  String get editProfile => 'Modifier le profil';
-
-  @override
   String get changePassword => 'Modifier le mot de passe';
 
   @override
@@ -487,27 +484,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get unknownName => 'Nom inconnu';
 
   @override
-  String get darkMode => 'Mode sombre';
-
-  @override
-  String get emailUpdates => 'Avis par e-mail';
-
-  @override
-  String get emailUpdatesSubtitle => 'M\'envoyer des avis par e-mail';
-
-  @override
-  String get aboutUs => 'À propos de nous';
-
-  @override
   String get aboutApp => 'À propos de l\'application';
 
   @override
   String get lastUpdate => 'Dernière mise à jour';
-
-  @override
-  String betaVersion(String version) {
-    return 'Version bêta $version';
-  }
 
   @override
   String get version => 'Version';
@@ -562,9 +542,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get send => 'Envoyer';
-
-  @override
-  String get share => 'Partager';
 
   @override
   String get pageNotFound => 'Désolé, cette page est introuvable !';
@@ -731,4 +708,47 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get resetPasswordFailed =>
       'L\'e-mail n\'a pas pu être envoyé. Veuillez réessayer.';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountTitle => 'Supprimer votre compte ?';
+
+  @override
+  String get deleteAccountBody =>
+      'Vos notes, vos tâches et votre compte seront définitivement supprimés. Cette action est irréversible.';
+
+  @override
+  String get deleteAccountPasswordHint =>
+      'Saisissez votre mot de passe pour confirmer.';
+
+  @override
+  String get deleteAccountGoogleHint =>
+      'Pour confirmer, vous devrez choisir votre compte Google.';
+
+  @override
+  String get deleteAccountConfirm => 'Supprimer définitivement';
+
+  @override
+  String get deleteAccountDone => 'Votre compte a été supprimé.';
+
+  @override
+  String get deleteAccountFailed =>
+      'Votre compte n\'a pas pu être supprimé. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get sendFeedback => 'Envoyer un avis';
+
+  @override
+  String get feedbackSent => 'Merci ! Votre avis a été envoyé.';
+
+  @override
+  String get feedbackFailed =>
+      'Votre avis n\'a pas pu être envoyé. Veuillez réessayer.';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
 }

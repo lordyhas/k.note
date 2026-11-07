@@ -4,23 +4,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'package:knote/data/repositories/auth_repository.dart';
+import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/widgets/login_page.dart';
+import 'package:knote/ui/auth/widgets/password_reset_dialog.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
+import 'package:knote/ui/settings/widgets/delete_account_dialog.dart';
+import 'package:knote/ui/settings/widgets/feedback_page.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = "user";
   final Function()? onMenuTap;
 
+  /// Used to delete the user's data with their account; tests pass one
+  /// backed by a fake Firestore.
+  final FirestoreService? firebaseManager;
+
   const SettingsPage({
     super.key,
     this.onMenuTap,
+    this.firebaseManager,
   });
 
   @override
@@ -28,8 +38,13 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool notification = false;
-  bool mail = false;
+  void _deleteAccount() {
+    final user = context.read<AuthenticationBloc>().state.user;
+    showDeleteAccountDialog(
+      context,
+      firestoreService: widget.firebaseManager ?? FirestoreService.user(user),
+    );
+  }
 
   void logoutDialogView() {
     final l10n = context.l10n;
@@ -65,6 +80,8 @@ class _SettingsPageState extends State<SettingsPage> {
     final mutedText = AppColors.of(context).text.withValues(alpha: 0.6);
     // The web side drawer already has Bin, Archived notes and Calendar.
     final sideNavigation = SideNavigationScope.of(context);
+    final signedInWithPassword =
+        context.read<AuthRepository>().signedInWithPassword;
 
     //BlocProvider.of<NavigationController>(context).setState(NavigationScreen.setting);
     return Scaffold(
@@ -108,30 +125,26 @@ class _SettingsPageState extends State<SettingsPage> {
                             padding: const EdgeInsets.only(top: 108.0),
                             child: Column(
                               children: [
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.person,
-                                    color: iconColor,
+                                if (signedInWithPassword)
+                                  ListTile(
+                                    leading: Icon(
+                                      Icons.password,
+                                      color: iconColor,
+                                    ),
+                                    title: Text(l10n.changePassword),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: iconColor,
+                                    ),
+                                    onTap: () => showPasswordResetDialog(
+                                      context,
+                                      email: context
+                                          .read<AuthenticationBloc>()
+                                          .state
+                                          .user
+                                          .email,
+                                    ),
                                   ),
-                                  title: Text(l10n.editProfile),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: iconColor,
-                                  ),
-                                  onTap: () {},
-                                ),
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.password,
-                                    color: iconColor,
-                                  ),
-                                  title: Text(l10n.changePassword),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: iconColor,
-                                  ),
-                                  onTap: () {},
-                                ),
                                 if (!sideNavigation) ...[
                                   ListTile(
                                     leading: Icon(
@@ -184,6 +197,19 @@ class _SettingsPageState extends State<SettingsPage> {
                                     color: iconColor,
                                   ),
                                   onTap: () => logoutDialogView(),
+                                ),
+                                ListTile(
+                                  key: const Key('__settings_deleteAccount__'),
+                                  leading: Icon(
+                                    Icons.person_remove_outlined,
+                                    color: AppColors.of(context).danger,
+                                  ),
+                                  title: Text(
+                                    l10n.deleteAccount,
+                                    style: TextStyle(
+                                        color: AppColors.of(context).danger),
+                                  ),
+                                  onTap: _deleteAccount,
                                 ),
                               ],
                             ),
@@ -265,86 +291,22 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         ListTile(
                           leading: Icon(
-                            Icons.dark_mode,
+                            Icons.feedback_outlined,
                             color: iconColor,
                           ),
-                          title: Text(l10n.darkMode),
-                          trailing: Switch(
-                            value: true,
-                            onChanged: (bool value) {},
-                          ),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.notifications,
-                            color: iconColor,
-                          ),
-                          title: Text(l10n.notifications),
-                          trailing: Switch(
-                            value: notification,
-                            onChanged: (bool value) {
-                              setState(() {
-                                notification = value;
-                              });
-                            },
-                          ),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.mail_rounded,
-                            color: iconColor,
-                          ),
-                          title: Text(l10n.emailUpdates),
-                          subtitle: Text(l10n.emailUpdatesSubtitle),
-                          trailing: Switch(
-                            value: mail,
-                            onChanged: (bool value) {
-                              setState(() {
-                                mail = value;
-                              });
-                            },
-                          ),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.more_horiz,
-                            color: iconColor,
-                          ),
-                          title: Text(l10n.more),
+                          title: Text(l10n.sendFeedback),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: iconColor,
                           ),
-                          onTap: () {},
+                          onTap: () => GoRouter.of(context)
+                              .goNamed(FeedbackPage.routeName),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    color: Theme.of(context).cardColor.withValues(alpha: 0.7),
-                    margin: const EdgeInsets.all(8.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Column(
-                      children: [
                         ListTile(
-                          //leading: const Icon(Icons.dark_mode),
-                          title: Text(l10n.aboutUs),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
+                          leading: Icon(
+                            Icons.info_outline,
                             color: iconColor,
                           ),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          //leading: const Icon(Icons.dark_mode),
                           title: Text(l10n.aboutApp),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
@@ -355,13 +317,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                 .goNamed(AboutPage.settingsRouteName);
                           },
                         ),
-
-                        /*ListTile(
-                          //leading: const Icon(Icons.dark_mode),
-                          title: const Text("Help"),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {},
-                        ),*/
                         FutureBuilder<PackageInfo>(
                             future: PackageInfo.fromPlatform(),
                             builder: (context, snapshot) {
@@ -371,14 +326,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     Icons.launch_sharp,
                                     color: iconColor,
                                   ),
-                                  title: Text(l10n.lastUpdate),
-                                  subtitle: Text(l10n.betaVersion(
+                                  title: Text(l10n.appVersion(
                                       snapshot.data?.version ?? '')),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: iconColor,
-                                  ),
-                                  onTap: () {},
                                 );
                               }
 
