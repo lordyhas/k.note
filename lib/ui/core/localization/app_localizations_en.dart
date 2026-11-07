@@ -605,9 +605,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInWithGoogle => 'Sign in with Google';
 
   @override
-  String get signInWithFacebook => 'Sign in with Facebook';
-
-  @override
   String get signedIn => 'Signed in';
 
   @override
@@ -699,4 +696,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authErrorSignUp => 'Sign-up failed. Please try again.';
+
+  @override
+  String get authErrorUserMismatch =>
+      'Choose the account you are signed in with.';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get resetPasswordTitle => 'Reset your password';
+
+  @override
+  String get resetPasswordBody =>
+      'Enter the email address of your account. We\'ll send you a link to choose a new password.';
+
+  @override
+  String get resetPasswordSend => 'Send the link';
+
+  @override
+  String resetPasswordSent(String email) {
+    return 'If an account uses $email, a link to reset its password is on its way. Check your spam folder too.';
+  }
+
+  @override
+  String get resetPasswordFailed =>
+      'The email couldn\'t be sent. Please try again.';
 }

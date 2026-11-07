@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Padding(
-          padding: const EdgeInsets.all(8.0).copyWith(top:32.0),
+          padding: const EdgeInsets.all(8.0).copyWith(top: 32.0),
           child: BlocProvider(
             create: (_) => LoginCubit(
               context.read<AuthRepository>(),
@@ -33,7 +33,6 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
 
 class LogOut extends StatefulWidget {
   static const routeName = "logout";

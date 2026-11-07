@@ -176,8 +176,8 @@ void main() {
       blocTest<LoginCubit, LoginState>(
         'emits failure with the network message when offline',
         setUp: () {
-          when(() => authRepository.logInWithGoogle())
-              .thenThrow(const LogInWithGoogleFailure(
+          when(() => authRepository.logInWithGoogle()).thenThrow(
+              const LogInWithGoogleFailure(
                   kNetworkErrorMessage, AuthError.network));
         },
         build: () => LoginCubit(authRepository),

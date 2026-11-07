@@ -610,9 +610,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signInWithGoogle => 'Se connecter avec Google';
 
   @override
-  String get signInWithFacebook => 'Se connecter avec Facebook';
-
-  @override
   String get signedIn => 'Connexion réussie';
 
   @override
@@ -708,4 +705,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authErrorSignUp => 'L\'inscription a échoué. Veuillez réessayer.';
+
+  @override
+  String get authErrorUserMismatch =>
+      'Choisissez le compte avec lequel vous êtes connecté.';
+
+  @override
+  String get forgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get resetPasswordTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get resetPasswordBody =>
+      'Saisissez l\'adresse e-mail de votre compte. Nous vous enverrons un lien pour choisir un nouveau mot de passe.';
+
+  @override
+  String get resetPasswordSend => 'Envoyer le lien';
+
+  @override
+  String resetPasswordSent(String email) {
+    return 'Si un compte utilise $email, un lien pour réinitialiser son mot de passe est en route. Pensez à vérifier les spams.';
+  }
+
+  @override
+  String get resetPasswordFailed =>
+      'L\'e-mail n\'a pas pu être envoyé. Veuillez réessayer.';
 }

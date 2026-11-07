@@ -180,7 +180,6 @@
   "signUp": "S'inscrire",
   "or": "OU",
   "signInWithGoogle": "Se connecter avec Google",
-  "signInWithFacebook": "Se connecter avec Facebook",
   "signedIn": "Connexion réussie",
   "alreadySignedIn": "Vous êtes déjà connecté avec\n{email}",
   "goToHome": "Aller à l'accueil",
@@ -207,5 +206,13 @@
   "authErrorDifferentCredential": "Un compte existe déjà avec une autre méthode de connexion.",
   "authErrorInvalidVerification": "Le code de vérification n'est pas valide.",
   "authErrorSignIn": "La connexion a échoué. Veuillez réessayer.",
-  "authErrorSignUp": "L'inscription a échoué. Veuillez réessayer."
+  "authErrorSignUp": "L'inscription a échoué. Veuillez réessayer.",
+
+  "authErrorUserMismatch": "Choisissez le compte avec lequel vous êtes connecté.",
+  "forgotPassword": "Mot de passe oublié ?",
+  "resetPasswordTitle": "Réinitialiser le mot de passe",
+  "resetPasswordBody": "Saisissez l'adresse e-mail de votre compte. Nous vous enverrons un lien pour choisir un nouveau mot de passe.",
+  "resetPasswordSend": "Envoyer le lien",
+  "resetPasswordSent": "Si un compte utilise {email}, un lien pour réinitialiser son mot de passe est en route. Pensez à vérifier les spams.",
+  "resetPasswordFailed": "L'e-mail n'a pas pu être envoyé. Veuillez réessayer."
 }

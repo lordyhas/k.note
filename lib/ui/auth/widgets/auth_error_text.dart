@@ -24,6 +24,7 @@ String authErrorText(
     AuthError.accountExistsWithDifferentCredential =>
       l10n.authErrorDifferentCredential,
     AuthError.invalidVerification => l10n.authErrorInvalidVerification,
+    AuthError.userMismatch => l10n.authErrorUserMismatch,
     AuthError.unknown ||
     null =>
       isSignUp ? l10n.authErrorSignUp : l10n.authErrorSignIn,

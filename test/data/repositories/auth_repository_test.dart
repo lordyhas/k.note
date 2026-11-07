@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
@@ -19,6 +18,12 @@ class MockFirebaseUser extends Mock implements firebase_auth.User {}
 
 class MockUserMetadata extends Mock implements firebase_auth.UserMetadata {}
 
+class MockUserInfo extends Mock implements firebase_auth.UserInfo {}
+
+class MockGoogleSignInAccount extends Mock implements GoogleSignInAccount {}
+
+class FakeAuthCredential extends Fake implements firebase_auth.AuthCredential {}
+
 /// A signed-in Firebase user whose email is [verified] or not.
 MockFirebaseUser firebaseUser({required bool verified}) {
   final user = MockFirebaseUser();
@@ -35,6 +40,8 @@ MockFirebaseUser firebaseUser({required bool verified}) {
 }
 
 void main() {
+  setUpAll(() => registerFallbackValue(FakeAuthCredential()));
+
   late MockFirebaseAuth mockFirebaseAuth;
   late MockGoogleSignIn mockGoogleSignIn;
   late StreamController<firebase_auth.User?> authStateController;
@@ -46,7 +53,8 @@ void main() {
 
     when(() => mockFirebaseAuth.authStateChanges())
         .thenAnswer((_) => authStateController.stream);
-    when(() => mockGoogleSignIn.signOut()).thenAnswer((_) async => null);
+    when(() => mockGoogleSignIn.initialize()).thenAnswer((_) async {});
+    when(() => mockGoogleSignIn.signOut()).thenAnswer((_) async {});
   });
 
   tearDown(() => authStateController.close());
@@ -292,9 +300,26 @@ void main() {
   });
 
   group('AuthRepository - logInWithGoogle', () {
+    test('signs in to Firebase with the Google ID token', () async {
+      final account = MockGoogleSignInAccount();
+      when(() => account.authentication)
+          .thenReturn(const GoogleSignInAuthentication(idToken: 'id-token'));
+      when(() => mockGoogleSignIn.authenticate())
+          .thenAnswer((_) async => account);
+      when(() => mockFirebaseAuth.signInWithCredential(any()))
+          .thenAnswer((_) async => MockUserCredential());
+
+      await (buildRepo()..isWeb = false).logInWithGoogle();
+
+      verify(() => mockGoogleSignIn.initialize()).called(1);
+      verify(() => mockFirebaseAuth.signInWithCredential(any())).called(1);
+    });
+
     test('throws a canceled failure when the account picker is dismissed',
         () async {
-      when(() => mockGoogleSignIn.signIn()).thenAnswer((_) async => null);
+      when(() => mockGoogleSignIn.authenticate()).thenThrow(
+        const GoogleSignInException(code: GoogleSignInExceptionCode.canceled),
+      );
 
       await expectLater(
         (buildRepo()..isWeb = false).logInWithGoogle(),
@@ -304,8 +329,11 @@ void main() {
     });
 
     test('reports a network error when Google Sign-In is offline', () async {
-      when(() => mockGoogleSignIn.signIn()).thenThrow(
-        PlatformException(code: GoogleSignIn.kNetworkError),
+      when(() => mockGoogleSignIn.authenticate()).thenThrow(
+        const GoogleSignInException(
+          code: GoogleSignInExceptionCode.unknownError,
+          description: 'A network error occurred.',
+        ),
       );
 
       await expectLater(
@@ -316,11 +344,154 @@ void main() {
     });
   });
 
+  group('AuthRepository - sendPasswordResetEmail', () {
+    test('sends the link to the trimmed address', () async {
+      when(() => mockFirebaseAuth.sendPasswordResetEmail(
+          email: any(named: 'email'))).thenAnswer((_) async {});
+
+      await buildRepo().sendPasswordResetEmail(email: ' me@example.com ');
+
+      verify(() =>
+              mockFirebaseAuth.sendPasswordResetEmail(email: 'me@example.com'))
+          .called(1);
+    });
+
+    test('reports an invalid address', () async {
+      when(() => mockFirebaseAuth.sendPasswordResetEmail(
+              email: any(named: 'email')))
+          .thenThrow(
+              firebase_auth.FirebaseAuthException(code: 'invalid-email'));
+
+      await expectLater(
+        buildRepo().sendPasswordResetEmail(email: 'nope'),
+        throwsA(isA<PasswordResetFailure>()
+            .having((e) => e.error, 'error', AuthError.invalidEmail)),
+      );
+    });
+  });
+
+  group('AuthRepository - signedInWithPassword', () {
+    MockUserInfo provider(String id) {
+      final info = MockUserInfo();
+      when(() => info.providerId).thenReturn(id);
+      return info;
+    }
+
+    test('is true for an email/password account', () {
+      final user = firebaseUser(verified: true);
+      final providers = [provider('password')];
+      when(() => user.providerData).thenReturn(providers);
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      expect(buildRepo().signedInWithPassword, isTrue);
+    });
+
+    test('is false for a Google account and when signed out', () {
+      final user = firebaseUser(verified: true);
+      final providers = [provider('google.com')];
+      when(() => user.providerData).thenReturn(providers);
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+      expect(buildRepo().signedInWithPassword, isFalse);
+
+      when(() => mockFirebaseAuth.currentUser).thenReturn(null);
+      expect(buildRepo().signedInWithPassword, isFalse);
+    });
+  });
+
+  group('AuthRepository - reauthenticate', () {
+    test('uses the password for an email account', () async {
+      final user = firebaseUser(verified: true);
+      when(() => user.reauthenticateWithCredential(any()))
+          .thenAnswer((_) async => MockUserCredential());
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await buildRepo().reauthenticate(password: 'secret');
+
+      final credential =
+          verify(() => user.reauthenticateWithCredential(captureAny()))
+              .captured
+              .single as firebase_auth.AuthCredential;
+      expect(credential.providerId, 'password');
+    });
+
+    test('uses Google when there is no password', () async {
+      final user = firebaseUser(verified: true);
+      final account = MockGoogleSignInAccount();
+      when(() => account.authentication)
+          .thenReturn(const GoogleSignInAuthentication(idToken: 'id-token'));
+      when(() => mockGoogleSignIn.authenticate())
+          .thenAnswer((_) async => account);
+      when(() => user.reauthenticateWithCredential(any()))
+          .thenAnswer((_) async => MockUserCredential());
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await (buildRepo()..isWeb = false).reauthenticate();
+
+      final credential =
+          verify(() => user.reauthenticateWithCredential(captureAny()))
+              .captured
+              .single as firebase_auth.AuthCredential;
+      expect(credential.providerId, 'google.com');
+    });
+
+    test('reports a wrong password', () async {
+      final user = firebaseUser(verified: true);
+      when(() => user.reauthenticateWithCredential(any())).thenThrow(
+          firebase_auth.FirebaseAuthException(code: 'invalid-credential'));
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await expectLater(
+        buildRepo().reauthenticate(password: 'wrong'),
+        throwsA(isA<DeleteAccountFailure>()
+            .having((e) => e.error, 'error', AuthError.wrongPassword)),
+      );
+    });
+
+    test('is canceled when the Google picker is dismissed', () async {
+      final user = firebaseUser(verified: true);
+      when(() => mockGoogleSignIn.authenticate()).thenThrow(
+        const GoogleSignInException(code: GoogleSignInExceptionCode.canceled),
+      );
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await expectLater(
+        (buildRepo()..isWeb = false).reauthenticate(),
+        throwsA(isA<DeleteAccountFailure>()
+            .having((e) => e.isCanceled, 'isCanceled', true)),
+      );
+    });
+  });
+
+  group('AuthRepository - deleteAccount', () {
+    test('deletes the Firebase user and signs out of Google', () async {
+      final user = firebaseUser(verified: true);
+      when(() => user.delete()).thenAnswer((_) async {});
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await (buildRepo()..isWeb = false).deleteAccount();
+
+      verify(() => user.delete()).called(1);
+      verify(() => mockGoogleSignIn.signOut()).called(1);
+    });
+
+    test('reports a failure', () async {
+      final user = firebaseUser(verified: true);
+      when(() => user.delete()).thenThrow(
+          firebase_auth.FirebaseAuthException(code: 'requires-recent-login'));
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await expectLater(
+        buildRepo().deleteAccount(),
+        throwsA(isA<DeleteAccountFailure>()),
+      );
+    });
+  });
+
   group('AuthRepository - logOut', () {
     test('calls signOut on both firebase and google', () async {
       when(() => mockFirebaseAuth.signOut()).thenAnswer((_) async {});
 
-      await buildRepo().logOut();
+      await (buildRepo()..isWeb = false).logOut();
 
       verify(() => mockFirebaseAuth.signOut()).called(1);
       verify(() => mockGoogleSignIn.signOut()).called(1);
@@ -481,44 +652,38 @@ void main() {
     });
   });
 
-  group('LogInWithGoogleFailure.fromPlatformException', () {
-    test('sign_in_canceled is a cancellation', () {
-      final failure = LogInWithGoogleFailure.fromPlatformException(
-        PlatformException(code: GoogleSignIn.kSignInCanceledError),
-      );
-      expect(failure.isCanceled, isTrue);
+  group('LogInWithGoogleFailure.fromGoogleSignInException', () {
+    LogInWithGoogleFailure failure(GoogleSignInExceptionCode code,
+            [String? description]) =>
+        LogInWithGoogleFailure.fromGoogleSignInException(
+            GoogleSignInException(code: code, description: description));
+
+    test('canceled and interrupted are cancellations', () {
+      expect(failure(GoogleSignInExceptionCode.canceled).isCanceled, isTrue);
+      expect(failure(GoogleSignInExceptionCode.interrupted).isCanceled, isTrue);
     });
 
-    test('ApiException 7 is a network error', () {
+    test('configuration errors point at the setup', () {
+      expect(failure(GoogleSignInExceptionCode.clientConfigurationError).error,
+          AuthError.googleNotConfigured);
       expect(
-        LogInWithGoogleFailure.fromPlatformException(
-          PlatformException(
-            code: 'sign_in_failed',
-            message: 'com.google.android.gms.common.api.ApiException: 7: ',
-          ),
-        ).message,
-        kNetworkErrorMessage,
-      );
+          failure(GoogleSignInExceptionCode.unknownError,
+                  '[28444] Developer console is not set up correctly.')
+              .error,
+          AuthError.googleNotConfigured);
     });
 
-    test('ApiException 10 points at the SHA configuration', () {
+    test('a network failure is reported as such', () {
       expect(
-        LogInWithGoogleFailure.fromPlatformException(
-          PlatformException(
-            code: 'sign_in_failed',
-            message: 'com.google.android.gms.common.api.ApiException: 10: ',
-          ),
-        ).message,
-        contains('SHA'),
-      );
+          failure(GoogleSignInExceptionCode.unknownError, 'Network error')
+              .error,
+          AuthError.network);
     });
 
     test('other errors fall back to the default message', () {
-      final failure = LogInWithGoogleFailure.fromPlatformException(
-        PlatformException(code: 'sign_in_failed'),
-      );
-      expect(failure.message, 'An unknown exception occurred.');
-      expect(failure.isCanceled, isFalse);
+      final other = failure(GoogleSignInExceptionCode.unknownError);
+      expect(other.message, 'An unknown exception occurred.');
+      expect(other.isCanceled, isFalse);
     });
   });
 }

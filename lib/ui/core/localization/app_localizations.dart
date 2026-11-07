@@ -1082,12 +1082,6 @@ abstract class AppLocalizations {
   /// **'Sign in with Google'**
   String get signInWithGoogle;
 
-  /// No description provided for @signInWithFacebook.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in with Facebook'**
-  String get signInWithFacebook;
-
   /// No description provided for @signedIn.
   ///
   /// In en, this message translates to:
@@ -1243,6 +1237,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign-up failed. Please try again.'**
   String get authErrorSignUp;
+
+  /// No description provided for @authErrorUserMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the account you are signed in with.'**
+  String get authErrorUserMismatch;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email address of your account. We\'ll send you a link to choose a new password.'**
+  String get resetPasswordBody;
+
+  /// No description provided for @resetPasswordSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the link'**
+  String get resetPasswordSend;
+
+  /// No description provided for @resetPasswordSent.
+  ///
+  /// In en, this message translates to:
+  /// **'If an account uses {email}, a link to reset its password is on its way. Check your spam folder too.'**
+  String resetPasswordSent(String email);
+
+  /// No description provided for @resetPasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The email couldn\'t be sent. Please try again.'**
+  String get resetPasswordFailed;
 }
 
 class _AppLocalizationsDelegate

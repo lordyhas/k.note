@@ -206,7 +206,6 @@
   "signUp": "Sign up",
   "or": "OR",
   "signInWithGoogle": "Sign in with Google",
-  "signInWithFacebook": "Sign in with Facebook",
   "signedIn": "Signed in",
   "alreadySignedIn": "You're already signed in as\n{email}",
   "@alreadySignedIn": {"placeholders": {"email": {"type": "String"}}},
@@ -235,5 +234,14 @@
   "authErrorDifferentCredential": "An account already exists with a different sign-in method.",
   "authErrorInvalidVerification": "The verification code is not valid.",
   "authErrorSignIn": "Sign-in failed. Please try again.",
-  "authErrorSignUp": "Sign-up failed. Please try again."
+  "authErrorSignUp": "Sign-up failed. Please try again.",
+
+  "authErrorUserMismatch": "Choose the account you are signed in with.",
+  "forgotPassword": "Forgot password?",
+  "resetPasswordTitle": "Reset your password",
+  "resetPasswordBody": "Enter the email address of your account. We'll send you a link to choose a new password.",
+  "resetPasswordSend": "Send the link",
+  "resetPasswordSent": "If an account uses {email}, a link to reset its password is on its way. Check your spam folder too.",
+  "@resetPasswordSent": {"placeholders": {"email": {"type": "String"}}},
+  "resetPasswordFailed": "The email couldn't be sent. Please try again."
 }
