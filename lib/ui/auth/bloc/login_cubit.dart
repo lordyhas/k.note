@@ -17,7 +17,8 @@ class LoginCubit extends Cubit<LoginState> {
 
   /// [emailChanged]
   void emailChanged(String value) {
-    final email = Email.dirty(value);
+    // Keyboards and autofill often add a trailing space.
+    final email = Email.dirty(value.trim());
     emit(
       state.copyWith(
         email: email,
@@ -28,7 +29,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   /// [passwordChanged]
   void passwordChanged(String value) {
-    final password = Password.dirty(value);
+    final password = LoginPassword.dirty(value);
     emit(
       state.copyWith(
         password: password,

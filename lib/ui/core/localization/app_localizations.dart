@@ -953,7 +953,7 @@ abstract class AppLocalizations {
   /// No description provided for @invalidPassword.
   ///
   /// In en, this message translates to:
-  /// **'At least 8 letters and digits, including one of each'**
+  /// **'At least 8 characters, including a letter and a digit'**
   String get invalidPassword;
 
   /// No description provided for @showPassword.
@@ -1327,6 +1327,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'re logged out.'**
   String get loggedOut;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get passwordRequired;
 }
 
 class _AppLocalizationsDelegate

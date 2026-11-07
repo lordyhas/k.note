@@ -81,6 +81,30 @@ void main() {
       const password = Password.dirty('');
       expect(password.isValid, isFalse);
     });
+
+    test('symbols, accents and spaces are allowed', () {
+      for (final value in [
+        'Mot2passe!',
+        'p@ssw0rd#2026',
+        'élève 2026',
+        'Ab1-_.,;:'
+      ]) {
+        expect(Password.dirty(value).isValid, isTrue, reason: value);
+      }
+    });
+  });
+
+  group('LoginPassword', () {
+    test('any non-empty password is accepted', () {
+      for (final value in ['abc', 'motdepasse', '123456', 'p@ss!', ' ']) {
+        expect(LoginPassword.dirty(value).isValid, isTrue, reason: value);
+      }
+    });
+
+    test('an empty password is not', () {
+      expect(const LoginPassword.dirty('').isValid, isFalse);
+      expect(const LoginPassword.pure().isValid, isFalse);
+    });
   });
 
   group('ConfirmedPassword', () {

@@ -13,7 +13,8 @@ class SignUpCubit extends Cubit<SignUpState> {
   final AuthRepository _authenticationRepository;
 
   void emailChanged(String value) {
-    final email = Email.dirty(value);
+    // Keyboards and autofill often add a trailing space.
+    final email = Email.dirty(value.trim());
     emit(
       state.copyWith(
         email: email,

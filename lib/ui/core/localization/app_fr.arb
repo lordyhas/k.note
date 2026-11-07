@@ -158,7 +158,7 @@
   "emailLabel": "Adresse e-mail",
   "passwordLabel": "Mot de passe",
   "invalidEmail": "Saisissez une adresse e-mail valide",
-  "invalidPassword": "Au moins 8 lettres et chiffres, dont au moins un de chaque",
+  "invalidPassword": "Au moins 8 caractères, dont une lettre et un chiffre",
   "showPassword": "Afficher le mot de passe",
   "hidePassword": "Masquer le mot de passe",
   "logIn": "Se connecter",
@@ -226,5 +226,7 @@
 
   "logOutTitle": "Se déconnecter ?",
   "logOutBody": "Vos notes et vos tâches restent enregistrées dans votre compte. Reconnectez-vous pour les retrouver.",
-  "loggedOut": "Vous êtes déconnecté."
+  "loggedOut": "Vous êtes déconnecté.",
+
+  "passwordRequired": "Saisissez votre mot de passe"
 }

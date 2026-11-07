@@ -85,7 +85,7 @@ class _PasswordInputState extends State<PasswordInput> {
             labelText: context.l10n.passwordLabel,
             helperText: '',
             errorText: state.password.displayError != null
-                ? context.l10n.invalidPassword
+                ? context.l10n.passwordRequired
                 : null,
           ),
         );

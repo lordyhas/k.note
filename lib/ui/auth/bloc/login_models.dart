@@ -35,7 +35,8 @@ enum PasswordValidationError {
 }
 
 /// {@template password}
-/// Form input for an password input.
+/// A new password, at sign-up: at least 8 characters with a letter and a
+/// digit. Any other character (symbols, accents, spaces) is allowed.
 /// {@endtemplate}
 class Password extends FormzInput<String, PasswordValidationError> {
   /// {@macro password}
@@ -45,7 +46,7 @@ class Password extends FormzInput<String, PasswordValidationError> {
   const Password.dirty([super.value = '']) : super.dirty();
 
   static final _passwordRegExp =
-      RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$');
+      RegExp(r'^(?=.*\p{L})(?=.*\d).{8,}$', unicode: true, dotAll: true);
 
   @override
   PasswordValidationError? validator(String? value) {
@@ -53,6 +54,19 @@ class Password extends FormzInput<String, PasswordValidationError> {
         ? null
         : PasswordValidationError.invalid;
   }
+}
+
+/// The password of an existing account, at login. Its strength is not
+/// checked: accounts may predate the sign-up rule, and Firebase says whether
+/// it is right. It only has to be filled in.
+class LoginPassword extends FormzInput<String, PasswordValidationError> {
+  const LoginPassword.pure() : super.pure('');
+
+  const LoginPassword.dirty([super.value = '']) : super.dirty();
+
+  @override
+  PasswordValidationError? validator(String value) =>
+      value.isEmpty ? PasswordValidationError.invalid : null;
 }
 
 enum ConfirmedPasswordValidationError {

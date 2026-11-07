@@ -536,7 +536,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidPassword =>
-      'At least 8 letters and digits, including one of each';
+      'At least 8 characters, including a letter and a digit';
 
   @override
   String get showPassword => 'Show password';
@@ -760,4 +760,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loggedOut => 'You\'re logged out.';
+
+  @override
+  String get passwordRequired => 'Enter your password';
 }

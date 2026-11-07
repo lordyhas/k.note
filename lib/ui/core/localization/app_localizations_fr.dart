@@ -541,7 +541,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get invalidPassword =>
-      'Au moins 8 lettres et chiffres, dont au moins un de chaque';
+      'Au moins 8 caractères, dont une lettre et un chiffre';
 
   @override
   String get showPassword => 'Afficher le mot de passe';
@@ -770,4 +770,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get loggedOut => 'Vous êtes déconnecté.';
+
+  @override
+  String get passwordRequired => 'Saisissez votre mot de passe';
 }

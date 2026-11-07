@@ -21,6 +21,17 @@ void main() {
       expect(LoginCubit(authRepository).state, const LoginState());
     });
 
+    test(
+        'any existing password enables login, with a trailing space after '
+        'the email', () {
+      final cubit = LoginCubit(authRepository)
+        ..emailChanged('me@example.com ')
+        ..passwordChanged('p@ss!');
+      expect(cubit.state.isValid, isTrue);
+      expect(cubit.state.email.value, 'me@example.com');
+      cubit.close();
+    });
+
     group('emailChanged', () {
       blocTest<LoginCubit, LoginState>(
         'emits [invalid] when email is invalid',
@@ -34,12 +45,13 @@ void main() {
       blocTest<LoginCubit, LoginState>(
         'emits [valid] when email is valid and password is valid',
         build: () => LoginCubit(authRepository),
-        seed: () => const LoginState(password: Password.dirty('password123')),
+        seed: () =>
+            const LoginState(password: LoginPassword.dirty('password123')),
         act: (cubit) => cubit.emailChanged('test@example.com'),
         expect: () => const [
           LoginState(
             email: Email.dirty('test@example.com'),
-            password: Password.dirty('password123'),
+            password: LoginPassword.dirty('password123'),
             isValid: true,
           ),
         ],
@@ -55,7 +67,7 @@ void main() {
         expect: () => const [
           LoginState(
             email: Email.dirty('test@example.com'),
-            password: Password.dirty('password123'),
+            password: LoginPassword.dirty('password123'),
             isValid: true,
           ),
         ],
@@ -75,20 +87,20 @@ void main() {
         build: () => LoginCubit(authRepository),
         seed: () => const LoginState(
           email: Email.dirty('test@example.com'),
-          password: Password.dirty('password123'),
+          password: LoginPassword.dirty('password123'),
           isValid: true,
         ),
         act: (cubit) => cubit.logInWithCredentials(),
         expect: () => const [
           LoginState(
             email: Email.dirty('test@example.com'),
-            password: Password.dirty('password123'),
+            password: LoginPassword.dirty('password123'),
             isValid: true,
             status: FormzSubmissionStatus.inProgress,
           ),
           LoginState(
             email: Email.dirty('test@example.com'),
-            password: Password.dirty('password123'),
+            password: LoginPassword.dirty('password123'),
             isValid: true,
             status: FormzSubmissionStatus.success,
           ),
@@ -106,20 +118,20 @@ void main() {
         build: () => LoginCubit(authRepository),
         seed: () => const LoginState(
           email: Email.dirty('test@example.com'),
-          password: Password.dirty('password123'),
+          password: LoginPassword.dirty('password123'),
           isValid: true,
         ),
         act: (cubit) => cubit.logInWithCredentials(),
         expect: () => const [
           LoginState(
             email: Email.dirty('test@example.com'),
-            password: Password.dirty('password123'),
+            password: LoginPassword.dirty('password123'),
             isValid: true,
             status: FormzSubmissionStatus.inProgress,
           ),
           LoginState(
             email: Email.dirty('test@example.com'),
-            password: Password.dirty('password123'),
+            password: LoginPassword.dirty('password123'),
             isValid: true,
             status: FormzSubmissionStatus.failure,
           ),
@@ -140,7 +152,7 @@ void main() {
         build: () => LoginCubit(authRepository),
         seed: () => const LoginState(
           email: Email.dirty('test@example.com'),
-          password: Password.dirty('password123'),
+          password: LoginPassword.dirty('password123'),
           isValid: true,
         ),
         act: (cubit) => cubit.logInWithCredentials(),
@@ -148,7 +160,7 @@ void main() {
         expect: () => const [
           LoginState(
             email: Email.dirty('test@example.com'),
-            password: Password.dirty('password123'),
+            password: LoginPassword.dirty('password123'),
             isValid: true,
             status: FormzSubmissionStatus.failure,
             errorMessage: kNetworkErrorMessage,

@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root `README.md` expanded with setup, configuration, troubleshooting, and contribution sections.
 
 ### Fixed
+- The login button stayed disabled for valid passwords: the login form applied the sign-up strength rule, which only allowed letters and digits. Login now only needs a non-empty password (`LoginPassword`), sign-up accepts symbols and accents (still 8+ characters with a letter and a digit), and a trailing space after the email is ignored.
 - Logging out left the confirmation dialog open and stayed on the home page until a second try. The dialog now closes first, and the router sends signed-out users to the login page from any screen (`redirectForAuth`) instead of the page navigating while the sign-out is still running. The unused `/logout` route was removed.
 - Mixed French and English text and typos ("Welcome to konte", "Welcome to K22D", "Find a documents", "Se deconnecter", ...).
 - The About screen printed its update date as a raw timestamp.

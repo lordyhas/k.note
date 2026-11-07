@@ -183,7 +183,7 @@
   "emailLabel": "Email address",
   "passwordLabel": "Password",
   "invalidEmail": "Enter a valid email address",
-  "invalidPassword": "At least 8 letters and digits, including one of each",
+  "invalidPassword": "At least 8 characters, including a letter and a digit",
   "showPassword": "Show password",
   "hidePassword": "Hide password",
   "logIn": "Log in",
@@ -256,5 +256,7 @@
 
   "logOutTitle": "Log out?",
   "logOutBody": "Your notes and tasks stay saved in your account. Sign in again to find them.",
-  "loggedOut": "You're logged out."
+  "loggedOut": "You're logged out.",
+
+  "passwordRequired": "Enter your password"
 }
