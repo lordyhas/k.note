@@ -129,7 +129,6 @@
   "taskDelete": "Supprimer la tâche",
 
   "logOut": "Se déconnecter",
-  "logOutQuestion": "Voulez-vous vous déconnecter ?",
   "changePassword": "Modifier le mot de passe",
   "calendar": "Calendrier",
   "unknownName": "Nom inconnu",
@@ -223,5 +222,9 @@
   "calendarNextMonth": "Mois suivant",
   "calendarNoTasks": "Rien de prévu ce jour-là.",
   "calendarLoadError": "Vos tâches n'ont pas pu être chargées",
-  "calendarDayTasks": "{count, plural, =0{aucune tâche} =1{1 tâche} other{{count} tâches}}"
+  "calendarDayTasks": "{count, plural, =0{aucune tâche} =1{1 tâche} other{{count} tâches}}",
+
+  "logOutTitle": "Se déconnecter ?",
+  "logOutBody": "Vos notes et vos tâches restent enregistrées dans votre compte. Reconnectez-vous pour les retrouver.",
+  "loggedOut": "Vous êtes déconnecté."
 }

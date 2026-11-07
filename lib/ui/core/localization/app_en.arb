@@ -153,7 +153,6 @@
   "taskDelete": "Delete task",
 
   "logOut": "Log out",
-  "logOutQuestion": "Do you want to log out?",
   "changePassword": "Change password",
   "calendar": "Calendar",
   "unknownName": "Unknown name",
@@ -253,5 +252,9 @@
   "calendarNoTasks": "Nothing planned on this day.",
   "calendarLoadError": "Your tasks couldn't be loaded",
   "calendarDayTasks": "{count, plural, =0{no tasks} =1{1 task} other{{count} tasks}}",
-  "@calendarDayTasks": {"placeholders": {"count": {"type": "int"}}}
+  "@calendarDayTasks": {"placeholders": {"count": {"type": "int"}}},
+
+  "logOutTitle": "Log out?",
+  "logOutBody": "Your notes and tasks stay saved in your account. Sign in again to find them.",
+  "loggedOut": "You're logged out."
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:knote/domain/models/note.dart';
@@ -41,7 +40,7 @@ class AppRouter {
         errorBuilder: (context, state) => ErrorPage(error: state.error),
         redirectLimit: 1,
         redirect: (ctx, state) =>
-            redirectForEmailVerification(authBloc.state, state.uri.path),
+            redirectForAuth(authBloc.state, state.uri.path),
         //initialLocation: NotesPage.routeName,
         //initialLocation: "/${SettingsPage.routeName}",
         routes: <RouteBase>[
@@ -55,17 +54,6 @@ class AppRouter {
               } else {
                 return "/${LoginPage.routeName}";
               }
-            },
-          ),
-
-          GoRoute(
-            /// [/]
-            path: LogOut.routeName,
-            name: "/${LogOut.routeName}",
-            //pageBuilder: ,
-            redirect: (ctx, state) {
-              BlocProvider.of<AuthenticationBloc>(ctx).logout();
-              return "/${LoginPage.routeName}";
             },
           ),
 
@@ -166,6 +154,25 @@ class AppRouter {
           ),
         ],
       );
+}
+
+/// Where to send the user for [location] because of their session, or null
+/// to let the routes decide.
+///
+/// The router runs it again whenever [AuthenticationBloc] emits, so signing
+/// in or out moves the user by itself: pages never navigate after an auth
+/// call, which would race the (asynchronous) sign-out. Signed-out users can
+/// only see [LoginPage]; signed-in users never see it.
+@visibleForTesting
+String? redirectForAuth(AuthState auth, String location) {
+  const loginPath = "/${LoginPage.routeName}";
+  if (!auth.isAuthenticated) {
+    return location == loginPath ? null : loginPath;
+  }
+  if (location == loginPath && !auth.user.needsEmailVerification) {
+    return "/${NotesPage.routeName}";
+  }
+  return redirectForEmailVerification(auth, location);
 }
 
 /// Where to send the user for [location] because of email verification, or

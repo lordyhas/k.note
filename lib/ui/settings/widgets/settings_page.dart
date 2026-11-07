@@ -7,7 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:knote/data/repositories/auth_repository.dart';
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
-import 'package:knote/ui/auth/widgets/login_page.dart';
+import 'package:knote/ui/auth/widgets/logout_dialog.dart';
 import 'package:knote/ui/auth/widgets/password_reset_dialog.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
@@ -46,33 +46,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void logoutDialogView() {
-    final l10n = context.l10n;
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              actions: [
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.of(context).danger),
-                  onPressed: () {
-                    BlocProvider.of<AuthenticationBloc>(context).logout();
-                    //GoRouter.of(context).pop();
-                    GoRouter.of(context).goNamed(LoginPage.routeName);
-                  },
-                  icon: const Icon(CupertinoIcons.square_arrow_right),
-                  label: Text(l10n.logOut),
-                ),
-                TextButton(
-                  onPressed: GoRouter.of(context).pop,
-                  child: Text(l10n.cancel),
-                )
-              ],
-              title: Text(l10n.logOut),
-              content: Text(l10n.logOutQuestion),
-            ));
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -93,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           IconButton(
             tooltip: l10n.logOut,
-            onPressed: () => logoutDialogView(),
+            onPressed: () => confirmLogout(context),
             icon: const Icon(CupertinoIcons.square_arrow_right),
           )
         ],
@@ -196,7 +169,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     Icons.arrow_forward_ios,
                                     color: iconColor,
                                   ),
-                                  onTap: () => logoutDialogView(),
+                                  onTap: () => confirmLogout(context),
                                 ),
                                 ListTile(
                                   key: const Key('__settings_deleteAccount__'),

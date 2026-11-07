@@ -460,9 +460,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logOut => 'Se déconnecter';
 
   @override
-  String get logOutQuestion => 'Voulez-vous vous déconnecter ?';
-
-  @override
   String get changePassword => 'Modifier le mot de passe';
 
   @override
@@ -763,4 +760,14 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get logOutTitle => 'Se déconnecter ?';
+
+  @override
+  String get logOutBody =>
+      'Vos notes et vos tâches restent enregistrées dans votre compte. Reconnectez-vous pour les retrouver.';
+
+  @override
+  String get loggedOut => 'Vous êtes déconnecté.';
 }

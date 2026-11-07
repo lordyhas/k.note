@@ -794,12 +794,6 @@ abstract class AppLocalizations {
   /// **'Log out'**
   String get logOut;
 
-  /// No description provided for @logOutQuestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Do you want to log out?'**
-  String get logOutQuestion;
-
   /// No description provided for @changePassword.
   ///
   /// In en, this message translates to:
@@ -1315,6 +1309,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =0{no tasks} =1{1 task} other{{count} tasks}}'**
   String calendarDayTasks(int count);
+
+  /// No description provided for @logOutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out?'**
+  String get logOutTitle;
+
+  /// No description provided for @logOutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your notes and tasks stay saved in your account. Sign in again to find them.'**
+  String get logOutBody;
+
+  /// No description provided for @loggedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re logged out.'**
+  String get loggedOut;
 }
 
 class _AppLocalizationsDelegate

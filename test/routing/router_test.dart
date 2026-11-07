@@ -122,6 +122,39 @@ void main() {
     });
   });
 
+  group('redirectForAuth', () {
+    const signedOut = AuthState.unauthenticated();
+    final signedIn =
+        AuthState.authenticated(_testUser.copyWith(isCheckMail: true));
+    final unverified =
+        AuthState.authenticated(_testUser.copyWith(isCheckMail: false));
+
+    test('sends signed-out users to the login page from anywhere', () {
+      for (final location in [
+        '/',
+        '/home',
+        '/home/tasks',
+        '/user',
+        '/user/feedback',
+        '/verify-email'
+      ]) {
+        expect(redirectForAuth(signedOut, location), '/login',
+            reason: location);
+      }
+      expect(redirectForAuth(signedOut, '/login'), isNull);
+    });
+
+    test('keeps signed-in users away from the login page', () {
+      expect(redirectForAuth(signedIn, '/login'), '/home');
+      expect(redirectForAuth(signedIn, '/user'), isNull);
+    });
+
+    test('still holds unverified users on the verification page', () {
+      expect(redirectForAuth(unverified, '/login'), '/verify-email');
+      expect(redirectForAuth(unverified, '/home'), '/verify-email');
+    });
+  });
+
   group('redirectForEmailVerification', () {
     final unverified =
         AuthState.authenticated(_testUser.copyWith(isCheckMail: false));

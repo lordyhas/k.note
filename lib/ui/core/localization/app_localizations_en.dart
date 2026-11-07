@@ -455,9 +455,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logOut => 'Log out';
 
   @override
-  String get logOutQuestion => 'Do you want to log out?';
-
-  @override
   String get changePassword => 'Change password';
 
   @override
@@ -753,4 +750,14 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get logOutTitle => 'Log out?';
+
+  @override
+  String get logOutBody =>
+      'Your notes and tasks stay saved in your account. Sign in again to find them.';
+
+  @override
+  String get loggedOut => 'You\'re logged out.';
 }
