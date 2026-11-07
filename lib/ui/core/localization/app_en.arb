@@ -249,5 +249,8 @@
   "feedbackSent": "Thank you! Your feedback has been sent.",
   "feedbackFailed": "Your feedback couldn't be sent. Please try again.",
   "appVersion": "Version {version}",
-  "@appVersion": {"placeholders": {"version": {"type": "String"}}}
+  "@appVersion": {"placeholders": {"version": {"type": "String"}}},
+
+  "reminderChannelName": "Task reminders",
+  "reminderChannelDescription": "Notifications at the reminder time set on your tasks"
 }

@@ -1309,6 +1309,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version {version}'**
   String appVersion(String version);
+
+  /// No description provided for @reminderChannelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Task reminders'**
+  String get reminderChannelName;
+
+  /// No description provided for @reminderChannelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications at the reminder time set on your tasks'**
+  String get reminderChannelDescription;
 }
 
 class _AppLocalizationsDelegate

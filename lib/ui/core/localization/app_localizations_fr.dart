@@ -751,4 +751,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String appVersion(String version) {
     return 'Version $version';
   }
+
+  @override
+  String get reminderChannelName => 'Rappels des tâches';
+
+  @override
+  String get reminderChannelDescription =>
+      'Notifications à l\'heure du rappel choisie pour vos tâches';
 }

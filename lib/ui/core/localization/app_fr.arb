@@ -220,5 +220,8 @@
   "sendFeedback": "Envoyer un avis",
   "feedbackSent": "Merci ! Votre avis a été envoyé.",
   "feedbackFailed": "Votre avis n'a pas pu être envoyé. Veuillez réessayer.",
-  "appVersion": "Version {version}"
+  "appVersion": "Version {version}",
+
+  "reminderChannelName": "Rappels des tâches",
+  "reminderChannelDescription": "Notifications à l'heure du rappel choisie pour vos tâches"
 }
