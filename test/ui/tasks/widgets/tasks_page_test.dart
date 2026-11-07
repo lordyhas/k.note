@@ -81,4 +81,29 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Mark as not completed'), findsOneWidget);
   });
+
+  testWidgets('completing a repeating task adds its next occurrence',
+      (tester) async {
+    await manager.deleteTask(taskId: 't1');
+    await manager.addTaskInCloud(
+        task: CheckList(
+            id: 't1',
+            title: 'Water the plants',
+            list: const [],
+            dueDate: DateTime(2026, 3, 2),
+            repeat: 'Weekly'));
+    await pumpPage(tester);
+
+    await tester.tap(find.bySemanticsLabel('Mark as completed'));
+    await tester.pumpAndSettle();
+
+    final tasks = await manager.getTasksInCloud();
+    expect(tasks, hasLength(2));
+    final done = tasks.singleWhere((task) => task.id == 't1');
+    final next = tasks.singleWhere((task) => task.id != 't1');
+    expect(done.isAllChecked, isTrue);
+    expect(next.isAllChecked, isFalse);
+    expect(next.dueDate, DateTime(2026, 3, 9));
+    expect(next.repeat, 'Weekly');
+  });
 }

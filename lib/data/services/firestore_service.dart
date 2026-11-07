@@ -43,6 +43,9 @@ class FirestoreService {
   CollectionReference<Map<String, dynamic>> get _tasks =>
       _userDoc.collection('tasks');
 
+  CollectionReference<Map<String, dynamic>> get _feedback =>
+      _firestore.collection('feedback');
+
   /// U S E R   P R O F I L E
 
   /// Creates or refreshes the user's profile document from their auth data.
@@ -177,7 +180,70 @@ class FirestoreService {
     return _tasks.doc(task.id).update(task.asMap());
   }
 
+  /// Saves [task], and creates [next] in the same write: the following
+  /// occurrence of a repeating task that was just completed.
+  Future<void> updateTaskWithNext({required CheckList task, CheckList? next}) {
+    if (next == null) return updateTaskInCloud(task: task);
+    final batch = _firestore.batch()
+      ..update(_tasks.doc(task.id), task.asMap())
+      ..set(_tasks.doc(next.id), next.asMap());
+    return batch.commit();
+  }
+
   Future<void> deleteTask({required String taskId}) {
     return _tasks.doc(taskId).delete();
+  }
+
+  /// F E E D B A C K
+
+  /// Sends [message] to the K.Note team. Feedback lives outside the user's
+  /// subtree (`feedback/{id}`) so that the team can read it; the rules only
+  /// let its author create it, read it and delete it.
+  Future<void> sendFeedback({
+    required String message,
+    String? appVersion,
+    String? platform,
+    String? locale,
+  }) {
+    final doc = _feedback.doc();
+    return doc.set({
+      'id': doc.id,
+      'uid': user.id,
+      'email': user.email,
+      'message': message,
+      'app_version': appVersion,
+      'platform': platform,
+      'locale': locale,
+      'creation_time': DateTime.now(),
+    });
+  }
+
+  /// A C C O U N T
+
+  /// Deletes everything stored for the user: notes, tasks, feedback and the
+  /// profile document. Called just before their auth account is deleted,
+  /// while the rules still let them.
+  ///
+  /// Unlike the other writes, this waits for the server: the account must not
+  /// be deleted while the data is only removed from the local cache.
+  Future<void> deleteAllUserData() async {
+    final docs = [
+      ...(await _notes.get(const GetOptions(source: Source.server))).docs,
+      ...(await _tasks.get(const GetOptions(source: Source.server))).docs,
+      ...(await _feedback
+              .where('uid', isEqualTo: user.id)
+              .get(const GetOptions(source: Source.server)))
+          .docs,
+    ].map((doc) => doc.reference).toList();
+    // A batch holds at most 500 writes.
+    const batchSize = 500;
+    for (var start = 0; start < docs.length; start += batchSize) {
+      final batch = _firestore.batch();
+      for (final ref in docs.skip(start).take(batchSize)) {
+        batch.delete(ref);
+      }
+      await batch.commit();
+    }
+    await _userDoc.delete();
   }
 }

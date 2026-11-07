@@ -18,20 +18,21 @@ final class SignUpState extends Equatable {
   final ConfirmedPassword confirmedPassword;
   final FormzSubmissionStatus status;
   final bool isValid;
+
   /// English, for logs; [error] is what the UI shows, translated.
   final String? errorMessage;
   final AuthError? error;
 
   @override
   List<Object?> get props => [
-    email,
-    password,
-    confirmedPassword,
-    status,
-    isValid,
-    errorMessage,
-    error,
-  ];
+        email,
+        password,
+        confirmedPassword,
+        status,
+        isValid,
+        errorMessage,
+        error,
+      ];
 
   SignUpState copyWith({
     Email? email,
@@ -53,6 +54,3 @@ final class SignUpState extends Equatable {
     );
   }
 }
-
-
-

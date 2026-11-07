@@ -61,4 +61,51 @@ void main() {
       expect(TaskRepeat.parse('custom:1:week:0,2,9,x')!.weekdays, {2});
     });
   });
+
+  group('TaskRepeat.nextAfter', () {
+    // Wednesday 2026-01-28, 09:30.
+    final wednesday = DateTime(2026, 1, 28, 9, 30);
+
+    test('daily and every N days', () {
+      expect(
+          TaskRepeat.daily.nextAfter(wednesday), DateTime(2026, 1, 29, 9, 30));
+      expect(
+          const TaskRepeat.custom(interval: 3, unit: RepeatUnit.day)
+              .nextAfter(wednesday),
+          DateTime(2026, 1, 31, 9, 30));
+    });
+
+    test('weekly keeps the weekday', () {
+      expect(
+          TaskRepeat.weekly.nextAfter(wednesday), DateTime(2026, 2, 4, 9, 30));
+    });
+
+    test('weekdays skip the weekend', () {
+      final friday = DateTime(2026, 1, 30, 8);
+      expect(TaskRepeat.weekdaysOnly.nextAfter(wednesday),
+          DateTime(2026, 1, 29, 9, 30));
+      expect(
+          TaskRepeat.weekdaysOnly.nextAfter(friday), DateTime(2026, 2, 2, 8));
+    });
+
+    test('every 2 weeks on Monday and Wednesday', () {
+      const rule = TaskRepeat.custom(
+          interval: 2, unit: RepeatUnit.week, weekdays: {1, 3});
+      final monday = DateTime(2026, 1, 26, 9, 30);
+      expect(rule.nextAfter(monday), wednesday);
+      expect(rule.nextAfter(wednesday), DateTime(2026, 2, 9, 9, 30));
+    });
+
+    test('monthly clamps to the end of shorter months', () {
+      expect(TaskRepeat.monthly.nextAfter(DateTime(2026, 1, 31)),
+          DateTime(2026, 2, 28));
+      expect(TaskRepeat.monthly.nextAfter(DateTime(2026, 12, 15)),
+          DateTime(2027, 1, 15));
+    });
+
+    test('yearly handles February 29', () {
+      expect(TaskRepeat.yearly.nextAfter(DateTime(2028, 2, 29)),
+          DateTime(2029, 2, 28));
+    });
+  });
 }

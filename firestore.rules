@@ -12,6 +12,9 @@ rules_version = '2';
 // * A user is blocked by an admin, never by the client: either disable the
 //   account in Firebase Auth, or set the custom claim `blocked: true` with the
 //   Admin SDK (takes effect on the next token refresh). See docs/security.md.
+// * Feedback is the only data outside users/{uid}: feedback/{id}, written by
+//   its author for the team to read in the console. The author can read and
+//   delete their own feedback (so it goes with their account), nothing else.
 // * Everything that is not matched below is denied.
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -63,6 +66,25 @@ service cloud.firestore {
               'reminder_time', 'repeat', 'note'];
     }
 
+    function feedbackKeys() {
+      return ['id', 'uid', 'email', 'message', 'app_version', 'platform',
+              'locale', 'creation_time'];
+    }
+
+    function isValidFeedback(feedbackId) {
+      let data = request.resource.data;
+      return data.id == feedbackId
+          && data.uid == request.auth.uid
+          && data.email == request.auth.token.get('email', '')
+          && data.message is string
+          && data.message.size() > 0
+          && data.message.size() <= 5000
+          && optString(data, 'app_version')
+          && optString(data, 'platform')
+          && optString(data, 'locale')
+          && data.creation_time is timestamp;
+    }
+
     function isValidProfile(userId) {
       let data = request.resource.data;
       return data.id == userId
@@ -105,6 +127,14 @@ service cloud.firestore {
           && optTimestamp(data, 'last_time')
           && optTimestamp(data, 'due_date')
           && optTimestamp(data, 'reminder_time');
+    }
+
+    match /feedback/{feedbackId} {
+      allow read, delete: if resource.data.uid is string
+                          && isOwner(resource.data.uid);
+      allow create: if isOwner(request.resource.data.uid)
+                    && hasValidKeys(feedbackKeys())
+                    && isValidFeedback(feedbackId);
     }
 
     match /users/{userId} {

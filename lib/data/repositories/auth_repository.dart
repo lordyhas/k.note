@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:knote/domain/models/user.dart';
@@ -24,6 +23,7 @@ enum AuthError {
   googleNotConfigured,
   accountExistsWithDifferentCredential,
   invalidVerification,
+  userMismatch,
   unknown,
 }
 
@@ -72,7 +72,8 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
           AuthError.weakPassword,
         );
       case 'network-request-failed':
-        return const SignUpWithEmailAndPasswordFailure(kNetworkErrorMessage, AuthError.network);
+        return const SignUpWithEmailAndPasswordFailure(
+            kNetworkErrorMessage, AuthError.network);
       default:
         return const SignUpWithEmailAndPasswordFailure();
     }
@@ -84,7 +85,6 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
   /// Why it failed, for the message shown to the user.
   final AuthError error;
 }
-
 
 /// Thrown during the login process if a failure occurs.
 //class LogInWithEmailAndPasswordFailure implements Exception {}
@@ -131,7 +131,8 @@ class LogInWithEmailAndPasswordFailure implements Exception {
           AuthError.tooManyRequests,
         );
       case 'network-request-failed':
-        return const LogInWithEmailAndPasswordFailure(kNetworkErrorMessage, AuthError.network);
+        return const LogInWithEmailAndPasswordFailure(
+            kNetworkErrorMessage, AuthError.network);
       default:
         return const LogInWithEmailAndPasswordFailure();
     }
@@ -144,11 +145,8 @@ class LogInWithEmailAndPasswordFailure implements Exception {
   final AuthError error;
 }
 
-
 /// Thrown during the login process if a failure occurs.
 class LogInAnonymouslyFailure implements Exception {}
-
-class LogInWithFacebookFailure implements Exception {}
 
 /// Thrown during the sign in with google process if a failure occurs.
 
@@ -165,28 +163,38 @@ class LogInWithGoogleFailure implements Exception {
         error = AuthError.unknown,
         isCanceled = true;
 
-  /// Create an authentication message from a [PlatformException] thrown by
-  /// the native Google Sign-In SDK.
-  factory LogInWithGoogleFailure.fromPlatformException(PlatformException e) {
-    final details = '${e.message} ${e.details}';
-    if (e.code == GoogleSignIn.kSignInCanceledError) {
-      return const LogInWithGoogleFailure.canceled();
+  /// Create an authentication message from a [GoogleSignInException] thrown
+  /// by the native Google Sign-In SDK.
+  factory LogInWithGoogleFailure.fromGoogleSignInException(
+      GoogleSignInException e) {
+    switch (e.code) {
+      case GoogleSignInExceptionCode.canceled:
+      case GoogleSignInExceptionCode.interrupted:
+        return const LogInWithGoogleFailure.canceled();
+      case GoogleSignInExceptionCode.clientConfigurationError:
+      case GoogleSignInExceptionCode.providerConfigurationError:
+        return const LogInWithGoogleFailure(
+            _googleNotConfiguredMessage, AuthError.googleNotConfigured);
+      default:
+        break;
     }
-    // On Android, Play Services reports being offline as ApiException 7 and a
-    // missing or wrong SHA fingerprint as ApiException 10 (DEVELOPER_ERROR).
-    if (e.code == GoogleSignIn.kNetworkError ||
-        details.contains('ApiException: 7')) {
-      return const LogInWithGoogleFailure(kNetworkErrorMessage, AuthError.network);
-    }
-    if (details.contains('ApiException: 10')) {
+    final details = '${e.description} ${e.details}'.toLowerCase();
+    if (details.contains('network')) {
       return const LogInWithGoogleFailure(
-        'Google Sign-In is not configured for this app build '
-        '(check the SHA fingerprints in Firebase).',
-        AuthError.googleNotConfigured,
-      );
+          kNetworkErrorMessage, AuthError.network);
+    }
+    // Credential Manager reports a missing or wrong SHA fingerprint as
+    // "[28444] Developer console is not set up correctly".
+    if (details.contains('28444') || details.contains('developer console')) {
+      return const LogInWithGoogleFailure(
+          _googleNotConfiguredMessage, AuthError.googleNotConfigured);
     }
     return const LogInWithGoogleFailure();
   }
+
+  static const _googleNotConfiguredMessage =
+      'Google Sign-In is not configured for this app build '
+      '(check the SHA fingerprints in Firebase).';
 
   /// Create an authentication message
   /// from a firebase authentication exception code.
@@ -233,7 +241,8 @@ class LogInWithGoogleFailure implements Exception {
           AuthError.invalidVerification,
         );
       case 'network-request-failed':
-        return const LogInWithGoogleFailure(kNetworkErrorMessage, AuthError.network);
+        return const LogInWithGoogleFailure(
+            kNetworkErrorMessage, AuthError.network);
       case 'popup-closed-by-user':
       case 'cancelled-popup-request':
         return const LogInWithGoogleFailure.canceled();
@@ -254,6 +263,104 @@ class LogInWithGoogleFailure implements Exception {
 
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
+
+/// Thrown when the password reset email cannot be sent.
+class PasswordResetFailure implements Exception {
+  const PasswordResetFailure([
+    this.message = 'An unknown exception occurred.',
+    this.error = AuthError.unknown,
+  ]);
+
+  /// Create a failure from a firebase authentication exception code.
+  factory PasswordResetFailure.fromCode(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return const PasswordResetFailure(
+          'Email is not valid or badly formatted.',
+          AuthError.invalidEmail,
+        );
+      case 'user-disabled':
+        return const PasswordResetFailure(
+          'This user has been disabled. Please contact support for help.',
+          AuthError.userDisabled,
+        );
+      case 'too-many-requests':
+        return const PasswordResetFailure(
+          'Too many attempts. Please wait a moment and try again.',
+          AuthError.tooManyRequests,
+        );
+      case 'network-request-failed':
+        return const PasswordResetFailure(
+            kNetworkErrorMessage, AuthError.network);
+      default:
+        return const PasswordResetFailure();
+    }
+  }
+
+  /// The associated error message, in English, for logs.
+  final String message;
+
+  /// Why it failed, for the message shown to the user.
+  final AuthError error;
+}
+
+/// Thrown when the user cannot confirm who they are before deleting their
+/// account, or when the account cannot be deleted.
+class DeleteAccountFailure implements Exception {
+  const DeleteAccountFailure([
+    this.message = 'An unknown exception occurred.',
+    this.error = AuthError.unknown,
+  ]) : isCanceled = false;
+
+  /// The user closed the Google account picker.
+  const DeleteAccountFailure.canceled()
+      : message = 'Reauthentication was canceled.',
+        error = AuthError.unknown,
+        isCanceled = true;
+
+  /// Create a failure from a firebase authentication exception code.
+  factory DeleteAccountFailure.fromCode(String code) {
+    switch (code) {
+      case 'wrong-password':
+        return const DeleteAccountFailure(
+          'Incorrect password, please try again.',
+          AuthError.wrongPassword,
+        );
+      case 'invalid-credential':
+        return const DeleteAccountFailure(
+          'Incorrect password, please try again.',
+          AuthError.wrongPassword,
+        );
+      case 'user-mismatch':
+        return const DeleteAccountFailure(
+          'The account chosen is not the signed-in account.',
+          AuthError.userMismatch,
+        );
+      case 'too-many-requests':
+        return const DeleteAccountFailure(
+          'Too many attempts. Please wait a moment and try again.',
+          AuthError.tooManyRequests,
+        );
+      case 'network-request-failed':
+        return const DeleteAccountFailure(
+            kNetworkErrorMessage, AuthError.network);
+      case 'popup-closed-by-user':
+      case 'cancelled-popup-request':
+        return const DeleteAccountFailure.canceled();
+      default:
+        return const DeleteAccountFailure();
+    }
+  }
+
+  /// The associated error message, in English, for logs.
+  final String message;
+
+  /// Why it failed, for the message shown to the user.
+  final AuthError error;
+
+  /// Whether the user canceled the flow; this is not an error to report.
+  final bool isCanceled;
+}
 
 /// Thrown when the verification email cannot be sent, or the user's
 /// verification state cannot be refreshed.
@@ -291,14 +398,11 @@ class EmailVerificationFailure implements Exception {
   final AuthError error;
 }
 
-
-
 class CacheClient {
   /// {@macro cache_client}
   CacheClient() : _cache = <String, Object>{};
 
   final Map<String, Object> _cache;
-
 
   /// Writes the provide [key], [value] pair to the in-memory cache.
   void write<T extends Object>({required String key, required T value}) {
@@ -315,7 +419,6 @@ class CacheClient {
   }
 }
 
-
 /// {@template authentication_repository}
 /// Repository which manages user authentication.
 /// {@endtemplate}
@@ -328,12 +431,14 @@ class AuthRepository {
     GoogleSignIn? googleSignIn,
   })  : _cache = cache ?? CacheClient(),
         _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
+        _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
 
   final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
+  /// google_sign_in must be initialized once before any other call.
+  Future<void>? _googleSignInInitialization;
 
   //FirestoreService firebaseManager = new FirestoreService();
   //User _user =   firebase_auth.FirebaseAuth.instance.currentUser;
@@ -355,8 +460,6 @@ class AuthRepository {
 
         await _user.sendEmailVerification(actionCodeSettings);
       }   */
-
-
 
   /// Whether or not the current environment is web
   /// Should only be overriden for testing purposes. Otherwise,
@@ -492,35 +595,36 @@ class AuthRepository {
 
   Future<void> logInWithGoogle() async {
     try {
-      late final firebase_auth.AuthCredential credential;
       if (isWeb) {
-        final googleProvider = firebase_auth.GoogleAuthProvider();
-        final userCredential = await _firebaseAuth.signInWithPopup(
-          googleProvider,
-        );
-        credential = userCredential.credential!;
+        await _firebaseAuth.signInWithPopup(firebase_auth.GoogleAuthProvider());
       } else {
-        final googleUser = await _googleSignIn.signIn();
-        if (googleUser == null) throw const LogInWithGoogleFailure.canceled();
-        final googleAuth = await googleUser.authentication;
-        credential = firebase_auth.GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
+        await _firebaseAuth.signInWithCredential(await _googleCredential());
       }
-
-      await _firebaseAuth.signInWithCredential(credential);
     } on LogInWithGoogleFailure {
       rethrow;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
-    } on PlatformException catch (e) {
+    } on GoogleSignInException catch (e) {
       debugPrint('Google sign-in failed: $e');
-      throw LogInWithGoogleFailure.fromPlatformException(e);
+      throw LogInWithGoogleFailure.fromGoogleSignInException(e);
     } catch (e) {
       debugPrint('Google sign-in failed: $e');
       throw const LogInWithGoogleFailure();
     }
+  }
+
+  /// Shows the native Google account picker and returns a Firebase
+  /// credential for the account chosen. Not used on the web, where Firebase
+  /// opens its own popup.
+  ///
+  /// On Android the OAuth client comes from `default_web_client_id`, which
+  /// the google-services plugin generates from `google-services.json`.
+  Future<firebase_auth.AuthCredential> _googleCredential() async {
+    await (_googleSignInInitialization ??= _googleSignIn.initialize());
+    final account = await _googleSignIn.authenticate();
+    return firebase_auth.GoogleAuthProvider.credential(
+      idToken: account.authentication.idToken,
+    );
   }
 
   /// Signs in with the provided [email] and [password].
@@ -543,26 +647,6 @@ class AuthRepository {
     }
   }
 
-  /// Starts the Sign In with Facebook .
-  ///
-  /// Throws a [LogInWithFacebookFailure] if an exception occurs.
-  Future<void> logInWithFacebook() async {
-    try {
-      //await _firebaseAuth.signInAnonymously();
-      /*final result = await FacebookAuth.instance.login() ;
-
-      // Create a credential from the access token
-      final firebase_auth.OAuthCredential facebookAuthCredential =
-      firebase_auth.FacebookAuthProvider.credential(result!.token!);
-      await _firebaseAuth.signInWithCredential(facebookAuthCredential);*/
-
-    } on Exception {
-      throw LogInWithFacebookFailure();
-    }
-  }
-
-
-
   /// Signs out the current user which will emit
   /// [User.empty] from the [user] Stream.
   ///
@@ -571,10 +655,97 @@ class AuthRepository {
     try {
       await Future.wait([
         _firebaseAuth.signOut(),
-        _googleSignIn.signOut(),
+        if (!isWeb) _signOutOfGoogle(),
       ]);
     } on Exception {
       throw LogOutFailure();
+    }
+  }
+
+  Future<void> _signOutOfGoogle() async {
+    await (_googleSignInInitialization ??= _googleSignIn.initialize());
+    await _googleSignIn.signOut();
+  }
+
+  /// Sends a link to reset the password of the account using [email].
+  ///
+  /// Firebase does not say whether an account uses that address (email
+  /// enumeration protection), so this also succeeds for unknown addresses.
+  ///
+  /// Throws a [PasswordResetFailure] if the email cannot be sent.
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw PasswordResetFailure.fromCode(e.code);
+    } catch (e) {
+      debugPrint('Sending the password reset email failed: $e');
+      throw const PasswordResetFailure();
+    }
+  }
+
+  /// Whether the signed-in user has a password, which then confirms their
+  /// identity (otherwise Google does).
+  bool get signedInWithPassword =>
+      _firebaseAuth.currentUser?.providerData
+          .any((info) => info.providerId == 'password') ??
+      false;
+
+  /// Asks the signed-in user to prove who they are again, which Firebase
+  /// requires shortly before deleting an account: with their [password] for
+  /// email accounts, with Google otherwise.
+  ///
+  /// Throws a [DeleteAccountFailure] if it fails or is canceled.
+  Future<void> reauthenticate({String? password}) async {
+    final current = _firebaseAuth.currentUser;
+    if (current == null) throw const DeleteAccountFailure();
+    try {
+      if (password != null) {
+        await current.reauthenticateWithCredential(
+          firebase_auth.EmailAuthProvider.credential(
+            email: current.email ?? '',
+            password: password,
+          ),
+        );
+      } else if (isWeb) {
+        await current
+            .reauthenticateWithPopup(firebase_auth.GoogleAuthProvider());
+      } else {
+        await current.reauthenticateWithCredential(await _googleCredential());
+      }
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw DeleteAccountFailure.fromCode(e.code);
+    } on GoogleSignInException catch (e) {
+      final failure = LogInWithGoogleFailure.fromGoogleSignInException(e);
+      if (failure.isCanceled) throw const DeleteAccountFailure.canceled();
+      throw DeleteAccountFailure(failure.message, failure.error);
+    } catch (e) {
+      debugPrint('Reauthentication failed: $e');
+      throw const DeleteAccountFailure();
+    }
+  }
+
+  /// Deletes the signed-in user's Firebase Auth account, which signs them
+  /// out ([user] emits [User.empty]). Their Firestore data must be deleted
+  /// before, while the rules still let them.
+  ///
+  /// Throws a [DeleteAccountFailure] if it fails, e.g. when the last sign-in
+  /// is too old (call [reauthenticate] first).
+  Future<void> deleteAccount() async {
+    try {
+      await _firebaseAuth.currentUser?.delete();
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw DeleteAccountFailure.fromCode(e.code);
+    } catch (e) {
+      debugPrint('Deleting the account failed: $e');
+      throw const DeleteAccountFailure();
+    }
+    if (!isWeb) {
+      try {
+        await _signOutOfGoogle();
+      } catch (e) {
+        debugPrint('Signing out of Google failed: $e');
+      }
     }
   }
 }
@@ -584,16 +755,16 @@ extension on firebase_auth.User {
 
   /// Maps a [firebase_auth.User] into a [User].
   User get toUser {
-
     return User(
-        id: uid, email: email ?? '',
-        name: displayName, photoMail: photoURL,
-        phoneNumber: phoneNumber,
-        lastDate: metadata.lastSignInTime,
-        creationDate: metadata.creationTime,
-        isAnonymous: isAnonymous,
-        isCheckMail: emailVerified,
-
+      id: uid,
+      email: email ?? '',
+      name: displayName,
+      photoMail: photoURL,
+      phoneNumber: phoneNumber,
+      lastDate: metadata.lastSignInTime,
+      creationDate: metadata.creationTime,
+      isAnonymous: isAnonymous,
+      isCheckMail: emailVerified,
     );
   }
 }

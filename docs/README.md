@@ -7,6 +7,7 @@
 - [Style Guide](style_guide.md)
 - [Project structure](../PROJECT_STRUCTURE.md)
 - [Security](security.md)
+- [Releases](release.md)
 - Architecture decisions (ADR):
   [0001 architecture overview](decisions/0001-architecture-overview.md),
   [0002 project structure](decisions/0002-project-structure.md)

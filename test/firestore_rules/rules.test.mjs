@@ -11,8 +11,10 @@ import {
   getDoc,
   getDocs,
   collection,
+  query,
   setDoc,
   updateDoc,
+  where,
   Timestamp,
   setLogLevel,
 } from 'firebase/firestore';
@@ -230,5 +232,66 @@ describe('task validation', () => {
 
   test('unknown fields are rejected', async () => {
     await assertFails(setDoc(ref(), task('t1', { shared_with: [BOB] })));
+  });
+});
+
+describe('feedback', () => {
+  const feedback = (id, uid, extra = {}) => ({
+    id,
+    uid,
+    email: `${uid}@example.com`,
+    message: 'Nice app',
+    app_version: '1.0.0',
+    platform: 'android',
+    locale: 'en',
+    creation_time: Timestamp.now(),
+    ...extra,
+  });
+  const ref = (uid, id = 'f1') => doc(db(uid), `feedback/${id}`);
+
+  test('a verified user can send feedback under their own uid', async () => {
+    await assertSucceeds(setDoc(ref(ALICE), feedback('f1', ALICE)));
+  });
+
+  test('feedback cannot be sent in the name of someone else', async () => {
+    await assertFails(setDoc(ref(ALICE), feedback('f1', BOB)));
+    await assertFails(setDoc(ref(ALICE), feedback('f1', ALICE, { email: 'bob@example.com' })));
+  });
+
+  test('feedback must be a non-empty message with known fields', async () => {
+    await assertFails(setDoc(ref(ALICE), feedback('f1', ALICE, { message: '' })));
+    await assertFails(setDoc(ref(ALICE), feedback('f1', ALICE, { message: 'x'.repeat(5001) })));
+    await assertFails(setDoc(ref(ALICE), feedback('f1', ALICE, { rating: 5 })));
+    await assertFails(setDoc(ref(ALICE), feedback('other', ALICE)));
+  });
+
+  test('unverified users cannot send feedback', async () => {
+    const unverified = env
+      .authenticatedContext(ALICE, { email: `${ALICE}@example.com`, email_verified: false })
+      .firestore();
+    await assertFails(setDoc(doc(unverified, 'feedback/f1'), feedback('f1', ALICE)));
+  });
+
+  test('authors can read and delete only their own feedback, never edit it', async () => {
+    await seed('feedback/f1', feedback('f1', ALICE));
+    await seed('feedback/f2', feedback('f2', BOB));
+    await assertSucceeds(getDocs(query(collection(db(ALICE), 'feedback'), where('uid', '==', ALICE))));
+    await assertFails(getDocs(collection(db(ALICE), 'feedback')));
+    await assertFails(getDoc(ref(ALICE, 'f2')));
+    await assertFails(updateDoc(ref(ALICE), { message: 'Edited' }));
+    await assertFails(deleteDoc(ref(ALICE, 'f2')));
+    await assertSucceeds(deleteDoc(ref(ALICE)));
+  });
+});
+
+describe('account deletion', () => {
+  test('a user can delete their profile, notes and tasks', async () => {
+    await seed(`${USERS}/${ALICE}`, profile(ALICE));
+    await seed(`${USERS}/${ALICE}/notes/n1`, note('n1'));
+    await seed(`${USERS}/${ALICE}/tasks/t1`, task('t1'));
+    const alice = db(ALICE);
+    await assertSucceeds(deleteDoc(doc(alice, `${USERS}/${ALICE}/notes/n1`)));
+    await assertSucceeds(deleteDoc(doc(alice, `${USERS}/${ALICE}/tasks/t1`)));
+    await assertSucceeds(deleteDoc(doc(alice, `${USERS}/${ALICE}`)));
   });
 });

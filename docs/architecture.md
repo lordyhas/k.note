@@ -36,7 +36,9 @@ K.Note follows the layered structure of the official Flutter architecture guide
   selected entry). Phones and narrow browser windows keep the bottom bar. Pages read
   `SideNavigationScope.of(context)` (`lib/ui/shell/side_navigation_scope.dart`, kept out of `app_shell.dart` because an import cycle with the pages crashes the incremental web compiler); the settings page uses it to hide the Bin,
   Archived notes and Calendar entries the drawer already has.
-- Calendar (`/user/calendar`, `CalendarPage`) is a "coming soon" placeholder.
+- Calendar (`/user/calendar`, `CalendarPage`) shows a month of tasks placed on their due
+  date (or reminder date), with the selected day's tasks beside it on wide screens and
+  below it on phones.
 - Full-screen editors (`NoteEditorPage`, `TaskEditorPage`) open above the shell.
 
 ## State management
@@ -75,3 +77,25 @@ Typical note flow:
 
 - `.env` exists but active runtime use is not evident in startup code.
 - `StyleCubit` is not persisted between launches.
+
+## Reminders and repeating tasks
+
+- `ReminderService` (`lib/data/services/reminder_service.dart`) schedules a local
+  notification (`flutter_local_notifications`) at the reminder time of each open task.
+  `main.dart` starts it with the signed-in user (`ReminderService.follow`): it rebuilds the
+  whole schedule from `FirestoreService.watchTasks` whenever the tasks change, and cancels
+  everything on sign-out. Reminders set on another device are scheduled the next time the
+  app runs. Android and iOS only; the web has no scheduled local notifications. Exact alarms
+  are used when the user allows them (Android 12+), otherwise Android may deliver the
+  reminder a few minutes late.
+- Completing a repeating task (from the list, or by checking its last step in the editor)
+  creates its next occurrence: `CheckList.nextOccurrence` copies it unchecked, with the due
+  date moved to `TaskRepeat.nextAfter` and the reminder moved by the same number of days,
+  and `FirestoreService.updateTaskWithNext` writes both in one batch.
+
+## Account deletion
+
+`DeleteAccountCubit` asks the user to sign in again (password, or Google), deletes their
+Firestore data (`FirestoreService.deleteAllUserData`: notes, tasks, feedback, profile; it
+waits for the server), then the Firebase Auth account, which signs them out.
+

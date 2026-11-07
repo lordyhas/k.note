@@ -140,12 +140,6 @@ abstract class AppLocalizations {
   /// **'Untitled'**
   String get untitled;
 
-  /// No description provided for @comingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming soon'**
-  String get comingSoon;
-
   /// No description provided for @titleHint.
   ///
   /// In en, this message translates to:
@@ -206,12 +200,6 @@ abstract class AppLocalizations {
   /// **'Clear search'**
   String get notesClearSearch;
 
-  /// No description provided for @notifications.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications'**
-  String get notifications;
-
   /// No description provided for @notesNew.
   ///
   /// In en, this message translates to:
@@ -247,18 +235,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Move to bin'**
   String get noteMoveToBin;
-
-  /// No description provided for @noteChangeColor.
-  ///
-  /// In en, this message translates to:
-  /// **'Change color'**
-  String get noteChangeColor;
-
-  /// No description provided for @noteSavingMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Saving mode'**
-  String get noteSavingMode;
 
   /// No description provided for @noteArchived.
   ///
@@ -824,12 +800,6 @@ abstract class AppLocalizations {
   /// **'Do you want to log out?'**
   String get logOutQuestion;
 
-  /// No description provided for @editProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit profile'**
-  String get editProfile;
-
   /// No description provided for @changePassword.
   ///
   /// In en, this message translates to:
@@ -848,30 +818,6 @@ abstract class AppLocalizations {
   /// **'Unknown name'**
   String get unknownName;
 
-  /// No description provided for @darkMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Dark mode'**
-  String get darkMode;
-
-  /// No description provided for @emailUpdates.
-  ///
-  /// In en, this message translates to:
-  /// **'Email updates'**
-  String get emailUpdates;
-
-  /// No description provided for @emailUpdatesSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Send me updates by email'**
-  String get emailUpdatesSubtitle;
-
-  /// No description provided for @aboutUs.
-  ///
-  /// In en, this message translates to:
-  /// **'About us'**
-  String get aboutUs;
-
   /// No description provided for @aboutApp.
   ///
   /// In en, this message translates to:
@@ -883,12 +829,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last update'**
   String get lastUpdate;
-
-  /// No description provided for @betaVersion.
-  ///
-  /// In en, this message translates to:
-  /// **'Beta version {version}'**
-  String betaVersion(String version);
 
   /// No description provided for @version.
   ///
@@ -950,24 +890,6 @@ abstract class AppLocalizations {
   /// **'None'**
   String get none;
 
-  /// No description provided for @helpTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'How can we help you?'**
-  String get helpTitle;
-
-  /// No description provided for @helpBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Having trouble? We\'re here to help, so please get in touch with us.'**
-  String get helpBody;
-
-  /// No description provided for @helpChat.
-  ///
-  /// In en, this message translates to:
-  /// **'Chat with us'**
-  String get helpChat;
-
   /// No description provided for @feedbackTitle.
   ///
   /// In en, this message translates to:
@@ -991,24 +913,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send'**
   String get send;
-
-  /// No description provided for @inviteTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Invite your friends'**
-  String get inviteTitle;
-
-  /// No description provided for @inviteBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Are you one of those who do everything at the last moment?'**
-  String get inviteBody;
-
-  /// No description provided for @share.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get share;
 
   /// No description provided for @pageNotFound.
   ///
@@ -1093,12 +997,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in with Google'**
   String get signInWithGoogle;
-
-  /// No description provided for @signInWithFacebook.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in with Facebook'**
-  String get signInWithFacebook;
 
   /// No description provided for @signedIn.
   ///
@@ -1255,6 +1153,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign-up failed. Please try again.'**
   String get authErrorSignUp;
+
+  /// No description provided for @authErrorUserMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the account you are signed in with.'**
+  String get authErrorUserMismatch;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email address of your account. We\'ll send you a link to choose a new password.'**
+  String get resetPasswordBody;
+
+  /// No description provided for @resetPasswordSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the link'**
+  String get resetPasswordSend;
+
+  /// No description provided for @resetPasswordSent.
+  ///
+  /// In en, this message translates to:
+  /// **'If an account uses {email}, a link to reset its password is on its way. Check your spam folder too.'**
+  String resetPasswordSent(String email);
+
+  /// No description provided for @resetPasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The email couldn\'t be sent. Please try again.'**
+  String get resetPasswordFailed;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your notes, tasks and account will be permanently deleted. This can\'t be undone.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to confirm.'**
+  String get deleteAccountPasswordHint;
+
+  /// No description provided for @deleteAccountGoogleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To confirm, you\'ll be asked to choose your Google account.'**
+  String get deleteAccountGoogleHint;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get deleteAccountDone;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account couldn\'t be deleted. Check your connection and try again.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @sendFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send feedback'**
+  String get sendFeedback;
+
+  /// No description provided for @feedbackSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! Your feedback has been sent.'**
+  String get feedbackSent;
+
+  /// No description provided for @feedbackFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback couldn\'t be sent. Please try again.'**
+  String get feedbackFailed;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String appVersion(String version);
+
+  /// No description provided for @reminderChannelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Task reminders'**
+  String get reminderChannelName;
+
+  /// No description provided for @reminderChannelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications at the reminder time set on your tasks'**
+  String get reminderChannelDescription;
+
+  /// No description provided for @calendarToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get calendarToday;
+
+  /// No description provided for @calendarPreviousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get calendarPreviousMonth;
+
+  /// No description provided for @calendarNextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get calendarNextMonth;
+
+  /// No description provided for @calendarNoTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing planned on this day.'**
+  String get calendarNoTasks;
+
+  /// No description provided for @calendarLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Your tasks couldn\'t be loaded'**
+  String get calendarLoadError;
+
+  /// No description provided for @calendarDayTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no tasks} =1{1 task} other{{count} tasks}}'**
+  String calendarDayTasks(int count);
 }
 
 class _AppLocalizationsDelegate

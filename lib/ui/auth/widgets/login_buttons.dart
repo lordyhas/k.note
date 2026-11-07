@@ -8,9 +8,6 @@ import 'package:knote/ui/auth/bloc/sign_up_cubit.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 
-
-
-
 class EmailInput extends StatelessWidget {
   const EmailInput({super.key});
 
@@ -21,14 +18,15 @@ class EmailInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('__loginForm_emailInput_textField__'),
-          onChanged: (email) => BlocProvider.of<LoginCubit>(context)
-              .emailChanged(email),
+          onChanged: (email) =>
+              BlocProvider.of<LoginCubit>(context).emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: AppColors.of(context).text),
             ),
-            prefixIcon: FaIcon(FontAwesomeIcons.user,
+            prefixIcon: FaIcon(
+              FontAwesomeIcons.user,
               color: AppColors.of(context).text,
             ),
             labelText: context.l10n.emailLabel,
@@ -60,8 +58,8 @@ class _PasswordInputState extends State<PasswordInput> {
         //FocusScope.of(context).requestFocus(FocusNode());
         return TextField(
           key: const Key('__loginForm_passwordInput_textField__'),
-          onChanged: (password) => BlocProvider.of<LoginCubit>(context)
-              .passwordChanged(password),
+          onChanged: (password) =>
+              BlocProvider.of<LoginCubit>(context).passwordChanged(password),
           obscureText: !showPassword,
           //focusNode: FocusNode(),
           decoration: InputDecoration(
@@ -74,12 +72,11 @@ class _PasswordInputState extends State<PasswordInput> {
               tooltip: showPassword
                   ? context.l10n.hidePassword
                   : context.l10n.showPassword,
-              icon: FaIcon(showPassword
-                  ? FontAwesomeIcons.eyeSlash
-                  : FontAwesomeIcons.eye,
+              icon: FaIcon(
+                showPassword ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
                 color: AppColors.of(context).text,
               ),
-              onPressed: (){
+              onPressed: () {
                 setState(() {
                   showPassword = !showPassword;
                 });
@@ -109,37 +106,35 @@ class LoginButton extends StatelessWidget {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
             : SizedBox(
-              width: width,
-              child: ElevatedButton(
-                key: const Key('__loginForm_continue_raisedButton__'),
-                style: ElevatedButton.styleFrom(
-                  disabledBackgroundColor: AppColors.of(context).disabled,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                width: width,
+                child: ElevatedButton(
+                  key: const Key('__loginForm_continue_raisedButton__'),
+                  style: ElevatedButton.styleFrom(
+                    disabledBackgroundColor: AppColors.of(context).disabled,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
                   ),
-                ),
-                onPressed: state.isValid
-                    ? () => context.read<LoginCubit>().logInWithCredentials()
-                    : null,
-                child: Row(
-                  children: [
-                    FaIcon(FontAwesomeIcons.circleUser,
-                        color: AppColors.of(context).text),
-                    const Spacer(),
-                    Text(context.l10n.logIn,
-                        style: TextStyle(color: AppColors.of(context).text)),
-                    const Spacer(),
-                    const FaIcon(FontAwesomeIcons.circleUser,
-                        color: Colors.transparent),
-                  ],
-                ),
+                  onPressed: state.isValid
+                      ? () => context.read<LoginCubit>().logInWithCredentials()
+                      : null,
+                  child: Row(
+                    children: [
+                      FaIcon(FontAwesomeIcons.circleUser,
+                          color: AppColors.of(context).text),
+                      const Spacer(),
+                      Text(context.l10n.logIn,
+                          style: TextStyle(color: AppColors.of(context).text)),
+                      const Spacer(),
+                      const FaIcon(FontAwesomeIcons.circleUser,
+                          color: Colors.transparent),
+                    ],
+                  ),
 
-                //color: theme.primaryColor,
-
-        ),
-            );
+                  //color: theme.primaryColor,
+                ),
+              );
         //ProgressButton(child: const Text('LOGIN'),);
-
       },
     );
   }
@@ -150,7 +145,7 @@ class GoogleLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width *0.75;
+    double width = MediaQuery.of(context).size.width * 0.75;
 
     Widget googleOutlineButton = OutlinedButton(
       onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
@@ -175,46 +170,11 @@ class GoogleLoginButton extends StatelessWidget {
           const FaIcon(FontAwesomeIcons.google, color: Colors.transparent),
         ],
       ),
-
     );
 
     return SizedBox(width: width, child: googleOutlineButton);
   }
 }
-
-class FacebookLoginButton extends StatelessWidget {
-  const FacebookLoginButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width *0.75;
-
-    Widget facebookOutlineButton = OutlinedButton(
-      key: const Key('__loginForm_facebookLogin_outlineButton__'),
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(width: 2.0, color: AppColors.of(context).link),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-      ),
-
-      onPressed: () {}, //=> context.bloc<LoginCubit>().logInWithFacebook(),
-
-      child: Row(
-        children: [
-          const FaIcon(FontAwesomeIcons.facebookF),
-          const Spacer(),
-          Text(context.l10n.signInWithFacebook),
-          const Spacer(),
-          const FaIcon(FontAwesomeIcons.facebookF, color: Colors.transparent),
-        ],
-      ),
-    );
-
-    return SizedBox(width: width, child: facebookOutlineButton);
-  }
-}
-
 
 class EmailSignInInput extends StatelessWidget {
   const EmailSignInInput({super.key});
@@ -226,8 +186,8 @@ class EmailSignInInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('__signUpForm_emailInput_textField__'),
-          onChanged: (email) => BlocProvider.of<SignUpCubit>(context)
-              .emailChanged(email),
+          onChanged: (email) =>
+              BlocProvider.of<SignUpCubit>(context).emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             prefixIcon: const FaIcon(FontAwesomeIcons.user),
@@ -250,7 +210,6 @@ class PasswordSignInInput extends StatefulWidget {
   State<PasswordSignInInput> createState() => _PasswordSignInInputState();
 }
 
-
 class _PasswordSignInInputState extends State<PasswordSignInInput> {
   bool showPassword = false;
 
@@ -270,12 +229,13 @@ class _PasswordSignInInputState extends State<PasswordSignInInput> {
               tooltip: showPassword
                   ? context.l10n.hidePassword
                   : context.l10n.showPassword,
-              icon: FaIcon(showPassword? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye),
-              onPressed: (){
+              icon: FaIcon(showPassword
+                  ? FontAwesomeIcons.eyeSlash
+                  : FontAwesomeIcons.eye),
+              onPressed: () {
                 setState(() {
                   showPassword = !showPassword;
                 });
-
               },
             ),
             labelText: context.l10n.passwordLabel,
@@ -320,10 +280,9 @@ class _PasswordSignInInputState extends State<PasswordSignInInput> {
 class SignUpSignInButton extends StatelessWidget {
   const SignUpSignInButton({super.key});
 
-
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width *0.75;
+    double width = MediaQuery.of(context).size.width * 0.75;
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
@@ -353,9 +312,8 @@ class SignUpSignInButton extends StatelessWidget {
                       const Spacer(),
                     ],
                   ),
-
-          ),
-        );
+                ),
+              );
       },
     );
   }
