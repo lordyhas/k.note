@@ -12,11 +12,9 @@ import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
-import 'package:knote/ui/notes/widgets/offline_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
-import 'package:knote/ui/settings/widgets/help_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
@@ -108,7 +106,6 @@ void main() {
       expect(
           childNames(NotesPage.routeName),
           containsAll([
-            OfflineNotesPage.routeName,
             NoteEditorPage.routeName,
             TasksPage.routeName,
             TaskEditorPage.routeName,
@@ -118,7 +115,6 @@ void main() {
           containsAll([
             TrashPage.routeName,
             AboutPage.settingsRouteName,
-            HelpPage.routeName,
             FeedbackPage.routeName,
             ArchivedNotesPage.routeName,
           ]));

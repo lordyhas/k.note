@@ -14,11 +14,9 @@ import 'package:knote/ui/core/widgets/error_page.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
-import 'package:knote/ui/notes/widgets/offline_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
-import 'package:knote/ui/settings/widgets/help_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/shell/app_shell.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
@@ -84,11 +82,6 @@ class AppRouter {
                 builder: (context, state) => const NotesPage(),
                 routes: <RouteBase>[
                   GoRoute(
-                    name: OfflineNotesPage.routeName,
-                    path: OfflineNotesPage.routeName,
-                    builder: (context, state) => const OfflineNotesPage(),
-                  ),
-                  GoRoute(
                     parentNavigatorKey: key,
                     name: NoteEditorPage.routeName,
                     path: NoteEditorPage.routeName,
@@ -129,11 +122,6 @@ class AppRouter {
                       name: AboutPage.settingsRouteName,
                       path: AboutPage.routeName,
                       builder: (context, state) => const AboutPage(),
-                    ),
-                    GoRoute(
-                      name: HelpPage.routeName,
-                      path: HelpPage.routeName,
-                      builder: (context, state) => const HelpPage(),
                     ),
                     GoRoute(
                       name: FeedbackPage.routeName,

@@ -140,12 +140,6 @@ abstract class AppLocalizations {
   /// **'Untitled'**
   String get untitled;
 
-  /// No description provided for @comingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming soon'**
-  String get comingSoon;
-
   /// No description provided for @titleHint.
   ///
   /// In en, this message translates to:
@@ -206,12 +200,6 @@ abstract class AppLocalizations {
   /// **'Clear search'**
   String get notesClearSearch;
 
-  /// No description provided for @notifications.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications'**
-  String get notifications;
-
   /// No description provided for @notesNew.
   ///
   /// In en, this message translates to:
@@ -247,18 +235,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Move to bin'**
   String get noteMoveToBin;
-
-  /// No description provided for @noteChangeColor.
-  ///
-  /// In en, this message translates to:
-  /// **'Change color'**
-  String get noteChangeColor;
-
-  /// No description provided for @noteSavingMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Saving mode'**
-  String get noteSavingMode;
 
   /// No description provided for @noteArchived.
   ///
@@ -913,24 +889,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'None'**
   String get none;
-
-  /// No description provided for @helpTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'How can we help you?'**
-  String get helpTitle;
-
-  /// No description provided for @helpBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Having trouble? We\'re here to help, so please get in touch with us.'**
-  String get helpBody;
-
-  /// No description provided for @helpChat.
-  ///
-  /// In en, this message translates to:
-  /// **'Chat with us'**
-  String get helpChat;
 
   /// No description provided for @feedbackTitle.
   ///

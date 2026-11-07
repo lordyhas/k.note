@@ -30,9 +30,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get untitled => 'Sans titre';
 
   @override
-  String get comingSoon => 'Bientôt disponible';
-
-  @override
   String get titleHint => 'Titre';
 
   @override
@@ -63,9 +60,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notesClearSearch => 'Effacer la recherche';
 
   @override
-  String get notifications => 'Notifications';
-
-  @override
   String get notesNew => 'Nouvelle note';
 
   @override
@@ -85,12 +79,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noteMoveToBin => 'Mettre à la corbeille';
-
-  @override
-  String get noteChangeColor => 'Changer la couleur';
-
-  @override
-  String get noteSavingMode => 'Mode d\'enregistrement';
 
   @override
   String noteArchived(String title) {
@@ -520,16 +508,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get none => 'Aucune';
-
-  @override
-  String get helpTitle => 'Comment pouvons-nous vous aider ?';
-
-  @override
-  String get helpBody =>
-      'Un problème ? Nous sommes là pour vous aider, n\'hésitez pas à nous contacter.';
-
-  @override
-  String get helpChat => 'Discuter avec nous';
 
   @override
   String get feedbackTitle => 'Votre avis';

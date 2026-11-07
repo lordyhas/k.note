@@ -9,7 +9,6 @@ class AppAssets {
   static const String bgImage2 = "assets/bg_image/bg_image2.jpg";
   static const String bgImage3 = "assets/bg_image/bg_image3.jpg";
   static const String feedbackImage = "assets/images/feedbackImage.png";
-  static const String helpImage = "assets/images/helpImage.png";
   static const String img = "assets/avatar/--dan-img.jpg";
   static const String logo_1 = "assets/images/logo_1.png";
   static const String logo_2 = "assets/images/logo_2.png";

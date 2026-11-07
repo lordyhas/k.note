@@ -30,9 +30,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get untitled => 'Untitled';
 
   @override
-  String get comingSoon => 'Coming soon';
-
-  @override
   String get titleHint => 'Title';
 
   @override
@@ -63,9 +60,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notesClearSearch => 'Clear search';
 
   @override
-  String get notifications => 'Notifications';
-
-  @override
   String get notesNew => 'New note';
 
   @override
@@ -84,12 +78,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noteMoveToBin => 'Move to bin';
-
-  @override
-  String get noteChangeColor => 'Change color';
-
-  @override
-  String get noteSavingMode => 'Saving mode';
 
   @override
   String noteArchived(String title) {
@@ -515,16 +503,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get none => 'None';
-
-  @override
-  String get helpTitle => 'How can we help you?';
-
-  @override
-  String get helpBody =>
-      'Having trouble? We\'re here to help, so please get in touch with us.';
-
-  @override
-  String get helpChat => 'Chat with us';
 
   @override
   String get feedbackTitle => 'Your feedback';

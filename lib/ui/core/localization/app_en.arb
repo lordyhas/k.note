@@ -8,7 +8,6 @@
   "remove": "Remove",
   "moreOptions": "More options",
   "untitled": "Untitled",
-  "comingSoon": "Coming soon",
   "titleHint": "Title",
 
   "navNotes": "Notes",
@@ -21,7 +20,6 @@
   "notesSearch": "Search",
   "notesSearchHint": "Search notes",
   "notesClearSearch": "Clear search",
-  "notifications": "Notifications",
   "notesNew": "New note",
   "notesLoadError": "Your notes couldn't be loaded",
   "notesEmpty": "No notes yet. Tap + to write one.",
@@ -30,8 +28,6 @@
 
   "noteArchive": "Archive",
   "noteMoveToBin": "Move to bin",
-  "noteChangeColor": "Change color",
-  "noteSavingMode": "Saving mode",
   "noteArchived": "\"{title}\" archived",
   "@noteArchived": {"placeholders": {"title": {"type": "String"}}},
   "noteMovedToBin": "\"{title}\" moved to the bin",
@@ -176,9 +172,6 @@
   "address": "Address",
   "none": "None",
 
-  "helpTitle": "How can we help you?",
-  "helpBody": "Having trouble? We're here to help, so please get in touch with us.",
-  "helpChat": "Chat with us",
   "feedbackTitle": "Your feedback",
   "feedbackBody": "Tell us what you think of K.Note.",
   "feedbackHint": "Enter your feedback…",

@@ -74,14 +74,6 @@ class _TasksPageState extends State<TasksPage> {
         backgroundColor: colors.background,
         elevation: 0,
         leading: Icon(Icons.task_alt, color: colors.text),
-        actions: [
-          //todo: pop up menu
-          IconButton(
-            tooltip: l10n.moreOptions,
-            icon: Icon(Icons.more_vert, color: colors.text),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Container(
         constraints: const BoxConstraints(maxWidth: 910),
