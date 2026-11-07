@@ -295,3 +295,48 @@ describe('account deletion', () => {
     await assertSucceeds(deleteDoc(doc(alice, `${USERS}/${ALICE}`)));
   });
 });
+
+describe('preferences', () => {
+  const ref = (id = 'preferences') => doc(db(ALICE), `${USERS}/${ALICE}/settings/${id}`);
+  const prefs = (extra = {}) => ({
+    language: 'fr',
+    notes_layout: 'list',
+    reminders_enabled: true,
+    reminder_hour: 8,
+    first_day_of_week: 'monday',
+    ...extra,
+  });
+
+  test('a user can save and read their preferences', async () => {
+    await assertSucceeds(setDoc(ref(), prefs()));
+    await assertSucceeds(getDoc(ref()));
+    await assertSucceeds(setDoc(ref(), prefs({ language: 'system' })));
+  });
+
+  test('values outside the known choices are rejected', async () => {
+    await assertFails(setDoc(ref(), prefs({ language: 'de' })));
+    await assertFails(setDoc(ref(), prefs({ notes_layout: 'cards' })));
+    await assertFails(setDoc(ref(), prefs({ reminder_hour: 24 })));
+    await assertFails(setDoc(ref(), prefs({ reminder_hour: '8' })));
+    await assertFails(setDoc(ref(), prefs({ first_day_of_week: 'friday' })));
+    await assertFails(setDoc(ref(), prefs({ theme: 'light' })));
+  });
+
+  test('only the preferences document exists under settings', async () => {
+    await assertFails(setDoc(ref('other'), prefs()));
+  });
+
+  test("a user cannot read or write another user's preferences", async () => {
+    await seed(`${USERS}/${BOB}/settings/preferences`, prefs());
+    await assertFails(getDoc(doc(db(ALICE), `${USERS}/${BOB}/settings/preferences`)));
+    await assertFails(setDoc(doc(db(ALICE), `${USERS}/${BOB}/settings/preferences`), prefs()));
+  });
+});
+
+describe('profile name', () => {
+  test('the display name is limited to 100 characters', async () => {
+    const ref = doc(db(ALICE), `${USERS}/${ALICE}`);
+    await assertSucceeds(setDoc(ref, profile(ALICE, { name: 'Hassan Kajila' })));
+    await assertFails(setDoc(ref, profile(ALICE, { name: 'x'.repeat(101) })));
+  });
+});

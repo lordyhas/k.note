@@ -192,4 +192,20 @@ void main() {
     await subscription.cancel();
     await users.close();
   });
+
+  test('turning reminders off cancels them, and on schedules them again',
+      () async {
+    final tasks = [_task('a', reminder: _now.add(const Duration(hours: 1)))];
+    await service.syncTasks(tasks, now: _now);
+    expect(scheduledPayloads(), ['a']);
+
+    await service.setEnabled(false, now: _now);
+    verify(() => plugin.cancelAllPendingNotifications()).called(2);
+    await service.syncTasks(tasks, now: _now);
+    verifyNever(() => plugin.cancelAllPendingNotifications());
+
+    await service.setEnabled(true, now: _now);
+    verify(() => plugin.cancelAllPendingNotifications()).called(1);
+    expect(scheduledPayloads(), ['a']);
+  });
 }

@@ -7,6 +7,7 @@ import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
 
@@ -175,7 +176,7 @@ class _MonthGrid extends StatelessWidget {
     final colors = AppColors.of(context);
     final material = MaterialLocalizations.of(context);
     // 0 = Sunday, as in MaterialLocalizations.narrowWeekdays.
-    final firstWeekday = material.firstDayOfWeekIndex;
+    final firstWeekday = PreferencesScope.firstDayOfWeekIndex(context);
     final leading =
         (DateTime(month.year, month.month).weekday % 7 - firstWeekday) % 7;
     final daysInMonth = DateUtils.getDaysInMonth(month.year, month.month);

@@ -45,6 +45,14 @@ class ReminderService {
   bool _askedPermission = false;
   String _lastSchedule = '';
 
+  /// The user's "Task reminders" preference; while off, nothing is
+  /// scheduled.
+  bool _enabled = true;
+
+  /// The last tasks received, to schedule them again when reminders are
+  /// turned back on.
+  Iterable<CheckList> _lastTasks = const [];
+
   /// Prepares the plugin; [channelName] and [channelDescription] are shown
   /// in the Android notification settings.
   Future<void> initialize({
@@ -107,6 +115,8 @@ class ReminderService {
   /// break the task lists.
   Future<void> syncTasks(Iterable<CheckList> tasks, {DateTime? now}) async {
     if (!isSupported) return;
+    _lastTasks = tasks;
+    if (!_enabled) return;
     try {
       await _initialization;
       final upcoming =
@@ -150,6 +160,19 @@ class ReminderService {
     }
   }
 
+  /// Turns reminders on or off (the user's preference). Turning them off
+  /// cancels the scheduled ones; turning them on schedules the last tasks
+  /// received again.
+  Future<void> setEnabled(bool enabled, {DateTime? now}) async {
+    if (enabled == _enabled) return;
+    _enabled = enabled;
+    if (enabled) {
+      await syncTasks(_lastTasks, now: now);
+    } else {
+      await cancelAll();
+    }
+  }
+
   /// Cancels every reminder, e.g. when the user signs out.
   Future<void> cancelAll() async {
     if (!isSupported) return;
@@ -179,6 +202,7 @@ class ReminderService {
       tasks?.cancel();
       tasks = null;
       if (!canRead) {
+        _lastTasks = const [];
         cancelAll();
         return;
       }

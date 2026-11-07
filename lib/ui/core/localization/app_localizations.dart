@@ -1333,6 +1333,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your password'**
   String get passwordRequired;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My profile'**
+  String get profileTitle;
+
+  /// No description provided for @profileAddName.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your name'**
+  String get profileAddName;
+
+  /// No description provided for @profileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get profileName;
+
+  /// No description provided for @profileNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How should we call you?'**
+  String get profileNameHint;
+
+  /// No description provided for @profileNameInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name of 100 characters or fewer'**
+  String get profileNameInvalid;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// No description provided for @profileSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile couldn\'t be saved. Please try again.'**
+  String get profileSaveFailed;
+
+  /// No description provided for @profileSignInMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in method'**
+  String get profileSignInMethod;
+
+  /// No description provided for @profileEmailPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Email and password'**
+  String get profileEmailPassword;
+
+  /// No description provided for @profileMemberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since'**
+  String get profileMemberSince;
+
+  /// No description provided for @preferencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferencesTitle;
+
+  /// No description provided for @preferencesGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get preferencesGeneral;
+
+  /// No description provided for @preferencesLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get preferencesLanguage;
+
+  /// No description provided for @preferencesLanguageSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Device language'**
+  String get preferencesLanguageSystem;
+
+  /// No description provided for @preferencesNotesLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes layout'**
+  String get preferencesNotesLayout;
+
+  /// No description provided for @preferencesLayoutList.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get preferencesLayoutList;
+
+  /// No description provided for @preferencesLayoutGrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid'**
+  String get preferencesLayoutGrid;
+
+  /// No description provided for @preferencesReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Task reminders'**
+  String get preferencesReminders;
+
+  /// No description provided for @preferencesRemindersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a notification at the reminder time'**
+  String get preferencesRemindersSubtitle;
+
+  /// No description provided for @preferencesRemindersWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are shown by the mobile app'**
+  String get preferencesRemindersWeb;
+
+  /// No description provided for @preferencesReminderHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Default reminder time'**
+  String get preferencesReminderHour;
+
+  /// No description provided for @preferencesReminderHourSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'for \"Tomorrow\" and \"Next week\"'**
+  String get preferencesReminderHourSubtitle;
+
+  /// No description provided for @preferencesFirstDay.
+  ///
+  /// In en, this message translates to:
+  /// **'First day of the week'**
+  String get preferencesFirstDay;
+
+  /// No description provided for @preferencesFirstDaySystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Language default ({day})'**
+  String preferencesFirstDaySystem(String day);
+
+  /// No description provided for @preferencesSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Your preferences are saved to your account and apply on all your devices.'**
+  String get preferencesSynced;
+
+  /// No description provided for @preferencesSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your preferences couldn\'t be saved.'**
+  String get preferencesSaveFailed;
 }
 
 class _AppLocalizationsDelegate

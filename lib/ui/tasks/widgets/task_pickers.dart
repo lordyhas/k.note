@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:knote/domain/models/task_repeat.dart';
+import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
@@ -94,19 +95,21 @@ DateTime _startOfNextWeek(DateTime today, int firstDayOfWeekIndex) {
 /// Shortcuts offered by the "Remind me" menu.
 enum ReminderShortcut { laterToday, tomorrow, nextWeek }
 
-/// Hour of the day used by the "Tomorrow" and "Next week" reminders.
-const reminderMorningHour = 9;
+/// Hour of the day used by the "Tomorrow" and "Next week" reminders, unless
+/// the user chose another one ([UserPreferences.reminderHour]).
+const reminderMorningHour = UserPreferences.defaultReminderHour;
 
 /// The moment a reminder [shortcut] stands for, counted from [now].
 ///
 /// "Later today" is three hours from now, rounded up to the next full hour;
 /// it is null when that would fall on another day. "Tomorrow" and "Next week"
-/// are at [reminderMorningHour], next week starting on [firstDayOfWeekIndex]
+/// are at [morningHour], next week starting on [firstDayOfWeekIndex]
 /// (0 = Sunday).
 DateTime? reminderFor(
   ReminderShortcut shortcut, {
   required DateTime now,
   required int firstDayOfWeekIndex,
+  int morningHour = reminderMorningHour,
 }) {
   final today = DateTime(now.year, now.month, now.day);
   switch (shortcut) {
@@ -123,11 +126,10 @@ DateTime? reminderFor(
           reminder.day == today.day;
       return isToday ? reminder : null;
     case ReminderShortcut.tomorrow:
-      return DateTime(
-          today.year, today.month, today.day + 1, reminderMorningHour);
+      return DateTime(today.year, today.month, today.day + 1, morningHour);
     case ReminderShortcut.nextWeek:
       final day = _startOfNextWeek(today, firstDayOfWeekIndex);
-      return DateTime(day.year, day.month, day.day, reminderMorningHour);
+      return DateTime(day.year, day.month, day.day, morningHour);
   }
 }
 

@@ -7,6 +7,7 @@ K.Note is an open-source notes and tasks app for Android and the web, built with
 - **Calendar**: a month view of your tasks by due date.
 - **Sync**: your notes and tasks follow your account across devices through Cloud Firestore, and stay available offline thanks to Firestore's cache.
 - **Accounts**: sign in with email/password or Google, reset a forgotten password, delete your account and all its data from the settings.
+- **Profile and preferences**: set your display name, and choose the language, the notes layout, task reminders, the default reminder time and the first day of the week. Preferences are saved to your account and follow you on every device.
 - **Feedback**: send a message to the team from the settings.
 - **Private by design**: Firestore security rules ensure each user can only read and write their own data.
 - **Languages**: English and French, following the device language.

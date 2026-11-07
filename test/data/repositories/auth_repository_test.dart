@@ -686,4 +686,34 @@ void main() {
       expect(other.isCanceled, isFalse);
     });
   });
+
+  group('AuthRepository - updateDisplayName', () {
+    test('saves the trimmed name and returns the updated user', () async {
+      final user = firebaseUser(verified: true);
+      when(() => user.updateDisplayName(any())).thenAnswer((_) async {});
+      when(() => user.displayName).thenReturn('Hassan Kajila');
+      when(() => user.photoURL).thenReturn(null);
+      when(() => user.phoneNumber).thenReturn(null);
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      final updated = await buildRepo().updateDisplayName('  Hassan Kajila ');
+
+      verify(() => user.updateDisplayName('Hassan Kajila')).called(1);
+      verify(() => user.reload()).called(1);
+      expect(updated.name, 'Hassan Kajila');
+    });
+
+    test('reports a network error', () async {
+      final user = firebaseUser(verified: true);
+      when(() => user.updateDisplayName(any())).thenThrow(
+          firebase_auth.FirebaseAuthException(code: 'network-request-failed'));
+      when(() => mockFirebaseAuth.currentUser).thenReturn(user);
+
+      await expectLater(
+        buildRepo().updateDisplayName('Hassan'),
+        throwsA(isA<ProfileUpdateFailure>()
+            .having((e) => e.error, 'error', AuthError.network)),
+      );
+    });
+  });
 }

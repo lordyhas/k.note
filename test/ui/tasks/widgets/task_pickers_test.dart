@@ -68,6 +68,17 @@ void main() {
       expect(remind(ReminderShortcut.nextWeek, friday, firstDay: 1),
           DateTime(2026, 10, 26, reminderMorningHour));
     });
+
+    test('tomorrow and next week use the hour chosen in the preferences', () {
+      expect(
+          reminderFor(ReminderShortcut.tomorrow,
+              now: friday, firstDayOfWeekIndex: 0, morningHour: 7),
+          DateTime(2026, 10, 24, 7));
+      expect(
+          reminderFor(ReminderShortcut.nextWeek,
+              now: friday, firstDayOfWeekIndex: 1, morningHour: 18),
+          DateTime(2026, 10, 26, 18));
+    });
   });
 
   group('isOverdue', () {

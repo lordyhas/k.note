@@ -228,5 +228,32 @@
   "logOutBody": "Vos notes et vos tâches restent enregistrées dans votre compte. Reconnectez-vous pour les retrouver.",
   "loggedOut": "Vous êtes déconnecté.",
 
-  "passwordRequired": "Saisissez votre mot de passe"
+  "passwordRequired": "Saisissez votre mot de passe",
+
+  "profileTitle": "Mon profil",
+  "profileAddName": "Ajouter votre nom",
+  "profileName": "Nom",
+  "profileNameHint": "Comment doit-on vous appeler ?",
+  "profileNameInvalid": "Saisissez un nom de 100 caractères maximum",
+  "profileSaved": "Profil enregistré",
+  "profileSaveFailed": "Votre profil n'a pas pu être enregistré. Veuillez réessayer.",
+  "profileSignInMethod": "Méthode de connexion",
+  "profileEmailPassword": "E-mail et mot de passe",
+  "profileMemberSince": "Membre depuis",
+  "preferencesTitle": "Préférences",
+  "preferencesGeneral": "Général",
+  "preferencesLanguage": "Langue",
+  "preferencesLanguageSystem": "Langue de l'appareil",
+  "preferencesNotesLayout": "Affichage des notes",
+  "preferencesLayoutList": "Liste",
+  "preferencesLayoutGrid": "Grille",
+  "preferencesReminders": "Rappels des tâches",
+  "preferencesRemindersSubtitle": "Afficher une notification à l'heure du rappel",
+  "preferencesRemindersWeb": "Les notifications sont affichées par l'application mobile",
+  "preferencesReminderHour": "Heure de rappel par défaut",
+  "preferencesReminderHourSubtitle": "pour « Demain » et « La semaine prochaine »",
+  "preferencesFirstDay": "Premier jour de la semaine",
+  "preferencesFirstDaySystem": "Selon la langue ({day})",
+  "preferencesSynced": "Vos préférences sont enregistrées dans votre compte et s'appliquent sur tous vos appareils.",
+  "preferencesSaveFailed": "Vos préférences n'ont pas pu être enregistrées."
 }
