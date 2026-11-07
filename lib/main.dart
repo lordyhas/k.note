@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await _activateAppCheck();
   final authenticationRepository = AuthRepository();
   await authenticationRepository.user.first;
 
@@ -41,6 +43,36 @@ void main() async {
     authenticationRepository: authenticationRepository,
     reminderService: reminderService,
   ));
+}
+
+/// reCAPTCHA Enterprise site key for App Check on the web, passed at build
+/// time: `flutter build web --dart-define=RECAPTCHA_SITE_KEY=...`.
+const _recaptchaSiteKey = String.fromEnvironment('RECAPTCHA_SITE_KEY');
+
+/// App Check proves to Firebase that requests come from this app (Play
+/// Integrity on Android, reCAPTCHA Enterprise on the web). Debug builds use
+/// the debug provider: register the token it logs in the Firebase console.
+/// Requests are only rejected once enforcement is turned on in the console
+/// (see docs/security.md).
+Future<void> _activateAppCheck() async {
+  if (kIsWeb && _recaptchaSiteKey.isEmpty) {
+    debugPrint('App Check is off on the web: RECAPTCHA_SITE_KEY is not set.');
+    return;
+  }
+  try {
+    await FirebaseAppCheck.instance.activate(
+      providerAndroid: kReleaseMode
+          ? const AndroidPlayIntegrityProvider()
+          : const AndroidDebugProvider(),
+      providerApple: kReleaseMode
+          ? const AppleDeviceCheckProvider()
+          : const AppleDebugProvider(),
+      providerWeb:
+          kIsWeb ? ReCaptchaEnterpriseProvider(_recaptchaSiteKey) : null,
+    );
+  } catch (e) {
+    debugPrint('App Check could not be activated: $e');
+  }
 }
 
 class App extends StatelessWidget {

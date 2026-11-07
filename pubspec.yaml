@@ -71,6 +71,7 @@ dependencies:
 
   flutter_quill: ^11.4.2
   flutter_whatsnew: ^1.1.0+1
+  firebase_app_check: ^0.4.9
   #flutter_secure_storage: ^10.0.0
 
 

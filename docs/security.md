@@ -129,3 +129,23 @@ busy. If the next run reports "port taken", stop that `java` process.
       package + SHA-1, iOS bundle id, web HTTP referrers.
 - [ ] Enable App Check (Play Integrity / App Attest / reCAPTCHA) and enforce it
       for Firestore. This is defence in depth and does not replace the rules.
+
+## App Check
+
+`main.dart` activates Firebase App Check before anything else: Play Integrity
+on Android release builds, reCAPTCHA Enterprise on the web, and the debug
+provider in debug builds. Requests are only rejected once enforcement is on,
+so set it up in this order:
+
+1. Firebase console > App Check > Apps:
+   - Android: register with **Play Integrity**, and add the release SHA-256
+     fingerprint (from Google Play > App integrity > App signing key once the
+     app is on Play, plus the upload key).
+   - Web: create a reCAPTCHA Enterprise key for the app's domains, register it,
+     and build with `flutter build web --dart-define=RECAPTCHA_SITE_KEY=<key>`.
+     Without the define, App Check stays off on the web.
+   - Debug builds log a debug token (`Enter this debug secret into the allow
+     list...`); add it under *Manage debug tokens*.
+2. Watch the App Check metrics for Firestore and Authentication until almost
+   all requests are verified (older app versions are not).
+3. Enforce for Cloud Firestore, then Authentication.
