@@ -47,7 +47,7 @@ Access is restricted per user by `firestore.rules`; see [security.md](security.m
 storePassword=...
 keyPassword=...
 keyAlias=lordyhas
-storeFile=C:/Users/<you>/knote-upload-keystore.jks
+storeFile=/path/to/knote-upload-keystore.jks
 ```
 
 Create the key once with

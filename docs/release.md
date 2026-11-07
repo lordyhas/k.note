@@ -21,7 +21,7 @@ It can also be started by hand: Actions > Release > Run workflow.
 
 | | |
 |---|---|
-| File | `C:\Users\hkaji\knote-upload-keystore.jks` (PKCS12, RSA 4096) |
+| File | `knote-upload-keystore.jks`, kept outside the repository (PKCS12, RSA 4096) |
 | Alias | `lordyhas` |
 | Owner | `CN=Hassan Kajila, OU=lordyhas, O=Kdynamics Lab` |
 | SHA-1 | `E3:10:BB:C4:9A:BA:1E:9C:EC:05:D0:AE:D4:01:08:94:F4:59:A2:77` |
