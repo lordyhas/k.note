@@ -67,11 +67,11 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: [
-          IconButton(
+          /*IconButton(
             tooltip: l10n.logOut,
             onPressed: () => confirmLogout(context),
             icon: const Icon(CupertinoIcons.square_arrow_right),
-          )
+          )*/
         ],
       ),
       body: SingleChildScrollView(
