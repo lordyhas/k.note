@@ -21,6 +21,8 @@ class EmailInput extends StatelessWidget {
           onChanged: (email) =>
               BlocProvider.of<LoginCubit>(context).emailChanged(email),
           keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
+          autofillHints: const [AutofillHints.email],
           decoration: InputDecoration(
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: AppColors.of(context).text),
@@ -60,6 +62,10 @@ class _PasswordInputState extends State<PasswordInput> {
           key: const Key('__loginForm_passwordInput_textField__'),
           onChanged: (password) =>
               BlocProvider.of<LoginCubit>(context).passwordChanged(password),
+          // The keyboard covers the button on phones: "Done" logs in.
+          textInputAction: TextInputAction.done,
+          autofillHints: const [AutofillHints.password],
+          onSubmitted: (_) => context.read<LoginCubit>().logInWithCredentials(),
           obscureText: !showPassword,
           //focusNode: FocusNode(),
           decoration: InputDecoration(
@@ -94,6 +100,25 @@ class _PasswordInputState extends State<PasswordInput> {
   }
 }
 
+/// The main button of the login and sign-up forms: the app's accent color
+/// when it can be pressed, faded (and its label dimmed) until the form is
+/// valid, so that the two states cannot be mistaken for each other.
+ButtonStyle primaryAuthButtonStyle(BuildContext context) {
+  final colors = AppColors.of(context);
+  return ElevatedButton.styleFrom(
+    backgroundColor: Theme.of(context).primaryColor,
+    foregroundColor: Colors.white,
+    iconColor: Colors.white,
+    disabledBackgroundColor: colors.disabled.withValues(alpha: 0.35),
+    disabledForegroundColor: colors.textMuted,
+    disabledIconColor: colors.textMuted,
+    textStyle: const TextStyle(fontWeight: FontWeight.w600),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30.0),
+    ),
+  );
+}
+
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
 
@@ -101,7 +126,10 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.75;
     return BlocBuilder<LoginCubit, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
+      // isValid too: the button turns on as soon as the form is filled in.
+      buildWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.isValid != current.isValid,
       builder: (context, state) {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
@@ -109,22 +137,15 @@ class LoginButton extends StatelessWidget {
                 width: width,
                 child: ElevatedButton(
                   key: const Key('__loginForm_continue_raisedButton__'),
-                  style: ElevatedButton.styleFrom(
-                    disabledBackgroundColor: AppColors.of(context).disabled,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
+                  style: primaryAuthButtonStyle(context),
                   onPressed: state.isValid
                       ? () => context.read<LoginCubit>().logInWithCredentials()
                       : null,
                   child: Row(
                     children: [
-                      FaIcon(FontAwesomeIcons.circleUser,
-                          color: AppColors.of(context).text),
+                      const FaIcon(FontAwesomeIcons.circleUser),
                       const Spacer(),
-                      Text(context.l10n.logIn,
-                          style: TextStyle(color: AppColors.of(context).text)),
+                      Text(context.l10n.logIn),
                       const Spacer(),
                       const FaIcon(FontAwesomeIcons.circleUser,
                           color: Colors.transparent),
@@ -284,7 +305,10 @@ class SignUpSignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width * 0.75;
     return BlocBuilder<SignUpCubit, SignUpState>(
-      buildWhen: (previous, current) => previous.status != current.status,
+      // isValid too: the button turns on as soon as the form is filled in.
+      buildWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.isValid != current.isValid,
       builder: (context, state) {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
@@ -292,23 +316,15 @@ class SignUpSignInButton extends StatelessWidget {
                 width: width,
                 child: ElevatedButton(
                   key: const Key('__loginForm_continue_raisedButton__'),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
+                  style: primaryAuthButtonStyle(context),
                   onPressed: state.isValid
                       ? () => context.read<SignUpCubit>().signUpFormSubmitted()
                       : null,
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.circleUser,
-                        color: AppColors.of(context).text,
-                      ),
+                      const FaIcon(FontAwesomeIcons.circleUser),
                       const Spacer(),
-                      Text(context.l10n.signUp,
-                          style: TextStyle(color: AppColors.of(context).text)),
+                      Text(context.l10n.signUp),
                       const Spacer(),
                     ],
                   ),
