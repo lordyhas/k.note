@@ -54,3 +54,21 @@ app.*.map.json
 --*.txt
 google-services.json
 firebase_app_id_file.json
+.env
+android/app/google-services.json
+android/.kotlin/
+.claude/settings.local.json
+.env
+
+
+
+# Firebase CLI / emulator
+.firebase/
+node_modules/
+
+# Never commit credentials (service accounts, signing keys)
+*service-account*.json
+*-adminsdk-*.json
+*.jks
+*.keystore
+key.properties
