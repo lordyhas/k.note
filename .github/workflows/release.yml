@@ -71,6 +71,17 @@ jobs:
             echo "storeFile=$RUNNER_TEMP/upload-keystore.jks"
           } > android/key.properties
 
+      - name: Check the Firebase config
+        run: |
+          # Google Sign-In on Android needs the web OAuth client (client_type 3),
+          # which becomes `default_web_client_id`. An old google-services.json
+          # without it builds fine but every Google sign-in fails.
+          json=android/app/google-services.json
+          if ! jq -e '[.client[].oauth_client[]? | select(.client_type == 3)] | length > 0' "$json" > /dev/null; then
+            echo "::error::GOOGLE_SERVICES_JSON_BASE64 has no web OAuth client (client_type 3): download google-services.json again from Firebase (see docs/release.md)"
+            exit 1
+          fi
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -102,6 +113,15 @@ jobs:
             | tee signer.txt | grep -E "Owner:|SHA256:"
           if grep -q "CN=Android Debug" signer.txt; then
             echo "::error::The bundle is signed with the debug key"
+            exit 1
+          fi
+
+      - name: Check the Google Sign-In config in the APK
+        run: |
+          aapt2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)
+          apk=$(ls build/app/outputs/flutter-apk/*release*.apk | head -1)
+          if ! "$aapt2" dump resources "$apk" | grep -q "string/default_web_client_id"; then
+            echo "::error::The APK has no default_web_client_id: Google Sign-In would fail"
             exit 1
           fi
 
