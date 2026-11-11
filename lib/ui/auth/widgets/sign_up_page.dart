@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/repositories/auth_repository.dart';
 import 'package:knote/ui/auth/bloc/sign_up_cubit.dart';
 import 'package:knote/ui/auth/widgets/sign_up_form.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -24,7 +25,15 @@ class SignUpPage extends StatelessWidget {
           create: (_) => SignUpCubit(
             context.read<AuthRepository>(),
           ),
-          child: SignUpForm(),
+          // Centered, and scrolls when the window is too short for it.
+          child: const Center(
+            child: SingleChildScrollView(
+              child: CenteredContent(
+                maxWidth: ContentWidths.form,
+                child: SignUpForm(),
+              ),
+            ),
+          ),
         ),
       ),
     );

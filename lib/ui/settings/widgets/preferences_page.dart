@@ -38,8 +38,6 @@ class PreferencesPage extends StatelessWidget {
               Card(
                 color: Theme.of(context).cardColor.withValues(alpha: 0.7),
                 margin: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
                 child: Column(children: children),
               ),
             ],

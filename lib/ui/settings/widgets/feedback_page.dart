@@ -117,11 +117,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     cursorColor: colors.link,
                     decoration: InputDecoration(
                       hintText: l10n.feedbackHint,
-                      filled: true,
+                      // Opaque: the page is drawn over the background image.
                       fillColor: Theme.of(context).cardColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
                     ),
                   ),
                   const SizedBox(height: 8),

@@ -31,10 +31,12 @@ lib/
 │   ├── core/                  # Shared by every feature
 │   │   ├── app_bloc_observer.dart
 │   │   ├── localization/      # app_en.arb, app_fr.arb, l10n.dart (+ generated app_localizations*.dart)
-│   │   ├── themes/            # app_theme.dart, app_colors.dart, dimens.dart, styles.dart, style_cubit.dart
-│   │   └── widgets/           # BackgroundUI, ComingSoon, ErrorPage, undo snack bar
+│   │   ├── themes/            # app_theme.dart (Fluent-style Material theme), app_colors.dart, styles.dart, style_cubit.dart
+│   │   └── widgets/           # BackgroundUI, ComingSoon, ErrorPage, undo snack bar, responsive.dart (breakpoints, CenteredContent)
 │   ├── shell/
-│   │   └── app_shell.dart     # AppShell: bottom navigation around the tabs
+│   │   ├── app_shell.dart     # AppShell: bottom bar, rail or side pane around the tabs
+│   │   ├── side_navigation_pane.dart  # SideNavigationPane: the rail and the pane
+│   │   └── side_navigation_scope.dart # Tells pages whether the side navigation is shown
 │   ├── auth/
 │   │   ├── bloc/              # AuthenticationBloc, LoginCubit, SignUpCubit, form inputs
 │   │   └── widgets/           # LoginPage, SignUpPage, forms, login buttons

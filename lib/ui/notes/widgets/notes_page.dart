@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +14,9 @@ import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
-import 'package:knote/ui/core/themes/dimens.dart';
+import 'package:knote/ui/core/themes/app_theme.dart';
 import 'package:knote/ui/core/themes/styles.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
 import 'package:knote/ui/notes/widgets/note_card.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
@@ -39,7 +42,8 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
   /// (and kept when nothing stores preferences, e.g. in widget tests).
   NotesLayout? _layout;
 
-  /// Whether notes are shown as a grid (two columns) rather than a list.
+  /// Whether notes are shown as a grid (as many columns as fit, two at
+  /// least) rather than a list.
   bool get multiple =>
       (_layout ?? PreferencesScope.of(context).notesLayout) == NotesLayout.grid;
   late final FirestoreService _firebaseManager;
@@ -49,6 +53,9 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
   final FocusNode _searchFocus = FocusNode();
 
   String get _query => _searchController.text.trim();
+
+  /// Narrowest a card of the grid gets before a column is dropped.
+  static const _minGridCardWidth = 220.0;
 
   void _clearSearch() {
     _searchController.clear();
@@ -122,7 +129,8 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
             preferredSize: AppBar().preferredSize,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Card(
+              child: CenteredContent(
+                  child: Card(
                 child: Row(
                   children: [
                     IconButton(
@@ -150,7 +158,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                       ),
                   ],
                 ),
-              ),
+              )),
             ),
           ),
         ),
@@ -160,15 +168,12 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                 .state
                 .isAuthenticated;
           },
-          ifTrue: Padding(
-            padding: const EdgeInsets.only(bottom: fabBottomPadding),
-            child: FloatingActionButton(
-              tooltip: context.l10n.notesNew,
-              child: const Icon(Icons.add),
-              onPressed: () {
-                GoRouter.of(context).pushNamed(NoteEditorPage.routeName);
-              },
-            ),
+          ifTrue: FloatingActionButton(
+            tooltip: context.l10n.notesNew,
+            child: const Icon(Icons.add),
+            onPressed: () {
+              GoRouter.of(context).pushNamed(NoteEditorPage.routeName);
+            },
           ),
           ifFalse: const SizedBox.shrink(),
         ),
@@ -206,69 +211,73 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
             text: context.l10n.notesNoMatch(_query),
           );
         }
-        return GridView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.only(
-            top: 0,
-            left: 12,
-            right: 12,
-            bottom: bottomMarginValue + 32,
-          ),
-          physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: multiple ? 2 : 1,
-            mainAxisSpacing: 4.0,
-            crossAxisSpacing: 12.0,
-            childAspectRatio: multiple ? 1.5 : 3,
-          ),
-          children: List<Widget>.generate(
-            data.length,
-            (int index) {
-              final count = data.length;
-              final animation = Tween<double>(
-                begin: 0.0,
-                end: 1.0,
-              ).animate(
-                CurvedAnimation(
-                  parent: _animCtrl,
-                  curve: Interval(
-                    (1 / count) * index,
-                    1.0,
-                    curve: Curves.fastOutSlowIn,
+        return LayoutBuilder(builder: (context, constraints) {
+          // The list is one readable column; the grid fills the window with
+          // as many columns as fit, two at least (a phone in portrait).
+          final padding = centeredPadding(
+            constraints.maxWidth,
+            maxWidth: multiple ? ContentWidths.wide : ContentWidths.reading,
+            gutter: 12,
+            bottom: fabClearance,
+          );
+          final columns = multiple
+              ? math.max(
+                  2,
+                  (constraints.maxWidth - padding.horizontal) ~/
+                      _minGridCardWidth)
+              : 1;
+          return GridView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: padding,
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+              mainAxisSpacing: 4.0,
+              crossAxisSpacing: 4.0,
+              mainAxisExtent: multiple ? 132 : 116,
+            ),
+            children: List<Widget>.generate(
+              data.length,
+              (int index) {
+                final count = data.length;
+                final animation = Tween<double>(
+                  begin: 0.0,
+                  end: 1.0,
+                ).animate(
+                  CurvedAnimation(
+                    parent: _animCtrl,
+                    curve: Interval(
+                      (1 / count) * index,
+                      1.0,
+                      curve: Curves.fastOutSlowIn,
+                    ),
                   ),
-                ),
-              );
-              _animCtrl.forward();
-              return HomeListView(
-                key: ValueKey(data[index].id),
-                changeRatio: multiple,
-                animation: animation,
-                animationController: _animCtrl,
-                listData: NoteCard(
-                  color: Color(data[index].colorValue),
-                  changeInList: !multiple,
-                  note: data[index],
-                ),
-                onLongPress: () => showModalBottomSheet(
-                  // The sheet is the Material its ListTiles paint ink on.
-                  backgroundColor:
-                      Theme.of(context).cardColor.withValues(alpha: 0.8),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(18.0)),
+                );
+                _animCtrl.forward();
+                return HomeListView(
+                  key: ValueKey(data[index].id),
+                  changeRatio: multiple,
+                  animation: animation,
+                  animationController: _animCtrl,
+                  listData: NoteCard(
+                    color: Color(data[index].colorValue),
+                    changeInList: !multiple,
+                    note: data[index],
                   ),
-                  context: context,
-                  builder: (context) => _buildBottomMenu(data[index]),
-                ),
-                onTap: () => GoRouter.of(context).pushNamed(
-                  NoteEditorPage.routeName,
-                  extra: data[index],
-                ),
-              );
-            },
-          ),
-        );
+                  onLongPress: () => showModalBottomSheet(
+                    context: context,
+                    builder: (context) => _buildBottomMenu(data[index]),
+                  ),
+                  onTap: () => GoRouter.of(context).pushNamed(
+                    NoteEditorPage.routeName,
+                    extra: data[index],
+                  ),
+                );
+              },
+            ),
+          );
+        });
       },
     );
   }
@@ -276,10 +285,9 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
   Widget _buildBottomMenu(NoteModel note) {
     final l10n = context.l10n;
     final title = note.title?.isNotEmpty == true ? note.title! : l10n.untitled;
-    // Scrolls rather than overflowing on small screens; the bottom padding
-    // keeps the last item above the navigation bar drawn over the sheet.
+    // Scrolls rather than overflowing on small screens.
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 64.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -293,7 +301,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
-          Divider(color: AppColors.of(context).text),
+          const Divider(),
           ListTile(
             leading: Icon(
               Icons.archive_outlined,
@@ -370,7 +378,7 @@ class HomeListView extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: changeRatio ? 1 / 3 : 1.5,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(4.0),
+                borderRadius: BorderRadius.circular(AppTheme.surfaceRadius),
                 child: Stack(
                   alignment: AlignmentDirectional.center,
                   children: <Widget>[
@@ -383,9 +391,12 @@ class HomeListView extends StatelessWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         splashColor: Colors.grey.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(4.0),
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.surfaceRadius),
                         onTap: onTap,
                         onLongPress: onLongPress,
+                        // With a mouse, a right click opens the same menu.
+                        onSecondaryTap: onLongPress,
                       ),
                     ),
                   ],

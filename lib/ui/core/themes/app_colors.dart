@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 ///
 /// Widgets read colors from here instead of hard-coding them, so the
 /// palette is defined once and a light theme only needs another instance.
-/// [dark] holds the colors the app has always used.
+/// [dark] follows the dark palette of Microsoft's Fluent design: a
+/// neutral #202020 base, slightly lighter layers above it, hairline strokes
+/// instead of shadows, and one light blue accent.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -16,6 +18,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.text,
     required this.textMuted,
     required this.accent,
+    required this.onAccent,
+    required this.stroke,
     required this.danger,
     required this.link,
     required this.disabled,
@@ -41,8 +45,14 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Hints, secondary text and inactive icons.
   final Color textMuted;
 
-  /// Selected and active elements of the tasks feature.
+  /// Selected and active elements, and the primary buttons.
   final Color accent;
+
+  /// Text and icons drawn on [accent].
+  final Color onAccent;
+
+  /// Hairline border of cards, dialogs, menus and controls.
+  final Color stroke;
 
   /// Destructive actions and overdue dates.
   final Color danger;
@@ -54,17 +64,19 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color disabled;
 
   static const dark = AppColors(
-    background: Colors.black,
-    surface: Color(0xFF1F1F1F),
-    surfaceHigh: Color(0xFF2B2B2B),
-    navigationBar: Color(0xFF212121),
-    tile: Color(0xB3616161),
+    background: Color(0xFF202020),
+    surface: Color(0xFF2C2C2C),
+    surfaceHigh: Color(0xFF353535),
+    navigationBar: Color(0xFF1C1C1C),
+    tile: Color(0xB32C2C2C),
     text: Colors.white,
-    textMuted: Colors.grey,
-    accent: Colors.blueAccent,
-    danger: Colors.redAccent,
-    link: Colors.blue,
-    disabled: Color(0xFF616161),
+    textMuted: Color(0xFF9A9A9A),
+    accent: Color(0xFF60CDFF),
+    onAccent: Colors.black,
+    stroke: Color(0x1FFFFFFF),
+    danger: Color(0xFFFF99A4),
+    link: Color(0xFF99EBFF),
+    disabled: Color(0xFF434343),
   );
 
   /// The colors of the current theme, or [dark] when the theme has none
@@ -82,6 +94,8 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? text,
     Color? textMuted,
     Color? accent,
+    Color? onAccent,
+    Color? stroke,
     Color? danger,
     Color? link,
     Color? disabled,
@@ -95,6 +109,8 @@ class AppColors extends ThemeExtension<AppColors> {
       text: text ?? this.text,
       textMuted: textMuted ?? this.textMuted,
       accent: accent ?? this.accent,
+      onAccent: onAccent ?? this.onAccent,
+      stroke: stroke ?? this.stroke,
       danger: danger ?? this.danger,
       link: link ?? this.link,
       disabled: disabled ?? this.disabled,
@@ -113,6 +129,8 @@ class AppColors extends ThemeExtension<AppColors> {
       text: Color.lerp(text, other.text, t)!,
       textMuted: Color.lerp(textMuted, other.textMuted, t)!,
       accent: Color.lerp(accent, other.accent, t)!,
+      onAccent: Color.lerp(onAccent, other.onAccent, t)!,
+      stroke: Color.lerp(stroke, other.stroke, t)!,
       danger: Color.lerp(danger, other.danger, t)!,
       link: Color.lerp(link, other.link, t)!,
       disabled: Color.lerp(disabled, other.disabled, t)!,

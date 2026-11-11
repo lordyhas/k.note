@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/data/repositories/auth_repository.dart';
 import 'package:knote/ui/auth/bloc/login_cubit.dart';
 import 'package:knote/ui/auth/widgets/login_form.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 
 class LoginPage extends StatelessWidget {
   static const routeName = "login";
@@ -26,7 +27,21 @@ class LoginPage extends StatelessWidget {
             create: (_) => LoginCubit(
               context.read<AuthRepository>(),
             ),
-            child: const LoginForm(),
+            // The form fills the window and spreads out when there is room,
+            // and scrolls when there is not (a phone in landscape).
+            child: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: const IntrinsicHeight(
+                    child: CenteredContent(
+                      maxWidth: ContentWidths.form,
+                      child: LoginForm(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

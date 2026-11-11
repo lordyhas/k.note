@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +9,23 @@ import 'package:knote/ui/auth/bloc/login_cubit.dart';
 import 'package:knote/ui/auth/bloc/sign_up_cubit.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+
+/// The icon at the start of a field. [FaIcon] does not center itself in the
+/// 48 dp square a prefix icon is given, so it would sit in its corner.
+class _FieldIcon extends StatelessWidget {
+  const _FieldIcon(this.icon);
+
+  final FaIconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      widthFactor: 1,
+      heightFactor: 1,
+      child: FaIcon(icon, size: 18, color: AppColors.of(context).text),
+    );
+  }
+}
 
 class EmailInput extends StatelessWidget {
   const EmailInput({super.key});
@@ -24,13 +43,7 @@ class EmailInput extends StatelessWidget {
           textInputAction: TextInputAction.next,
           autofillHints: const [AutofillHints.email],
           decoration: InputDecoration(
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.of(context).text),
-            ),
-            prefixIcon: FaIcon(
-              FontAwesomeIcons.user,
-              color: AppColors.of(context).text,
-            ),
+            prefixIcon: _FieldIcon(FontAwesomeIcons.user),
             labelText: context.l10n.emailLabel,
             helperText: '',
             errorText: state.email.displayError != null
@@ -69,11 +82,7 @@ class _PasswordInputState extends State<PasswordInput> {
           obscureText: !showPassword,
           //focusNode: FocusNode(),
           decoration: InputDecoration(
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.of(context).text),
-            ),
-            prefixIcon: FaIcon(FontAwesomeIcons.lock,
-                color: AppColors.of(context).text),
+            prefixIcon: _FieldIcon(FontAwesomeIcons.lock),
             suffixIcon: IconButton(
               tooltip: showPassword
                   ? context.l10n.hidePassword
@@ -100,22 +109,26 @@ class _PasswordInputState extends State<PasswordInput> {
   }
 }
 
+/// Width of the buttons of the login and sign-up forms: three quarters of a
+/// phone screen, without growing across a desktop window.
+double authButtonWidth(BuildContext context) =>
+    math.min(MediaQuery.sizeOf(context).width * 0.75, 320);
+
 /// The main button of the login and sign-up forms: the app's accent color
 /// when it can be pressed, faded (and its label dimmed) until the form is
 /// valid, so that the two states cannot be mistaken for each other.
 ButtonStyle primaryAuthButtonStyle(BuildContext context) {
   final colors = AppColors.of(context);
   return ElevatedButton.styleFrom(
-    backgroundColor: Theme.of(context).primaryColor,
-    foregroundColor: Colors.white,
-    iconColor: Colors.white,
+    backgroundColor: colors.accent,
+    foregroundColor: colors.onAccent,
+    iconColor: colors.onAccent,
     disabledBackgroundColor: colors.disabled.withValues(alpha: 0.35),
     disabledForegroundColor: colors.textMuted,
     disabledIconColor: colors.textMuted,
     textStyle: const TextStyle(fontWeight: FontWeight.w600),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30.0),
-    ),
+    side: BorderSide.none,
+    minimumSize: const Size(64, 44),
   );
 }
 
@@ -124,7 +137,7 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.75;
+    final width = authButtonWidth(context);
     return BlocBuilder<LoginCubit, LoginState>(
       // isValid too: the button turns on as soon as the form is filled in.
       buildWhen: (previous, current) =>
@@ -166,22 +179,11 @@ class GoogleLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.75;
+    final width = authButtonWidth(context);
 
     Widget googleOutlineButton = OutlinedButton(
       onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
-      style: ElevatedButton.styleFrom(
-        side: BorderSide(width: 2.0, color: AppColors.of(context).link),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-      ),
-
-      //color: theme.accentColor,
-      //textColor: theme.accentColor,
-      //highlightedBorderColor: theme.primaryColor,
-      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-
+      style: OutlinedButton.styleFrom(minimumSize: const Size(64, 44)),
       child: Row(
         children: [
           const FaIcon(FontAwesomeIcons.google),
@@ -211,7 +213,7 @@ class EmailSignInInput extends StatelessWidget {
               BlocProvider.of<SignUpCubit>(context).emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            prefixIcon: const FaIcon(FontAwesomeIcons.user),
+            prefixIcon: const _FieldIcon(FontAwesomeIcons.user),
             labelText: context.l10n.emailLabel,
             helperText: '',
             errorText: state.email.displayError != null
@@ -245,7 +247,7 @@ class _PasswordSignInInputState extends State<PasswordSignInInput> {
               BlocProvider.of<SignUpCubit>(context).passwordChanged(password),
           obscureText: !showPassword,
           decoration: InputDecoration(
-            prefixIcon: const FaIcon(FontAwesomeIcons.lock),
+            prefixIcon: const _FieldIcon(FontAwesomeIcons.lock),
             suffixIcon: IconButton(
               tooltip: showPassword
                   ? context.l10n.hidePassword
@@ -303,7 +305,7 @@ class SignUpSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.75;
+    final width = authButtonWidth(context);
     return BlocBuilder<SignUpCubit, SignUpState>(
       // isValid too: the button turns on as soon as the form is filled in.
       buildWhen: (previous, current) =>

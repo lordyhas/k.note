@@ -1,4 +1,3 @@
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,7 @@ import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
 import 'package:knote/ui/shell/app_shell.dart';
+import 'package:knote/ui/shell/side_navigation_pane.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
 
@@ -27,7 +27,7 @@ void main() {
   });
 
   group('AppShell.sideIndexFor', () {
-    test('maps each section to its drawer entry', () {
+    test('maps each section to its side entry', () {
       expect(AppShell.sideIndexFor('/home'), 0);
       expect(AppShell.sideIndexFor('/home/offline'), 0);
       expect(AppShell.sideIndexFor('/home/tasks'), 1);
@@ -45,16 +45,18 @@ void main() {
     });
   });
 
-  group('AppShell.showsSideNavigation', () {
-    test('only on the web, in a wide window', () {
-      expect(AppShell.showsSideNavigation(isWeb: true, width: 1280), isTrue);
-      expect(AppShell.showsSideNavigation(isWeb: true, width: 840), isTrue);
-      expect(AppShell.showsSideNavigation(isWeb: true, width: 400), isFalse);
-      expect(AppShell.showsSideNavigation(isWeb: false, width: 1280), isFalse);
+  group('AppShell.navigationFor', () {
+    test('follows the window width, on every platform', () {
+      expect(AppShell.navigationFor(360), ShellNavigation.bottomBar);
+      expect(AppShell.navigationFor(599), ShellNavigation.bottomBar);
+      expect(AppShell.navigationFor(600), ShellNavigation.rail);
+      expect(AppShell.navigationFor(839), ShellNavigation.rail);
+      expect(AppShell.navigationFor(840), ShellNavigation.pane);
+      expect(AppShell.navigationFor(1280), ShellNavigation.pane);
     });
   });
 
-  group('web side drawer', () {
+  group('side navigation', () {
     late GoRouter router;
 
     // A page that shows what SideNavigationScope.of returns.
@@ -70,7 +72,7 @@ void main() {
         routes: [
           ShellRoute(
             builder: (context, state, child) =>
-                AppShell(location: state.uri.path, isWeb: true, child: child),
+                AppShell(location: state.uri.path, child: child),
             routes: [
               GoRoute(
                 name: NotesPage.routeName,
@@ -122,16 +124,17 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    int drawerIndex(WidgetTester tester) => tester
-        .widget<NavigationDrawer>(find.byType(NavigationDrawer))
-        .selectedIndex!;
+    SideNavigationPane pane(WidgetTester tester) =>
+        tester.widget<SideNavigationPane>(find.byType(SideNavigationPane));
 
-    testWidgets('a wide window shows the drawer, not the bottom bar',
+    int paneIndex(WidgetTester tester) => pane(tester).selectedIndex;
+
+    testWidgets('a wide window shows the pane, not the bottom bar',
         (tester) async {
       await pumpApp(tester, const Size(1280, 800));
 
-      expect(find.byType(NavigationDrawer), findsOneWidget);
-      expect(find.byType(CurvedNavigationBar), findsNothing);
+      expect(pane(tester).expanded, isTrue);
+      expect(find.byType(NavigationBar), findsNothing);
       expect(find.text('page:notes side:true'), findsOneWidget);
       for (final label in [
         'Notes',
@@ -148,12 +151,41 @@ void main() {
     testWidgets('a narrow window keeps the bottom bar', (tester) async {
       await pumpApp(tester, const Size(400, 800));
 
-      expect(find.byType(NavigationDrawer), findsNothing);
-      expect(find.byType(CurvedNavigationBar), findsOneWidget);
+      expect(find.byType(SideNavigationPane), findsNothing);
+      expect(find.byType(NavigationBar), findsOneWidget);
       expect(find.text('page:notes side:false'), findsOneWidget);
     });
 
-    testWidgets('drawer entries open their page and stay selected',
+    testWidgets('a medium window shows a rail of icons with tooltips',
+        (tester) async {
+      await pumpApp(tester, const Size(700, 800));
+
+      expect(pane(tester).expanded, isFalse);
+      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.text('page:notes side:true'), findsOneWidget);
+      // No labels, only their tooltips.
+      expect(find.text('Calendar'), findsNothing);
+
+      await tester.tap(find.byTooltip('Calendar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('page:calendar side:true'), findsOneWidget);
+      expect(paneIndex(tester), 2);
+    });
+
+    testWidgets('the rail scrolls in a short window', (tester) async {
+      // A phone in landscape: not enough height for the six entries.
+      await pumpApp(tester, const Size(700, 300));
+
+      expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.byTooltip('Profile & settings'));
+      await tester.tap(find.byTooltip('Profile & settings'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('page:you side:true'), findsOneWidget);
+    });
+
+    testWidgets('pane entries open their page and stay selected',
         (tester) async {
       await pumpApp(tester, const Size(1280, 800));
 
@@ -169,7 +201,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('page:$name side:true'), findsOneWidget,
             reason: label);
-        expect(drawerIndex(tester), index, reason: label);
+        expect(paneIndex(tester), index, reason: label);
       }
     });
   });
@@ -213,13 +245,17 @@ void main() {
     tearDown(() => router.dispose());
 
     Future<void> pumpApp(WidgetTester tester) async {
+      // A phone in portrait; the default test window is wide enough for
+      // the rail.
+      tester.view.physicalSize = const Size(400, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
       await tester.pumpWidget(localizedRouterApp(routerConfig: router));
       await tester.pumpAndSettle();
     }
 
-    int barIndex(WidgetTester tester) => tester
-        .widget<CurvedNavigationBar>(find.byType(CurvedNavigationBar))
-        .index;
+    int barIndex(WidgetTester tester) =>
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex;
 
     Future<bool> pressBack(WidgetTester tester) async {
       final handled = await tester.binding.handlePopRoute();

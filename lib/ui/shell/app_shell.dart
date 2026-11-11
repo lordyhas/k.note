@@ -1,49 +1,51 @@
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
-import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/widgets/background_ui.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
+import 'package:knote/ui/shell/side_navigation_pane.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
+
+/// Where the shell puts its navigation, depending on the window width.
+enum ShellNavigation {
+  /// A bar under the page: phones in portrait and narrow windows.
+  bottomBar,
+
+  /// A rail of icons on the left: phones in landscape, small tablets.
+  rail,
+
+  /// A pane with icons and labels on the left: tablets and desktop windows.
+  pane,
+}
 
 class AppShell extends StatefulWidget {
   final Widget child;
 
-  /// Path of the page shown in the shell; selects the bottom bar tab.
+  /// Path of the page shown in the shell; selects the navigation entry.
   final String location;
-
-  /// Whether the app runs in a browser; only the web shows the side drawer.
-  final bool isWeb;
 
   const AppShell({
     super.key,
     required this.child,
     this.location = '',
-    this.isWeb = kIsWeb,
   });
 
-  /// Smallest window width, in logical pixels, at which the web shows the
-  /// side drawer instead of the bottom bar.
-  static const sideNavigationMinWidth = 840.0;
+  /// The navigation for a window [width] logical pixels wide, on every
+  /// platform (see [Breakpoints]).
+  static ShellNavigation navigationFor(double width) {
+    if (width >= Breakpoints.expanded) return ShellNavigation.pane;
+    if (width >= Breakpoints.medium) return ShellNavigation.rail;
+    return ShellNavigation.bottomBar;
+  }
 
-  /// Whether the shell shows the side drawer: on the web, in a wide window.
-  /// Phones, and narrow browser windows, keep the bottom bar.
-  static bool showsSideNavigation({
-    required bool isWeb,
-    required double width,
-  }) =>
-      isWeb && width >= sideNavigationMinWidth;
-
-  /// Route names of the side drawer entries, in display order.
+  /// Route names of the side navigation entries, in display order.
   static const sideRouteNames = [
     NotesPage.routeName,
     TasksPage.routeName,
@@ -53,7 +55,7 @@ class AppShell extends StatefulWidget {
     SettingsPage.routeName,
   ];
 
-  /// The side drawer entry for [location]. Settings sub-pages without an
+  /// The side navigation entry for [location]. Settings sub-pages without an
   /// entry of their own (about, help...) select Profile & settings.
   static int sideIndexFor(String location) {
     const settings = '/${SettingsPage.routeName}';
@@ -153,30 +155,67 @@ class _AppShellState extends State<AppShell> {
         if (!didPop) GoRouter.of(context).goNamed(NotesPage.routeName);
       },
       child: LayoutBuilder(builder: (context, constraints) {
-        final sideNavigation = AppShell.showsSideNavigation(
-          isWeb: widget.isWeb,
-          width: constraints.maxWidth,
-        );
+        final navigation = AppShell.navigationFor(constraints.maxWidth);
+        final sideNavigation = navigation != ShellNavigation.bottomBar;
         return SideNavigationScope(
           enabled: sideNavigation,
           child: sideNavigation
-              ? _buildWideShell(context)
+              ? _buildWideShell(context,
+                  expanded: navigation == ShellNavigation.pane)
               : _buildShell(context, tabIndex),
         );
       }),
     );
   }
 
-  Widget _buildWideShell(BuildContext context) {
+  Widget _buildWideShell(BuildContext context, {required bool expanded}) {
+    final l10n = context.l10n;
     return BackgroundUI(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Row(
           children: [
-            _SideNavigation(
+            SideNavigationPane(
+              expanded: expanded,
+              title: 'K.Note',
               selectedIndex: AppShell.sideIndexFor(widget.location),
+              // go, not push, as with the bottom bar.
               onSelected: (index) =>
                   GoRouter.of(context).goNamed(AppShell.sideRouteNames[index]),
+              // Profile & settings sits apart, under a divider.
+              footerCount: 1,
+              destinations: [
+                SideNavigationDestination(
+                  icon: Icons.file_copy_outlined,
+                  selectedIcon: Icons.file_copy,
+                  label: l10n.navNotes,
+                ),
+                SideNavigationDestination(
+                  icon: Icons.task_outlined,
+                  selectedIcon: Icons.task,
+                  label: l10n.navTasks,
+                ),
+                SideNavigationDestination(
+                  icon: Icons.calendar_today_outlined,
+                  selectedIcon: Icons.calendar_today,
+                  label: l10n.calendar,
+                ),
+                SideNavigationDestination(
+                  icon: Icons.archive_outlined,
+                  selectedIcon: Icons.archive,
+                  label: l10n.archiveTitle,
+                ),
+                SideNavigationDestination(
+                  icon: Icons.delete_outline,
+                  selectedIcon: Icons.delete,
+                  label: l10n.binTitle,
+                ),
+                SideNavigationDestination(
+                  icon: Icons.perm_identity,
+                  selectedIcon: Icons.person,
+                  label: l10n.navProfile,
+                ),
+              ],
             ),
             Expanded(child: widget.child),
           ],
@@ -188,133 +227,31 @@ class _AppShellState extends State<AppShell> {
   Widget _buildShell(BuildContext context, int tabIndex) {
     return BackgroundUI(
       child: Scaffold(
-        extendBody: true,
         backgroundColor: Colors.transparent,
-        body: Padding(
-          padding: const EdgeInsets.only(),
-          child: widget.child,
-        ),
-        bottomNavigationBar: CurvedNavigationBar(
-          index: tabIndex,
-          color: AppColors.of(context).navigationBar,
-          backgroundColor: Colors.transparent,
-          iconPadding: 20.00,
-          items: [
-            CurvedNavigationBarItem(
-              child: const Icon(Icons.file_copy_outlined),
-              label: context.l10n.navNotes,
-            ),
-            CurvedNavigationBarItem(
-              child: const Icon(Icons.task),
-              label: context.l10n.navTasks,
-            ),
-            /*CurvedNavigationBarItem(
-              child: Icon(Icons.search),
-              label: 'Search',
-            ),*/
-
-            /*CurvedNavigationBarItem(
-              child: Icon(Icons.newspaper),
-              label: 'Feeds',
-            ),*/
-            CurvedNavigationBarItem(
-              child: const Icon(Icons.perm_identity),
-              label: context.l10n.navYou,
-            ),
-          ],
+        body: widget.child,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: tabIndex,
           // go, not push: switching tabs replaces the page instead of
           // stacking it, so back doesn't walk through previous tabs.
-          onTap: (index) {
+          onDestinationSelected: (index) {
             if (index == tabIndex) return;
             GoRouter.of(context).goNamed(AppShell.tabRouteNames[index]);
           },
-        ),
-      ),
-    );
-  }
-}
-
-/// The permanent drawer on the left of the wide web layout.
-class _SideNavigation extends StatelessWidget {
-  const _SideNavigation({
-    required this.selectedIndex,
-    required this.onSelected,
-  });
-
-  final int selectedIndex;
-  final ValueChanged<int> onSelected;
-
-  static const double _width = 264;
-
-  // NavigationDrawer's default 12 dp tile padding on each side.
-  static const double _tileWidth = _width - 24;
-
-  // What the destination row leaves for the label: 16 dp of padding, the
-  // 24 dp icon and a 12 dp gap.
-  static const double _labelWidth = _tileWidth - 52;
-
-  /// A label that fits the drawer, cut with an ellipsis if too long.
-  static Widget _label(String text) => SizedBox(
-        width: _labelWidth,
-        child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis),
-      );
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return DrawerTheme(
-      data: DrawerTheme.of(context).copyWith(
-        width: _width,
-        shape: const RoundedRectangleBorder(),
-      ),
-      child: NavigationDrawerTheme(
-        data: NavigationDrawerTheme.of(context).copyWith(
-          indicatorSize: const Size(_tileWidth, 56),
-        ),
-        child: NavigationDrawer(
-          backgroundColor: AppColors.of(context).navigationBar,
-          elevation: 0,
-          selectedIndex: selectedIndex,
-          // go, not push, as with the bottom bar.
-          onDestinationSelected: (index) {
-            if (index != selectedIndex) onSelected(index);
-          },
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(28, 24, 16, 16),
-              child: Text(
-                'K.Note',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            NavigationDrawerDestination(
+          destinations: [
+            NavigationDestination(
               icon: const Icon(Icons.file_copy_outlined),
-              label: _label(l10n.navNotes),
+              selectedIcon: const Icon(Icons.file_copy),
+              label: context.l10n.navNotes,
             ),
-            NavigationDrawerDestination(
+            NavigationDestination(
               icon: const Icon(Icons.task_outlined),
               selectedIcon: const Icon(Icons.task),
-              label: _label(l10n.navTasks),
+              label: context.l10n.navTasks,
             ),
-            NavigationDrawerDestination(
-              icon: const Icon(Icons.calendar_today_outlined),
-              label: _label(l10n.calendar),
-            ),
-            NavigationDrawerDestination(
-              icon: const Icon(Icons.archive_outlined),
-              label: _label(l10n.archiveTitle),
-            ),
-            NavigationDrawerDestination(
-              icon: const Icon(Icons.delete_outline),
-              label: _label(l10n.binTitle),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 8),
-              child: Divider(),
-            ),
-            NavigationDrawerDestination(
+            NavigationDestination(
               icon: const Icon(Icons.perm_identity),
-              label: _label(l10n.navProfile),
+              selectedIcon: const Icon(Icons.person),
+              label: context.l10n.navYou,
             ),
           ],
         ),

@@ -8,7 +8,7 @@ import 'package:knote/domain/models/task.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
-import 'package:knote/ui/core/themes/dimens.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
@@ -75,9 +75,8 @@ class _TasksPageState extends State<TasksPage> {
         elevation: 0,
         leading: Icon(Icons.task_alt, color: colors.text),
       ),
-      body: Container(
-        constraints: const BoxConstraints(maxWidth: 910),
-        child: StreamBuilder<List<CheckList>>(
+      body: LayoutBuilder(
+        builder: (context, constraints) => StreamBuilder<List<CheckList>>(
           stream: _tasks,
           builder: (context, snapshot) {
             if (!snapshot.hasData && !snapshot.hasError) {
@@ -97,7 +96,8 @@ class _TasksPageState extends State<TasksPage> {
                   tasks.where((t) => t.isAllChecked).toList();
 
               return ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding:
+                    centeredPadding(constraints.maxWidth, bottom: fabClearance),
                 children: [
                   if (activeTasks.isNotEmpty) ...[
                     Padding(
@@ -124,16 +124,11 @@ class _TasksPageState extends State<TasksPage> {
           },
         ),
       ),
-      //bottomNavigationBar: const SizedBox(height: 70),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: fabBottomPadding),
-        child: FloatingActionButton(
-          tooltip: l10n.tasksNew,
-          backgroundColor: colors.accent,
-          onPressed: () =>
-              showTaskQuickAdd(context, firebaseManager: _firebaseManager),
-          child: Icon(Icons.add, color: colors.text),
-        ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: l10n.tasksNew,
+        onPressed: () =>
+            showTaskQuickAdd(context, firebaseManager: _firebaseManager),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -184,7 +179,6 @@ class _TasksPageState extends State<TasksPage> {
       onDismissed: (_) => _delete(task),
       child: Card(
         color: taskColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         child: InkWell(
           onTap: () => GoRouter.of(context)
@@ -245,7 +239,8 @@ class _TasksPageState extends State<TasksPage> {
                                 : Colors.transparent,
                           ),
                           child: task.isAllChecked
-                              ? Icon(Icons.check, size: 16, color: colors.text)
+                              ? Icon(Icons.check,
+                                  size: 16, color: colors.onAccent)
                               : null,
                         ),
                       ),

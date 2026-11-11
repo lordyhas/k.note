@@ -9,6 +9,7 @@ import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
 import 'package:knote/utils/save_in_background.dart';
@@ -152,145 +153,155 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
             ),
           ],
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            // Title
-            TextField(
-              controller: _titleController,
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: colors.text),
-              decoration: InputDecoration(
-                hintText: l10n.titleHint,
-                hintStyle: TextStyle(color: colors.textMuted),
-                border: InputBorder.none,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Steps (Checklist)
-            ..._items.asMap().entries.map((entry) {
-              final index = entry.key;
-              final item = entry.value;
-              return Dismissible(
-                key: Key('step_$index'),
-                onDismissed: (direction) {
-                  setState(() => _items.removeAt(index));
-                },
-                child: Row(
+        body: LayoutBuilder(
+            builder: (context, constraints) => ListView(
+                  padding: centeredPadding(constraints.maxWidth,
+                      top: 16, bottom: 16),
                   children: [
-                    Checkbox(
-                      value: item.isDone,
-                      onChanged: (val) {
-                        setState(() {
-                          _items[index] =
-                              TodoItem(text: item.text, isDone: val ?? false);
-                        });
-                      },
-                      shape: const CircleBorder(), // Round checkbox
-                      side: BorderSide(color: colors.textMuted),
-                      checkColor: colors.text,
-                      activeColor: colors.accent,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: item.text,
-                        style: TextStyle(color: colors.text),
-                        onChanged: (val) {
-                          _items[index] =
-                              TodoItem(text: val, isDone: item.isDone);
-                        },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: l10n.taskStepHint,
-                          hintStyle: TextStyle(color: colors.textMuted),
-                        ),
+                    // Title
+                    TextField(
+                      controller: _titleController,
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: colors.text),
+                      decoration: InputDecoration(
+                        hintText: l10n.titleHint,
+                        hintStyle: TextStyle(color: colors.textMuted),
+                        border: InputBorder.none,
+                        filled: false,
                       ),
                     ),
-                    IconButton(
-                      tooltip: l10n.taskRemoveStep,
-                      icon: Icon(Icons.close, color: colors.textMuted),
-                      onPressed: () => setState(() => _items.removeAt(index)),
+                    const SizedBox(height: 16),
+
+                    // Steps (Checklist)
+                    ..._items.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final item = entry.value;
+                      return Dismissible(
+                        key: Key('step_$index'),
+                        onDismissed: (direction) {
+                          setState(() => _items.removeAt(index));
+                        },
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: item.isDone,
+                              onChanged: (val) {
+                                setState(() {
+                                  _items[index] = TodoItem(
+                                      text: item.text, isDone: val ?? false);
+                                });
+                              },
+                              shape: const CircleBorder(), // Round checkbox
+                              side: BorderSide(color: colors.textMuted),
+                              checkColor: colors.onAccent,
+                              activeColor: colors.accent,
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                initialValue: item.text,
+                                style: TextStyle(color: colors.text),
+                                onChanged: (val) {
+                                  _items[index] =
+                                      TodoItem(text: val, isDone: item.isDone);
+                                },
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  filled: false,
+                                  hintText: l10n.taskStepHint,
+                                  hintStyle: TextStyle(color: colors.textMuted),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: l10n.taskRemoveStep,
+                              icon: Icon(Icons.close, color: colors.textMuted),
+                              onPressed: () =>
+                                  setState(() => _items.removeAt(index)),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+
+                    // Add Step Button
+                    ListTile(
+                      leading: Icon(Icons.add, color: colors.accent),
+                      title: Text(l10n.taskAddStep,
+                          style: TextStyle(color: colors.accent)),
+                      onTap: _addItem,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    Divider(color: colors.textMuted),
+
+                    // Options
+                    _buildOptionTile(
+                      icon: Icons.wb_sunny_outlined,
+                      text: _isMyDay
+                          ? l10n.taskAddedToMyDay
+                          : l10n.taskAddToMyDay,
+                      isActive: _isMyDay,
+                      onTap: () => setState(() => _isMyDay = !_isMyDay),
+                    ),
+                    _buildOptionTile(
+                      icon: Icons.notifications_none,
+                      text: _reminderTime == null
+                          ? l10n.remindMe
+                          : l10n.remindMeAt(MaterialLocalizations.of(context)
+                              .formatTimeOfDay(
+                                  TimeOfDay.fromDateTime(_reminderTime!))),
+                      isActive: _reminderTime != null,
+                      onTap: _pickReminderTime,
+                    ),
+                    _buildOptionTile(
+                      icon: Icons.calendar_today,
+                      text: _dueDate == null
+                          ? l10n.taskAddDueDate
+                          : l10n.dueOn(shortDate(l10n, _dueDate!)),
+                      isActive: _dueDate != null,
+                      onTap: _pickDueDate,
+                    ),
+                    _buildOptionTile(
+                      icon: Icons.repeat,
+                      text: _repeat == null
+                          ? l10n.repeat
+                          : repeatValueText(l10n, _repeat!),
+                      isActive: _repeat != null,
+                      onTap: () {
+                        setState(() => _repeat =
+                            _repeat == null ? TaskRepeat.daily.encode() : null);
+                      },
+                    ),
+                    _buildOptionTile(
+                      icon: Icons.attach_file,
+                      text: l10n.taskAddFile,
+                      isActive: false,
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(l10n.taskFilesUnavailable)));
+                      },
+                    ),
+                    Divider(color: colors.textMuted),
+
+                    // Note
+                    TextField(
+                      controller: _noteController,
+                      style: TextStyle(color: colors.text, fontSize: 14),
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        hintText: l10n.taskNoteHint,
+                        hintStyle: TextStyle(color: colors.textMuted),
+                        border: InputBorder.none,
+                        filled: false,
+                      ),
                     ),
                   ],
-                ),
-              );
-            }),
-
-            // Add Step Button
-            ListTile(
-              leading: Icon(Icons.add, color: colors.accent),
-              title: Text(l10n.taskAddStep,
-                  style: TextStyle(color: colors.accent)),
-              onTap: _addItem,
-              contentPadding: EdgeInsets.zero,
-            ),
-            Divider(color: colors.textMuted),
-
-            // Options
-            _buildOptionTile(
-              icon: Icons.wb_sunny_outlined,
-              text: _isMyDay ? l10n.taskAddedToMyDay : l10n.taskAddToMyDay,
-              isActive: _isMyDay,
-              onTap: () => setState(() => _isMyDay = !_isMyDay),
-            ),
-            _buildOptionTile(
-              icon: Icons.notifications_none,
-              text: _reminderTime == null
-                  ? l10n.remindMe
-                  : l10n.remindMeAt(MaterialLocalizations.of(context)
-                      .formatTimeOfDay(TimeOfDay.fromDateTime(_reminderTime!))),
-              isActive: _reminderTime != null,
-              onTap: _pickReminderTime,
-            ),
-            _buildOptionTile(
-              icon: Icons.calendar_today,
-              text: _dueDate == null
-                  ? l10n.taskAddDueDate
-                  : l10n.dueOn(shortDate(l10n, _dueDate!)),
-              isActive: _dueDate != null,
-              onTap: _pickDueDate,
-            ),
-            _buildOptionTile(
-              icon: Icons.repeat,
-              text: _repeat == null
-                  ? l10n.repeat
-                  : repeatValueText(l10n, _repeat!),
-              isActive: _repeat != null,
-              onTap: () {
-                setState(() => _repeat =
-                    _repeat == null ? TaskRepeat.daily.encode() : null);
-              },
-            ),
-            _buildOptionTile(
-              icon: Icons.attach_file,
-              text: l10n.taskAddFile,
-              isActive: false,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.taskFilesUnavailable)));
-              },
-            ),
-            Divider(color: colors.textMuted),
-
-            // Note
-            TextField(
-              controller: _noteController,
-              style: TextStyle(color: colors.text, fontSize: 14),
-              maxLines: null,
-              decoration: InputDecoration(
-                hintText: l10n.taskNoteHint,
-                hintStyle: TextStyle(color: colors.textMuted),
-                border: InputBorder.none,
-              ),
-            ),
-          ],
-        ),
+                )),
         bottomNavigationBar: BottomAppBar(
           color: colors.surface,
-          child: Row(
+          child: CenteredContent(
+              child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -314,7 +325,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                 },
               ),
             ],
-          ),
+          )),
         ),
       ),
     );
