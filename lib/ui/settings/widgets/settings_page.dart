@@ -12,6 +12,7 @@ import 'package:knote/ui/auth/widgets/password_reset_dialog.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/core/widgets/user_avatar.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
@@ -78,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.only(top: 32.0, bottom: 42.0),
         child: Center(
           child: Container(
-            constraints: const BoxConstraints(maxWidth: 910),
+            constraints: const BoxConstraints(maxWidth: ContentWidths.reading),
             child: Column(
               children: [
                 SizedBox(
@@ -94,9 +95,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           color: Theme.of(context)
                               .cardColor
                               .withValues(alpha: 0.7),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
                           child: Container(
                             padding: const EdgeInsets.only(top: 108.0),
                             child: Column(
@@ -303,10 +301,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
                     color: Theme.of(context).cardColor.withValues(alpha: 0.7),
-                    margin: const EdgeInsets.all(8.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
                     child: Column(
                       children: [
                         ListTile(

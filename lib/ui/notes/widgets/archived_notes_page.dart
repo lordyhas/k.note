@@ -7,6 +7,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
 
@@ -67,31 +68,34 @@ class _ArchivedNotesPageState extends State<ArchivedNotesPage> {
                 ),
               );
             }
-            return ListView.builder(
-                itemCount: notes.length,
-                itemBuilder: (context, i) => SizedBox(
-                      height: 120,
-                      child: Card(
-                        margin: const EdgeInsets.symmetric(vertical: 4.0),
-                        color: AppColors.of(context).tile,
-                        child: ListTile(
-                          title: Text(
-                            notes[i].title ?? '',
-                            style: const TextStyle(fontSize: 18),
+            return LayoutBuilder(
+                builder: (context, constraints) => ListView.builder(
+                    padding: centeredPadding(constraints.maxWidth,
+                        gutter: 8, top: 8, bottom: 24),
+                    itemCount: notes.length,
+                    itemBuilder: (context, i) => SizedBox(
+                          height: 120,
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 4.0),
+                            color: AppColors.of(context).tile,
+                            child: ListTile(
+                              title: Text(
+                                notes[i].title ?? '',
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              subtitle: Text(
+                                notePlainText(notes[i].text),
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              onTap: () {
+                                GoRouter.of(context).pushNamed(
+                                    NoteEditorPage.routeName,
+                                    extra: notes[i]);
+                              },
+                            ),
                           ),
-                          subtitle: Text(
-                            notePlainText(notes[i].text),
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          onTap: () {
-                            GoRouter.of(context).pushNamed(
-                                NoteEditorPage.routeName,
-                                extra: notes[i]);
-                          },
-                        ),
-                      ),
-                    ));
+                        )));
           }),
     );
   }
