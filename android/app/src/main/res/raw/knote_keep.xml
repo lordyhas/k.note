@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Resources only looked up by name at run time, which R8 resource shrinking
+     would otherwise remove from release builds:
+     - the notification icon, referenced by name from Dart;
+     - default_web_client_id, read by google_sign_in_android (its own
+       raw/keep.xml lists it too, so this file must not be named keep.xml:
+       an app resource with the same name replaces the plugin's). -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_reminder,@string/default_web_client_id" />
