@@ -15,7 +15,7 @@ flutter run -d chrome | -d android                      # run
 flutter build apk --release / appbundle --release / web # build
 ```
 
-CI (`.github/workflows/`) runs `pub get` → `analyze` (non-fatal warnings/infos) → `test`, plus a `firestore-rules` job, on pushes/PRs to `main`, `master`, `dev`, `production`.
+CI (`.github/workflows/`) runs `pub get` → `analyze` (non-fatal warnings/infos) → `test`, plus a `firestore-rules` job, on pushes/PRs to `main`, `master`, `dev`, `dev-new-ui`, `production`.
 
 ## Architecture
 
