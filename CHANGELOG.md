@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Google Sign-In failed ("not configured for this build") in the APK published by the release workflow: the `GOOGLE_SERVICES_JSON_BASE64` secret held an old `google-services.json` without the web OAuth client. The secret is updated, and the workflow now fails when the config or the APK lacks it. Version 0.5.9.
+
 ### Security
 - Email verification. Signing up with an email address sends a verification link, and the app keeps the account on a "Verify your email" page (resend the link, check again, log out) until it is opened. `firestore.rules` now requires a verified email (`email_verified` in the token), so an account created with someone else's address cannot use the app. Google accounts are already verified. Existing unverified email accounts must verify before seeing their notes again.
 
