@@ -3,10 +3,12 @@
 Merging into `production` runs `.github/workflows/release.yml`, which:
 
 1. writes `google-services.json` and the upload key from the repository secrets,
-2. runs the tests,
-3. builds a signed app bundle (for Google Play) and APK,
-4. fails if they are signed with a debug key,
-5. publishes a GitHub release `v<version>+<build>` with both files attached.
+2. fails if `google-services.json` has no web OAuth client (`client_type` 3),
+3. runs the tests,
+4. builds a signed app bundle (for Google Play) and APK,
+5. fails if they are signed with a debug key, or if the APK has no
+   `default_web_client_id` (Google Sign-In would fail on every phone),
+6. publishes a GitHub release `v<version>+<build>` with both files attached.
 
 It can also be started by hand: Actions > Release > Run workflow.
 
@@ -47,3 +49,7 @@ Play Console > App integrity.
 | `GOOGLE_SERVICES_JSON_BASE64` | `android/app/google-services.json`, base64 |
 
 To replace one: `gh secret set NAME --repo lordyhas/k.note < file`.
+
+Download `google-services.json` again from Firebase (Project settings > Android app)
+whenever a fingerprint or an OAuth client changes, and update both the local file and
+`GOOGLE_SERVICES_JSON_BASE64`.
