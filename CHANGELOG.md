@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- License: the project is now under the GNU Affero General Public License v3.0 (`AGPL-3.0-only`) instead of MIT. Anyone who distributes the app, or runs a modified version used over a network, must provide its source code under the same license. Versions up to 0.5.9 remain under MIT.
 - `google_sign_in` 6 → 7 (`GoogleSignIn.instance`, `authenticate()`).
 - Settings only show working entries: Change password (email accounts), Send feedback, About, version, Log out, Delete account.
 - Android build: Android Gradle Plugin 8.13.0 → 9.0.1 and Kotlin 2.2.20 → 2.3.20, as required by upcoming Flutter versions. The app module uses AGP's built-in Kotlin (`android.builtInKotlin=true`) instead of applying the Kotlin Gradle Plugin.
