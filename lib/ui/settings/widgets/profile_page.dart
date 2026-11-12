@@ -118,7 +118,6 @@ class _ProfileViewState extends State<_ProfileView> {
                               hintText: l10n.profileNameHint,
                               prefixIcon: const Icon(Icons.badge_outlined),
                               errorText: error,
-                              border: const OutlineInputBorder(),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -140,8 +139,6 @@ class _ProfileViewState extends State<_ProfileView> {
                   const SizedBox(height: 24),
                   Card(
                     color: Theme.of(context).cardColor.withValues(alpha: 0.7),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
                     child: Column(
                       children: [
                         ListTile(

@@ -45,9 +45,6 @@ class LoginForm extends StatelessWidget {
               ..showSnackBar(
                 SnackBar(
                   behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
                   content: Text(l10n.signedIn),
                 ),
               );
@@ -99,7 +96,7 @@ class LoginForm extends StatelessWidget {
                             //const Spacer(),
                             const SizedBox(height: 32.0),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.75,
+                              width: authButtonWidth(context),
                               child: Text(
                                 l10n.alreadySignedIn(state.user.email),
                                 textAlign: TextAlign.center,
