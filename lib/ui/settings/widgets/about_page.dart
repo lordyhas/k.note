@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:knote/config/assets.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 
 class AboutPage extends StatefulWidget {
   static const routeName = "about";
@@ -59,11 +60,14 @@ class _AboutState extends State<AboutPage> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: contentAbout(),
+      appBar: AppBar(title: Text(context.l10n.aboutApp)),
+      body: LayoutBuilder(
+        builder: (context, constraints) => contentAbout(constraints.maxWidth),
+      ),
     );
   }
 
-  Widget contentAbout() {
+  Widget contentAbout(double width) {
     final l10n = context.l10n;
     var primaryTextStyle20 = Theme.of(context).textTheme.bodyMedium!.copyWith(
           fontSize: 17,
@@ -72,14 +76,8 @@ class _AboutState extends State<AboutPage> {
 
     return ListView(
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(
-        left: 5.0,
-        right: 5.0,
-      ),
+      padding: centeredPadding(width, gutter: 8, bottom: 24),
       children: <Widget>[
-        const SizedBox(
-          height: 42.0,
-        ),
         Card(
           color: background2,
           child: Column(

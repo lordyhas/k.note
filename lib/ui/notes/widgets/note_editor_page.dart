@@ -11,6 +11,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/utils/autosave.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -288,52 +289,55 @@ class _NoteEditorPageState extends State<NoteEditorPage>
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0)
-                  .copyWith(bottom: 8.0),
-              child: TextField(
-                autofocus: widget.note == null,
-                cursorColor: Color(_noteModel.colorValue),
-                style: const TextStyle(fontSize: 22),
-                controller: _titleController,
-                onChanged: (_) => _autosave.changed(),
-                decoration:
-                    InputDecoration.collapsed(hintText: context.l10n.titleHint),
-              ),
-            ),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: QuillEditor.basic(
-                controller: _quillController,
-                config: const QuillEditorConfig(),
-              ),
-            )),
-            SafeArea(
-              child: QuillSimpleToolbar(
-                controller: _quillController,
-                config: const QuillSimpleToolbarConfig(
-                  multiRowsDisplay: false,
-                  showCodeBlock: false,
-                  showFontFamily: false,
-                  showFontSize: false,
-                  showLineHeightButton: false,
-                  showColorButton: false,
-                  showInlineCode: false,
-                  showBackgroundColorButton: false,
-                  showHeaderStyle: false,
-                  showListBullets: true,
-                  showListNumbers: true,
-                  showSearchButton: false,
-                  showSubscript: false,
-                  showSuperscript: false,
+        // A column of text as wide as a desktop window is hard to read.
+        body: CenteredContent(
+            maxWidth: ContentWidths.editor,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0)
+                      .copyWith(bottom: 8.0),
+                  child: TextField(
+                    autofocus: widget.note == null,
+                    cursorColor: Color(_noteModel.colorValue),
+                    style: const TextStyle(fontSize: 22),
+                    controller: _titleController,
+                    onChanged: (_) => _autosave.changed(),
+                    decoration: InputDecoration.collapsed(
+                        hintText: context.l10n.titleHint),
+                  ),
                 ),
-              ),
-            ),
-          ],
-        ),
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: QuillEditor.basic(
+                    controller: _quillController,
+                    config: const QuillEditorConfig(),
+                  ),
+                )),
+                SafeArea(
+                  child: QuillSimpleToolbar(
+                    controller: _quillController,
+                    config: const QuillSimpleToolbarConfig(
+                      multiRowsDisplay: false,
+                      showCodeBlock: false,
+                      showFontFamily: false,
+                      showFontSize: false,
+                      showLineHeightButton: false,
+                      showColorButton: false,
+                      showInlineCode: false,
+                      showBackgroundColorButton: false,
+                      showHeaderStyle: false,
+                      showListBullets: true,
+                      showListNumbers: true,
+                      showSearchButton: false,
+                      showSubscript: false,
+                      showSuperscript: false,
+                    ),
+                  ),
+                ),
+              ],
+            )),
       ),
     );
   }

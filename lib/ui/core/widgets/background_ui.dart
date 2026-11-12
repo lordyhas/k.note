@@ -17,21 +17,18 @@ class BackgroundUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Stack(children: [
-      Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(path[index-1]),
-              fit: BoxFit.fill
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(path[index - 1]),
+                // cover, not fill: a wide window must not stretch the image.
+                fit: BoxFit.cover),
           ),
         ),
-      ),
-      Container(
-          color: Colors.transparent,
-          child: child
-      ),
-
-    ],);
+        Container(color: Colors.transparent, child: child),
+      ],
+    );
   }
 }
