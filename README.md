@@ -150,7 +150,20 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branch/PR workflow, quality gates, an
 
 ## License
 
-Released under the [MIT License](LICENSE).
+Copyright (C) 2023-2026 Hassan Kajila
+
+KNote is free software: you can redistribute it and/or modify it under the terms of the
+[GNU Affero General Public License](LICENSE) as published by the Free Software Foundation,
+version 3 (`AGPL-3.0-only`). It is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+In short: you may use, modify, share and even sell the app, but anyone who distributes it,
+or runs a modified version that people use over a network, must provide the complete source
+code under the same license.
+
+Versions up to and including 0.5.9 were released under the MIT License and remain available
+under it.
 
 ## Command history
 ### Debug SHA output
