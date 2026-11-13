@@ -1,10 +1,16 @@
-# K.Note
+# KNOTE
 
 [![Flutter CI](https://github.com/lordyhas/k.note/actions/workflows/flutter_ci.yml/badge.svg?branch=dev)](https://github.com/lordyhas/k.note/actions/workflows/flutter_ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/lordyhas/k.note)](https://github.com/lordyhas/k.note/releases/latest)
 [![License: AGPL-3.0](https://img.shields.io/github/license/lordyhas/k.note)](LICENSE)
 
-K.Note is an open-source notes and tasks app for Android and the web, built with Flutter and Firebase.
+KNOTE is an open-source notes and tasks app for Android and the web, built with Flutter and Firebase. iOS is planned: the project is there but not configured or tested yet.
+
+<p align="center">
+  <img src="screenshots/notes.png" alt="Notes list" width="250">
+  <img src="screenshots/tasks.png" alt="Tasks list" width="250">
+  <img src="screenshots/task-editor.png" alt="Task editor with steps" width="250">
+</p>
 
 - **Notes**: rich-text editor, colors, search, archive and trash with undo. Changes save automatically as you type.
 - **Tasks**: quick add, due dates, reminders (notifications on Android), repeat rules (daily, weekdays, custom: completing a repeating task adds the next one), a "My Day" list and a collapsible completed section.
@@ -61,7 +67,15 @@ flutter build appbundle --release  # build/app/outputs/bundle/release/app-releas
 flutter build web                  # build/web/
 ```
 
-> Only Android and the web are set up. There is no `ios/` folder, and `firebase_options.dart` throws `UnsupportedError` on iOS, macOS, Windows and Linux.
+> Android and the web are the supported platforms. `firebase_options.dart` throws `UnsupportedError` on iOS, macOS, Windows and Linux.
+
+### iOS (work in progress)
+
+The `ios/` folder is the default Flutter iOS project (bundle ID `com.kdynamic.knote`, display name KNOTE). It has never been built or tested on a Mac or an iPhone, and Firebase is not configured for it yet. Still to do:
+
+- Register an iOS app in Firebase and re-run the FlutterFire CLI (`flutterfire configure`) to add iOS to `lib/firebase_options.dart` and get `ios/Runner/GoogleService-Info.plist`.
+- Add the Google Sign-In URL scheme and the notification setup to the Runner project.
+- Build and test on a Mac (`flutter run -d ios`).
 
 ---
 
@@ -124,6 +138,7 @@ lib/
     shell/                       # Bottom bar, rail or side pane, by window width
     auth/ notes/ tasks/ settings/  # bloc/ and widgets/ per feature
   utils/
+ios/                             # Default Flutter iOS project, not configured yet
 test/                            # Mirrors lib/
   firestore_rules/               # Security rules tests (Node project)
 firestore.rules                  # Firestore security rules
@@ -156,7 +171,7 @@ The full layout, its dependency rules and where new code goes are described in
   Ensure `android/app/google-services.json` exists and matches your Firebase project.
 
 - **Desktop runtime crash related to Firebase options**  
-  Desktop platforms are not configured in `lib/firebase_options.dart`; use Android or the web, or re-run FlutterFire configuration.
+  Desktop platforms are not configured in `lib/firebase_options.dart`; use Android or the web, or re-run FlutterFire configuration (iOS is not configured either).
 
 - **Auth redirect loops / unexpected route landing**  
   Check `AuthenticationBloc` state transitions and redirects defined in `lib/routing/router.dart`.
@@ -171,7 +186,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branch/PR workflow, quality gates, an
 
 Copyright (C) 2023-2026 Hassan Kajila
 
-K.Note is free software: you can redistribute it and/or modify it under the terms of the
+KNOTE is free software: you can redistribute it and/or modify it under the terms of the
 [GNU Affero General Public License](LICENSE) as published by the Free Software Foundation,
 version 3 (`AGPL-3.0-only`). It is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A

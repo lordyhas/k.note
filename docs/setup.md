@@ -21,9 +21,9 @@ flutter pub get
 
 ### iOS
 
-Not set up: the repository has no `ios/` folder and `lib/firebase_options.dart` throws
-`UnsupportedError` on iOS. Add the platform (`flutter create --platforms=ios .`) and re-run
-the FlutterFire CLI first.
+Work in progress: `ios/` is the default Flutter iOS project (bundle ID `com.kdynamic.knote`),
+never built or tested, and `lib/firebase_options.dart` throws `UnsupportedError` on iOS.
+Register an iOS app in Firebase and re-run the FlutterFire CLI first (see the README).
 
 ### Web
 
