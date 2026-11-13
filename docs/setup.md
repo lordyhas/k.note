@@ -21,12 +21,9 @@ flutter pub get
 
 ### iOS
 
-- `ios/Runner/GoogleService-Info.plist` is present in the repository.
-- On macOS, install CocoaPods if required, then:
-
-```bash
-cd ios && pod install && cd ..
-```
+Not set up: the repository has no `ios/` folder and `lib/firebase_options.dart` throws
+`UnsupportedError` on iOS. Add the platform (`flutter create --platforms=ios .`) and re-run
+the FlutterFire CLI first.
 
 ### Web
 
