@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-/// Tells the pages inside the shell whether the web side drawer is shown,
-/// so they can leave out the entries it already has.
+/// Tells the pages inside the shell whether the side navigation (rail or
+/// pane) is shown, so they can leave out the entries it already has.
 ///
 /// Kept apart from `app_shell.dart`, which imports the pages: a page
 /// importing the shell back makes an import cycle that crashes the
@@ -15,7 +15,7 @@ class SideNavigationScope extends InheritedWidget {
 
   final bool enabled;
 
-  /// Whether the shell around [context] shows the side drawer; false
+  /// Whether the shell around [context] shows the side navigation; false
   /// outside a shell.
   static bool of(BuildContext context) =>
       context

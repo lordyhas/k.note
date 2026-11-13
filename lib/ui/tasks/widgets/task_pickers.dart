@@ -4,23 +4,18 @@ import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/themes/app_theme.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
 
+/// The pickers always use the app theme, even when opened from a context
+/// that has another one.
+ThemeData _pickerThemeData(BuildContext context) {
+  final theme = Theme.of(context);
+  return theme.extension<AppColors>() == null ? AppTheme.dark : theme;
+}
+
 Widget _darkPickerTheme(BuildContext context, Widget? child) {
-  final colors = AppColors.of(context);
-  return Theme(
-    data: ThemeData.dark().copyWith(
-      colorScheme: ColorScheme.dark(
-        primary: colors.accent,
-        onPrimary: colors.text,
-        surface: colors.surface,
-        onSurface: colors.text,
-      ),
-      dialogTheme: DialogThemeData(backgroundColor: colors.surface),
-      extensions: [colors],
-    ),
-    child: child!,
-  );
+  return Theme(data: _pickerThemeData(context), child: child!);
 }
 
 /// Asks for a task's due date. Returns null if the user cancels.
@@ -140,13 +135,7 @@ Future<TaskRepeat?> pickCustomRepeat(BuildContext context,
   return showDialog<TaskRepeat>(
     context: context,
     builder: (context) => Theme(
-      data: ThemeData.dark().copyWith(
-        colorScheme: ColorScheme.dark(
-          primary: AppColors.of(context).accent,
-          surface: AppColors.of(context).surface,
-        ),
-        extensions: [AppColors.of(context)],
-      ),
+      data: _pickerThemeData(context),
       child: CustomRepeatDialog(initial: initial),
     ),
   );

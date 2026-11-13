@@ -37,3 +37,8 @@ Use Conventional Commits:
 - `refactor/ ...`
 - `test/ ...`
 - `chore/ ...`
+
+## License
+
+KNote is licensed under the [GNU Affero General Public License v3.0](LICENSE). By opening a
+pull request, you agree that your contribution is licensed under the same terms.

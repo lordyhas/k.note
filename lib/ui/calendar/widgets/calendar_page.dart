@@ -9,6 +9,7 @@ import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
 
 /// A month of the user's tasks, placed on their due date (or on their
@@ -41,7 +42,7 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selected;
 
   /// Side by side from this width, one above the other below.
-  static const _wideLayout = 840.0;
+  static const _wideLayout = Breakpoints.expanded;
 
   @override
   void initState() {
@@ -118,18 +119,21 @@ class _CalendarPageState extends State<CalendarPage> {
           );
           return LayoutBuilder(builder: (context, constraints) {
             if (constraints.maxWidth >= _wideLayout) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 480,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16),
-                      child: grid,
+              return CenteredContent(
+                maxWidth: ContentWidths.wide,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 480,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(16),
+                        child: grid,
+                      ),
                     ),
-                  ),
-                  Expanded(child: wideList),
-                ],
+                    Expanded(child: wideList),
+                  ],
+                ),
               );
             }
             return SingleChildScrollView(

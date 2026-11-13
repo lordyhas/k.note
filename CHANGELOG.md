@@ -42,6 +42,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security.md`: threat model, how to block a user, how to deploy and test the rules.
 
 ### Changed
+- License: the project is now under the GNU Affero General Public License v3.0 (`AGPL-3.0-only`) instead of MIT. Anyone who distributes the app, or runs a modified version used over a network, must provide its source code under the same license. Versions up to 0.5.9 remain under MIT.
+- New look in the style of Microsoft's Fluent design, still built with Material widgets and identical on Android and the web: neutral dark surfaces (#202020) with hairline borders instead of shadows, 4 dp corners on controls and 8 dp on cards, dialogs, menus and sheets, a light blue accent, semibold titles, and a soft highlight instead of the ink ripple. It all comes from `AppTheme.dark` and `AppColors.dark` (new roles `onAccent` and `stroke`); pages no longer set their own corner radii or field borders.
+- Every page is responsive. The shell picks its navigation from the window width on every platform, not only on the web: a bottom bar under 600 dp, a rail of icons from 600 dp (phones in landscape, small tablets), a pane with labels from 840 dp. Lists, settings, forms and the editors stay centered at a readable width, the notes grid adds columns as the window widens (two at least), sheets are centered panels on wide windows, and the login page scrolls instead of overflowing when the window is short.
+- The curved bottom bar is replaced by a standard navigation bar, and the page no longer extends under it; `curved_labeled_navigation_bar` is removed.
+- The About page has an app bar with a back button. On the notes screen, a right click opens the same menu as a long press. The background image is cropped to the window instead of stretched.
 - `google_sign_in` 6 → 7 (`GoogleSignIn.instance`, `authenticate()`).
 - Settings only show working entries: Change password (email accounts), Send feedback, About, version, Log out, Delete account.
 - Android build: Android Gradle Plugin 8.13.0 → 9.0.1 and Kotlin 2.2.20 → 2.3.20, as required by upcoming Flutter versions. The app module uses AGP's built-in Kotlin (`android.builtInKotlin=true`) instead of applying the Kotlin Gradle Plugin.

@@ -29,13 +29,19 @@ K.Note follows the layered structure of the official Flutter architecture guide
 - Routing is centralized in `lib/routing/router.dart` via `go_router`.
 - Entry route (`/`) redirects based on `AuthenticationBloc` status.
 - A `ShellRoute` hosts the authenticated tabs (notes, tasks, settings) in `AppShell`,
-  which derives the selected bottom bar tab from the current path.
-- On the web, in a window at least 840 dp wide (`AppShell.sideNavigationMinWidth`),
-  `AppShell` replaces the bottom bar with a permanent drawer on the left: Notes, Tasks,
+  which derives the selected navigation entry from the current path.
+- `AppShell` picks its navigation from the window width, on every platform
+  (`AppShell.navigationFor`, breakpoints in `lib/ui/core/widgets/responsive.dart`):
+  a bottom bar (Notes, Tasks, You) under 600 dp, a rail of icons from 600 dp, and a pane
+  with labels from 840 dp. The rail and the pane (`SideNavigationPane`) list Notes, Tasks,
   Calendar, Archived notes, Bin, Profile & settings (`AppShell.sideIndexFor` picks the
-  selected entry). Phones and narrow browser windows keep the bottom bar. Pages read
-  `SideNavigationScope.of(context)` (`lib/ui/shell/side_navigation_scope.dart`, kept out of `app_shell.dart` because an import cycle with the pages crashes the incremental web compiler); the settings page uses it to hide the Bin,
-  Archived notes and Calendar entries the drawer already has.
+  selected entry). Pages read `SideNavigationScope.of(context)`
+  (`lib/ui/shell/side_navigation_scope.dart`, kept out of `app_shell.dart` because an import
+  cycle with the pages crashes the incremental web compiler); the settings page uses it to
+  hide the Bin, Archived notes and Calendar entries the side navigation already has.
+- Pages are responsive: content stops growing at a readable width and stays centered
+  (`CenteredContent`, `centeredPadding`, `ContentWidths`), the notes grid adds columns as
+  the window widens, and forms scroll when the window is too short for them.
 - Calendar (`/user/calendar`, `CalendarPage`) shows a month of tasks placed on their due
   date (or reminder date), with the selected day's tasks beside it on wide screens and
   below it on phones.

@@ -6,6 +6,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -34,7 +35,8 @@ class _TrashPageState extends State<TrashPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(note.title?.isNotEmpty == true ? note.title! : l10n.untitled),
+        title:
+            Text(note.title?.isNotEmpty == true ? note.title! : l10n.untitled),
         content: Text(l10n.binDialogContent),
         actions: [
           TextButton(
@@ -100,10 +102,10 @@ class _TrashPageState extends State<TrashPage> {
                 ),
               );
             }
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: 16.0),
+            return LayoutBuilder(
+              builder: (context, constraints) => ListView.builder(
+                padding: centeredPadding(constraints.maxWidth,
+                    gutter: 8, top: 8, bottom: 24),
                 itemCount: notes.length,
                 itemBuilder: (context, i) => SizedBox(
                   height: 120,

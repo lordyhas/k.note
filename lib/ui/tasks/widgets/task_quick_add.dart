@@ -322,6 +322,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                         hintText: l10n.quickAddHint,
                         hintStyle: TextStyle(color: colors.textMuted),
                         border: InputBorder.none,
+                        filled: false,
                       ),
                       // Keeps the keyboard open so the next task can be typed.
                       onEditingComplete: _submit,
@@ -337,10 +338,10 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                         style: IconButton.styleFrom(
                           backgroundColor: colors.accent,
                           disabledBackgroundColor: colors.disabled,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6)),
                         ),
-                        icon: Icon(Icons.arrow_upward, color: colors.text),
+                        icon: Icon(Icons.arrow_upward,
+                            color:
+                                canSubmit ? colors.onAccent : colors.textMuted),
                       );
                     },
                   ),
