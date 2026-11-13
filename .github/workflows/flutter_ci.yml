@@ -3,11 +3,13 @@ name: Flutter CI
 on:
   push:
     branches: [ "master", "main", "dev", "dev-new-ui", "production" ]
+  # No branch filter: a pull request stacked on another branch must run CI too,
+  # or its required checks never report once it is retargeted.
   pull_request:
-    branches: [ "master", "main", "dev", "dev-new-ui", "production" ]
 
 jobs:
   build:
+    name: Analyze and test
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +25,7 @@ jobs:
         run: flutter test
 
   firestore-rules:
+    name: Firestore rules
     runs-on: ubuntu-latest
     defaults:
       run:

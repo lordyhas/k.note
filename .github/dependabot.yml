@@ -1,0 +1,44 @@
+# Weekly dependency updates, grouped so related packages arrive in one pull request.
+# Gradle (android/) is left out on purpose: the Android Gradle Plugin, Kotlin and the Gradle
+# wrapper must match what the Flutter SDK supports, and CI does not build Android on pull
+# requests, so a broken update would only show up at release time.
+version: 2
+updates:
+  - package-ecosystem: pub
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      firebase:
+        patterns:
+          - "firebase_*"
+          - "cloud_firestore*"
+          - "google_sign_in*"
+          - "fake_cloud_firestore"
+      bloc:
+        patterns:
+          - "bloc*"
+          - "flutter_bloc"
+      other:
+        patterns: ["*"]
+
+  # Firestore security rules tests
+  - package-ecosystem: npm
+    directory: /test/firestore_rules
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      rules-tests:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ["*"]
