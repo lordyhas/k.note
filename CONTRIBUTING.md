@@ -40,5 +40,10 @@ Use Conventional Commits:
 
 ## License
 
-KNote is licensed under the [GNU Affero General Public License v3.0](LICENSE). By opening a
-pull request, you agree that your contribution is licensed under the same terms.
+KNote is licensed under the [GNU Affero General Public License v3.0](LICENSE). Your
+contribution is released under the same terms.
+
+You also need to agree to the [Contributor License Agreement](CLA.md) by ticking its box in
+the pull request description. You keep your copyright; the agreement lets the maintainer
+keep distributing your work, including in application stores and under other license terms.
+A pull request from an outside contributor is merged only once the box is ticked.
