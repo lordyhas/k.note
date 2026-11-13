@@ -15,7 +15,7 @@ flutter run -d chrome | -d android                      # run
 flutter build apk --release / appbundle --release / web # build
 ```
 
-CI (`.github/workflows/`) runs `pub get` → `analyze` (non-fatal warnings/infos) → `test`, plus a `firestore-rules` job, on pushes/PRs to `main`, `master`, `dev`, `dev-new-ui`, `production`.
+CI (`.github/workflows/`) runs `pub get` → `analyze` (non-fatal warnings/infos) → `test`, plus a `firestore-rules` job, on every PR and on pushes to `main`, `master`, `dev`, `dev-new-ui`, `production`. Dependabot (`.github/dependabot.yml`) opens weekly update PRs for pub, the rules tests' npm packages and the GitHub Actions.
 
 ## Architecture
 

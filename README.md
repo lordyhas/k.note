@@ -118,7 +118,7 @@ keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -sto
 keytool -list -v -keystore /path/to/upload-keystore.jks
 ```
 
-CI uses GitHub Actions (`.github/workflows/flutter_ci.yml`): it runs `flutter pub get`, `flutter analyze` and `flutter test`, plus the Firestore rules tests, on pushes/PRs targeting `main`, `master`, `dev`, `dev-new-ui` and `production`. Merging into `production` also builds a signed app bundle and APK and publishes them as a GitHub release (`release.yml`, see [docs/release.md](docs/release.md)).
+CI uses GitHub Actions (`.github/workflows/flutter_ci.yml`): it runs `flutter pub get`, `flutter analyze` and `flutter test`, plus the Firestore rules tests, on every pull request and on pushes to `main`, `master`, `dev`, `dev-new-ui` and `production`. Dependabot opens weekly pull requests for dependency updates. Merging into `production` also builds a signed app bundle and APK and publishes them as a GitHub release (`release.yml`, see [docs/release.md](docs/release.md)).
 
 ---
 

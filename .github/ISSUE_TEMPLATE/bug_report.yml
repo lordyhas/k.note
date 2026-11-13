@@ -1,0 +1,67 @@
+name: Bug report
+description: Something in KNOTE doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report a bug! The more details you give, the faster it can be fixed.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem, and what you expected to happen instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the Tasks tab
+        2. Add a task with a reminder
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: KNOTE version
+      description: Shown in the app under You > About, or the release you installed.
+      placeholder: "0.6.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Android
+        - Web
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and OS, or browser
+      placeholder: "Pixel 8, Android 16 / Chrome 142 on Windows 11"
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it happen?
+      multiple: true
+      options:
+        - Notes
+        - Tasks
+        - Reminders / notifications
+        - Calendar
+        - Sign-in / account
+        - Sync / offline
+        - Settings
+        - Other
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or anything else
+      description: Screenshots or screen recordings help a lot. Please hide anything personal in your notes.
