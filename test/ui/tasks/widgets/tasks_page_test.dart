@@ -106,4 +106,78 @@ void main() {
     expect(next.dueDate, DateTime(2026, 3, 9));
     expect(next.repeat, 'Weekly');
   });
+
+  testWidgets('active tasks are sorted by due date, undated ones last',
+      (tester) async {
+    // 'Buy milk' (t1) has no due date and no creation time.
+    final tasks = [
+      CheckList(
+          id: 'a',
+          title: 'Undated, old',
+          list: const [],
+          creationTime: DateTime(2026, 1, 1)),
+      CheckList(
+          id: 'b',
+          title: 'Due later',
+          list: const [],
+          dueDate: DateTime(2026, 5, 1),
+          creationTime: DateTime(2026, 1, 1)),
+      CheckList(
+          id: 'c',
+          title: 'Due soon, new',
+          list: const [],
+          dueDate: DateTime(2026, 4, 1),
+          creationTime: DateTime(2026, 2, 1)),
+      CheckList(
+          id: 'd',
+          title: 'Due soon, old',
+          list: const [],
+          dueDate: DateTime(2026, 4, 1),
+          creationTime: DateTime(2026, 1, 1)),
+      CheckList(
+          id: 'e',
+          title: 'Undated, new',
+          list: const [],
+          creationTime: DateTime(2026, 3, 1)),
+    ];
+    for (final task in tasks) {
+      await manager.addTaskInCloud(task: task);
+    }
+    await pumpPage(tester);
+
+    final order = [
+      'Due soon, old',
+      'Due soon, new',
+      'Due later',
+      'Undated, old',
+      'Undated, new',
+      'Buy milk',
+    ];
+    final tops = [
+      for (final title in order) tester.getTopLeft(find.text(title)).dy
+    ];
+    expect(tops, orderedEquals([...tops]..sort()));
+  });
+
+  testWidgets('completed tasks show the last completed first', (tester) async {
+    await manager.deleteTask(taskId: 't1');
+    for (final (id, day) in [('old', 1), ('new', 3), ('mid', 2)]) {
+      await manager.addTaskInCloud(
+          task: CheckList(
+              id: id,
+              title: 'Done $id',
+              list: const [],
+              isAllChecked: true,
+              modificationTime: DateTime(2026, 1, day)));
+    }
+    await pumpPage(tester);
+    await tester.tap(find.text('Completed 3'));
+    await tester.pumpAndSettle();
+
+    final tops = [
+      for (final id in ['new', 'mid', 'old'])
+        tester.getTopLeft(find.text('Done $id')).dy
+    ];
+    expect(tops, orderedEquals([...tops]..sort()));
+  });
 }
