@@ -95,4 +95,18 @@ void main() {
       expect(isOverdue(DateTime(2026, 10, 24), now: friday), isFalse);
     });
   });
+
+  group('isDueToday', () {
+    test('a task due today is due today, whatever the time', () {
+      expect(
+          isDueToday(DateTime(2026, 10, 23),
+              now: DateTime(2026, 10, 23, 23, 59)),
+          isTrue);
+    });
+
+    test('tasks due yesterday or tomorrow are not', () {
+      expect(isDueToday(DateTime(2026, 10, 22), now: friday), isFalse);
+      expect(isDueToday(DateTime(2026, 10, 24), now: friday), isFalse);
+    });
+  });
 }
