@@ -91,9 +91,10 @@ class _TasksPageState extends State<TasksPage> {
               final tasks = snapshot.data!
                   .where((t) => !_removedIds.contains(t.id))
                   .toList();
-              final activeTasks = tasks.where((t) => !t.isAllChecked).toList();
-              final completedTasks =
-                  tasks.where((t) => t.isAllChecked).toList();
+              final activeTasks = tasks.where((t) => !t.isAllChecked).toList()
+                ..sort(compareActiveTasks);
+              final completedTasks = tasks.where((t) => t.isAllChecked).toList()
+                ..sort(compareCompletedTasks);
 
               return ListView(
                 padding:
@@ -323,4 +324,31 @@ class _TasksPageState extends State<TasksPage> {
       ),
     );
   }
+}
+
+/// Order of the active tasks: the nearest due date first (so overdue tasks
+/// come first), then the tasks without a due date. Ties keep the creation
+/// order, oldest first, so editing a task doesn't move it.
+int compareActiveTasks(CheckList a, CheckList b) {
+  final aDue = a.dueDate, bDue = b.dueDate;
+  if (aDue != null && bDue != null) {
+    final byDue = aDue.compareTo(bDue);
+    if (byDue != 0) return byDue;
+  } else if (aDue != null) {
+    return -1;
+  } else if (bDue != null) {
+    return 1;
+  }
+  return _byDate(a.creationTime, b.creationTime);
+}
+
+/// Order of the completed tasks: the last one completed (modified) first.
+int compareCompletedTasks(CheckList a, CheckList b) => _byDate(
+    a.modificationTime ?? a.creationTime, b.modificationTime ?? b.creationTime,
+    newestFirst: true);
+
+/// Oldest (or newest) first, dates missing from older documents last.
+int _byDate(DateTime? a, DateTime? b, {bool newestFirst = false}) {
+  if (a == null || b == null) return a == null ? (b == null ? 0 : 1) : -1;
+  return newestFirst ? b.compareTo(a) : a.compareTo(b);
 }

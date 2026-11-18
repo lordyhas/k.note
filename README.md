@@ -13,7 +13,7 @@ KNOTE is an open-source notes and tasks app for Android and the web, built with 
 </p>
 
 - **Notes**: rich-text editor, colors, search, archive and trash with undo. Changes save automatically as you type.
-- **Tasks**: quick add, due dates, reminders (notifications on Android), repeat rules (daily, weekdays, custom: completing a repeating task adds the next one), a "My Day" list and a collapsible completed section.
+- **Tasks**: quick add, due dates, reminders (notifications on Android), repeat rules (daily, weekdays, custom: completing a repeating task adds the next one), a "My Day" list, active tasks sorted by due date and a collapsible completed section.
 - **Calendar**: a month view of your tasks by due date.
 - **Sync**: your notes and tasks follow your account across devices through Cloud Firestore, and stay available offline thanks to Firestore's cache.
 - **Accounts**: sign in with email/password (the address must be verified) or Google, reset a forgotten password, delete your account and all its data from the settings.

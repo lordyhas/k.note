@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Tasks were listed in no particular order (by their random ID). Active tasks are now sorted by due date, nearest first (overdue ones on top), then the tasks without a due date, oldest first; completed tasks show the last completed first.
 - Google Sign-In failed ("not configured for this build") in release builds: the app's `res/raw/keep.xml` (keeping the notification icon) replaced the one from `google_sign_in_android`, so resource shrinking removed `default_web_client_id`. The app's file is now `knote_keep.xml` and keeps both. The `GOOGLE_SERVICES_JSON_BASE64` secret was also refreshed, and the release workflow now fails when the config or the APK lacks the web client ID. Version 0.5.9.
 
 ### Security
