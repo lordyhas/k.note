@@ -26,6 +26,7 @@ enum AppIcons {
   checkCircle,
   checkCircleSolid,
   checklist,
+  chevronDown,
   chevronLeft,
   chevronRight,
   chevronUp,
@@ -133,6 +134,8 @@ class AppIcon extends StatelessWidget {
           iconoir.CheckCircleSolid(color: c, width: s, height: s),
         AppIcons.checklist =>
           iconoir.CheckSquare(color: c, width: s, height: s),
+        AppIcons.chevronDown =>
+          iconoir.NavArrowDown(color: c, width: s, height: s),
         AppIcons.chevronLeft =>
           iconoir.NavArrowLeft(color: c, width: s, height: s),
         AppIcons.chevronRight =>

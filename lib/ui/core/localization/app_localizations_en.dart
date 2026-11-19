@@ -120,6 +120,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editorColorTitle => 'Change the note color';
 
   @override
+  String get editorReadMode => 'Reading mode';
+
+  @override
+  String get editorEditMode => 'Edit';
+
+  @override
+  String get editorInsert => 'Insert';
+
+  @override
+  String get editorChecklist => 'Checklist';
+
+  @override
+  String get editorTextStyle => 'Text style';
+
+  @override
+  String get editorBold => 'Bold';
+
+  @override
+  String get editorItalic => 'Italic';
+
+  @override
+  String get editorUnderline => 'Underline';
+
+  @override
+  String get editorStrikethrough => 'Strikethrough';
+
+  @override
+  String get editorParagraph => 'Lists and quote';
+
+  @override
+  String get editorBulletedList => 'Bulleted list';
+
+  @override
+  String get editorNumberedList => 'Numbered list';
+
+  @override
+  String get editorQuote => 'Quote';
+
+  @override
+  String get editorParagraphStyle => 'Paragraph style';
+
+  @override
+  String get editorStyleBody => 'Body text';
+
+  @override
+  String get editorStyleTitle => 'Title';
+
+  @override
+  String get editorStyleSubtitle => 'Subtitle';
+
+  @override
+  String get editorStyleHeading => 'Heading';
+
+  @override
+  String get editorFontSize => 'Font size';
+
+  @override
+  String get editorRedo => 'Redo';
+
+  @override
+  String get editorDateTime => 'Date and time';
+
+  @override
+  String get editorPlaceholder => 'Start writing';
+
+  @override
   String get binTitle => 'Bin';
 
   @override

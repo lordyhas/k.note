@@ -123,6 +123,72 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editorColorTitle => 'Changer la couleur de la note';
 
   @override
+  String get editorReadMode => 'Mode lecture';
+
+  @override
+  String get editorEditMode => 'Modifier';
+
+  @override
+  String get editorInsert => 'Insérer';
+
+  @override
+  String get editorChecklist => 'Liste de cases à cocher';
+
+  @override
+  String get editorTextStyle => 'Style du texte';
+
+  @override
+  String get editorBold => 'Gras';
+
+  @override
+  String get editorItalic => 'Italique';
+
+  @override
+  String get editorUnderline => 'Souligné';
+
+  @override
+  String get editorStrikethrough => 'Barré';
+
+  @override
+  String get editorParagraph => 'Listes et citation';
+
+  @override
+  String get editorBulletedList => 'Liste à puces';
+
+  @override
+  String get editorNumberedList => 'Liste numérotée';
+
+  @override
+  String get editorQuote => 'Citation';
+
+  @override
+  String get editorParagraphStyle => 'Style de paragraphe';
+
+  @override
+  String get editorStyleBody => 'Texte';
+
+  @override
+  String get editorStyleTitle => 'Titre';
+
+  @override
+  String get editorStyleSubtitle => 'Sous-titre';
+
+  @override
+  String get editorStyleHeading => 'En-tête';
+
+  @override
+  String get editorFontSize => 'Taille du texte';
+
+  @override
+  String get editorRedo => 'Rétablir';
+
+  @override
+  String get editorDateTime => 'Date et heure';
+
+  @override
+  String get editorPlaceholder => 'Commencez à écrire';
+
+  @override
   String get binTitle => 'Corbeille';
 
   @override
