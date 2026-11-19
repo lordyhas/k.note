@@ -308,5 +308,15 @@
   "preferencesFirstDaySystem": "Language default ({day})",
   "@preferencesFirstDaySystem": {"placeholders": {"day": {"type": "String"}}},
   "preferencesSynced": "Your preferences are saved to your account and apply on all your devices.",
-  "preferencesSaveFailed": "Your preferences couldn't be saved."
+  "preferencesSaveFailed": "Your preferences couldn't be saved.",
+  "whatsNewTitle": "What's new",
+  "whatsNewVersion": "Version {version}",
+  "@whatsNewVersion": {"placeholders": {"version": {"type": "String"}}},
+  "whatsNewContinue": "Continue",
+  "whatsNewEditorTitle": "A new note editor",
+  "whatsNewEditorBody": "Format your notes from the bar above the keyboard: checklists, bold and other styles, lists, headings and font size, with undo and redo. The book button switches to reading mode.",
+  "whatsNewIconsTitle": "New icons",
+  "whatsNewIconsBody": "The whole app uses a new, lighter set of icons.",
+  "whatsNewSettingsTitle": "Tidier settings",
+  "whatsNewSettingsBody": "Delete account is now in My profile, and Preferences is at the bottom of the list."
 }

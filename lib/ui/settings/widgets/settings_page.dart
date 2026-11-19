@@ -21,6 +21,7 @@ import 'package:knote/ui/settings/widgets/delete_account_dialog.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
 import 'package:knote/ui/settings/widgets/preferences_page.dart';
 import 'package:knote/ui/settings/widgets/profile_page.dart';
+import 'package:knote/ui/settings/widgets/whats_new_dialog.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -315,6 +316,28 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           onTap: () => GoRouter.of(context)
                               .goNamed(FeedbackPage.routeName),
+                        ),
+                        ListTile(
+                          key: const Key('__settings_whatsNew__'),
+                          leading: AppIcon(
+                            AppIcons.gift,
+                            color: iconColor,
+                          ),
+                          title: Text(l10n.whatsNewTitle),
+                          trailing: AppIcon(
+                            AppIcons.chevronRight,
+                            color: iconColor,
+                          ),
+                          onTap: () async {
+                            String? version;
+                            try {
+                              version =
+                                  (await PackageInfo.fromPlatform()).version;
+                            } catch (_) {}
+                            if (context.mounted) {
+                              showWhatsNew(context, version: version);
+                            }
+                          },
                         ),
                         ListTile(
                           leading: AppIcon(

@@ -914,4 +914,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preferencesSaveFailed => 'Your preferences couldn\'t be saved.';
+
+  @override
+  String get whatsNewTitle => 'What\'s new';
+
+  @override
+  String whatsNewVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get whatsNewContinue => 'Continue';
+
+  @override
+  String get whatsNewEditorTitle => 'A new note editor';
+
+  @override
+  String get whatsNewEditorBody =>
+      'Format your notes from the bar above the keyboard: checklists, bold and other styles, lists, headings and font size, with undo and redo. The book button switches to reading mode.';
+
+  @override
+  String get whatsNewIconsTitle => 'New icons';
+
+  @override
+  String get whatsNewIconsBody =>
+      'The whole app uses a new, lighter set of icons.';
+
+  @override
+  String get whatsNewSettingsTitle => 'Tidier settings';
+
+  @override
+  String get whatsNewSettingsBody =>
+      'Delete account is now in My profile, and Preferences is at the bottom of the list.';
 }

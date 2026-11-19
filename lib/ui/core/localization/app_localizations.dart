@@ -1621,6 +1621,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your preferences couldn\'t be saved.'**
   String get preferencesSaveFailed;
+
+  /// No description provided for @whatsNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get whatsNewTitle;
+
+  /// No description provided for @whatsNewVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String whatsNewVersion(String version);
+
+  /// No description provided for @whatsNewContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get whatsNewContinue;
+
+  /// No description provided for @whatsNewEditorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A new note editor'**
+  String get whatsNewEditorTitle;
+
+  /// No description provided for @whatsNewEditorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Format your notes from the bar above the keyboard: checklists, bold and other styles, lists, headings and font size, with undo and redo. The book button switches to reading mode.'**
+  String get whatsNewEditorBody;
+
+  /// No description provided for @whatsNewIconsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New icons'**
+  String get whatsNewIconsTitle;
+
+  /// No description provided for @whatsNewIconsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The whole app uses a new, lighter set of icons.'**
+  String get whatsNewIconsBody;
+
+  /// No description provided for @whatsNewSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tidier settings'**
+  String get whatsNewSettingsTitle;
+
+  /// No description provided for @whatsNewSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account is now in My profile, and Preferences is at the bottom of the list.'**
+  String get whatsNewSettingsBody;
 }
 
 class _AppLocalizationsDelegate

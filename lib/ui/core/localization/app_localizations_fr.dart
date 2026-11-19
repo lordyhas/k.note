@@ -925,4 +925,36 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get preferencesSaveFailed =>
       'Vos préférences n\'ont pas pu être enregistrées.';
+
+  @override
+  String get whatsNewTitle => 'Quoi de neuf';
+
+  @override
+  String whatsNewVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get whatsNewContinue => 'Continuer';
+
+  @override
+  String get whatsNewEditorTitle => 'Un nouvel éditeur de notes';
+
+  @override
+  String get whatsNewEditorBody =>
+      'Mettez vos notes en forme depuis la barre au-dessus du clavier : cases à cocher, gras et autres styles, listes, titres et taille du texte, avec annuler et rétablir. Le bouton livre passe en mode lecture.';
+
+  @override
+  String get whatsNewIconsTitle => 'De nouvelles icônes';
+
+  @override
+  String get whatsNewIconsBody =>
+      'Toute l\'application utilise un nouveau jeu d\'icônes, plus léger.';
+
+  @override
+  String get whatsNewSettingsTitle => 'Des réglages plus clairs';
+
+  @override
+  String get whatsNewSettingsBody =>
+      'Supprimer le compte se trouve maintenant dans Mon profil, et Préférences en bas de la liste.';
 }

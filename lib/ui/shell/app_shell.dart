@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:knote/data/services/whats_new_service.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/widgets/app_icons.dart';
@@ -10,6 +11,7 @@ import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
+import 'package:knote/ui/settings/widgets/whats_new_dialog.dart';
 import 'package:knote/ui/shell/side_navigation_pane.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
@@ -32,10 +34,14 @@ class AppShell extends StatefulWidget {
   /// Path of the page shown in the shell; selects the navigation entry.
   final String location;
 
+  /// Decides whether to show "What's new"; tests pass one with fakes.
+  final WhatsNewService? whatsNew;
+
   const AppShell({
     super.key,
     required this.child,
     this.location = '',
+    this.whatsNew,
   });
 
   /// The navigation for a window [width] logical pixels wide, on every
@@ -103,11 +109,28 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   //late final FirestoreService _firebaseManager;
 
+  /// "What's new" is checked once per app run, not on every sign-in.
+  static bool _whatsNewChecked = false;
+
   @override
   void initState() {
     // _firebaseManager = FirestoreService.user(
     //     BlocProvider.of<AuthenticationBloc>(context).state.user);
     super.initState();
+    if (!_whatsNewChecked || widget.whatsNew != null) {
+      _whatsNewChecked = true;
+      _announceUpdate();
+    }
+  }
+
+  /// Shows "What's new" the first time this version runs on the device.
+  Future<void> _announceUpdate() async {
+    final service = widget.whatsNew ?? WhatsNewService();
+    final version = await service.versionToAnnounce();
+    if (version == null || !mounted) return;
+    await service.markSeen(version);
+    if (!mounted) return;
+    await showWhatsNew(context, version: version);
   }
 
   @override
