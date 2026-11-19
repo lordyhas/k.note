@@ -11,7 +11,7 @@ import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/utils/save_in_background.dart';
 
-/// Lets the user send a message to the K.Note team, stored in the
+/// Lets the user send a message to the KNOTE team, stored in the
 /// `feedback` collection (see [FirestoreService.sendFeedback]).
 class FeedbackPage extends StatefulWidget {
   static const routeName = "feedback";

@@ -169,12 +169,12 @@
   "none": "Aucune",
 
   "feedbackTitle": "Votre avis",
-  "feedbackBody": "Dites-nous ce que vous pensez de K.Note.",
+  "feedbackBody": "Dites-nous ce que vous pensez de KNOTE.",
   "feedbackHint": "Écrivez votre avis…",
   "send": "Envoyer",
   "pageNotFound": "Désolé, cette page est introuvable !",
 
-  "welcome": "Bienvenue sur K.Note",
+  "welcome": "Bienvenue sur KNOTE",
   "signInToContinue": "Connectez-vous pour continuer",
   "createAccountToContinue": "Créez un compte pour continuer",
   "emailLabel": "Adresse e-mail",

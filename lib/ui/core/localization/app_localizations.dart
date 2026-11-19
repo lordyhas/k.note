@@ -1025,7 +1025,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedbackBody.
   ///
   /// In en, this message translates to:
-  /// **'Tell us what you think of K.Note.'**
+  /// **'Tell us what you think of KNOTE.'**
   String get feedbackBody;
 
   /// No description provided for @feedbackHint.
@@ -1049,7 +1049,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to K.Note'**
+  /// **'Welcome to KNOTE'**
   String get welcome;
 
   /// No description provided for @signInToContinue.

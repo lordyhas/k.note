@@ -90,7 +90,7 @@ class _AboutState extends State<AboutPage> {
                     child: Image.asset(imageLogoApp),
                   ),
                   Text(
-                    "K.NOTE",
+                    "KNOTE",
                     style: TextStyle(
                         color: Theme.of(context).primaryColor, fontSize: 24),
                   ),
@@ -146,7 +146,7 @@ class _AboutState extends State<AboutPage> {
                 onTap: () => showLicensePage(
                   context: context,
                   applicationIcon: Image.asset(imageLogoApp),
-                  applicationName: "K.NOTE",
+                  applicationName: "KNOTE",
                   applicationVersion: appVersion,
                 ),
               ),

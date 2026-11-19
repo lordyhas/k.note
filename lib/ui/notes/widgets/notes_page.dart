@@ -95,13 +95,14 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          centerTitle: true,
+          // The app name sits at the start, as in other note apps.
+          centerTitle: false,
           leading: AppIcon(
             AppIcons.home,
             color: AppColors.of(context).text,
           ),
           title: const Text(
-            'K.NOTE',
+            'KNOTE',
             style: TextStyle(
               fontSize: 22,
               color: StyleAppTheme.darkText,

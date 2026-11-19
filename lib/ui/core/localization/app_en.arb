@@ -194,12 +194,12 @@
   "none": "None",
 
   "feedbackTitle": "Your feedback",
-  "feedbackBody": "Tell us what you think of K.Note.",
+  "feedbackBody": "Tell us what you think of KNOTE.",
   "feedbackHint": "Enter your feedback…",
   "send": "Send",
   "pageNotFound": "Sorry, we couldn't find this page!",
 
-  "welcome": "Welcome to K.Note",
+  "welcome": "Welcome to KNOTE",
   "signInToContinue": "Sign in to continue",
   "createAccountToContinue": "Create an account to continue",
   "emailLabel": "Email address",

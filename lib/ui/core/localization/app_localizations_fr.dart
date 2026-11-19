@@ -576,7 +576,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get feedbackTitle => 'Votre avis';
 
   @override
-  String get feedbackBody => 'Dites-nous ce que vous pensez de K.Note.';
+  String get feedbackBody => 'Dites-nous ce que vous pensez de KNOTE.';
 
   @override
   String get feedbackHint => 'Écrivez votre avis…';
@@ -588,7 +588,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pageNotFound => 'Désolé, cette page est introuvable !';
 
   @override
-  String get welcome => 'Bienvenue sur K.Note';
+  String get welcome => 'Bienvenue sur KNOTE';
 
   @override
   String get signInToContinue => 'Connectez-vous pour continuer';

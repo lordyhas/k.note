@@ -201,7 +201,7 @@ class _AppShellState extends State<AppShell> {
           children: [
             SideNavigationPane(
               expanded: expanded,
-              title: 'K.Note',
+              title: 'KNOTE',
               selectedIndex: AppShell.sideIndexFor(widget.location),
               // go, not push, as with the bottom bar.
               onSelected: (index) =>
