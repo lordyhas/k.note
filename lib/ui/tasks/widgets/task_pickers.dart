@@ -80,6 +80,10 @@ bool isOverdue(DateTime dueDate, {required DateTime now}) {
   return dueDay.isBefore(DateTime(now.year, now.month, now.day));
 }
 
+/// Whether a task due on [dueDate] is due on the day of [now].
+bool isDueToday(DateTime dueDate, {required DateTime now}) =>
+    DateUtils.isSameDay(dueDate, now);
+
 DateTime _startOfNextWeek(DateTime today, int firstDayOfWeekIndex) {
   final todayIndex = today.weekday % 7; // DateTime.sunday (7) -> 0
   var days = (firstDayOfWeekIndex - todayIndex) % 7;

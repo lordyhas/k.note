@@ -168,6 +168,16 @@ class _TasksPageState extends State<TasksPage> {
     }
     Color textColor = isDark ? Colors.white : Colors.black;
     Color iconColor = isDark ? Colors.grey : Colors.black54;
+    // The due date is red when late and highlighted when due today.
+    final now = DateTime.now();
+    final due = task.dueDate;
+    final dueColor = due == null
+        ? iconColor
+        : isOverdue(due, now: now)
+            ? colors.danger
+            : isDueToday(due, now: now)
+                ? colors.link
+                : iconColor;
 
     return Dismissible(
       key: Key(task.id ?? task.title),
@@ -272,14 +282,8 @@ class _TasksPageState extends State<TasksPage> {
                                   size: 12, color: iconColor),
                               const SizedBox(width: 4),
                               Text(
-                                dueDateText(l10n, task.dueDate!,
-                                    now: DateTime.now()),
-                                style: TextStyle(
-                                    color: isOverdue(task.dueDate!,
-                                            now: DateTime.now())
-                                        ? colors.danger
-                                        : iconColor,
-                                    fontSize: 12),
+                                dueDateText(l10n, task.dueDate!, now: now),
+                                style: TextStyle(color: dueColor, fontSize: 12),
                               ),
                             ],
                           ),
