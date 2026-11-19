@@ -11,6 +11,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/utils/autosave.dart';
 import 'package:knote/utils/save_in_background.dart';
@@ -202,15 +203,15 @@ class _NoteEditorPageState extends State<NoteEditorPage>
           backgroundColor: Colors.transparent,
           leading: IconButton(
             tooltip: context.l10n.editorDone,
-            icon: const Icon(Icons.done),
+            icon: const AppIcon(AppIcons.check),
             // Leaving the page saves (see dispose).
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           actions: [
             IconButton(
               tooltip: context.l10n.editorColor,
-              icon: Icon(
-                Icons.style,
+              icon: AppIcon(
+                AppIcons.palette,
                 color: Color(_noteModel.colorValue),
               ),
               onPressed: () {
@@ -282,7 +283,7 @@ class _NoteEditorPageState extends State<NoteEditorPage>
             ),
             IconButton(
               tooltip: context.l10n.moreOptions,
-              icon: const Icon(Icons.more_vert),
+              icon: const AppIcon(AppIcons.more),
               onPressed: () {
                 // Future cleanup or detailed menu
               },

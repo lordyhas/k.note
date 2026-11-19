@@ -5,6 +5,7 @@ import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/themes/app_theme.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
 
 /// The pickers always use the app theme, even when opened from a context
@@ -190,14 +191,14 @@ class _CustomRepeatDialogState extends State<CustomRepeatDialog> {
                 tooltip: l10n.fewer,
                 onPressed:
                     _interval > 1 ? () => setState(() => _interval--) : null,
-                icon: const Icon(Icons.remove),
+                icon: const AppIcon(AppIcons.minus),
               ),
               Text('$_interval', style: const TextStyle(fontSize: 18)),
               IconButton(
                 tooltip: l10n.more,
                 onPressed:
                     _interval < 99 ? () => setState(() => _interval++) : null,
-                icon: const Icon(Icons.add),
+                icon: const AppIcon(AppIcons.add),
               ),
               const SizedBox(width: 8),
               DropdownButton<RepeatUnit>(

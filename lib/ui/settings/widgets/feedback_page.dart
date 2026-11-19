@@ -8,6 +8,7 @@ import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 /// Lets the user send a message to the K.Note team, stored in the
@@ -125,7 +126,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   FilledButton.icon(
                     key: const Key('__feedback_send__'),
                     onPressed: _message.text.trim().isEmpty ? null : _send,
-                    icon: const Icon(Icons.send),
+                    icon: const AppIcon(AppIcons.send),
                     label: Text(l10n.send),
                   ),
                 ],

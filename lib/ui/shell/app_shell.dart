@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/background_ui.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
@@ -186,33 +187,33 @@ class _AppShellState extends State<AppShell> {
               footerCount: 1,
               destinations: [
                 SideNavigationDestination(
-                  icon: Icons.file_copy_outlined,
-                  selectedIcon: Icons.file_copy,
+                  icon: AppIcons.notes,
+                  selectedIcon: AppIcons.notes,
                   label: l10n.navNotes,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.task_outlined,
-                  selectedIcon: Icons.task,
+                  icon: AppIcons.task,
+                  selectedIcon: AppIcons.task,
                   label: l10n.navTasks,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.calendar_today_outlined,
-                  selectedIcon: Icons.calendar_today,
+                  icon: AppIcons.calendar,
+                  selectedIcon: AppIcons.calendar,
                   label: l10n.calendar,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.archive_outlined,
-                  selectedIcon: Icons.archive,
+                  icon: AppIcons.archive,
+                  selectedIcon: AppIcons.archive,
                   label: l10n.archiveTitle,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.delete_outline,
-                  selectedIcon: Icons.delete,
+                  icon: AppIcons.trash,
+                  selectedIcon: AppIcons.trash,
                   label: l10n.binTitle,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.perm_identity,
-                  selectedIcon: Icons.person,
+                  icon: AppIcons.user,
+                  selectedIcon: AppIcons.user,
                   label: l10n.navProfile,
                 ),
               ],
@@ -239,18 +240,18 @@ class _AppShellState extends State<AppShell> {
           },
           destinations: [
             NavigationDestination(
-              icon: const Icon(Icons.file_copy_outlined),
-              selectedIcon: const Icon(Icons.file_copy),
+              icon: const AppIcon(AppIcons.notes),
+              selectedIcon: const AppIcon(AppIcons.notes),
               label: context.l10n.navNotes,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.task_outlined),
-              selectedIcon: const Icon(Icons.task),
+              icon: const AppIcon(AppIcons.task),
+              selectedIcon: const AppIcon(AppIcons.task),
               label: context.l10n.navTasks,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.perm_identity),
-              selectedIcon: const Icon(Icons.person),
+              icon: const AppIcon(AppIcons.user),
+              selectedIcon: const AppIcon(AppIcons.user),
               label: context.l10n.navYou,
             ),
           ],

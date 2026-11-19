@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +15,7 @@ import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/themes/app_theme.dart';
 import 'package:knote/ui/core/themes/styles.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
 import 'package:knote/ui/notes/widgets/note_card.dart';
@@ -96,8 +96,8 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          leading: Icon(
-            CupertinoIcons.home,
+          leading: AppIcon(
+            AppIcons.home,
             color: AppColors.of(context).text,
           ),
           title: const Text(
@@ -113,8 +113,8 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
               tooltip: multiple
                   ? context.l10n.notesListView
                   : context.l10n.notesGridView,
-              icon: Icon(
-                multiple ? Icons.dashboard : Icons.view_agenda,
+              icon: AppIcon(
+                multiple ? AppIcons.grid : AppIcons.list,
                 color: AppColors.of(context).text,
               ),
               onPressed: () {
@@ -135,7 +135,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                   children: [
                     IconButton(
                       tooltip: context.l10n.notesSearch,
-                      icon: const Icon(Icons.search),
+                      icon: const AppIcon(AppIcons.search),
                       onPressed: _searchFocus.requestFocus,
                     ),
                     Expanded(
@@ -153,7 +153,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
                       IconButton(
                         key: const Key('homePage_search_clear'),
                         tooltip: context.l10n.notesClearSearch,
-                        icon: const Icon(Icons.close),
+                        icon: const AppIcon(AppIcons.close),
                         onPressed: _clearSearch,
                       ),
                   ],
@@ -170,7 +170,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
           },
           ifTrue: FloatingActionButton(
             tooltip: context.l10n.notesNew,
-            child: const Icon(Icons.add),
+            child: const AppIcon(AppIcons.add),
             onPressed: () {
               GoRouter.of(context).pushNamed(NoteEditorPage.routeName);
             },
@@ -191,7 +191,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return _Message(
-            icon: Icons.error_outline,
+            icon: AppIcons.warning,
             text: context.l10n.notesLoadError,
           );
         }
@@ -200,14 +200,14 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
         final allNotes = snapshot.data!;
         if (allNotes.isEmpty) {
           return _Message(
-            icon: Icons.note_add_outlined,
+            icon: AppIcons.newNote,
             text: context.l10n.notesEmpty,
           );
         }
         final data = searchNotes(allNotes, _query);
         if (data.isEmpty) {
           return _Message(
-            icon: Icons.search_off,
+            icon: AppIcons.search,
             text: context.l10n.notesNoMatch(_query),
           );
         }
@@ -303,8 +303,8 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
           ),
           const Divider(),
           ListTile(
-            leading: Icon(
-              Icons.archive_outlined,
+            leading: AppIcon(
+              AppIcons.archive,
               color: Theme.of(context).iconTheme.color,
             ),
             title: Text(l10n.noteArchive),
@@ -324,8 +324,8 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-              leading: Icon(
-                Icons.delete_outline,
+              leading: AppIcon(
+                AppIcons.trash,
                 color: Theme.of(context).iconTheme.color,
               ),
               title: Text(l10n.noteMoveToBin),
@@ -414,7 +414,7 @@ class HomeListView extends StatelessWidget {
 class _Message extends StatelessWidget {
   const _Message({required this.icon, required this.text});
 
-  final IconData icon;
+  final AppIcons icon;
   final String text;
 
   @override
@@ -425,7 +425,7 @@ class _Message extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon,
+            AppIcon(icon,
                 size: 80,
                 color: AppColors.of(context).text.withValues(alpha: 0.54)),
             const SizedBox(height: 12.0),

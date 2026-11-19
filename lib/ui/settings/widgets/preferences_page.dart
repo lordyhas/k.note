@@ -5,6 +5,7 @@ import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
 
 /// The user's preferences, saved to their account (see [UserPreferences]).
@@ -62,7 +63,7 @@ class PreferencesPage extends StatelessWidget {
                   section(l10n.preferencesGeneral, [
                     ListTile(
                       key: const Key('__preferences_language__'),
-                      leading: Icon(Icons.language, color: colors.text),
+                      leading: AppIcon(AppIcons.language, color: colors.text),
                       title: Text(l10n.preferencesLanguage),
                       subtitle: Text(_languageText(l10n, preferences.language)),
                       onTap: () async {
@@ -81,8 +82,7 @@ class PreferencesPage extends StatelessWidget {
                   ]),
                   section(l10n.navNotes, [
                     ListTile(
-                      leading:
-                          Icon(Icons.dashboard_outlined, color: colors.text),
+                      leading: AppIcon(AppIcons.grid, color: colors.text),
                       title: Text(l10n.preferencesNotesLayout),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 8),
@@ -91,12 +91,12 @@ class PreferencesPage extends StatelessWidget {
                           segments: [
                             ButtonSegment(
                               value: NotesLayout.list,
-                              icon: const Icon(Icons.view_agenda_outlined),
+                              icon: const AppIcon(AppIcons.list),
                               label: Text(l10n.preferencesLayoutList),
                             ),
                             ButtonSegment(
                               value: NotesLayout.grid,
-                              icon: const Icon(Icons.grid_view),
+                              icon: const AppIcon(AppIcons.grid),
                               label: Text(l10n.preferencesLayoutGrid),
                             ),
                           ],
@@ -110,8 +110,7 @@ class PreferencesPage extends StatelessWidget {
                   section(l10n.navTasks, [
                     SwitchListTile(
                       key: const Key('__preferences_reminders__'),
-                      secondary: Icon(Icons.notifications_outlined,
-                          color: colors.text),
+                      secondary: AppIcon(AppIcons.bell, color: colors.text),
                       title: Text(l10n.preferencesReminders),
                       subtitle: Text(kIsWeb
                           ? l10n.preferencesRemindersWeb
@@ -122,7 +121,7 @@ class PreferencesPage extends StatelessWidget {
                     ),
                     ListTile(
                       key: const Key('__preferences_reminder_hour__'),
-                      leading: Icon(Icons.schedule, color: colors.text),
+                      leading: AppIcon(AppIcons.clock, color: colors.text),
                       title: Text(l10n.preferencesReminderHour),
                       subtitle: Text(
                           '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay(hour: preferences.reminderHour, minute: 0))}'
@@ -142,8 +141,7 @@ class PreferencesPage extends StatelessWidget {
                     ),
                     ListTile(
                       key: const Key('__preferences_first_day__'),
-                      leading:
-                          Icon(Icons.calendar_view_week, color: colors.text),
+                      leading: AppIcon(AppIcons.calendar, color: colors.text),
                       title: Text(l10n.preferencesFirstDay),
                       subtitle: Text(
                           _firstDayText(context, preferences.firstDayOfWeek)),

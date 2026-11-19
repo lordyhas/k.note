@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 
 /// Asks the user to confirm, then logs them out.
 ///
@@ -34,7 +35,7 @@ class _LogoutDialog extends StatelessWidget {
     final l10n = context.l10n;
     final colors = AppColors.of(context);
     return AlertDialog(
-      icon: Icon(Icons.logout_rounded, color: colors.danger),
+      icon: AppIcon(AppIcons.logOut, color: colors.danger),
       title: Text(l10n.logOutTitle),
       content: Text(l10n.logOutBody),
       actions: [
