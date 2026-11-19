@@ -21,12 +21,9 @@ flutter pub get
 
 ### iOS
 
-- `ios/Runner/GoogleService-Info.plist` is present in the repository.
-- On macOS, install CocoaPods if required, then:
-
-```bash
-cd ios && pod install && cd ..
-```
+Work in progress: `ios/` is the default Flutter iOS project (bundle ID `com.kdynamic.knote`),
+never built or tested, and `lib/firebase_options.dart` throws `UnsupportedError` on iOS.
+Register an iOS app in Firebase and re-run the FlutterFire CLI first (see the README).
 
 ### Web
 

@@ -57,7 +57,8 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Destructive actions and overdue dates.
   final Color danger;
 
-  /// Call-to-action buttons of the settings pages.
+  /// Call-to-action buttons of the settings pages, and today's date (calendar,
+  /// tasks due today).
   final Color link;
 
   /// Background of disabled buttons.

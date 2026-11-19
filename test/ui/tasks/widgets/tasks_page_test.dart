@@ -1,10 +1,11 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/user.dart';
+import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -105,5 +106,115 @@ void main() {
     expect(next.isAllChecked, isFalse);
     expect(next.dueDate, DateTime(2026, 3, 9));
     expect(next.repeat, 'Weekly');
+  });
+
+  testWidgets('active tasks are sorted by due date, undated ones last',
+      (tester) async {
+    // 'Buy milk' (t1) has no due date and no creation time.
+    final tasks = [
+      CheckList(
+          id: 'a',
+          title: 'Undated, old',
+          list: const [],
+          creationTime: DateTime(2026, 1, 1)),
+      CheckList(
+          id: 'b',
+          title: 'Due later',
+          list: const [],
+          dueDate: DateTime(2026, 5, 1),
+          creationTime: DateTime(2026, 1, 1)),
+      CheckList(
+          id: 'c',
+          title: 'Due soon, new',
+          list: const [],
+          dueDate: DateTime(2026, 4, 1),
+          creationTime: DateTime(2026, 2, 1)),
+      CheckList(
+          id: 'd',
+          title: 'Due soon, old',
+          list: const [],
+          dueDate: DateTime(2026, 4, 1),
+          creationTime: DateTime(2026, 1, 1)),
+      CheckList(
+          id: 'e',
+          title: 'Undated, new',
+          list: const [],
+          creationTime: DateTime(2026, 3, 1)),
+    ];
+    for (final task in tasks) {
+      await manager.addTaskInCloud(task: task);
+    }
+    await pumpPage(tester);
+
+    final order = [
+      'Due soon, old',
+      'Due soon, new',
+      'Due later',
+      'Undated, old',
+      'Undated, new',
+      'Buy milk',
+    ];
+    final tops = [
+      for (final title in order) tester.getTopLeft(find.text(title)).dy
+    ];
+    expect(tops, orderedEquals([...tops]..sort()));
+  });
+
+  testWidgets('completed tasks show the last completed first', (tester) async {
+    await manager.deleteTask(taskId: 't1');
+    for (final (id, day) in [('old', 1), ('new', 3), ('mid', 2)]) {
+      await manager.addTaskInCloud(
+          task: CheckList(
+              id: id,
+              title: 'Done $id',
+              list: const [],
+              isAllChecked: true,
+              modificationTime: DateTime(2026, 1, day)));
+    }
+    await pumpPage(tester);
+    await tester.tap(find.text('Completed 3'));
+    await tester.pumpAndSettle();
+
+    final tops = [
+      for (final id in ['new', 'mid', 'old'])
+        tester.getTopLeft(find.text('Done $id')).dy
+    ];
+    expect(tops, orderedEquals([...tops]..sort()));
+  });
+
+  testWidgets('due dates are red when late and highlighted today',
+      (tester) async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    await manager.addTaskInCloud(
+        task: CheckList(
+            id: 'late',
+            title: 'Late',
+            list: const [],
+            dueDate: today.subtract(const Duration(days: 3))));
+    await manager.addTaskInCloud(
+        task: CheckList(
+            id: 'today', title: 'Today task', list: const [], dueDate: today));
+    await manager.addTaskInCloud(
+        task: CheckList(
+            id: 'later',
+            title: 'Later',
+            list: const [],
+            dueDate: DateTime(now.year + 1, 1, 1)));
+    await pumpPage(tester);
+
+    final colors = AppColors.of(tester.element(find.text('Late')));
+    Color? dueColor(String title) {
+      final card =
+          find.ancestor(of: find.text(title), matching: find.byType(Card));
+      final date = find.descendant(
+          of: find.descendant(of: card, matching: find.byType(Row)),
+          matching: find.byType(Text));
+      return tester.widget<Text>(date.last).style?.color;
+    }
+
+    expect(dueColor('Late'), colors.danger);
+    expect(dueColor('Today task'), colors.link);
+    expect(dueColor('Later'), isNot(anyOf(colors.danger, colors.link)));
   });
 }
