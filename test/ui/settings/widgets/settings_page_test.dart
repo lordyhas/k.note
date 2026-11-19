@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,7 +6,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:knote/data/repositories/auth_repository.dart';
-import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/themes/app_theme.dart';
@@ -49,10 +47,7 @@ void main() {
         child: BlocProvider.value(
           value: authBloc,
           child: localizedApp(
-            home: SettingsPage(
-              firebaseManager:
-                  FirestoreService.user(user, FakeFirebaseFirestore()),
-            ),
+            home: const SettingsPage(),
           ),
         ),
       ),
@@ -92,5 +87,22 @@ void main() {
     expect(find.text('Hassan Kajila'), findsOneWidget);
     expect(find.text('HK'), findsOneWidget);
     expect(find.text('Add your name'), findsNothing);
+  });
+
+  testWidgets('lists Preferences last, and Delete account is not here',
+      (tester) async {
+    await pumpPage(
+        tester,
+        const User(
+            id: 'uid-1',
+            email: 'me@example.com',
+            name: null,
+            photoMail: null,
+            isCheckMail: true));
+
+    expect(find.text('Delete account'), findsNothing);
+    final logOut = tester.getTopLeft(find.text('Log out').last).dy;
+    final preferences = tester.getTopLeft(find.text('Preferences')).dy;
+    expect(preferences, greaterThan(logOut));
   });
 }

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:knote/data/repositories/auth_repository.dart';
-import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/widgets/logout_dialog.dart';
 import 'package:knote/ui/auth/widgets/password_reset_dialog.dart';
@@ -17,7 +16,6 @@ import 'package:knote/ui/core/widgets/user_avatar.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
-import 'package:knote/ui/settings/widgets/delete_account_dialog.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
 import 'package:knote/ui/settings/widgets/preferences_page.dart';
 import 'package:knote/ui/settings/widgets/profile_page.dart';
@@ -28,14 +26,9 @@ class SettingsPage extends StatefulWidget {
   static const routeName = "user";
   final Function()? onMenuTap;
 
-  /// Used to delete the user's data with their account; tests pass one
-  /// backed by a fake Firestore.
-  final FirestoreService? firebaseManager;
-
   const SettingsPage({
     super.key,
     this.onMenuTap,
-    this.firebaseManager,
   });
 
   @override
@@ -43,14 +36,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  void _deleteAccount() {
-    final user = context.read<AuthenticationBloc>().state.user;
-    showDeleteAccountDialog(
-      context,
-      firestoreService: widget.firebaseManager ?? FirestoreService.user(user),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -113,20 +98,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   onTap: () => GoRouter.of(context)
                                       .goNamed(ProfilePage.routeName),
-                                ),
-                                ListTile(
-                                  key: const Key('__settings_preferences__'),
-                                  leading: AppIcon(
-                                    AppIcons.settings,
-                                    color: iconColor,
-                                  ),
-                                  title: Text(l10n.preferencesTitle),
-                                  trailing: AppIcon(
-                                    AppIcons.chevronRight,
-                                    color: iconColor,
-                                  ),
-                                  onTap: () => GoRouter.of(context)
-                                      .goNamed(PreferencesPage.routeName),
                                 ),
                                 if (signedInWithPassword)
                                   ListTile(
@@ -202,17 +173,18 @@ class _SettingsPageState extends State<SettingsPage> {
                                   onTap: () => confirmLogout(context),
                                 ),
                                 ListTile(
-                                  key: const Key('__settings_deleteAccount__'),
+                                  key: const Key('__settings_preferences__'),
                                   leading: AppIcon(
-                                    AppIcons.userRemove,
-                                    color: AppColors.of(context).danger,
+                                    AppIcons.settings,
+                                    color: iconColor,
                                   ),
-                                  title: Text(
-                                    l10n.deleteAccount,
-                                    style: TextStyle(
-                                        color: AppColors.of(context).danger),
+                                  title: Text(l10n.preferencesTitle),
+                                  trailing: AppIcon(
+                                    AppIcons.chevronRight,
+                                    color: iconColor,
                                   ),
-                                  onTap: _deleteAccount,
+                                  onTap: () => GoRouter.of(context)
+                                      .goNamed(PreferencesPage.routeName),
                                 ),
                               ],
                             ),

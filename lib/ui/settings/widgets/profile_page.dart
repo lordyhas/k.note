@@ -12,6 +12,7 @@ import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/user_avatar.dart';
 import 'package:knote/ui/settings/bloc/profile_cubit.dart';
+import 'package:knote/ui/settings/widgets/delete_account_dialog.dart';
 
 /// The user's profile: their name (editable), email, sign-in method and
 /// when they joined.
@@ -32,13 +33,15 @@ class ProfilePage extends StatelessWidget {
         onUserUpdated: authBloc.updateUser,
         firestore: firestore,
       ),
-      child: const _ProfileView(),
+      child: _ProfileView(firestore: firestore),
     );
   }
 }
 
 class _ProfileView extends StatefulWidget {
-  const _ProfileView();
+  const _ProfileView({this.firestore});
+
+  final FirestoreService Function(User user)? firestore;
 
   @override
   State<_ProfileView> createState() => _ProfileViewState();
@@ -47,6 +50,14 @@ class _ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<_ProfileView> {
   late final _name =
       TextEditingController(text: context.read<ProfileCubit>().state.name);
+
+  void _deleteAccount() {
+    final user = context.read<AuthenticationBloc>().state.user;
+    showDeleteAccountDialog(
+      context,
+      firestoreService: (widget.firestore ?? FirestoreService.user)(user),
+    );
+  }
 
   @override
   void dispose() {
@@ -169,6 +180,21 @@ class _ProfileViewState extends State<_ProfileView> {
                                 .format(joined)),
                           ),
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Kept apart, at the bottom: it can't be undone.
+                  Card(
+                    color: Theme.of(context).cardColor.withValues(alpha: 0.7),
+                    child: ListTile(
+                      key: const Key('__profile_deleteAccount__'),
+                      leading:
+                          AppIcon(AppIcons.userRemove, color: colors.danger),
+                      title: Text(
+                        l10n.deleteAccount,
+                        style: TextStyle(color: colors.danger),
+                      ),
+                      onTap: _deleteAccount,
                     ),
                   ),
                 ],
