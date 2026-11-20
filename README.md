@@ -12,14 +12,15 @@ KNOTE is an open-source notes and tasks app for Android and the web, built with 
   <img src="screenshots/task-editor.png" alt="Task editor with steps" width="250">
 </p>
 
-- **Notes**: rich-text editor, colors, search, archive and trash with undo. Changes save automatically as you type.
+- **Notes**: an editor in the style of Samsung Notes, with a formatting bar above the keyboard (checklists, bold and other styles, lists, headings, font size, undo and redo) and a reading mode; colors, search, archive and trash with undo. Changes save automatically as you type.
 - **Tasks**: quick add, due dates, reminders (notifications on Android), repeat rules (daily, weekdays, custom: completing a repeating task adds the next one), a "My Day" list, active tasks sorted by due date and a collapsible completed section.
 - **Calendar**: a month view of your tasks by due date.
 - **Sync**: your notes and tasks follow your account across devices through Cloud Firestore, and stay available offline thanks to Firestore's cache.
-- **Accounts**: sign in with email/password (the address must be verified) or Google, reset a forgotten password, delete your account and all its data from the settings.
+- **Accounts**: sign in with email/password (the address must be verified) or Google, reset a forgotten password, delete your account and all its data from your profile.
 - **Profile and preferences**: set your display name, and choose the language, the notes layout, task reminders, the default reminder time and the first day of the week. Preferences are saved to your account and follow you on every device.
 - **Feedback**: send a message to the team from the settings.
 - **Private by design**: Firestore security rules ensure each user can only read and write their own data.
+- **What's new**: after each update, a short list of what changed (also in the settings).
 - **Languages**: English and French, following the device language.
 - **Responsive**: a bottom bar on phones, a rail or a side pane on tablets and wide browser windows.
 

@@ -84,6 +84,15 @@ Typical note flow:
 - `.env` exists but active runtime use is not evident in startup code.
 - `StyleCubit` is not persisted between launches.
 
+## What's new
+
+- `WhatsNewService` (`lib/data/services/whats_new_service.dart`) stores, on the device
+  (`shared_preferences`), the last app version whose "What's new" was shown. `AppShell`
+  asks it once per run and shows `WhatsNewDialog` (`ui/settings/widgets/whats_new_dialog.dart`)
+  when the version changed, so it appears once after each update (and after installing).
+  Settings > What's new shows it again. Update `whatsNewEntries` and their `.arb` strings
+  with each release users should hear about.
+
 ## Reminders and repeating tasks
 
 - `ReminderService` (`lib/data/services/reminder_service.dart`) schedules a local

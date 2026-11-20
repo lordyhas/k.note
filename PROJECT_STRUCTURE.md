@@ -26,13 +26,14 @@ lib/
 │   ├── repositories/
 │   │   └── auth_repository.dart # AuthRepository (Firebase Auth, Google Sign-In)
 │   └── services/
-│       └── firestore_service.dart # FirestoreService: notes, tasks, profile
+│       ├── firestore_service.dart # FirestoreService: notes, tasks, profile
+│       └── whats_new_service.dart # WhatsNewService: last version whose "What's new" was shown
 ├── ui/
 │   ├── core/                  # Shared by every feature
 │   │   ├── app_bloc_observer.dart
 │   │   ├── localization/      # app_en.arb, app_fr.arb, l10n.dart (+ generated app_localizations*.dart)
 │   │   ├── themes/            # app_theme.dart (Fluent-style Material theme), app_colors.dart, styles.dart, style_cubit.dart
-│   │   └── widgets/           # BackgroundUI, ComingSoon, ErrorPage, undo snack bar, responsive.dart (breakpoints, CenteredContent)
+│   │   └── widgets/           # AppIcon/AppIcons (Iconoir), BackgroundUI, ComingSoon, ErrorPage, undo snack bar, responsive.dart (breakpoints, CenteredContent)
 │   ├── shell/
 │   │   ├── app_shell.dart     # AppShell: bottom bar, rail or side pane around the tabs
 │   │   ├── side_navigation_pane.dart  # SideNavigationPane: the rail and the pane
