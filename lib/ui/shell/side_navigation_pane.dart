@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/themes/app_theme.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 
 /// An entry of [SideNavigationPane].
 class SideNavigationDestination {
@@ -11,10 +12,10 @@ class SideNavigationDestination {
     required this.label,
   });
 
-  final IconData icon;
+  final AppIcons icon;
 
   /// Shown instead of [icon] when the entry is selected.
-  final IconData? selectedIcon;
+  final AppIcons? selectedIcon;
 
   final String label;
 }
@@ -121,7 +122,7 @@ class _PaneItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
     final radius = BorderRadius.circular(AppTheme.controlRadius);
-    final icon = Icon(
+    final icon = AppIcon(
       selected
           ? destination.selectedIcon ?? destination.icon
           : destination.icon,

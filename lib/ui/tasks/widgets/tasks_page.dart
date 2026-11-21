@@ -8,6 +8,7 @@ import 'package:knote/domain/models/task.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
@@ -73,7 +74,7 @@ class _TasksPageState extends State<TasksPage> {
                 color: colors.text, fontWeight: FontWeight.bold, fontSize: 24)),
         backgroundColor: colors.background,
         elevation: 0,
-        leading: Icon(Icons.task_alt, color: colors.text),
+        leading: AppIcon(AppIcons.checkCircle, color: colors.text),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) => StreamBuilder<List<CheckList>>(
@@ -83,10 +84,10 @@ class _TasksPageState extends State<TasksPage> {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               debugPrint('Tasks could not be loaded: ${snapshot.error}');
-              return _buildMessage(Icons.error_outline, l10n.tasksLoadError);
+              return _buildMessage(AppIcons.warning, l10n.tasksLoadError);
             } else if (!snapshot.hasData ||
                 snapshot.data!.every((t) => _removedIds.contains(t.id))) {
-              return _buildMessage(Icons.task_alt, l10n.tasksEmpty);
+              return _buildMessage(AppIcons.checkCircle, l10n.tasksEmpty);
             } else {
               final tasks = snapshot.data!
                   .where((t) => !_removedIds.contains(t.id))
@@ -129,13 +130,13 @@ class _TasksPageState extends State<TasksPage> {
         tooltip: l10n.tasksNew,
         onPressed: () =>
             showTaskQuickAdd(context, firebaseManager: _firebaseManager),
-        child: const Icon(Icons.add),
+        child: const AppIcon(AppIcons.add),
       ),
     );
   }
 
   /// Empty and error states.
-  Widget _buildMessage(IconData icon, String text) {
+  Widget _buildMessage(AppIcons icon, String text) {
     final color = AppColors.of(context).textMuted;
     return Center(
       child: Padding(
@@ -143,7 +144,7 @@ class _TasksPageState extends State<TasksPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 100, color: color),
+            AppIcon(icon, size: 100, color: color),
             const SizedBox(height: 16),
             Text(
               text,
@@ -185,7 +186,7 @@ class _TasksPageState extends State<TasksPage> {
         alignment: Alignment.centerRight,
         color: colors.danger,
         padding: const EdgeInsets.only(right: 20.0),
-        child: Icon(Icons.delete, color: colors.text),
+        child: AppIcon(AppIcons.trash, color: colors.text),
       ),
       onDismissed: (_) => _delete(task),
       child: Card(
@@ -250,7 +251,7 @@ class _TasksPageState extends State<TasksPage> {
                                 : Colors.transparent,
                           ),
                           child: task.isAllChecked
-                              ? Icon(Icons.check,
+                              ? AppIcon(AppIcons.check,
                                   size: 16, color: colors.onAccent)
                               : null,
                         ),
@@ -278,7 +279,7 @@ class _TasksPageState extends State<TasksPage> {
                           padding: const EdgeInsets.only(top: 4.0),
                           child: Row(
                             children: [
-                              Icon(Icons.calendar_today,
+                              AppIcon(AppIcons.calendar,
                                   size: 12, color: iconColor),
                               const SizedBox(width: 4),
                               Text(
@@ -295,8 +296,8 @@ class _TasksPageState extends State<TasksPage> {
                   tooltip: task.isImportant
                       ? l10n.taskRemoveImportance
                       : l10n.taskMarkImportant,
-                  icon: Icon(
-                    task.isImportant ? Icons.star : Icons.star_border,
+                  icon: AppIcon(
+                    task.isImportant ? AppIcons.starSolid : AppIcons.star,
                     color: task.isImportant ? colors.accent : iconColor,
                   ),
                   onPressed: () {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:knote/config/assets.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 
 class AboutPage extends StatefulWidget {
@@ -90,7 +90,7 @@ class _AboutState extends State<AboutPage> {
                     child: Image.asset(imageLogoApp),
                   ),
                   Text(
-                    "K.NOTE",
+                    "KNOTE",
                     style: TextStyle(
                         color: Theme.of(context).primaryColor, fontSize: 24),
                   ),
@@ -111,7 +111,7 @@ class _AboutState extends State<AboutPage> {
 
               ),*/
               ListTile(
-                leading: const Icon(Icons.info),
+                leading: const AppIcon(AppIcons.info),
                 title: Text(
                   l10n.version,
                   style: primaryTextStyle20,
@@ -119,7 +119,7 @@ class _AboutState extends State<AboutPage> {
                 subtitle: Text(l10n.versionUnstable(appVersion)),
               ),
               ListTile(
-                leading: const Icon(Icons.update),
+                leading: const AppIcon(AppIcons.refresh),
                 title: Text(
                   l10n.lastUpdate,
                   style: primaryTextStyle20,
@@ -131,14 +131,14 @@ class _AboutState extends State<AboutPage> {
                 //${timeUpdate.subtract(Duration(days: 35, hours: 1))}
               ),
               ListTile(
-                leading: const Icon(Icons.sync),
+                leading: const AppIcon(AppIcons.refresh),
                 title: Text(
                   l10n.checkingForUpdates,
                   style: primaryTextStyle20,
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.turned_in_not),
+                leading: const AppIcon(AppIcons.bookmark),
                 title: Text(
                   l10n.licenses,
                   style: primaryTextStyle20,
@@ -146,7 +146,7 @@ class _AboutState extends State<AboutPage> {
                 onTap: () => showLicensePage(
                   context: context,
                   applicationIcon: Image.asset(imageLogoApp),
-                  applicationName: "K.NOTE",
+                  applicationName: "KNOTE",
                   applicationVersion: appVersion,
                 ),
               ),
@@ -164,7 +164,7 @@ class _AboutState extends State<AboutPage> {
                 ),
               ),
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.user),
+                leading: const AppIcon(AppIcons.user),
                 title: Text(
                   "Hassan Kajila",
                   style: primaryTextStyle20,
@@ -174,14 +174,14 @@ class _AboutState extends State<AboutPage> {
                 ),
               ),
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.googlePlay),
+                leading: const AppIcon(AppIcons.openExternal),
                 title: Text(
                   "Play Store",
                   style: primaryTextStyle20,
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.group_outlined),
+                leading: const AppIcon(AppIcons.group),
                 title: Text(
                   l10n.ourTeam,
                   style: primaryTextStyle20,
@@ -201,7 +201,7 @@ class _AboutState extends State<AboutPage> {
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.business),
+                leading: const AppIcon(AppIcons.building),
                 title: Text(
                   "KDynamic Inc.",
                   style: primaryTextStyle20,
@@ -209,7 +209,7 @@ class _AboutState extends State<AboutPage> {
                 subtitle: Text(l10n.companyTagline),
               ),
               ListTile(
-                leading: const Icon(Icons.location_on),
+                leading: const AppIcon(AppIcons.mapPin),
                 title: Text(
                   l10n.address,
                   style: primaryTextStyle20,

@@ -9,6 +9,7 @@ import 'package:knote/ui/auth/bloc/verify_email_cubit.dart';
 import 'package:knote/ui/auth/widgets/auth_error_text.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 
 /// Shown to users who signed up with an email address they have not
 /// verified yet. The router keeps them here until they open the link sent by
@@ -101,7 +102,7 @@ class _VerifyEmailViewState extends State<_VerifyEmailView> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Icon(Icons.mark_email_unread_outlined, size: 72),
+                        const AppIcon(AppIcons.mail, size: 72),
                         const SizedBox(height: 24.0),
                         Text(
                           l10n.verifyEmailTitle,

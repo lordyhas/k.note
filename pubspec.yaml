@@ -4,7 +4,7 @@ description: A new K.NOTE project.
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.6.1+8
+version: 0.7.0+9
 environment:
   sdk: '>=3.1.4 <4.0.0'
 
@@ -64,12 +64,11 @@ dependencies:
 
   #share_plus: ^8.0.0
   #share_plus: ^7.2.1
-  font_awesome_flutter: ^11.0.0
-
-
   flutter_quill: ^11.4.2
   flutter_whatsnew: ^1.1.0+1
   firebase_app_check: ^0.5.1
+  iconoir_flutter: ^7.12.2
+  shared_preferences: ^2.5.6
   #flutter_secure_storage: ^10.0.0
 
 
@@ -87,6 +86,7 @@ dev_dependencies:
   bloc_test: ^10.0.0
   mocktail: ^1.0.4
   fake_cloud_firestore: ^4.5.0
+  shared_preferences_platform_interface: ^2.4.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

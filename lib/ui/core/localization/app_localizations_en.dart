@@ -120,6 +120,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editorColorTitle => 'Change the note color';
 
   @override
+  String get editorReadMode => 'Reading mode';
+
+  @override
+  String get editorEditMode => 'Edit';
+
+  @override
+  String get editorInsert => 'Insert';
+
+  @override
+  String get editorChecklist => 'Checklist';
+
+  @override
+  String get editorTextStyle => 'Text style';
+
+  @override
+  String get editorBold => 'Bold';
+
+  @override
+  String get editorItalic => 'Italic';
+
+  @override
+  String get editorUnderline => 'Underline';
+
+  @override
+  String get editorStrikethrough => 'Strikethrough';
+
+  @override
+  String get editorParagraph => 'Lists and quote';
+
+  @override
+  String get editorBulletedList => 'Bulleted list';
+
+  @override
+  String get editorNumberedList => 'Numbered list';
+
+  @override
+  String get editorQuote => 'Quote';
+
+  @override
+  String get editorParagraphStyle => 'Paragraph style';
+
+  @override
+  String get editorStyleBody => 'Body text';
+
+  @override
+  String get editorStyleTitle => 'Title';
+
+  @override
+  String get editorStyleSubtitle => 'Subtitle';
+
+  @override
+  String get editorStyleHeading => 'Heading';
+
+  @override
+  String get editorFontSize => 'Font size';
+
+  @override
+  String get editorRedo => 'Redo';
+
+  @override
+  String get editorDateTime => 'Date and time';
+
+  @override
+  String get editorPlaceholder => 'Start writing';
+
+  @override
   String get binTitle => 'Bin';
 
   @override
@@ -505,7 +571,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedbackTitle => 'Your feedback';
 
   @override
-  String get feedbackBody => 'Tell us what you think of K.Note.';
+  String get feedbackBody => 'Tell us what you think of KNOTE.';
 
   @override
   String get feedbackHint => 'Enter your feedback…';
@@ -517,7 +583,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pageNotFound => 'Sorry, we couldn\'t find this page!';
 
   @override
-  String get welcome => 'Welcome to K.Note';
+  String get welcome => 'Welcome to KNOTE';
 
   @override
   String get signInToContinue => 'Sign in to continue';
@@ -848,4 +914,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preferencesSaveFailed => 'Your preferences couldn\'t be saved.';
+
+  @override
+  String get whatsNewTitle => 'What\'s new';
+
+  @override
+  String whatsNewVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get whatsNewContinue => 'Continue';
+
+  @override
+  String get whatsNewEditorTitle => 'A new note editor';
+
+  @override
+  String get whatsNewEditorBody =>
+      'Format your notes from the bar above the keyboard: checklists, bold and other styles, lists, headings and font size, with undo and redo. The book button switches to reading mode.';
+
+  @override
+  String get whatsNewIconsTitle => 'New icons';
+
+  @override
+  String get whatsNewIconsBody =>
+      'The whole app uses a new, lighter set of icons.';
+
+  @override
+  String get whatsNewSettingsTitle => 'Tidier settings';
+
+  @override
+  String get whatsNewSettingsBody =>
+      'Delete account is now in My profile, and Preferences is at the bottom of the list.';
 }

@@ -9,6 +9,7 @@ import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
@@ -130,7 +131,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
           elevation: 0,
           leading: IconButton(
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-            icon: Icon(Icons.arrow_back, color: colors.text),
+            icon: AppIcon(AppIcons.back, color: colors.text),
             onPressed: () {
               context.pop();
             },
@@ -138,14 +139,14 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
           actions: [
             IconButton(
               tooltip: l10n.taskColor,
-              icon: Icon(Icons.circle, color: _color),
+              icon: AppIcon(AppIcons.circle, color: _color),
               onPressed: _showColorPicker,
             ),
             IconButton(
               tooltip: _isImportant
                   ? l10n.taskRemoveImportance
                   : l10n.taskMarkImportant,
-              icon: Icon(_isImportant ? Icons.star : Icons.star_border,
+              icon: AppIcon(_isImportant ? AppIcons.starSolid : AppIcons.star,
                   color: _isImportant ? colors.accent : colors.text),
               onPressed: () {
                 setState(() => _isImportant = !_isImportant);
@@ -216,7 +217,8 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                             ),
                             IconButton(
                               tooltip: l10n.taskRemoveStep,
-                              icon: Icon(Icons.close, color: colors.textMuted),
+                              icon: AppIcon(AppIcons.close,
+                                  color: colors.textMuted),
                               onPressed: () =>
                                   setState(() => _items.removeAt(index)),
                             ),
@@ -227,7 +229,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
 
                     // Add Step Button
                     ListTile(
-                      leading: Icon(Icons.add, color: colors.accent),
+                      leading: AppIcon(AppIcons.add, color: colors.accent),
                       title: Text(l10n.taskAddStep,
                           style: TextStyle(color: colors.accent)),
                       onTap: _addItem,
@@ -237,7 +239,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
 
                     // Options
                     _buildOptionTile(
-                      icon: Icons.wb_sunny_outlined,
+                      icon: AppIcons.sun,
                       text: _isMyDay
                           ? l10n.taskAddedToMyDay
                           : l10n.taskAddToMyDay,
@@ -245,7 +247,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                       onTap: () => setState(() => _isMyDay = !_isMyDay),
                     ),
                     _buildOptionTile(
-                      icon: Icons.notifications_none,
+                      icon: AppIcons.bell,
                       text: _reminderTime == null
                           ? l10n.remindMe
                           : l10n.remindMeAt(MaterialLocalizations.of(context)
@@ -255,7 +257,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                       onTap: _pickReminderTime,
                     ),
                     _buildOptionTile(
-                      icon: Icons.calendar_today,
+                      icon: AppIcons.calendar,
                       text: _dueDate == null
                           ? l10n.taskAddDueDate
                           : l10n.dueOn(shortDate(l10n, _dueDate!)),
@@ -263,7 +265,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                       onTap: _pickDueDate,
                     ),
                     _buildOptionTile(
-                      icon: Icons.repeat,
+                      icon: AppIcons.repeat,
                       text: _repeat == null
                           ? l10n.repeat
                           : repeatValueText(l10n, _repeat!),
@@ -274,7 +276,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                       },
                     ),
                     _buildOptionTile(
-                      icon: Icons.attach_file,
+                      icon: AppIcons.attachment,
                       text: l10n.taskAddFile,
                       isActive: false,
                       onTap: () {
@@ -311,7 +313,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
               ),
               IconButton(
                 tooltip: l10n.taskDelete,
-                icon: Icon(Icons.delete_outline, color: colors.text),
+                icon: AppIcon(AppIcons.trash, color: colors.text),
                 onPressed: () {
                   _isDeleted = true;
                   final id = _id;
@@ -332,13 +334,14 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
   }
 
   Widget _buildOptionTile(
-      {required IconData icon,
+      {required AppIcons icon,
       required String text,
       required bool isActive,
       required VoidCallback onTap}) {
     final colors = AppColors.of(context);
     return ListTile(
-      leading: Icon(icon, color: isActive ? colors.accent : colors.textMuted),
+      leading:
+          AppIcon(icon, color: isActive ? colors.accent : colors.textMuted),
       title: Text(text,
           style: TextStyle(
               color: isActive
@@ -349,15 +352,15 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
       trailing: isActive
           ? IconButton(
               tooltip: context.l10n.remove,
-              icon: Icon(Icons.close, color: colors.textMuted),
+              icon: AppIcon(AppIcons.close, color: colors.textMuted),
               onPressed: () {
-                if (icon == Icons.wb_sunny_outlined) {
+                if (icon == AppIcons.sun) {
                   setState(() => _isMyDay = false);
-                } else if (icon == Icons.notifications_none) {
+                } else if (icon == AppIcons.bell) {
                   setState(() => _reminderTime = null);
-                } else if (icon == Icons.calendar_today) {
+                } else if (icon == AppIcons.calendar) {
                   setState(() => _dueDate = null);
-                } else if (icon == Icons.repeat) {
+                } else if (icon == AppIcons.repeat) {
                   setState(() => _repeat = null);
                 }
               },

@@ -30,6 +30,8 @@ flutter analyze --no-fatal-warnings --no-fatal-infos
   never with a fixed English pattern.
 - Colors come from `AppColors.of(context)`; add a role there rather than a
   `Colors.*` literal.
+- Icons are Iconoir icons: `AppIcon(AppIcons.<name>)` (`lib/ui/core/widgets/app_icons.dart`),
+  never Material `Icons.*`. Add a value to `AppIcons` for a new icon.
 - Every icon-only button has a translated `tooltip`, and touch targets are at
   least 48 x 48 dp.
 

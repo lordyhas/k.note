@@ -123,6 +123,72 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editorColorTitle => 'Changer la couleur de la note';
 
   @override
+  String get editorReadMode => 'Mode lecture';
+
+  @override
+  String get editorEditMode => 'Modifier';
+
+  @override
+  String get editorInsert => 'Insérer';
+
+  @override
+  String get editorChecklist => 'Liste de cases à cocher';
+
+  @override
+  String get editorTextStyle => 'Style du texte';
+
+  @override
+  String get editorBold => 'Gras';
+
+  @override
+  String get editorItalic => 'Italique';
+
+  @override
+  String get editorUnderline => 'Souligné';
+
+  @override
+  String get editorStrikethrough => 'Barré';
+
+  @override
+  String get editorParagraph => 'Listes et citation';
+
+  @override
+  String get editorBulletedList => 'Liste à puces';
+
+  @override
+  String get editorNumberedList => 'Liste numérotée';
+
+  @override
+  String get editorQuote => 'Citation';
+
+  @override
+  String get editorParagraphStyle => 'Style de paragraphe';
+
+  @override
+  String get editorStyleBody => 'Texte';
+
+  @override
+  String get editorStyleTitle => 'Titre';
+
+  @override
+  String get editorStyleSubtitle => 'Sous-titre';
+
+  @override
+  String get editorStyleHeading => 'En-tête';
+
+  @override
+  String get editorFontSize => 'Taille du texte';
+
+  @override
+  String get editorRedo => 'Rétablir';
+
+  @override
+  String get editorDateTime => 'Date et heure';
+
+  @override
+  String get editorPlaceholder => 'Commencez à écrire';
+
+  @override
   String get binTitle => 'Corbeille';
 
   @override
@@ -510,7 +576,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get feedbackTitle => 'Votre avis';
 
   @override
-  String get feedbackBody => 'Dites-nous ce que vous pensez de K.Note.';
+  String get feedbackBody => 'Dites-nous ce que vous pensez de KNOTE.';
 
   @override
   String get feedbackHint => 'Écrivez votre avis…';
@@ -522,7 +588,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pageNotFound => 'Désolé, cette page est introuvable !';
 
   @override
-  String get welcome => 'Bienvenue sur K.Note';
+  String get welcome => 'Bienvenue sur KNOTE';
 
   @override
   String get signInToContinue => 'Connectez-vous pour continuer';
@@ -859,4 +925,36 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get preferencesSaveFailed =>
       'Vos préférences n\'ont pas pu être enregistrées.';
+
+  @override
+  String get whatsNewTitle => 'Quoi de neuf';
+
+  @override
+  String whatsNewVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get whatsNewContinue => 'Continuer';
+
+  @override
+  String get whatsNewEditorTitle => 'Un nouvel éditeur de notes';
+
+  @override
+  String get whatsNewEditorBody =>
+      'Mettez vos notes en forme depuis la barre au-dessus du clavier : cases à cocher, gras et autres styles, listes, titres et taille du texte, avec annuler et rétablir. Le bouton livre passe en mode lecture.';
+
+  @override
+  String get whatsNewIconsTitle => 'De nouvelles icônes';
+
+  @override
+  String get whatsNewIconsBody =>
+      'Toute l\'application utilise un nouveau jeu d\'icônes, plus léger.';
+
+  @override
+  String get whatsNewSettingsTitle => 'Des réglages plus clairs';
+
+  @override
+  String get whatsNewSettingsBody =>
+      'Supprimer le compte se trouve maintenant dans Mon profil, et Préférences en bas de la liste.';
 }
