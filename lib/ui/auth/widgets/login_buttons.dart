@@ -2,27 +2,27 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
 
 import 'package:knote/ui/auth/bloc/login_cubit.dart';
 import 'package:knote/ui/auth/bloc/sign_up_cubit.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 
-/// The icon at the start of a field. [FaIcon] does not center itself in the
+/// The icon at the start of a field. [AppIcon] does not center itself in the
 /// 48 dp square a prefix icon is given, so it would sit in its corner.
 class _FieldIcon extends StatelessWidget {
   const _FieldIcon(this.icon);
 
-  final FaIconData icon;
+  final AppIcons icon;
 
   @override
   Widget build(BuildContext context) {
     return Align(
       widthFactor: 1,
       heightFactor: 1,
-      child: FaIcon(icon, size: 18, color: AppColors.of(context).text),
+      child: AppIcon(icon, size: 18, color: AppColors.of(context).text),
     );
   }
 }
@@ -43,7 +43,7 @@ class EmailInput extends StatelessWidget {
           textInputAction: TextInputAction.next,
           autofillHints: const [AutofillHints.email],
           decoration: InputDecoration(
-            prefixIcon: _FieldIcon(FontAwesomeIcons.user),
+            prefixIcon: _FieldIcon(AppIcons.user),
             labelText: context.l10n.emailLabel,
             helperText: '',
             errorText: state.email.displayError != null
@@ -82,13 +82,13 @@ class _PasswordInputState extends State<PasswordInput> {
           obscureText: !showPassword,
           //focusNode: FocusNode(),
           decoration: InputDecoration(
-            prefixIcon: _FieldIcon(FontAwesomeIcons.lock),
+            prefixIcon: _FieldIcon(AppIcons.lock),
             suffixIcon: IconButton(
               tooltip: showPassword
                   ? context.l10n.hidePassword
                   : context.l10n.showPassword,
-              icon: FaIcon(
-                showPassword ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
+              icon: AppIcon(
+                showPassword ? AppIcons.eyeClosed : AppIcons.eye,
                 color: AppColors.of(context).text,
               ),
               onPressed: () {
@@ -156,11 +156,11 @@ class LoginButton extends StatelessWidget {
                       : null,
                   child: Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.circleUser),
+                      const AppIcon(AppIcons.userCircle),
                       const Spacer(),
                       Text(context.l10n.logIn),
                       const Spacer(),
-                      const FaIcon(FontAwesomeIcons.circleUser,
+                      const AppIcon(AppIcons.userCircle,
                           color: Colors.transparent),
                     ],
                   ),
@@ -186,11 +186,11 @@ class GoogleLoginButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(minimumSize: const Size(64, 44)),
       child: Row(
         children: [
-          const FaIcon(FontAwesomeIcons.google),
+          const AppIcon(AppIcons.google),
           const Spacer(),
           Text(context.l10n.signInWithGoogle),
           const Spacer(),
-          const FaIcon(FontAwesomeIcons.google, color: Colors.transparent),
+          const AppIcon(AppIcons.google, color: Colors.transparent),
         ],
       ),
     );
@@ -213,7 +213,7 @@ class EmailSignInInput extends StatelessWidget {
               BlocProvider.of<SignUpCubit>(context).emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            prefixIcon: const _FieldIcon(FontAwesomeIcons.user),
+            prefixIcon: const _FieldIcon(AppIcons.user),
             labelText: context.l10n.emailLabel,
             helperText: '',
             errorText: state.email.displayError != null
@@ -247,14 +247,12 @@ class _PasswordSignInInputState extends State<PasswordSignInInput> {
               BlocProvider.of<SignUpCubit>(context).passwordChanged(password),
           obscureText: !showPassword,
           decoration: InputDecoration(
-            prefixIcon: const _FieldIcon(FontAwesomeIcons.lock),
+            prefixIcon: const _FieldIcon(AppIcons.lock),
             suffixIcon: IconButton(
               tooltip: showPassword
                   ? context.l10n.hidePassword
                   : context.l10n.showPassword,
-              icon: FaIcon(showPassword
-                  ? FontAwesomeIcons.eyeSlash
-                  : FontAwesomeIcons.eye),
+              icon: AppIcon(showPassword ? AppIcons.eyeClosed : AppIcons.eye),
               onPressed: () {
                 setState(() {
                   showPassword = !showPassword;
@@ -324,7 +322,7 @@ class SignUpSignInButton extends StatelessWidget {
                       : null,
                   child: Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.circleUser),
+                      const AppIcon(AppIcons.userCircle),
                       const Spacer(),
                       Text(context.l10n.signUp),
                       const Spacer(),

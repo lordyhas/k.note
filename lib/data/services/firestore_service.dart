@@ -215,7 +215,7 @@ class FirestoreService {
 
   /// F E E D B A C K
 
-  /// Sends [message] to the K.Note team. Feedback lives outside the user's
+  /// Sends [message] to the KNOTE team. Feedback lives outside the user's
   /// subtree (`feedback/{id}`) so that the team can read it; the rules only
   /// let its author create it, read it and delete it.
   Future<void> sendFeedback({

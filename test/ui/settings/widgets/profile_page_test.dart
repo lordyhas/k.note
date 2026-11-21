@@ -89,4 +89,18 @@ void main() {
     verify(() => authBloc.updateUser(renamed)).called(1);
     expect(find.text('Profile saved'), findsOneWidget);
   });
+
+  testWidgets('Delete account, at the bottom, asks for confirmation',
+      (tester) async {
+    when(() => authRepository.signedInWithPassword).thenReturn(true);
+    await pumpPage(tester);
+
+    final tile = find.byKey(const Key('__profile_deleteAccount__'));
+    await tester.ensureVisible(tile);
+    await tester.pumpAndSettle();
+    await tester.tap(tile);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete your account?'), findsOneWidget);
+  });
 }

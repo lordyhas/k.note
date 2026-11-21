@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/core/themes/app_theme.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
 
 class NoteCard extends StatelessWidget {
@@ -64,8 +65,8 @@ class NoteCard extends StatelessWidget {
             alignment: Alignment.topRight,
             child: Container(
                 margin: const EdgeInsets.only(right: 10.0, top: 6.0),
-                child: Icon(
-                  Icons.cloud_done_outlined,
+                child: AppIcon(
+                  AppIcons.cloudCheck,
                   size: 18,
                   color: color ?? Colors.lightBlueAccent.withValues(alpha: 0.7),
                 )),

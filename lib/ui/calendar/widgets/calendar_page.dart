@@ -9,6 +9,7 @@ import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/tasks/widgets/task_editor_page.dart';
 
@@ -79,7 +80,7 @@ class _CalendarPageState extends State<CalendarPage> {
           IconButton(
             tooltip: l10n.calendarToday,
             onPressed: _goToToday,
-            icon: const Icon(Icons.today),
+            icon: const AppIcon(AppIcons.calendarCheck),
           ),
         ],
       ),
@@ -194,7 +195,7 @@ class _MonthGrid extends StatelessWidget {
             IconButton(
               tooltip: l10n.calendarPreviousMonth,
               onPressed: onPrevious,
-              icon: const Icon(Icons.chevron_left),
+              icon: const AppIcon(AppIcons.chevronLeft),
             ),
             Expanded(
               child: Text(
@@ -207,7 +208,7 @@ class _MonthGrid extends StatelessWidget {
             IconButton(
               tooltip: l10n.calendarNextMonth,
               onPressed: onNext,
-              icon: const Icon(Icons.chevron_right),
+              icon: const AppIcon(AppIcons.chevronRight),
             ),
           ],
         ),
@@ -347,10 +348,8 @@ class _DayTasks extends StatelessWidget {
     final tiles = [
       for (final task in sorted)
         ListTile(
-          leading: Icon(
-            task.isAllChecked
-                ? Icons.check_circle
-                : Icons.radio_button_unchecked,
+          leading: AppIcon(
+            task.isAllChecked ? AppIcons.checkCircleSolid : AppIcons.circle,
             color: task.isAllChecked ? colors.textMuted : colors.text,
           ),
           title: Text(

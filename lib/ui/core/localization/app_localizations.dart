@@ -308,6 +308,138 @@ abstract class AppLocalizations {
   /// **'Change the note color'**
   String get editorColorTitle;
 
+  /// No description provided for @editorReadMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading mode'**
+  String get editorReadMode;
+
+  /// No description provided for @editorEditMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editorEditMode;
+
+  /// No description provided for @editorInsert.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert'**
+  String get editorInsert;
+
+  /// No description provided for @editorChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'Checklist'**
+  String get editorChecklist;
+
+  /// No description provided for @editorTextStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Text style'**
+  String get editorTextStyle;
+
+  /// No description provided for @editorBold.
+  ///
+  /// In en, this message translates to:
+  /// **'Bold'**
+  String get editorBold;
+
+  /// No description provided for @editorItalic.
+  ///
+  /// In en, this message translates to:
+  /// **'Italic'**
+  String get editorItalic;
+
+  /// No description provided for @editorUnderline.
+  ///
+  /// In en, this message translates to:
+  /// **'Underline'**
+  String get editorUnderline;
+
+  /// No description provided for @editorStrikethrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Strikethrough'**
+  String get editorStrikethrough;
+
+  /// No description provided for @editorParagraph.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists and quote'**
+  String get editorParagraph;
+
+  /// No description provided for @editorBulletedList.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulleted list'**
+  String get editorBulletedList;
+
+  /// No description provided for @editorNumberedList.
+  ///
+  /// In en, this message translates to:
+  /// **'Numbered list'**
+  String get editorNumberedList;
+
+  /// No description provided for @editorQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote'**
+  String get editorQuote;
+
+  /// No description provided for @editorParagraphStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paragraph style'**
+  String get editorParagraphStyle;
+
+  /// No description provided for @editorStyleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Body text'**
+  String get editorStyleBody;
+
+  /// No description provided for @editorStyleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get editorStyleTitle;
+
+  /// No description provided for @editorStyleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle'**
+  String get editorStyleSubtitle;
+
+  /// No description provided for @editorStyleHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading'**
+  String get editorStyleHeading;
+
+  /// No description provided for @editorFontSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Font size'**
+  String get editorFontSize;
+
+  /// No description provided for @editorRedo.
+  ///
+  /// In en, this message translates to:
+  /// **'Redo'**
+  String get editorRedo;
+
+  /// No description provided for @editorDateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date and time'**
+  String get editorDateTime;
+
+  /// No description provided for @editorPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Start writing'**
+  String get editorPlaceholder;
+
   /// No description provided for @binTitle.
   ///
   /// In en, this message translates to:
@@ -893,7 +1025,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedbackBody.
   ///
   /// In en, this message translates to:
-  /// **'Tell us what you think of K.Note.'**
+  /// **'Tell us what you think of KNOTE.'**
   String get feedbackBody;
 
   /// No description provided for @feedbackHint.
@@ -917,7 +1049,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to K.Note'**
+  /// **'Welcome to KNOTE'**
   String get welcome;
 
   /// No description provided for @signInToContinue.
@@ -1489,6 +1621,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your preferences couldn\'t be saved.'**
   String get preferencesSaveFailed;
+
+  /// No description provided for @whatsNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get whatsNewTitle;
+
+  /// No description provided for @whatsNewVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String whatsNewVersion(String version);
+
+  /// No description provided for @whatsNewContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get whatsNewContinue;
+
+  /// No description provided for @whatsNewEditorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A new note editor'**
+  String get whatsNewEditorTitle;
+
+  /// No description provided for @whatsNewEditorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Format your notes from the bar above the keyboard: checklists, bold and other styles, lists, headings and font size, with undo and redo. The book button switches to reading mode.'**
+  String get whatsNewEditorBody;
+
+  /// No description provided for @whatsNewIconsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New icons'**
+  String get whatsNewIconsTitle;
+
+  /// No description provided for @whatsNewIconsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The whole app uses a new, lighter set of icons.'**
+  String get whatsNewIconsBody;
+
+  /// No description provided for @whatsNewSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tidier settings'**
+  String get whatsNewSettingsTitle;
+
+  /// No description provided for @whatsNewSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account is now in My profile, and Preferences is at the bottom of the list.'**
+  String get whatsNewSettingsBody;
 }
 
 class _AppLocalizationsDelegate

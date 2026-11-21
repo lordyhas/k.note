@@ -7,6 +7,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
@@ -56,8 +57,8 @@ class _ArchivedNotesPageState extends State<ArchivedNotesPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.archive_outlined,
+                    const AppIcon(
+                      AppIcons.archive,
                       size: 100,
                     ),
                     const SizedBox(

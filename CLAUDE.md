@@ -59,7 +59,7 @@ All routes live in `AppRouter.routes(...)`. They are GoRouter routes that refres
 - `FirestoreService` is **not a singleton**. Pages construct it per user with `FirestoreService.user(user)`. Every constructor accepts an optional `FirebaseFirestore`, and tests inject `FakeFirebaseFirestore` through it. Paths: `users/{userId}/notes` and `.../tasks`. Methods return the Firestore futures and don't swallow errors; lists use live `snapshots()` streams (`watchNotes`, `watchArchivedNotes`, `watchDeletedNotes`, `watchTasks`). Pages take an optional `firebaseManager` so widget tests can pass one backed by `FakeFirebaseFirestore`.
 - UI writes go through `saveInBackground` (`lib/utils/`): not awaited (Firestore completes writes only on server ack, never offline), with failures reported via the app-wide `ScaffoldMessenger`. Removals offer Undo with `showUndoSnackBar` (`ui/core/widgets/`).
 - Models implement `DataToMap` (`fromMap`/`asMap`), and `fromMap` is deliberately defensive about malformed docs. `CheckList.repeat` is encoded/decoded by `TaskRepeat`.
-- There is no local database; persistence offline relies on Firestore's cache.
+- There is no local database; persistence offline relies on Firestore's cache. The only data kept on the device is the last version whose "What's new" was shown (`WhatsNewService`, `shared_preferences`).
 
 ### Tests (`test/`)
 
@@ -72,6 +72,7 @@ All routes live in `AppRouter.routes(...)`. They are GoRouter routes that refres
 - Colors come from `AppColors.of(context)` (`ui/core/themes/app_colors.dart`, a `ThemeExtension` registered in `AppTheme.dark`), not `Colors.*` literals; user-chosen note/task palettes are data and stay literal.
 - The look is Fluent-style Material: `AppTheme` sets the shapes (4 dp controls, 8 dp surfaces), strokes, buttons, fields, dialogs, sheets and bars once. Pages don't restyle them (no local corner radius or field border); a field without a box uses `border: InputBorder.none, filled: false`.
 - Pages are responsive (`ui/core/widgets/responsive.dart`): keep content at a readable width with `CenteredContent`, or `centeredPadding` for a scroll view, using `ContentWidths`; never size from a fraction of the screen width without a cap. Check a page at phone, landscape, tablet and desktop widths.
+- Icons are Iconoir (`AppIcon(AppIcons.x)`, `ui/core/widgets/app_icons.dart`), never Material `Icons.*`. `AppShell` shows `WhatsNewDialog` once after each update; list a release's changes in `whatsNewEntries`.
 - Icon-only buttons have a translated `tooltip`; touch targets are at least 48 dp.
 - Widget tests pump `localizedApp(...)` / `localizedRouterApp(...)` from `test/helpers/localized_app.dart` (English by default, `locale:` to test French).
 

@@ -6,6 +6,7 @@ import 'package:knote/domain/models/note.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
 import 'package:knote/utils/save_in_background.dart';
@@ -90,8 +91,8 @@ class _TrashPageState extends State<TrashPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.delete_outline,
+                    const AppIcon(
+                      AppIcons.trash,
                       size: 100,
                     ),
                     const SizedBox(

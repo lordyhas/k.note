@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:knote/data/services/whats_new_service.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/background_ui.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/settings_page.dart';
+import 'package:knote/ui/settings/widgets/whats_new_dialog.dart';
 import 'package:knote/ui/shell/side_navigation_pane.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 import 'package:knote/ui/tasks/widgets/tasks_page.dart';
@@ -31,10 +34,14 @@ class AppShell extends StatefulWidget {
   /// Path of the page shown in the shell; selects the navigation entry.
   final String location;
 
+  /// Decides whether to show "What's new"; tests pass one with fakes.
+  final WhatsNewService? whatsNew;
+
   const AppShell({
     super.key,
     required this.child,
     this.location = '',
+    this.whatsNew,
   });
 
   /// The navigation for a window [width] logical pixels wide, on every
@@ -102,11 +109,28 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   //late final FirestoreService _firebaseManager;
 
+  /// "What's new" is checked once per app run, not on every sign-in.
+  static bool _whatsNewChecked = false;
+
   @override
   void initState() {
     // _firebaseManager = FirestoreService.user(
     //     BlocProvider.of<AuthenticationBloc>(context).state.user);
     super.initState();
+    if (!_whatsNewChecked || widget.whatsNew != null) {
+      _whatsNewChecked = true;
+      _announceUpdate();
+    }
+  }
+
+  /// Shows "What's new" the first time this version runs on the device.
+  Future<void> _announceUpdate() async {
+    final service = widget.whatsNew ?? WhatsNewService();
+    final version = await service.versionToAnnounce();
+    if (version == null || !mounted) return;
+    await service.markSeen(version);
+    if (!mounted) return;
+    await showWhatsNew(context, version: version);
   }
 
   @override
@@ -177,7 +201,7 @@ class _AppShellState extends State<AppShell> {
           children: [
             SideNavigationPane(
               expanded: expanded,
-              title: 'K.Note',
+              title: 'KNOTE',
               selectedIndex: AppShell.sideIndexFor(widget.location),
               // go, not push, as with the bottom bar.
               onSelected: (index) =>
@@ -186,33 +210,33 @@ class _AppShellState extends State<AppShell> {
               footerCount: 1,
               destinations: [
                 SideNavigationDestination(
-                  icon: Icons.file_copy_outlined,
-                  selectedIcon: Icons.file_copy,
+                  icon: AppIcons.notes,
+                  selectedIcon: AppIcons.notes,
                   label: l10n.navNotes,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.task_outlined,
-                  selectedIcon: Icons.task,
+                  icon: AppIcons.task,
+                  selectedIcon: AppIcons.task,
                   label: l10n.navTasks,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.calendar_today_outlined,
-                  selectedIcon: Icons.calendar_today,
+                  icon: AppIcons.calendar,
+                  selectedIcon: AppIcons.calendar,
                   label: l10n.calendar,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.archive_outlined,
-                  selectedIcon: Icons.archive,
+                  icon: AppIcons.archive,
+                  selectedIcon: AppIcons.archive,
                   label: l10n.archiveTitle,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.delete_outline,
-                  selectedIcon: Icons.delete,
+                  icon: AppIcons.trash,
+                  selectedIcon: AppIcons.trash,
                   label: l10n.binTitle,
                 ),
                 SideNavigationDestination(
-                  icon: Icons.perm_identity,
-                  selectedIcon: Icons.person,
+                  icon: AppIcons.user,
+                  selectedIcon: AppIcons.user,
                   label: l10n.navProfile,
                 ),
               ],
@@ -239,18 +263,18 @@ class _AppShellState extends State<AppShell> {
           },
           destinations: [
             NavigationDestination(
-              icon: const Icon(Icons.file_copy_outlined),
-              selectedIcon: const Icon(Icons.file_copy),
+              icon: const AppIcon(AppIcons.notes),
+              selectedIcon: const AppIcon(AppIcons.notes),
               label: context.l10n.navNotes,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.task_outlined),
-              selectedIcon: const Icon(Icons.task),
+              icon: const AppIcon(AppIcons.task),
+              selectedIcon: const AppIcon(AppIcons.task),
               label: context.l10n.navTasks,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.perm_identity),
-              selectedIcon: const Icon(Icons.person),
+              icon: const AppIcon(AppIcons.user),
+              selectedIcon: const AppIcon(AppIcons.user),
               label: context.l10n.navYou,
             ),
           ],

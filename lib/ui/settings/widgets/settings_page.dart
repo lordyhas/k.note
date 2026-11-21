@@ -4,36 +4,31 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:knote/data/repositories/auth_repository.dart';
-import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
 import 'package:knote/ui/auth/widgets/logout_dialog.dart';
 import 'package:knote/ui/auth/widgets/password_reset_dialog.dart';
 import 'package:knote/ui/calendar/widgets/calendar_page.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/core/widgets/user_avatar.dart';
 import 'package:knote/ui/notes/widgets/archived_notes_page.dart';
 import 'package:knote/ui/notes/widgets/trash_page.dart';
 import 'package:knote/ui/settings/widgets/about_page.dart';
-import 'package:knote/ui/settings/widgets/delete_account_dialog.dart';
 import 'package:knote/ui/settings/widgets/feedback_page.dart';
 import 'package:knote/ui/settings/widgets/preferences_page.dart';
 import 'package:knote/ui/settings/widgets/profile_page.dart';
+import 'package:knote/ui/settings/widgets/whats_new_dialog.dart';
 import 'package:knote/ui/shell/side_navigation_scope.dart';
 
 class SettingsPage extends StatefulWidget {
   static const routeName = "user";
   final Function()? onMenuTap;
 
-  /// Used to delete the user's data with their account; tests pass one
-  /// backed by a fake Firestore.
-  final FirestoreService? firebaseManager;
-
   const SettingsPage({
     super.key,
     this.onMenuTap,
-    this.firebaseManager,
   });
 
   @override
@@ -41,14 +36,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  void _deleteAccount() {
-    final user = context.read<AuthenticationBloc>().state.user;
-    showDeleteAccountDialog(
-      context,
-      firestoreService: widget.firebaseManager ?? FirestoreService.user(user),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -70,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
           /*IconButton(
             tooltip: l10n.logOut,
             onPressed: () => confirmLogout(context),
-            icon: const Icon(CupertinoIcons.square_arrow_right),
+            icon: const AppIcon(AppIcons.logOut),
           )*/
         ],
       ),
@@ -100,41 +87,27 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 ListTile(
                                   key: const Key('__settings_profile__'),
-                                  leading: Icon(
-                                    Icons.person_outline,
+                                  leading: AppIcon(
+                                    AppIcons.user,
                                     color: iconColor,
                                   ),
                                   title: Text(l10n.profileTitle),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
+                                  trailing: AppIcon(
+                                    AppIcons.chevronRight,
                                     color: iconColor,
                                   ),
                                   onTap: () => GoRouter.of(context)
                                       .goNamed(ProfilePage.routeName),
                                 ),
-                                ListTile(
-                                  key: const Key('__settings_preferences__'),
-                                  leading: Icon(
-                                    Icons.tune,
-                                    color: iconColor,
-                                  ),
-                                  title: Text(l10n.preferencesTitle),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: iconColor,
-                                  ),
-                                  onTap: () => GoRouter.of(context)
-                                      .goNamed(PreferencesPage.routeName),
-                                ),
                                 if (signedInWithPassword)
                                   ListTile(
-                                    leading: Icon(
-                                      Icons.password,
+                                    leading: AppIcon(
+                                      AppIcons.lock,
                                       color: iconColor,
                                     ),
                                     title: Text(l10n.changePassword),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
+                                    trailing: AppIcon(
+                                      AppIcons.chevronRight,
                                       color: iconColor,
                                     ),
                                     onTap: () => showPasswordResetDialog(
@@ -148,39 +121,39 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                 if (!sideNavigation) ...[
                                   ListTile(
-                                    leading: Icon(
-                                      Icons.delete_outline,
+                                    leading: AppIcon(
+                                      AppIcons.trash,
                                       color: iconColor,
                                     ),
                                     title: Text(l10n.binTitle),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
+                                    trailing: AppIcon(
+                                      AppIcons.chevronRight,
                                       color: iconColor,
                                     ),
                                     onTap: () => GoRouter.of(context)
                                         .goNamed(TrashPage.routeName),
                                   ),
                                   ListTile(
-                                    leading: Icon(
-                                      Icons.archive_outlined,
+                                    leading: AppIcon(
+                                      AppIcons.archive,
                                       color: iconColor,
                                     ),
                                     title: Text(l10n.archiveTitle),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
+                                    trailing: AppIcon(
+                                      AppIcons.chevronRight,
                                       color: iconColor,
                                     ),
                                     onTap: () => GoRouter.of(context)
                                         .goNamed(ArchivedNotesPage.routeName),
                                   ),
                                   ListTile(
-                                    leading: Icon(
-                                      Icons.calendar_today_outlined,
+                                    leading: AppIcon(
+                                      AppIcons.calendar,
                                       color: iconColor,
                                     ),
                                     title: Text(l10n.calendar),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
+                                    trailing: AppIcon(
+                                      AppIcons.chevronRight,
                                       color: iconColor,
                                     ),
                                     onTap: () => GoRouter.of(context)
@@ -188,29 +161,30 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                 ],
                                 ListTile(
-                                  leading: Icon(
-                                    Icons.output,
+                                  leading: AppIcon(
+                                    AppIcons.logOut,
                                     color: iconColor,
                                   ),
                                   title: Text(l10n.logOut),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
+                                  trailing: AppIcon(
+                                    AppIcons.chevronRight,
                                     color: iconColor,
                                   ),
                                   onTap: () => confirmLogout(context),
                                 ),
                                 ListTile(
-                                  key: const Key('__settings_deleteAccount__'),
-                                  leading: Icon(
-                                    Icons.person_remove_outlined,
-                                    color: AppColors.of(context).danger,
+                                  key: const Key('__settings_preferences__'),
+                                  leading: AppIcon(
+                                    AppIcons.settings,
+                                    color: iconColor,
                                   ),
-                                  title: Text(
-                                    l10n.deleteAccount,
-                                    style: TextStyle(
-                                        color: AppColors.of(context).danger),
+                                  title: Text(l10n.preferencesTitle),
+                                  trailing: AppIcon(
+                                    AppIcons.chevronRight,
+                                    color: iconColor,
                                   ),
-                                  onTap: _deleteAccount,
+                                  onTap: () => GoRouter.of(context)
+                                      .goNamed(PreferencesPage.routeName),
                                 ),
                               ],
                             ),
@@ -253,8 +227,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                           key:
                                               const Key('__settings_addName__'),
                                           onPressed: openProfile,
-                                          icon:
-                                              const Icon(Icons.edit, size: 18),
+                                          icon: const AppIcon(AppIcons.edit,
+                                              size: 18),
                                           label: Text(l10n.profileAddName),
                                         ),
                                       SelectableText(
@@ -303,26 +277,48 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: Icon(
-                            Icons.feedback_outlined,
+                          leading: AppIcon(
+                            AppIcons.chat,
                             color: iconColor,
                           ),
                           title: Text(l10n.sendFeedback),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
+                          trailing: AppIcon(
+                            AppIcons.chevronRight,
                             color: iconColor,
                           ),
                           onTap: () => GoRouter.of(context)
                               .goNamed(FeedbackPage.routeName),
                         ),
                         ListTile(
-                          leading: Icon(
-                            Icons.info_outline,
+                          key: const Key('__settings_whatsNew__'),
+                          leading: AppIcon(
+                            AppIcons.gift,
+                            color: iconColor,
+                          ),
+                          title: Text(l10n.whatsNewTitle),
+                          trailing: AppIcon(
+                            AppIcons.chevronRight,
+                            color: iconColor,
+                          ),
+                          onTap: () async {
+                            String? version;
+                            try {
+                              version =
+                                  (await PackageInfo.fromPlatform()).version;
+                            } catch (_) {}
+                            if (context.mounted) {
+                              showWhatsNew(context, version: version);
+                            }
+                          },
+                        ),
+                        ListTile(
+                          leading: AppIcon(
+                            AppIcons.info,
                             color: iconColor,
                           ),
                           title: Text(l10n.aboutApp),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
+                          trailing: AppIcon(
+                            AppIcons.chevronRight,
                             color: iconColor,
                           ),
                           onTap: () {
@@ -335,8 +331,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return ListTile(
-                                  leading: Icon(
-                                    Icons.launch_sharp,
+                                  leading: AppIcon(
+                                    AppIcons.openExternal,
                                     color: iconColor,
                                   ),
                                   title: Text(l10n.appVersion(

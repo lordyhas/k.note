@@ -8,6 +8,7 @@ import 'package:knote/data/services/firestore_service.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/domain/models/user.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/tasks/widgets/task_quick_add.dart';
 
 import '../../../helpers/localized_app.dart';
@@ -56,7 +57,10 @@ void main() {
     expect(find.text('Weekly'), findsOneWidget, reason: 'options restored');
     expect(find.textContaining("Couldn't save this task"), findsOneWidget);
 
-    await tester.tap(find.widgetWithIcon(IconButton, Icons.arrow_upward));
+    await tester.tap(find.ancestor(
+        of: find.byWidgetPredicate(
+            (w) => w is AppIcon && w.icon == AppIcons.arrowUp),
+        matching: find.byType(IconButton)));
     await tester.pumpAndSettle();
 
     expect(attempts, 2);
@@ -76,7 +80,10 @@ void main() {
 
     await tester.enterText(find.byType(TextField), 'Call mom');
     await tester.pump(); // enables the send button
-    await tester.tap(find.widgetWithIcon(IconButton, Icons.arrow_upward));
+    await tester.tap(find.ancestor(
+        of: find.byWidgetPredicate(
+            (w) => w is AppIcon && w.icon == AppIcons.arrowUp),
+        matching: find.byType(IconButton)));
     await tester.pump();
 
     final tasks = await manager.getTasksInCloud();
@@ -93,8 +100,10 @@ void main() {
     await tester.pump();
 
     expect(await manager.getTasksInCloud(), isEmpty);
-    final addButton = tester.widget<IconButton>(
-        find.widgetWithIcon(IconButton, Icons.arrow_upward));
+    final addButton = tester.widget<IconButton>(find.ancestor(
+        of: find.byWidgetPredicate(
+            (w) => w is AppIcon && w.icon == AppIcons.arrowUp),
+        matching: find.byType(IconButton)));
     expect(addButton.onPressed, isNull);
   });
 

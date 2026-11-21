@@ -8,6 +8,7 @@ import 'package:knote/domain/models/task_repeat.dart';
 import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/preferences_scope.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
+import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/tasks/widgets/task_pickers.dart';
 import 'package:knote/ui/tasks/widgets/task_text.dart';
 import 'package:knote/utils/save_in_background.dart';
@@ -143,31 +144,29 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
     String weekday(DueDateShortcut shortcut) =>
         weekdayName(l10n, _shortcutDate(shortcut));
     return [
-      _menuItem(_DueDateChoice.today, Icons.today_outlined,
+      _menuItem(_DueDateChoice.today, AppIcons.calendarCheck,
           l10n.menuToday(weekday(DueDateShortcut.today))),
-      _menuItem(_DueDateChoice.tomorrow, Icons.event_outlined,
+      _menuItem(_DueDateChoice.tomorrow, AppIcons.calendar,
           l10n.menuTomorrow(weekday(DueDateShortcut.tomorrow))),
-      _menuItem(_DueDateChoice.nextWeek, Icons.date_range_outlined,
+      _menuItem(_DueDateChoice.nextWeek, AppIcons.calendar,
           l10n.menuNextWeek(weekday(DueDateShortcut.nextWeek))),
-      _menuItem(
-          _DueDateChoice.pick, Icons.edit_calendar_outlined, l10n.pickDate),
+      _menuItem(_DueDateChoice.pick, AppIcons.calendar, l10n.pickDate),
       if (_dueDate != null) ...[
         const PopupMenuDivider(),
-        _menuItem(
-            _DueDateChoice.remove, Icons.delete_outline, l10n.removeDueDate,
+        _menuItem(_DueDateChoice.remove, AppIcons.trash, l10n.removeDueDate,
             color: AppColors.of(context).danger),
       ],
     ];
   }
 
-  PopupMenuItem<T> _menuItem<T>(T value, IconData icon, String label,
+  PopupMenuItem<T> _menuItem<T>(T value, AppIcons icon, String label,
       {Color? color}) {
     color ??= AppColors.of(context).text;
     return PopupMenuItem(
       value: value,
       child: Row(
         children: [
-          Icon(icon, color: color),
+          AppIcon(icon, color: color),
           const SizedBox(width: 16),
           Flexible(
             child: Text(label,
@@ -232,29 +231,27 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
         '${DateFormat.E(l10n.localeName).format(dateTime)} ${_time(dateTime)}';
     return [
       if (laterToday != null)
-        _menuItem(_ReminderChoice.laterToday, Icons.update,
+        _menuItem(_ReminderChoice.laterToday, AppIcons.refresh,
             l10n.menuLaterToday(_time(laterToday))),
-      _menuItem(_ReminderChoice.tomorrow, Icons.schedule,
+      _menuItem(_ReminderChoice.tomorrow, AppIcons.clock,
           l10n.menuTomorrow(dayAndTime(tomorrow))),
-      _menuItem(_ReminderChoice.nextWeek, Icons.arrow_circle_right_outlined,
+      _menuItem(_ReminderChoice.nextWeek, AppIcons.arrowRightCircle,
           l10n.menuNextWeek(dayAndTime(nextWeek))),
-      _menuItem(_ReminderChoice.pick, Icons.edit_calendar_outlined,
-          l10n.pickDateAndTime),
+      _menuItem(_ReminderChoice.pick, AppIcons.calendar, l10n.pickDateAndTime),
       if (_reminderTime != null) ...[
         const PopupMenuDivider(),
-        _menuItem(
-            _ReminderChoice.remove, Icons.delete_outline, l10n.removeReminder,
+        _menuItem(_ReminderChoice.remove, AppIcons.trash, l10n.removeReminder,
             color: AppColors.of(context).danger),
       ],
     ];
   }
 
   static const _repeatIcons = {
-    TaskRepeat.daily: Icons.today_outlined,
-    TaskRepeat.weekdaysOnly: Icons.work_outline,
-    TaskRepeat.weekly: Icons.view_week_outlined,
-    TaskRepeat.monthly: Icons.calendar_month_outlined,
-    TaskRepeat.yearly: Icons.event_repeat_outlined,
+    TaskRepeat.daily: AppIcons.calendarCheck,
+    TaskRepeat.weekdaysOnly: AppIcons.suitcase,
+    TaskRepeat.weekly: AppIcons.calendar,
+    TaskRepeat.monthly: AppIcons.calendar,
+    TaskRepeat.yearly: AppIcons.repeat,
   };
 
   /// Menu values are a [TaskRepeat] preset or a [_RepeatAction].
@@ -279,11 +276,11 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
       for (final preset in TaskRepeat.presets)
         _menuItem<Object>(
             preset, _repeatIcons[preset]!, repeatText(l10n, preset)),
-      _menuItem<Object>(_RepeatAction.custom, Icons.tune, l10n.repeatCustom),
+      _menuItem<Object>(
+          _RepeatAction.custom, AppIcons.settings, l10n.repeatCustom),
       if (_repeat != null) ...[
         const PopupMenuDivider(),
-        _menuItem<Object>(
-            _RepeatAction.never, Icons.delete_outline, l10n.repeatNever,
+        _menuItem<Object>(_RepeatAction.never, AppIcons.trash, l10n.repeatNever,
             color: AppColors.of(context).danger),
       ],
     ];
@@ -307,7 +304,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Icon(Icons.radio_button_unchecked,
+                    child: AppIcon(AppIcons.circle,
                         color: colors.textMuted, size: 28),
                   ),
                   Expanded(
@@ -339,7 +336,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                           backgroundColor: colors.accent,
                           disabledBackgroundColor: colors.disabled,
                         ),
-                        icon: Icon(Icons.arrow_upward,
+                        icon: AppIcon(AppIcons.arrowUp,
                             color:
                                 canSubmit ? colors.onAccent : colors.textMuted),
                       );
@@ -367,7 +364,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                       itemBuilder: _dueDateMenu,
                       child: IgnorePointer(
                         child: _OptionButton(
-                          icon: Icons.calendar_today_outlined,
+                          icon: AppIcons.calendar,
                           label: _dueDateLabel,
                           isActive: _dueDate != null,
                           onPressed: () {},
@@ -381,7 +378,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                       itemBuilder: _reminderMenu,
                       child: IgnorePointer(
                         child: _OptionButton(
-                          icon: Icons.notifications_none,
+                          icon: AppIcons.bell,
                           label: _reminderLabel,
                           isActive: _reminderTime != null,
                           onPressed: () {},
@@ -395,7 +392,7 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                       itemBuilder: _repeatMenu,
                       child: IgnorePointer(
                         child: _OptionButton(
-                          icon: Icons.repeat,
+                          icon: AppIcons.repeat,
                           label: repeat == null
                               ? l10n.repeat
                               : repeatText(l10n, repeat),
@@ -429,7 +426,7 @@ class _OptionButton extends StatelessWidget {
     required this.onPressed,
   });
 
-  final IconData icon;
+  final AppIcons icon;
   final String label;
   final bool isActive;
   final VoidCallback onPressed;
@@ -440,7 +437,7 @@ class _OptionButton extends StatelessWidget {
     final color = isActive ? colors.accent : colors.text;
     return TextButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, color: color),
+      icon: AppIcon(icon, color: color),
       label: Text(label, style: TextStyle(color: color, fontSize: 15)),
     );
   }
