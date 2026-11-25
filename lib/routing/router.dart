@@ -75,8 +75,11 @@ class AppRouter {
                     parentNavigatorKey: key,
                     name: NoteEditorPage.routeName,
                     path: NoteEditorPage.routeName,
-                    builder: (context, state) =>
-                        NoteEditorPage(note: state.extra as NoteModel?),
+                    builder: (context, state) => NoteEditorPage(
+                      note: state.extra as NoteModel?,
+                      folderId:
+                          state.uri.queryParameters[NoteEditorPage.folderParam],
+                    ),
                   ),
                   GoRoute(
                     name: TasksPage.routeName,

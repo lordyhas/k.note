@@ -10,7 +10,7 @@ K.Note follows the layered structure of the official Flutter architecture guide
   `tasks`, `settings`), with their blocs/cubits in `ui/<feature>/bloc/`, and shared
   theme, localization and widgets in `ui/core/`.
 - **Data layer** (`lib/data/`): `AuthRepository` (Firebase Auth, Google Sign-In)
-  and `FirestoreService` (notes, tasks, profile).
+  and `FirestoreService` (notes, folders, tasks, profile).
 - **Domain models** (`lib/domain/models/`): plain data classes mapped to and from
   Firestore documents.
 
@@ -111,7 +111,7 @@ Typical note flow:
 ## Account deletion
 
 `DeleteAccountCubit` asks the user to sign in again (password, or Google), deletes their
-Firestore data (`FirestoreService.deleteAllUserData`: notes, tasks, feedback, profile; it
+Firestore data (`FirestoreService.deleteAllUserData`: notes, folders, tasks, feedback, profile; it
 waits for the server), then the Firebase Auth account, which signs them out.
 
 ## Profile and preferences

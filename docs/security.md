@@ -21,6 +21,7 @@ Each user owns one subtree:
 ```
 users/{uid}          profile (optional)
 users/{uid}/notes/*  notes
+users/{uid}/folders/*  note folders (a note points to its folder with folder_id)
 users/{uid}/tasks/*  tasks
 users/{uid}/settings/preferences   the user's preferences
 feedback/{id}        messages sent from the Feedback page
@@ -65,9 +66,9 @@ expected types, and the stored `id` must match the document id and cannot
 change. Legacy documents with extra fields can still be updated or
 overwritten, but no new unknown field can be added.
 
-When a field is added to `NoteModel`, `CheckList` or `User.asMap()`, add it to
-`noteKeys()`, `taskKeys()` or `profileKeys()` in `firestore.rules` as well, or
-the write will be rejected.
+When a field is added to `NoteModel`, `NoteFolder`, `CheckList` or `User.asMap()`,
+add it to `noteKeys()`, `folderKeys()`, `taskKeys()` or `profileKeys()` in
+`firestore.rules` as well, or the write will be rejected.
 
 ## Blocking a user
 

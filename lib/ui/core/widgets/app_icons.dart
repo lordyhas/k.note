@@ -37,6 +37,8 @@ enum AppIcons {
   edit,
   eye,
   eyeClosed,
+  folder,
+  folderPlus,
   gift,
   google,
   grid,
@@ -149,6 +151,9 @@ class AppIcon extends StatelessWidget {
         AppIcons.edit => iconoir.EditPencil(color: c, width: s, height: s),
         AppIcons.eye => iconoir.Eye(color: c, width: s, height: s),
         AppIcons.eyeClosed => iconoir.EyeClosed(color: c, width: s, height: s),
+        AppIcons.folder => iconoir.Folder(color: c, width: s, height: s),
+        AppIcons.folderPlus =>
+          iconoir.FolderPlus(color: c, width: s, height: s),
         AppIcons.gift => iconoir.Gift(color: c, width: s, height: s),
         AppIcons.google => iconoir.Google(color: c, width: s, height: s),
         AppIcons.grid => iconoir.ViewGrid(color: c, width: s, height: s),

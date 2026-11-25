@@ -44,6 +44,14 @@ const note = (id, extra = {}) => ({
   email: 'alice@example.com',
   is_locked: false,
   saving_mode: 0,
+  folder_id: null,
+  ...extra,
+});
+
+const folder = (id, extra = {}) => ({
+  id,
+  name: 'Work',
+  creation_time: Timestamp.now(),
   ...extra,
 });
 
@@ -215,6 +223,60 @@ describe('note validation', () => {
     await seed(`${USERS}/${ALICE}/notes/n1`, { ...note('n1'), cipher_iv: 'abc' });
     await assertSucceeds(updateDoc(ref(), { is_deleted: true }));
     await assertSucceeds(setDoc(ref(), note('n1')));
+  });
+});
+
+describe('folders', () => {
+  const ref = (id = 'f1', uid = ALICE) => doc(db(uid), `${USERS}/${ALICE}/folders/${id}`);
+  const noteRef = (id) => doc(db(ALICE), `${USERS}/${ALICE}/notes/${id}`);
+
+  test('a user can create, rename, read and delete their own folder', async () => {
+    await assertSucceeds(setDoc(ref(), folder('f1')));
+    await assertSucceeds(updateDoc(ref(), { name: 'Personal' }));
+    await assertSucceeds(getDocs(collection(db(ALICE), `${USERS}/${ALICE}/folders`)));
+    await assertSucceeds(deleteDoc(ref()));
+  });
+
+  test("a user cannot read or write another user's folders", async () => {
+    await seed(`${USERS}/${ALICE}/folders/f1`, folder('f1'));
+    await assertFails(getDoc(ref('f1', BOB)));
+    await assertFails(setDoc(ref('f2', BOB), folder('f2')));
+    await assertFails(updateDoc(ref('f1', BOB), { name: 'pwned' }));
+    await assertFails(deleteDoc(ref('f1', BOB)));
+  });
+
+  test('a folder needs a name of 1 to 100 characters', async () => {
+    await assertFails(setDoc(ref(), folder('f1', { name: '' })));
+    await assertFails(setDoc(ref(), folder('f1', { name: 'x'.repeat(101) })));
+    await assertFails(setDoc(ref(), folder('f1', { name: null })));
+    await assertSucceeds(setDoc(ref(), folder('f1', { name: 'x'.repeat(100) })));
+    await assertFails(updateDoc(ref(), { name: '' }));
+  });
+
+  test('unknown fields and a mismatched id are rejected', async () => {
+    await assertFails(setDoc(ref(), folder('f1', { parent: 'f0' })));
+    await assertFails(setDoc(ref(), folder('other')));
+    await seed(`${USERS}/${ALICE}/folders/f1`, folder('f1'));
+    await assertFails(updateDoc(ref(), { id: 'f2' }));
+  });
+
+  test('a note can be filed in a folder and taken out of it', async () => {
+    await assertSucceeds(setDoc(noteRef('n1'), note('n1', { folder_id: 'f1' })));
+    await assertSucceeds(updateDoc(noteRef('n1'), { folder_id: 'f2' }));
+    await assertSucceeds(updateDoc(noteRef('n1'), { folder_id: null }));
+    await assertFails(updateDoc(noteRef('n1'), { folder_id: 42 }));
+  });
+
+  test('a note written before folders existed can be filed', async () => {
+    const { folder_id, ...legacy } = note('n1');
+    await seed(`${USERS}/${ALICE}/notes/n1`, legacy);
+    await assertSucceeds(updateDoc(noteRef('n1'), { folder_id: 'f1' }));
+  });
+
+  test("the notes of a folder can be queried, as deleting it does", async () => {
+    await seed(`${USERS}/${ALICE}/notes/n1`, note('n1', { folder_id: 'f1' }));
+    const q = query(collection(db(ALICE), `${USERS}/${ALICE}/notes`), where('folder_id', '==', 'f1'));
+    await assertSucceeds(getDocs(q));
   });
 });
 

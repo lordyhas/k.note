@@ -15,13 +15,21 @@ import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/core/themes/app_colors.dart';
 import 'package:knote/ui/core/widgets/app_icons.dart';
 import 'package:knote/ui/core/widgets/responsive.dart';
+import 'package:knote/ui/notes/widgets/note_folders.dart';
 import 'package:knote/utils/autosave.dart';
 import 'package:knote/utils/save_in_background.dart';
 
 class NoteEditorPage extends StatefulWidget {
   static const routeName = "editor";
+
+  /// Query parameter naming the folder of a new note.
+  static const folderParam = 'folder';
+
   final QuillController? controller;
   final NoteModel? note;
+
+  /// The folder a new note goes in ([note] is null); ignored otherwise.
+  final String? folderId;
 
   /// Defaults to the signed-in user's [FirestoreService]; tests pass a fake.
   final FirestoreService? firebaseManager;
@@ -31,6 +39,7 @@ class NoteEditorPage extends StatefulWidget {
     this.note,
     this.controller,
     this.firebaseManager,
+    this.folderId,
   });
 
   static Route route({NoteModel? note}) {
@@ -88,6 +97,7 @@ class _NoteEditorPageState extends State<NoteEditorPage>
           email: user.email,
           creationTime: DateTime.now(),
           modificationTime: DateTime.now(),
+          folderId: widget.folderId,
         );
 
     // Initialize controller with content
@@ -209,6 +219,29 @@ class _NoteEditorPageState extends State<NoteEditorPage>
     saveInBackground(() => _firebaseManager.addNoteInCloud(note: note),
         failureMessage: _l10n.noteColorSaveFailed, canRetry: false);
     isNoteInCloud = true;
+  }
+
+  /// Files the note in the folder the user picks. A note not saved yet
+  /// takes its folder with its first save.
+  Future<void> _moveToFolder() async {
+    final current = _noteModel.folderId;
+    final folderId = await moveNoteToPickedFolder(
+      context,
+      service: _firebaseManager,
+      noteId: _noteModel.id,
+      title: _titleController.text,
+      currentFolderId: current,
+      saveNow: false,
+    );
+    if (folderId == current) return;
+    _noteModel.folderId = folderId;
+    if (isNoteInCloud) {
+      final noteId = _noteModel.id;
+      saveInBackground(
+          () => _firebaseManager.moveNoteToFolder(
+              noteId: noteId, folderId: folderId),
+          failureMessage: _l10n.noteMoveFailed);
+    }
   }
 
   Future<void> _pickColor() async {
@@ -357,6 +390,7 @@ class _NoteEditorPageState extends State<NoteEditorPage>
             itemBuilder: (context) => [
               _menuItem(AppIcons.palette, l10n.editorColor, _pickColor,
                   iconColor: noteColor),
+              _menuItem(AppIcons.folder, l10n.noteMoveToFolder, _moveToFolder),
               _menuItem(AppIcons.archive, l10n.noteArchive,
                   () => _leaveNote(archive: true)),
               _menuItem(AppIcons.trash, l10n.noteMoveToBin,
