@@ -19,7 +19,10 @@ class TaskEditorPage extends StatefulWidget {
   static const String routeName = '/task_editor';
   final CheckList? task;
 
-  const TaskEditorPage({super.key, this.task});
+  /// The signed-in user's service when null; tests pass a fake one.
+  final FirestoreService? firebaseManager;
+
+  const TaskEditorPage({super.key, this.task, this.firebaseManager});
 
   @override
   State<TaskEditorPage> createState() => _TaskEditorPageState();
@@ -44,8 +47,9 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
   @override
   void initState() {
     super.initState();
-    _firebaseManager = FirestoreService.user(
-        BlocProvider.of<AuthenticationBloc>(context).state.user);
+    _firebaseManager = widget.firebaseManager ??
+        FirestoreService.user(
+            BlocProvider.of<AuthenticationBloc>(context).state.user);
 
     if (widget.task != null) {
       _titleController = TextEditingController(text: widget.task!.title);
@@ -264,16 +268,20 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
                       isActive: _dueDate != null,
                       onTap: _pickDueDate,
                     ),
-                    _buildOptionTile(
-                      icon: AppIcons.repeat,
-                      text: _repeat == null
-                          ? l10n.repeat
-                          : repeatValueText(l10n, _repeat!),
-                      isActive: _repeat != null,
-                      onTap: () {
-                        setState(() => _repeat =
-                            _repeat == null ? TaskRepeat.daily.encode() : null);
-                      },
+                    // The menu handles taps: the tile has no onTap.
+                    PopupMenuButton<Object>(
+                      tooltip: l10n.repeat,
+                      color: colors.surfaceHigh,
+                      onSelected: _onRepeatSelected,
+                      itemBuilder: (context) => repeatMenuEntries(context,
+                          canRemove: _repeat != null),
+                      child: _buildOptionTile(
+                        icon: AppIcons.repeat,
+                        text: _repeat == null
+                            ? l10n.repeat
+                            : repeatValueText(l10n, _repeat!),
+                        isActive: _repeat != null,
+                      ),
                     ),
                     _buildOptionTile(
                       icon: AppIcons.attachment,
@@ -337,7 +345,7 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
       {required AppIcons icon,
       required String text,
       required bool isActive,
-      required VoidCallback onTap}) {
+      VoidCallback? onTap}) {
     final colors = AppColors.of(context);
     return ListTile(
       leading:
@@ -373,6 +381,13 @@ class _TaskEditorPageState extends State<TaskEditorPage> {
     setState(() {
       _items.add(const TodoItem(text: '', isDone: false));
     });
+  }
+
+  Future<void> _onRepeatSelected(Object choice) async {
+    final repeat = await repeatForMenuChoice(
+        context, choice, _repeat == null ? null : TaskRepeat.parse(_repeat));
+    if (!mounted) return;
+    setState(() => _repeat = repeat?.encode());
   }
 
   Future<void> _pickDueDate() async {

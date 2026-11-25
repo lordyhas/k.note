@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Delete account moved from the settings list to the bottom of My profile, and Preferences is now the last entry of the settings list.
 
 ### Fixed
+- The Repeat row of the task editor only switched Daily on and off. It now opens the same menu as the quick-add bar: Daily, Weekdays, Weekly, Monthly, Yearly, Custom (every N days, weeks, months or years, with the days of the week) and Never repeat.
 - Tasks were listed in no particular order (by their random ID). Active tasks are now sorted by due date, nearest first (overdue ones on top), then the tasks without a due date, oldest first; completed tasks show the last completed first. The due date of a task due today is highlighted, as an overdue one is shown in red. Version 0.6.1.
 - Google Sign-In failed ("not configured for this build") in release builds: the app's `res/raw/keep.xml` (keeping the notification icon) replaced the one from `google_sign_in_android`, so resource shrinking removed `default_web_client_id`. The app's file is now `knote_keep.xml` and keeps both. The `GOOGLE_SERVICES_JSON_BASE64` secret was also refreshed, and the release workflow now fails when the config or the APK lacks the web client ID. Version 0.5.9.
 
