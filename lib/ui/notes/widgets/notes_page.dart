@@ -7,6 +7,7 @@ import 'package:utils_component/utils_component.dart';
 
 import 'package:knote/config/assets.dart';
 import 'package:knote/data/services/firestore_service.dart';
+import 'package:knote/domain/models/folder.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user_preferences.dart';
 import 'package:knote/ui/auth/bloc/authentication_bloc.dart';
@@ -20,6 +21,7 @@ import 'package:knote/ui/core/widgets/responsive.dart';
 import 'package:knote/ui/core/widgets/undo_snack_bar.dart';
 import 'package:knote/ui/notes/widgets/note_card.dart';
 import 'package:knote/ui/notes/widgets/note_editor_page.dart';
+import 'package:knote/ui/notes/widgets/note_folders.dart';
 import 'package:knote/ui/notes/widgets/note_text.dart';
 import 'package:knote/utils/save_in_background.dart';
 
@@ -48,6 +50,10 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
       (_layout ?? PreferencesScope.of(context).notesLayout) == NotesLayout.grid;
   late final FirestoreService _firebaseManager;
   late final Stream<List<NoteModel>> _notes;
+  late final Stream<List<NoteFolder>> _folders;
+
+  /// The folder whose notes are shown, or null for all notes.
+  String? _folderId;
 
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
@@ -71,6 +77,7 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
         FirestoreService.user(
             BlocProvider.of<AuthenticationBloc>(context).state.user);
     _notes = _firebaseManager.watchNotes();
+    _folders = _firebaseManager.watchFolders();
 
     _animCtrl = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
@@ -172,21 +179,60 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
           ifTrue: FloatingActionButton(
             tooltip: context.l10n.notesNew,
             child: const AppIcon(AppIcons.add),
-            onPressed: () {
-              GoRouter.of(context).pushNamed(NoteEditorPage.routeName);
-            },
+            // A note written while a folder is shown goes in that folder.
+            onPressed: () => GoRouter.of(context).pushNamed(
+              NoteEditorPage.routeName,
+              queryParameters: {
+                if (_folderId != null) NoteEditorPage.folderParam: _folderId!,
+              },
+            ),
           ),
           ifFalse: const SizedBox.shrink(),
         ),
-        body: Padding(
-          padding: EdgeInsets.only(top: 8.0),
-          child: _buildNoteList(),
+        body: StreamBuilder<List<NoteFolder>>(
+          stream: _folders,
+          builder: (context, snapshot) {
+            final folders = snapshot.data ?? const <NoteFolder>[];
+            // A folder deleted (here or on another device) shows all notes.
+            final folderId =
+                folders.any((f) => f.id == _folderId) ? _folderId : null;
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: FolderBar(
+                    folders: folders,
+                    selectedId: folderId,
+                    onSelected: (id) => setState(() => _folderId = id),
+                    onCreate: () async {
+                      final folder =
+                          await createFolder(context, _firebaseManager);
+                      if (folder != null && mounted) {
+                        setState(() => _folderId = folder.id);
+                      }
+                    },
+                    onFolderMenu: (folder) => showFolderMenu(
+                      context,
+                      service: _firebaseManager,
+                      folder: folder,
+                      onDeleted: () {
+                        if (_folderId == folder.id) {
+                          setState(() => _folderId = null);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(child: _buildNoteList(folderId)),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildNoteList() {
+  Widget _buildNoteList(String? folderId) {
     return StreamBuilder<List<NoteModel>>(
       stream: _notes,
       builder: (context, snapshot) {
@@ -205,7 +251,16 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
             text: context.l10n.notesEmpty,
           );
         }
-        final data = searchNotes(allNotes, _query);
+        final inFolder = folderId == null
+            ? allNotes
+            : allNotes.where((note) => note.folderId == folderId).toList();
+        if (inFolder.isEmpty) {
+          return _Message(
+            icon: AppIcons.folder,
+            text: context.l10n.folderEmpty,
+          );
+        }
+        final data = searchNotes(inFolder, _query);
         if (data.isEmpty) {
           return _Message(
             icon: AppIcons.search,
@@ -303,6 +358,24 @@ class _NotesPageState extends State<NotesPage> with TickerProviderStateMixin {
             ),
           ),
           const Divider(),
+          ListTile(
+            key: const Key('noteMenu_moveToFolder'),
+            leading: AppIcon(
+              AppIcons.folder,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            title: Text(l10n.noteMoveToFolder),
+            onTap: () {
+              Navigator.of(context).pop();
+              moveNoteToPickedFolder(
+                context,
+                service: _firebaseManager,
+                noteId: note.id,
+                title: title,
+                currentFolderId: note.folderId,
+              );
+            },
+          ),
           ListTile(
             leading: AppIcon(
               AppIcons.archive,
