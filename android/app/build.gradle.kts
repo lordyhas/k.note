@@ -18,7 +18,9 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.kdynamic.k_note"
-    compileSdk = flutter.compileSdkVersion
+    // 37: flutter_local_notifications, permission_handler_android and
+    // androidx.core 1.19 require it (above Flutter's default).
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
