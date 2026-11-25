@@ -43,7 +43,10 @@ class FolderBar extends StatelessWidget {
         child: Row(
           children: [
             if (folders.isNotEmpty) ...[
+              // The highlight shows the selection: a checkmark would
+              // replace the folder icon.
               ChoiceChip(
+                showCheckmark: false,
                 label: Text(l10n.foldersAll),
                 selected: selectedId == null,
                 onSelected: (_) => onSelected(null),
@@ -56,6 +59,7 @@ class FolderBar extends StatelessWidget {
                     onSecondaryTap: () => onFolderMenu(folder),
                     child: ChoiceChip(
                       key: ValueKey('folderChip_${folder.id}'),
+                      showCheckmark: false,
                       avatar: const AppIcon(AppIcons.folder, size: 18),
                       label: Text(folder.name),
                       selected: selectedId == folder.id,
