@@ -20,6 +20,10 @@ class NoteModel implements DocumentModel {
   bool isLocked;
   int savingModeValue;
 
+  /// The id of the folder holding the note, or null when it is in none. An id
+  /// that matches no folder (deleted on another device) also means none.
+  String? folderId;
+
   final bool isExtraText;
   final dynamic data;
 
@@ -38,15 +42,15 @@ class NoteModel implements DocumentModel {
     this.reminderDate,
     this.data,
     this.isExtraText = false,
+    this.folderId,
     SavingMode savingMode = SavingMode.cloud,
   })  : colorValue = color.toARGB32(),
         savingModeValue = savingMode.index;
 
   static NoteModel fromMap(Map<String, dynamic> map) {
     final rawSaving = map['saving_mode'];
-    final savingIndex = rawSaving is int
-        ? rawSaving.clamp(0, SavingMode.values.length - 1)
-        : 0;
+    final savingIndex =
+        rawSaving is int ? rawSaving.clamp(0, SavingMode.values.length - 1) : 0;
     final rawColor = map['color'];
     final colorArgb = rawColor is int
         ? rawColor
@@ -72,6 +76,7 @@ class NoteModel implements DocumentModel {
       isArchived: map['is_archived'] as bool? ?? false,
       isLocked: map['is_locked'] as bool? ?? false,
       savingMode: SavingMode.values[savingIndex],
+      folderId: map['folder_id'] is String ? map['folder_id'] : null,
     );
   }
 
@@ -90,6 +95,7 @@ class NoteModel implements DocumentModel {
         'email': email,
         'is_locked': isLocked,
         'saving_mode': savingModeValue,
+        'folder_id': folderId,
       };
 
   @override

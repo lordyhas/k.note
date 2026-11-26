@@ -246,44 +246,11 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
     ];
   }
 
-  static const _repeatIcons = {
-    TaskRepeat.daily: AppIcons.calendarCheck,
-    TaskRepeat.weekdaysOnly: AppIcons.suitcase,
-    TaskRepeat.weekly: AppIcons.calendar,
-    TaskRepeat.monthly: AppIcons.calendar,
-    TaskRepeat.yearly: AppIcons.repeat,
-  };
-
-  /// Menu values are a [TaskRepeat] preset or a [_RepeatAction].
   Future<void> _onRepeatSelected(Object choice) async {
-    switch (choice) {
-      case TaskRepeat preset:
-        setState(() => _repeat = preset);
-      case _RepeatAction.custom:
-        final current = _repeat;
-        final custom = await pickCustomRepeat(context,
-            initial: current != null && current.isCustom ? current : null);
-        if (custom != null) setState(() => _repeat = custom);
-      case _RepeatAction.never:
-        setState(() => _repeat = null);
-    }
+    final repeat = await repeatForMenuChoice(context, choice, _repeat);
+    if (!mounted) return;
+    setState(() => _repeat = repeat);
     _focusNode.requestFocus();
-  }
-
-  List<PopupMenuEntry<Object>> _repeatMenu(BuildContext context) {
-    final l10n = context.l10n;
-    return [
-      for (final preset in TaskRepeat.presets)
-        _menuItem<Object>(
-            preset, _repeatIcons[preset]!, repeatText(l10n, preset)),
-      _menuItem<Object>(
-          _RepeatAction.custom, AppIcons.settings, l10n.repeatCustom),
-      if (_repeat != null) ...[
-        const PopupMenuDivider(),
-        _menuItem<Object>(_RepeatAction.never, AppIcons.trash, l10n.repeatNever,
-            color: AppColors.of(context).danger),
-      ],
-    ];
   }
 
   @override
@@ -389,7 +356,8 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
                       color: colors.surfaceHigh,
                       onSelected: _onRepeatSelected,
                       onCanceled: _focusNode.requestFocus,
-                      itemBuilder: _repeatMenu,
+                      itemBuilder: (context) => repeatMenuEntries(context,
+                          canRemove: _repeat != null),
                       child: IgnorePointer(
                         child: _OptionButton(
                           icon: AppIcons.repeat,
@@ -415,8 +383,6 @@ class _TaskQuickAddSheetState extends State<TaskQuickAddSheet> {
 enum _DueDateChoice { today, tomorrow, nextWeek, pick, remove }
 
 enum _ReminderChoice { laterToday, tomorrow, nextWeek, pick, remove }
-
-enum _RepeatAction { custom, never }
 
 class _OptionButton extends StatelessWidget {
   const _OptionButton({

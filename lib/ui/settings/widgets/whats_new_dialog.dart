@@ -11,6 +11,11 @@ typedef WhatsNewEntry = ({AppIcons icon, String title, String body});
 /// `.arb` files) with each release that users should hear about.
 List<WhatsNewEntry> whatsNewEntries(AppLocalizations l10n) => [
       (
+        icon: AppIcons.folder,
+        title: l10n.whatsNewFoldersTitle,
+        body: l10n.whatsNewFoldersBody,
+      ),
+      (
         icon: AppIcons.edit,
         title: l10n.whatsNewEditorTitle,
         body: l10n.whatsNewEditorBody,

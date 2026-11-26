@@ -57,7 +57,20 @@ service cloud.firestore {
     function noteKeys() {
       return ['id', 'title', 'text', 'creation_time', 'last_time', 'is_deleted',
               'permanent_delete_date', 'color', 'reminder_date', 'is_archived',
-              'email', 'is_locked', 'saving_mode'];
+              'email', 'is_locked', 'saving_mode', 'folder_id'];
+    }
+
+    function folderKeys() {
+      return ['id', 'name', 'creation_time'];
+    }
+
+    function isValidFolder(folderId) {
+      let data = request.resource.data;
+      return data.id == folderId
+          && data.name is string
+          && data.name.size() > 0
+          && data.name.size() <= 100
+          && optTimestamp(data, 'creation_time');
     }
 
     function taskKeys() {
@@ -124,6 +137,7 @@ service cloud.firestore {
           && optBool(data, 'is_locked')
           && optInt(data, 'color')
           && optInt(data, 'saving_mode')
+          && optString(data, 'folder_id')
           && optTimestamp(data, 'creation_time')
           && optTimestamp(data, 'last_time')
           && optTimestamp(data, 'reminder_date')
@@ -172,6 +186,20 @@ service cloud.firestore {
         allow update: if isOwner(userId)
                       && changesOnly(noteKeys())
                       && isValidNote(noteId);
+      }
+
+      // Folders hold no data of their own beyond a name: notes point to
+      // their folder with `folder_id`. A folder_id that matches no folder is
+      // read as "no folder", so it is not checked here (that would cost a
+      // read on every note write).
+      match /folders/{folderId} {
+        allow read, delete: if isOwner(userId);
+        allow create: if isOwner(userId)
+                      && hasValidKeys(folderKeys())
+                      && isValidFolder(folderId);
+        allow update: if isOwner(userId)
+                      && changesOnly(folderKeys())
+                      && isValidFolder(folderId);
       }
 
       // Only one settings document for now: the user's preferences.

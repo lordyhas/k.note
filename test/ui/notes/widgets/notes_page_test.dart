@@ -6,6 +6,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:knote/data/repositories/auth_repository.dart';
 import 'package:knote/data/services/firestore_service.dart';
+import 'package:knote/domain/models/folder.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/user.dart';
 import 'package:knote/domain/models/user_preferences.dart';
@@ -134,5 +135,80 @@ void main() {
 
     expect(saved.single.notesLayout, NotesLayout.list);
     expect(find.byTooltip('Grid view'), findsOneWidget);
+  });
+
+  group('folders', () {
+    setUp(() async {
+      await manager.saveFolder(const NoteFolder(id: 'f1', name: 'Travel'));
+      await manager.moveNoteToFolder(noteId: 'n1', folderId: 'f1');
+    });
+
+    testWidgets('a folder shows only its notes', (tester) async {
+      await pumpPage(tester);
+      expect(find.text('Groceries'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('folderChip_f1')));
+      await tester.pump();
+      expect(find.text('Été à Paris'), findsOneWidget);
+      expect(find.text('Groceries'), findsNothing);
+
+      await tester.tap(find.text('All'));
+      await tester.pump();
+      expect(find.text('Groceries'), findsOneWidget);
+    });
+
+    testWidgets('a note can be moved to a folder, with Undo', (tester) async {
+      await pumpPage(tester);
+
+      await tester.longPress(find.text('Groceries'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('noteMenu_moveToFolder')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('folderPicker_f1')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('"Groceries" moved to Travel'), findsOneWidget);
+      expect((await manager.getNoteInCloud(noteId: 'n2'))!.folderId, 'f1');
+
+      await tester.tap(find.text('Undo'));
+      await tester.pumpAndSettle();
+      expect((await manager.getNoteInCloud(noteId: 'n2'))!.folderId, isNull);
+    });
+
+    testWidgets('a new folder is created and selected', (tester) async {
+      await pumpPage(tester);
+
+      await tester.tap(find.byKey(const Key('notes_newFolder')));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+          find.byKey(const Key('folderName_textField')), '  Recipes ');
+      await tester.pump(); // enables Save
+      await tester.tap(find.byKey(const Key('folderName_save')));
+      await tester.pumpAndSettle();
+
+      final folders = await manager.watchFolders().first;
+      expect(folders.map((f) => f.name), ['Recipes', 'Travel']);
+      // The new folder is shown, and it is empty.
+      expect(find.text('No notes in this folder yet.'), findsOneWidget);
+    });
+
+    testWidgets('deleting a folder keeps its notes and shows all notes',
+        (tester) async {
+      await pumpPage(tester);
+      await tester.tap(find.byKey(const ValueKey('folderChip_f1')));
+      await tester.pump();
+
+      await tester.longPress(find.byKey(const ValueKey('folderChip_f1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete folder'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('folderDelete_confirm')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('folderChip_f1')), findsNothing);
+      expect(find.text('Été à Paris'), findsOneWidget);
+      expect(find.text('Groceries'), findsOneWidget);
+      expect((await manager.getNoteInCloud(noteId: 'n1'))!.folderId, isNull);
+    });
   });
 }

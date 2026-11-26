@@ -957,4 +957,67 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get whatsNewSettingsBody =>
       'Supprimer le compte se trouve maintenant dans Mon profil, et Préférences en bas de la liste.';
+
+  @override
+  String get foldersAll => 'Toutes';
+
+  @override
+  String get folderNew => 'Nouveau dossier';
+
+  @override
+  String get folderNameHint => 'Nom du dossier';
+
+  @override
+  String get folderCreate => 'Créer';
+
+  @override
+  String get folderRename => 'Renommer le dossier';
+
+  @override
+  String get folderDelete => 'Supprimer le dossier';
+
+  @override
+  String folderDeleteBody(String name) {
+    return 'Supprimer le dossier « $name » ? Ses notes sont conservées, hors de tout dossier.';
+  }
+
+  @override
+  String folderDeleted(String name) {
+    return 'Dossier « $name » supprimé';
+  }
+
+  @override
+  String get folderEmpty => 'Aucune note dans ce dossier pour l\'instant.';
+
+  @override
+  String get folderSaveFailed => 'Impossible d\'enregistrer le dossier';
+
+  @override
+  String get folderDeleteFailed => 'Impossible de supprimer le dossier';
+
+  @override
+  String get noteMoveToFolder => 'Déplacer vers un dossier';
+
+  @override
+  String get noteNoFolder => 'Aucun dossier';
+
+  @override
+  String noteMovedToFolder(String title, String folder) {
+    return '« $title » déplacée dans $folder';
+  }
+
+  @override
+  String noteRemovedFromFolder(String title) {
+    return '« $title » retirée de son dossier';
+  }
+
+  @override
+  String get noteMoveFailed => 'Impossible de déplacer la note';
+
+  @override
+  String get whatsNewFoldersTitle => 'Dossiers';
+
+  @override
+  String get whatsNewFoldersBody =>
+      'Rangez vos notes dans des dossiers : créez-en un depuis la barre au-dessus de vos notes, puis utilisez Déplacer vers un dossier sur une note.';
 }

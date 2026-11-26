@@ -946,4 +946,67 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get whatsNewSettingsBody =>
       'Delete account is now in My profile, and Preferences is at the bottom of the list.';
+
+  @override
+  String get foldersAll => 'All';
+
+  @override
+  String get folderNew => 'New folder';
+
+  @override
+  String get folderNameHint => 'Folder name';
+
+  @override
+  String get folderCreate => 'Create';
+
+  @override
+  String get folderRename => 'Rename folder';
+
+  @override
+  String get folderDelete => 'Delete folder';
+
+  @override
+  String folderDeleteBody(String name) {
+    return 'Delete the folder \"$name\"? Its notes are kept, outside any folder.';
+  }
+
+  @override
+  String folderDeleted(String name) {
+    return 'Folder \"$name\" deleted';
+  }
+
+  @override
+  String get folderEmpty => 'No notes in this folder yet.';
+
+  @override
+  String get folderSaveFailed => 'The folder couldn\'t be saved';
+
+  @override
+  String get folderDeleteFailed => 'The folder couldn\'t be deleted';
+
+  @override
+  String get noteMoveToFolder => 'Move to folder';
+
+  @override
+  String get noteNoFolder => 'No folder';
+
+  @override
+  String noteMovedToFolder(String title, String folder) {
+    return '\"$title\" moved to $folder';
+  }
+
+  @override
+  String noteRemovedFromFolder(String title) {
+    return '\"$title\" taken out of its folder';
+  }
+
+  @override
+  String get noteMoveFailed => 'The note couldn\'t be moved';
+
+  @override
+  String get whatsNewFoldersTitle => 'Folders';
+
+  @override
+  String get whatsNewFoldersBody =>
+      'File your notes in folders: create one from the bar above your notes, then use Move to folder on a note.';
 }

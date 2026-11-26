@@ -2,6 +2,7 @@ import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:knote/data/services/firestore_service.dart';
+import 'package:knote/domain/models/folder.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/user.dart';
@@ -212,6 +213,71 @@ void main() {
         manager.deleteNote(noteId: 'does-not-exist'),
         throwsA(isA<Exception>()),
       );
+    });
+  });
+
+  group('FirestoreService - Folders', () {
+    test('watchFolders emits the folders sorted by name', () async {
+      await manager.saveFolder(manager.newFolder('work'));
+      await manager.saveFolder(manager.newFolder('Ideas'));
+
+      final folders = await manager.watchFolders().first;
+
+      expect(folders.map((f) => f.name), ['Ideas', 'work']);
+    });
+
+    test('newFolder gives each folder its own id', () {
+      final a = manager.newFolder('A');
+      final b = manager.newFolder('B');
+      expect(a.id, isNotEmpty);
+      expect(a.id, isNot(b.id));
+    });
+
+    test('renameFolder changes only the name', () async {
+      const folder = NoteFolder(id: 'f1', name: 'Old');
+      await manager.saveFolder(folder);
+
+      await manager.renameFolder(folderId: folder.id, name: 'New');
+
+      final saved = (await manager.watchFolders().first).single;
+      expect(saved, folder.copyWith(name: 'New'));
+    });
+
+    test('moveNoteToFolder files a note and takes it out again', () async {
+      await manager.addNoteInCloud(note: _makeNote(id: 'n1'));
+
+      await manager.moveNoteToFolder(noteId: 'n1', folderId: 'f1');
+      expect((await manager.getNoteInCloud(noteId: 'n1'))!.folderId, 'f1');
+
+      await manager.moveNoteToFolder(noteId: 'n1', folderId: null);
+      expect((await manager.getNoteInCloud(noteId: 'n1'))!.folderId, isNull);
+    });
+
+    test('deleteFolder keeps its notes, archived and trashed ones included',
+        () async {
+      await manager.saveFolder(const NoteFolder(id: 'f1', name: 'Work'));
+      await manager.addNoteInCloud(note: _makeNote(id: 'a')..folderId = 'f1');
+      await manager.addNoteInCloud(
+          note: _makeNote(id: 'b', isArchived: true)..folderId = 'f1');
+      await manager.addNoteInCloud(
+          note: _makeNote(id: 'c', isDeleted: true)..folderId = 'f1');
+      await manager.addNoteInCloud(note: _makeNote(id: 'd')..folderId = 'f2');
+
+      await manager.deleteFolder(folderId: 'f1');
+
+      expect(await manager.watchFolders().first, isEmpty);
+      for (final id in ['a', 'b', 'c']) {
+        expect((await manager.getNoteInCloud(noteId: id))!.folderId, isNull);
+      }
+      expect((await manager.getNoteInCloud(noteId: 'd'))!.folderId, 'f2');
+    });
+
+    test('deleteAllUserData also deletes the folders', () async {
+      await manager.saveFolder(manager.newFolder('Work'));
+
+      await manager.deleteAllUserData();
+
+      expect(await manager.watchFolders().first, isEmpty);
     });
   });
 

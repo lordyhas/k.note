@@ -1675,6 +1675,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete account is now in My profile, and Preferences is at the bottom of the list.'**
   String get whatsNewSettingsBody;
+
+  /// No description provided for @foldersAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get foldersAll;
+
+  /// No description provided for @folderNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get folderNew;
+
+  /// No description provided for @folderNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder name'**
+  String get folderNameHint;
+
+  /// No description provided for @folderCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get folderCreate;
+
+  /// No description provided for @folderRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename folder'**
+  String get folderRename;
+
+  /// No description provided for @folderDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete folder'**
+  String get folderDelete;
+
+  /// No description provided for @folderDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the folder \"{name}\"? Its notes are kept, outside any folder.'**
+  String folderDeleteBody(String name);
+
+  /// No description provided for @folderDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder \"{name}\" deleted'**
+  String folderDeleted(String name);
+
+  /// No description provided for @folderEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes in this folder yet.'**
+  String get folderEmpty;
+
+  /// No description provided for @folderSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder couldn\'t be saved'**
+  String get folderSaveFailed;
+
+  /// No description provided for @folderDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder couldn\'t be deleted'**
+  String get folderDeleteFailed;
+
+  /// No description provided for @noteMoveToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to folder'**
+  String get noteMoveToFolder;
+
+  /// No description provided for @noteNoFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'No folder'**
+  String get noteNoFolder;
+
+  /// No description provided for @noteMovedToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" moved to {folder}'**
+  String noteMovedToFolder(String title, String folder);
+
+  /// No description provided for @noteRemovedFromFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" taken out of its folder'**
+  String noteRemovedFromFolder(String title);
+
+  /// No description provided for @noteMoveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The note couldn\'t be moved'**
+  String get noteMoveFailed;
+
+  /// No description provided for @whatsNewFoldersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get whatsNewFoldersTitle;
+
+  /// No description provided for @whatsNewFoldersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'File your notes in folders: create one from the bar above your notes, then use Move to folder on a note.'**
+  String get whatsNewFoldersBody;
 }
 
 class _AppLocalizationsDelegate

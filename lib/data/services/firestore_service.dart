@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:knote/domain/models/folder.dart';
 import 'package:knote/domain/models/note.dart';
 import 'package:knote/domain/models/task.dart';
 import 'package:knote/domain/models/user.dart';
@@ -40,6 +41,9 @@ class FirestoreService {
 
   CollectionReference<Map<String, dynamic>> get _notes =>
       _userDoc.collection('notes');
+
+  CollectionReference<Map<String, dynamic>> get _folders =>
+      _userDoc.collection('folders');
 
   CollectionReference<Map<String, dynamic>> get _tasks =>
       _userDoc.collection('tasks');
@@ -177,6 +181,66 @@ class FirestoreService {
     return _notes.doc(noteId).update({'is_archived': archived});
   }
 
+  /// Files the note in the folder [folderId], or in none when it is null.
+  Future<void> moveNoteToFolder({
+    required String noteId,
+    required String? folderId,
+  }) {
+    return _notes.doc(noteId).update({'folder_id': folderId});
+  }
+
+  /// F O L D E R S
+
+  /// The user's note folders, live, sorted by name.
+  Stream<List<NoteFolder>> watchFolders() {
+    return _folders.snapshots().map((snapshot) {
+      final folders = snapshot.docs
+          .map((doc) => NoteFolder.fromMap(doc.data()))
+          .where((folder) => folder.id.isNotEmpty)
+          .toList()
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      return folders;
+    });
+  }
+
+  /// A new folder named [name], with an id generated now so the caller can
+  /// use it (e.g. to file a note in it) before the write completes.
+  NoteFolder newFolder(String name) => NoteFolder(
+        id: _folders.doc().id,
+        name: name,
+        creationTime: DateTime.now(),
+      );
+
+  /// Creates [folder], or replaces it entirely if it already exists.
+  Future<void> saveFolder(NoteFolder folder) {
+    return _folders.doc(folder.id).set(folder.asMap());
+  }
+
+  Future<void> renameFolder({required String folderId, required String name}) {
+    return _folders.doc(folderId).update({'name': name});
+  }
+
+  /// Deletes the folder [folderId] and takes its notes (archived and trashed
+  /// ones included) out of it; the notes themselves are kept.
+  Future<void> deleteFolder({required String folderId}) async {
+    final notes = (await _notes.where('folder_id', isEqualTo: folderId).get())
+        .docs
+        .map((doc) => doc.reference)
+        .toList();
+    // A batch holds at most 500 writes: the folder goes with the first one.
+    const batchSize = 499;
+    var start = 0;
+    do {
+      final batch = _firestore.batch();
+      if (start == 0) batch.delete(_folders.doc(folderId));
+      for (final ref in notes.skip(start).take(batchSize)) {
+        batch.update(ref, {'folder_id': null});
+      }
+      await batch.commit();
+      start += batchSize;
+    } while (start < notes.length);
+  }
+
   /// T A S K S   M E T H O D S
 
   /// The user's tasks, emitted again whenever one is added, changed or
@@ -239,7 +303,7 @@ class FirestoreService {
 
   /// A C C O U N T
 
-  /// Deletes everything stored for the user: notes, tasks, settings,
+  /// Deletes everything stored for the user: notes, folders, tasks, settings,
   /// feedback and the profile document. Called just before their auth account is deleted,
   /// while the rules still let them.
   ///
@@ -248,6 +312,7 @@ class FirestoreService {
   Future<void> deleteAllUserData() async {
     final docs = [
       ...(await _notes.get(const GetOptions(source: Source.server))).docs,
+      ...(await _folders.get(const GetOptions(source: Source.server))).docs,
       ...(await _tasks.get(const GetOptions(source: Source.server))).docs,
       ...(await _settings.get(const GetOptions(source: Source.server))).docs,
       ...(await _feedback

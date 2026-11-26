@@ -18,6 +18,7 @@ lib/
 ├── domain/
 │   └── models/                # Plain data classes, no Flutter/Firebase services
 │       ├── document_model.dart  # DataToMap, DocumentModel
+│       ├── folder.dart          # NoteFolder
 │       ├── note.dart            # NoteModel, SavingMode
 │       ├── task.dart            # CheckList, TodoItem
 │       ├── task_repeat.dart     # TaskRepeat (CheckList.repeat encoding)
@@ -26,7 +27,7 @@ lib/
 │   ├── repositories/
 │   │   └── auth_repository.dart # AuthRepository (Firebase Auth, Google Sign-In)
 │   └── services/
-│       ├── firestore_service.dart # FirestoreService: notes, tasks, profile
+│       ├── firestore_service.dart # FirestoreService: notes, folders, tasks, profile
 │       └── whats_new_service.dart # WhatsNewService: last version whose "What's new" was shown
 ├── ui/
 │   ├── core/                  # Shared by every feature
@@ -42,7 +43,7 @@ lib/
 │   │   ├── bloc/              # AuthenticationBloc, LoginCubit, SignUpCubit, form inputs
 │   │   └── widgets/           # LoginPage, SignUpPage, forms, login buttons
 │   ├── notes/
-│   │   └── widgets/           # NotesPage, NoteEditorPage, ArchivedNotesPage, TrashPage, ...
+│   │   └── widgets/           # NotesPage, NoteEditorPage, folders (note_folders.dart), ArchivedNotesPage, TrashPage, ...
 │   ├── tasks/
 │   │   └── widgets/           # TasksPage, TaskEditorPage, quick add, pickers
 │   └── settings/

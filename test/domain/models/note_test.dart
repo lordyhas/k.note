@@ -157,6 +157,14 @@ void main() {
       expect(map.containsKey('email'), true);
       expect(map.containsKey('is_locked'), true);
       expect(map.containsKey('saving_mode'), true);
+      expect(map.containsKey('folder_id'), true);
+    });
+
+    test('folder_id round-trips, and a malformed one means no folder', () {
+      final note = NoteModel(id: 'n', folderId: 'f1');
+      expect(NoteModel.fromMap(note.asMap()).folderId, 'f1');
+      expect(NoteModel.fromMap({'id': 'n'}).folderId, isNull);
+      expect(NoteModel.fromMap({'id': 'n', 'folder_id': 42}).folderId, isNull);
     });
   });
 }
