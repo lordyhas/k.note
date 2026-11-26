@@ -86,12 +86,17 @@ Typical note flow:
 
 ## What's new
 
+- `whatsNewReleases` (`lib/config/whats_new_releases.dart`, plain Dart) lists, newest first,
+  each release's version and the keys of its changes; a key `k` has its texts in `kTitle`
+  and `kBody` of the `.arb` files and its icon in `whatsNewEntry`
+  (`ui/settings/widgets/whats_new_dialog.dart`).
 - `WhatsNewService` (`lib/data/services/whats_new_service.dart`) stores, on the device
   (`shared_preferences`), the last app version whose "What's new" was shown. `AppShell`
-  asks it once per run and shows `WhatsNewDialog` (`ui/settings/widgets/whats_new_dialog.dart`)
-  when the version changed, so it appears once after each update (and after installing).
-  Settings > What's new shows it again. Update `whatsNewEntries` and their `.arb` strings
-  with each release users should hear about.
+  asks it once per run (`toAnnounce`) and shows `WhatsNewDialog` with the changes of the
+  releases after that version. A first install, or a release with no entry, shows nothing.
+  Settings > What's new shows the changes of the newest release.
+- The release workflow puts the same texts at the top of the GitHub release
+  (`tool/release_notes.dart`); see [release.md](release.md#whats-new).
 
 ## Reminders and repeating tasks
 

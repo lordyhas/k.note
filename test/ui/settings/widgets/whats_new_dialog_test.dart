@@ -5,7 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 
+import 'package:knote/config/whats_new_releases.dart';
 import 'package:knote/data/services/whats_new_service.dart';
+import 'package:knote/ui/core/localization/l10n.dart';
 import 'package:knote/ui/notes/widgets/notes_page.dart';
 import 'package:knote/ui/settings/widgets/whats_new_dialog.dart';
 import 'package:knote/ui/shell/app_shell.dart';
@@ -28,6 +30,27 @@ void main() {
     expect(find.text('Quoi de neuf'), findsOneWidget);
     expect(find.text('Version 0.7.0'), findsOneWidget);
     expect(find.text('Un nouvel éditeur de notes'), findsOneWidget);
+    expect(find.text('Dossiers'), findsNothing, reason: 'a later release');
+  });
+
+  testWidgets('has an icon and texts for every change of every release',
+      (tester) async {
+    for (final locale in const [Locale('en'), Locale('fr')]) {
+      await tester.pumpWidget(localizedApp(
+        locale: locale,
+        home: Builder(builder: (context) {
+          for (final release in whatsNewReleases) {
+            for (final key in release.keys) {
+              final entry = whatsNewEntry(context.l10n, key);
+              expect(entry, isNotNull, reason: key);
+              expect(entry!.title, isNotEmpty, reason: key);
+              expect(entry.body, isNotEmpty, reason: key);
+            }
+          }
+          return const SizedBox();
+        }),
+      ));
+    }
   });
 
   group('after an update', () {
@@ -58,18 +81,29 @@ void main() {
 
     testWidgets('the shell shows "What\'s new" once per version',
         (tester) async {
-      await pumpShell(tester, service('0.7.0'));
+      await tester.runAsync(() => service('0.7.0').markSeen('0.7.0'));
+      await pumpShell(tester, service('0.7.2'));
       await tester.pumpAndSettle();
 
       expect(find.byType(WhatsNewDialog), findsOneWidget);
+      expect(find.text('Folders'), findsOneWidget);
+      expect(find.text('A new note editor'), findsNothing,
+          reason: 'already announced in 0.7.0');
       await tester.tap(find.byKey(const Key('__whatsNew_continue__')));
       await tester.pumpAndSettle();
       expect(find.byType(WhatsNewDialog), findsNothing);
 
       // Next launch of the same version.
       await tester.pumpWidget(const SizedBox());
-      await pumpShell(tester, service('0.7.0'));
+      await pumpShell(tester, service('0.7.2'));
       await tester.pumpAndSettle();
+      expect(find.byType(WhatsNewDialog), findsNothing);
+    });
+
+    testWidgets('a first install shows nothing', (tester) async {
+      await pumpShell(tester, service('0.7.2'));
+      await tester.pumpAndSettle();
+
       expect(find.byType(WhatsNewDialog), findsNothing);
     });
   });

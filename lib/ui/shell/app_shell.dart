@@ -126,11 +126,12 @@ class _AppShellState extends State<AppShell> {
   /// Shows "What's new" the first time this version runs on the device.
   Future<void> _announceUpdate() async {
     final service = widget.whatsNew ?? WhatsNewService();
-    final version = await service.versionToAnnounce();
-    if (version == null || !mounted) return;
-    await service.markSeen(version);
+    final announcement = await service.toAnnounce();
+    if (announcement == null || !mounted) return;
+    await service.markSeen(announcement.version);
     if (!mounted) return;
-    await showWhatsNew(context, version: version);
+    await showWhatsNew(context,
+        version: announcement.version, keys: announcement.keys);
   }
 
   @override

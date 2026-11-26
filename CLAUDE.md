@@ -72,7 +72,7 @@ All routes live in `AppRouter.routes(...)`. They are GoRouter routes that refres
 - Colors come from `AppColors.of(context)` (`ui/core/themes/app_colors.dart`, a `ThemeExtension` registered in `AppTheme.dark`), not `Colors.*` literals; user-chosen note/task palettes are data and stay literal.
 - The look is Fluent-style Material: `AppTheme` sets the shapes (4 dp controls, 8 dp surfaces), strokes, buttons, fields, dialogs, sheets and bars once. Pages don't restyle them (no local corner radius or field border); a field without a box uses `border: InputBorder.none, filled: false`.
 - Pages are responsive (`ui/core/widgets/responsive.dart`): keep content at a readable width with `CenteredContent`, or `centeredPadding` for a scroll view, using `ContentWidths`; never size from a fraction of the screen width without a cap. Check a page at phone, landscape, tablet and desktop widths.
-- Icons are Iconoir (`AppIcon(AppIcons.x)`, `ui/core/widgets/app_icons.dart`), never Material `Icons.*`. `AppShell` shows `WhatsNewDialog` once after each update; list a release's changes in `whatsNewEntries`.
+- Icons are Iconoir (`AppIcon(AppIcons.x)`, `ui/core/widgets/app_icons.dart`), never Material `Icons.*`. `AppShell` shows `WhatsNewDialog` once after an update, with the changes of the releases the device hasn't seen; list a release's changes in `whatsNewReleases` (`lib/config/whats_new_releases.dart`), which also feeds the GitHub release notes (`docs/release.md`).
 - Icon-only buttons have a translated `tooltip`; touch targets are at least 48 dp.
 - Widget tests pump `localizedApp(...)` / `localizedRouterApp(...)` from `test/helpers/localized_app.dart` (English by default, `locale:` to test French).
 
