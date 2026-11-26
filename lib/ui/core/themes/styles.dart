@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 
-enum ThemeState { light, dark }
+enum ThemeState{light,dark}
 
 class StyleAppTheme {
+
   StyleAppTheme.init();
+
 
   var nearlyWhite1 = Color(0xFFFEFEFE);
   static const Color notWhite = Color(0xFFEDF0F2);
-  static const Color nearlyWhite = Color(0xFFFEFEFE);
+  static const Color  nearlyWhite = Color(0xFFFEFEFE);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color nearlyBlack =
-      Color(0xFF4A6581); // Colors.white70; //  Color(0xFF213333);
+  static const Color nearlyBlack = Color(0xFF4A6581);// Colors.white70; //  Color(0xFF213333);
   static const Color grey = Color(0xFF3A5160);
   static const Color darkGrey = Color(0xFF313A44);
 
   static const Color darkText = Colors.white; // Color(0xFF253840);
   static const Color darkerText = Color(0xFF17262A);
-  static const Color lightText = Color(0xFF4A6572);
+  static const Color lightText =  Color(0xFF4A6572);
   static const Color deactivatedText = Color(0xFF767676);
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color chipBackground = Color(0xFFEEF1F3);
@@ -33,8 +34,7 @@ class StyleAppTheme {
     bodySmall: caption,
   );
 
-  static const TextStyle display1 = TextStyle(
-    // h4 -> display1
+  static const TextStyle display1 = TextStyle( // h4 -> display1
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
     fontSize: 36,
@@ -43,8 +43,7 @@ class StyleAppTheme {
     color: darkerText,
   );
 
-  static const TextStyle headline = TextStyle(
-    // h5 -> headline
+  static const TextStyle headline = TextStyle( // h5 -> headline
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
     fontSize: 24,
@@ -52,8 +51,7 @@ class StyleAppTheme {
     color: darkerText,
   );
 
-  static const TextStyle title = TextStyle(
-    // h6 -> title
+  static const TextStyle title = TextStyle( // h6 -> title
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
     fontSize: 16,
@@ -61,8 +59,7 @@ class StyleAppTheme {
     color: darkerText,
   );
 
-  static const TextStyle subtitle = TextStyle(
-    // subtitle2 -> subtitle
+  static const TextStyle subtitle = TextStyle( // subtitle2 -> subtitle
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 14,
@@ -70,8 +67,7 @@ class StyleAppTheme {
     color: darkText,
   );
 
-  static const TextStyle body2 = TextStyle(
-    // body1 -> body2
+  static const TextStyle body2 = TextStyle( // body1 -> body2
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 14,
@@ -79,8 +75,7 @@ class StyleAppTheme {
     color: darkText,
   );
 
-  static const TextStyle body1 = TextStyle(
-    // body2 -> body1
+  static const TextStyle body1 = TextStyle( // body2 -> body1
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 16,
@@ -88,8 +83,7 @@ class StyleAppTheme {
     color: darkText,
   );
 
-  static const TextStyle caption = TextStyle(
-    // Caption -> caption
+  static const TextStyle caption = TextStyle( // Caption -> caption
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 12,
@@ -97,12 +91,18 @@ class StyleAppTheme {
     color: lightText, // was lightText
   );
 
+
   static Color color = Colors.white;
 
-  final darkTheme = ThemeData(brightness: Brightness.dark);
+  final darkTheme = ThemeData(
+      brightness: Brightness.dark
+  );
 
-  final lightTheme = ThemeData(brightness: Brightness.light);
+  final lightTheme = ThemeData(
+      brightness: Brightness.light
+  );
 }
+
 
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));

@@ -14,4 +14,6 @@ class AppBlocObserver extends BlocObserver {
     debugPrint("$bloc => onTransition()  : $transition");
     super.onTransition(bloc, transition);
   }
+
 }
+
