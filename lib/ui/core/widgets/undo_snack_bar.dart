@@ -18,7 +18,7 @@ void showUndoSnackBar(String message, {required VoidCallback onUndo}) {
       content: Text(message),
       // With an action, a snack bar otherwise stays until dismissed.
       persist: false,
-      action: SnackBarAction(
-          label: messenger.context.l10n.undo, onPressed: onUndo),
+      action:
+          SnackBarAction(label: messenger.context.l10n.undo, onPressed: onUndo),
     ));
 }

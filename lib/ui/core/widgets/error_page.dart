@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:knote/ui/core/localization/l10n.dart';
 
-enum ErrorType{unknown, e404, offline,}
+enum ErrorType {
+  unknown,
+  e404,
+  offline,
+}
 
 class ErrorPage extends StatefulWidget {
   final ErrorType errorType;
@@ -29,8 +33,8 @@ class _ErrorPageState extends State<ErrorPage>
   void initState() {
     super.initState();
     _controller =
-    AnimationController(vsync: this, duration: const Duration(seconds: 3))
-      ..repeat(reverse: true);
+        AnimationController(vsync: this, duration: const Duration(seconds: 3))
+          ..repeat(reverse: true);
   }
 
   @override
@@ -44,57 +48,53 @@ class _ErrorPageState extends State<ErrorPage>
     return Scaffold(
       appBar: AppBar(),
       //backgroundColor: const Color(0xffd8f3dc),
-      body: Builder(
-        builder: (context) {
-          switch(widget.errorType){
-            case ErrorType.e404:
-              return Container();
-            case ErrorType.offline:
-              return Container();
-            default:
-              return Stack(
-                children: [
-                  PositionedTransition(
-                    rect: _relativeRectTween.animate(_controller),
-                    child: Image.asset('assets/images/404error.png'),
+      body: Builder(builder: (context) {
+        switch (widget.errorType) {
+          case ErrorType.e404:
+            return Container();
+          case ErrorType.offline:
+            return Container();
+          default:
+            return Stack(
+              children: [
+                PositionedTransition(
+                  rect: _relativeRectTween.animate(_controller),
+                  child: Image.asset('assets/images/404error.png'),
+                ),
+                Positioned(
+                  top: 170,
+                  bottom: 0,
+                  left: 24,
+                  right: 24,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        '404',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 50,
+                            letterSpacing: 2,
+                            //color:  Color(0xff2f3640),
+                            fontFamily: 'Anton',
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        context.l10n.pageNotFound,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          //color: Color(0xff2f3640),
+                        ),
+                      ),
+                    ],
                   ),
-                  Positioned(
-                    top: 170,
-                    bottom: 0,
-                    left: 24,
-                    right: 24,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          '404',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 50,
-                              letterSpacing: 2,
-                              //color:  Color(0xff2f3640),
-                              fontFamily: 'Anton',
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          context.l10n.pageNotFound,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            //color: Color(0xff2f3640),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              );
-
-          }
-
+                )
+              ],
+            );
         }
-      ),
+      }),
     );
   }
 }

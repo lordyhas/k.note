@@ -129,15 +129,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.name }}
         run: |
           dir=build/app/outputs
           aab="$dir/knote-$TAG.aab"
           apk="$dir/knote-$TAG.apk"
           cp "$dir/bundle/release/app-release.aab" "$aab"
           cp "$(ls $dir/flutter-apk/*release*.apk | head -1)" "$apk"
+          # The app's "What's new" of this version (English and French), then
+          # the notes GitHub generates from the merged pull requests.
+          dart run tool/release_notes.dart "$VERSION" > "$RUNNER_TEMP/whats_new.md"
           gh release create "$TAG" "$aab" "$apk" \
             --target "$GITHUB_SHA" \
             --title "K.Note $TAG" \
+            --notes-file "$RUNNER_TEMP/whats_new.md" \
             --generate-notes
 
       - name: Remove the upload key

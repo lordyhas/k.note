@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- What's new only lists the changes of the releases a device has not seen yet, and shows nothing on a first install or for a release without new entries; each release's changes are listed in `whatsNewReleases`. The GitHub release now starts with the same What's new, in English and French (`tool/release_notes.dart`).
 - The note editor follows Samsung Notes: the title is edited in the top bar, next to a reading mode button, an insert menu (checklist, lists, quote, date and time) and a menu with the note color, Archive and Move to bin. A bar above the keyboard holds the checklist toggle, text style (bold, italic, underline, strikethrough), lists and quote, paragraph style, font size, undo and redo. Version 0.7.0.
 - Icons come from Iconoir (`iconoir_flutter`) everywhere, through `AppIcon`/`AppIcons`; `font_awesome_flutter` is removed.
 - The app is named KNOTE (capitals, no dot) under its launcher icon, on the web and in the app; the title of the notes screen is no longer centered.

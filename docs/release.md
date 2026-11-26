@@ -8,7 +8,10 @@ Merging into `production` runs `.github/workflows/release.yml`, which:
 4. builds a signed app bundle (for Google Play) and APK,
 5. fails if they are signed with a debug key, or if the APK has no
    `default_web_client_id` (Google Sign-In would fail on every phone),
-6. publishes a GitHub release `v<version>+<build>` with both files attached.
+6. publishes a GitHub release `v<version>+<build>` with both files attached. Its notes
+   start with the app's "What's new" of that version, in English and French
+   (`tool/release_notes.dart`), followed by the notes GitHub generates from the merged
+   pull requests.
 
 It can also be started by hand: Actions > Release > Run workflow.
 
@@ -18,6 +21,22 @@ It can also be started by hand: Actions > Release > Run workflow.
   Bump it before merging into `production`.
 - The version code (build number) is the workflow run number + 100, so it always
   increases, as Google Play requires.
+
+## What's new
+
+Before merging into `production`, list the changes users should hear about:
+
+1. Add the texts in `lib/ui/core/localization/app_en.arb` and `app_fr.arb`: a key `k`
+   needs `kTitle` and `kBody` (e.g. `whatsNewFoldersTitle`, `whatsNewFoldersBody`).
+2. Add the release, newest first, to `whatsNewReleases` in
+   `lib/config/whats_new_releases.dart`: `(version: '0.7.3', keys: ['whatsNewFolders'])`,
+   with the version of `pubspec.yaml`.
+3. Give each key its icon in `whatsNewEntry` (`lib/ui/settings/widgets/whats_new_dialog.dart`).
+
+The app shows, once, the changes of the releases a device has not seen yet (all of them
+after skipped updates). A first install shows nothing, and so does a release with no entry
+(a bug fix release, say). Check the release notes locally with
+`dart run tool/release_notes.dart <version>`.
 
 ## Upload key
 
