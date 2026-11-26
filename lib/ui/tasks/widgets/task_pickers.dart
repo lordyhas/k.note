@@ -133,6 +133,68 @@ DateTime? reminderFor(
   }
 }
 
+/// What the repeat menu offers besides the presets.
+enum RepeatMenuAction { custom, never }
+
+const _repeatIcons = {
+  TaskRepeat.daily: AppIcons.calendarCheck,
+  TaskRepeat.weekdaysOnly: AppIcons.suitcase,
+  TaskRepeat.weekly: AppIcons.calendar,
+  TaskRepeat.monthly: AppIcons.calendar,
+  TaskRepeat.yearly: AppIcons.repeat,
+};
+
+/// The repeat menu of the quick-add bar and the task editor: the presets,
+/// Custom and, when [canRemove], Never. Its values are a [TaskRepeat] preset
+/// or a [RepeatMenuAction]; [repeatForMenuChoice] turns one into a rule.
+List<PopupMenuEntry<Object>> repeatMenuEntries(BuildContext context,
+    {required bool canRemove}) {
+  final l10n = context.l10n;
+  final colors = AppColors.of(context);
+  PopupMenuItem<Object> item(Object value, AppIcons icon, String label,
+      {Color? color}) {
+    color ??= colors.text;
+    return PopupMenuItem<Object>(
+      value: value,
+      child: Row(
+        children: [
+          AppIcon(icon, color: color),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(label,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: color, fontSize: 16)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  return [
+    for (final preset in TaskRepeat.presets)
+      item(preset, _repeatIcons[preset]!, repeatText(l10n, preset)),
+    item(RepeatMenuAction.custom, AppIcons.settings, l10n.repeatCustom),
+    if (canRemove) ...[
+      const PopupMenuDivider(),
+      item(RepeatMenuAction.never, AppIcons.trash, l10n.repeatNever,
+          color: colors.danger),
+    ],
+  ];
+}
+
+/// The rule picked in [repeatMenuEntries]: a preset, a custom rule asked with
+/// [pickCustomRepeat] ([current] if the user cancels it), or null for Never.
+Future<TaskRepeat?> repeatForMenuChoice(
+    BuildContext context, Object choice, TaskRepeat? current) async {
+  return switch (choice) {
+    final TaskRepeat preset => preset,
+    RepeatMenuAction.custom => await pickCustomRepeat(context,
+            initial: current != null && current.isCustom ? current : null) ??
+        current,
+    _ => null,
+  };
+}
+
 /// Asks for a custom repeat rule ("every N days/weeks/months/years", with
 /// weekdays for weeks). Returns null if the user cancels.
 Future<TaskRepeat?> pickCustomRepeat(BuildContext context,
